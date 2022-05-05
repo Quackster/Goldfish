@@ -86,7 +86,7 @@ public class LoaderManager extends HabboScene {
 
         if ((timeDifference % tickInterval) == 0) {
             this.ticked++;
-            int progress = (timeDifference > 0 ? (int) ((timeDifference * 25) / tickInterval) : 0) + 25;
+            int progress = (timeDifference > 0 ? (int) ((timeDifference * 25) / tickInterval) : 0) + 50;
 
             if (progress <= 100 && (progress % 25) == 0) {
                 Platform.runLater(() -> {

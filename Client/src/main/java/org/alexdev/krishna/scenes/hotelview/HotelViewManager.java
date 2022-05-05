@@ -1,17 +1,23 @@
 package org.alexdev.krishna.scenes.hotelview;
 
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.PixelReader;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import org.alexdev.krishna.HabboClient;
 import org.alexdev.krishna.Krishna;
 import org.alexdev.krishna.scenes.HabboScene;
+import org.alexdev.krishna.util.DateUtil;
 import org.alexdev.krishna.util.DimensionUtil;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class HotelViewManager extends HabboScene {
     private Pane pane;
@@ -23,6 +29,7 @@ public class HotelViewManager extends HabboScene {
     private ImageView viewRight;
     private ImageView thinBlueBar;
     private ImageView sun;
+    private List<Cloud> clouds;
 
     private Rectangle topReveal;
     private Rectangle bottomReveal;
@@ -31,7 +38,8 @@ public class HotelViewManager extends HabboScene {
     private long pViewOpenTime = 0;
     private long pViewCloseTime = 0;
 
-    private static int CLOUD_Z_INDEX = 5000;
+    public static int CLOUD_Z_INDEX = 5000;
+    private static int TURN_POINT = 330;
 
     public boolean queueOpenView = false;
     public boolean queueCloseView = false;
@@ -45,53 +53,88 @@ public class HotelViewManager extends HabboScene {
         if (this.isInitialised)
             return;
 
+        this.clouds = new ArrayList<>();
+
         this.pane = new Pane();
         this.scene = HabboScene.create(this.pane);
 
         this.topReveal = new Rectangle(1,1);
         this.topReveal.setFill(Color.BLACK);
-        this.pane.getChildren().add(topReveal);
 
         this.bottomReveal = new Rectangle(1,1);
         this.bottomReveal.setFill(Color.BLACK);
-        this.pane.getChildren().add(this.bottomReveal);
 
         this.viewLeft = new ImageView();
         this.viewLeft.setImage(new Image(new File("resources/scenes/hotel_view/countries/br_large.png").toURI().toString()));
-        this.pane.getChildren().add(this.viewLeft);
 
         this.viewRight = new ImageView();
         this.viewRight.setImage(new Image(new File("resources/scenes/hotel_view/br_right.png").toURI().toString()));
-        this.pane.getChildren().add(this.viewRight);
 
         this.thinBlueBar = new ImageView();
         this.thinBlueBar.setImage(new Image(new File("resources/scenes/hotel_view/thin_blue_bar_2.png").toURI().toString()));
-        this.pane.getChildren().add(this.thinBlueBar);
 
         this.sun = new ImageView();
         this.sun.setImage(new Image(new File("resources/scenes/hotel_view/sun.png").toURI().toString()));
-        this.sun.setX(DimensionUtil.getCenterCords(sun.getImage().getWidth(), sun.getImage().getHeight()).getX());
-        this.pane.getChildren().add(this.sun);
+        this.sun.setX(DimensionUtil.getCenterCords(this.sun.getImage().getWidth(), this.sun.getImage().getHeight()).getX());
 
         this.pViewOpenTime = System.currentTimeMillis() + MAX_VIEW_TIME;
-
-        this.topReveal.setY(0);
         this.bottomReveal.setY(Krishna.getClient().getPrimaryStage().getHeight() / 2);
         this.stretchBars();
+
+        this.pane.getChildren().add(this.sun);
+        this.pane.getChildren().add(this.thinBlueBar);
+        this.pane.getChildren().add(this.viewRight);
+        this.pane.getChildren().add(this.viewLeft);
+        this.pane.getChildren().add(this.bottomReveal);
+        this.pane.getChildren().add(topReveal);
+
 
         this.thinBlueBar.setViewOrder(6000);
         this.sun.setViewOrder(4000);
         this.viewLeft.setViewOrder(3000);
         this.viewRight.setViewOrder(2000);
-        this.bottomReveal.setViewOrder(-1000);
-        this.topReveal.setViewOrder(-2000);
+        //this.bottomReveal.setViewOrder(-1000);
+        this.topReveal.setViewOrder(-1000);
+
+        /*
+        this.cloudPane = new Pane();
+        this.cloud = new ImageView();
+        this.cloud.setImage(new Image(new File("resources/scenes/hotel_view/clouds/cloud_0_left.png").toURI().toString()));
+        this.cloud.set
+        this.cloud.setX(280);
+        this.cloud.setY(280);
+        this.cloudPane.getChildren().add(cloud);
+        this.pane.getChildren().set(0, cloudPane);
+
+        this.cloud.setViewOrder(CLOUD_Z_INDEX);*/
 
         this.queueOpenView = true;
         this.isInitialised = true;
     }
 
     public void updateTick() {
+        this.updateClouds();
+    }
 
+    private void updateClouds() {
+        for (var cloud : this.clouds) {
+            cloud.update();
+
+            if (cloud.isFinished()) {
+                this.pane.getChildren().remove(cloud);
+            }
+        }
+
+        // Remove old clouds
+        this.clouds.removeIf(Cloud::isFinished);
+
+        long timeDifference = DateUtil.getCurrentTimeSeconds() - this.timeSinceStart;
+        if (timeDifference % 3 == 0 && this.clouds.size() < 1) {
+            var cloud = new Cloud(TURN_POINT, "cloud_0_left");
+            cloud.init();
+            this.clouds.add(cloud);
+            this.pane.getChildren().add(cloud);
+        }
     }
 
     public void renderTick() {

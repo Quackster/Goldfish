@@ -74,7 +74,7 @@ public class HabboClient extends Application implements Runnable {
             frames++;
             if (System.currentTimeMillis() - lastTimer1 > 1000) {
                 lastTimer1 += 1000;
-                System.out.println(ticks + " ticks, " + frames + " fps");
+                //System.out.println(ticks + " ticks, " + frames + " fps");
                 frames = 0;
                 ticks = 0;
             }
@@ -129,7 +129,8 @@ public class HabboClient extends Application implements Runnable {
         primaryStage.show();
 
         this.setupStages();
-        this.showStage(HabboSceneType.LOADER);
+        // this.showStage(HabboSceneType.LOADER);
+         this.showStage(HabboSceneType.HOTEL_VIEW);
     }
 
     @Override
