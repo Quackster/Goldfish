@@ -1,8 +1,9 @@
 package org.alexdev.krishna;
 
 import javafx.application.Application;
-import javafx.geometry.Point2D;
+import javafx.application.Platform;
 import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -17,11 +18,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 public class HabboClient extends Application implements Runnable {
-    private static final int MAX_FPS = 24;
+    public static final int MAX_FPS = 24;
 
     private Scene mainScene;
     private Stage primaryStage;
-    private StackPane rootStackPane;
+    private Pane pane;
 
     private ConcurrentMap<HabboSceneType, HabboScene> scenes;
     private int fps;
@@ -48,61 +49,69 @@ public class HabboClient extends Application implements Runnable {
     public void run() {
         long lastTime = System.nanoTime();
         double unprocessed = 0;
-        double ns = 1000000000.0 / 24.0;
+        double nsPerTick = 1000000000.0 / HabboClient.MAX_FPS;
         int frames = 0;
-        int updates = 0;
-        long last = System.currentTimeMillis();
-
-        while (this.isRunning) {
+        int ticks = 0;
+        long lastTimer1 = System.currentTimeMillis();
+        while (isRunning) {
             long now = System.nanoTime();
-            unprocessed += (now - lastTime) / ns;
+            unprocessed += (now - lastTime) / nsPerTick;
             lastTime = now;
-            boolean render = true;
             while (unprocessed >= 1) {
-                updates++;
-                //Do game updates.
-                update();
+                ticks++;
                 unprocessed -= 1;
-                render = true;
-            }
-            if (render) {
-                frames++;
-                //Start of frame rate limiter.
-                double start = System.currentTimeMillis();
-                //Render game.
+
+                update();
                 render();
-                double sleep = (1000 / MAX_FPS - (System.currentTimeMillis() - start));
-                if (sleep > 0) {
-                    try {
-                        Thread.sleep((long) sleep);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-                //End of frame rate limiter.
             }
 
-            if (System.currentTimeMillis() - last > 1000) {
-                last += 1000;
-                fps = frames;
-                ups = updates;
-                //Print fps and ups to console.
-                //System.out.println(fps + "fps, " + ups + "ups");
+            try {
+                Thread.sleep(2);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            frames++;
+            if (System.currentTimeMillis() - lastTimer1 > 1000) {
+                lastTimer1 += 1000;
+                System.out.println(ticks + " ticks, " + frames + " fps");
                 frames = 0;
-                updates = 0;
+                ticks = 0;
             }
         }
     }
 
     private void update() {
         for (var scene : this.scenes.values()) {
-            scene.updateTick();
+            if (!scene.isReady()) {
+                continue;
+            }
+
+            Platform.runLater(() -> {
+                try {
+                    scene.updateTick();
+                } catch (Exception ex) {
+                    System.out.println("Scene crash: ");
+                    ex.printStackTrace();
+                }
+            });
         }
     }
 
     private void render() {
         for (var scene : this.scenes.values()) {
-            scene.renderTick();
+            if (!scene.isReady()) {
+                continue;
+            }
+
+            Platform.runLater(() -> {
+                try {
+                    scene.renderTick();
+                } catch (Exception ex) {
+                    System.out.println("Scene crash: ");
+                    ex.printStackTrace();
+                }
+            });
         }
     }
 
@@ -113,8 +122,8 @@ public class HabboClient extends Application implements Runnable {
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Habbo Client");
 
-        this.rootStackPane = new StackPane();
-        this.mainScene = new Scene(this.rootStackPane, StaticSettings.WIDTH, StaticSettings.HEIGHT, Color.BLACK);
+        this.pane = new Pane();
+        this.mainScene = new Scene(this.pane, StaticSettings.WIDTH, StaticSettings.HEIGHT, Color.BLACK);
 
         primaryStage.setScene(this.mainScene);
         primaryStage.show();
@@ -135,6 +144,7 @@ public class HabboClient extends Application implements Runnable {
         {
             scene.init();
             this.primaryStage.setScene(scene.getScene());
+            scene.renderTick();
         }
     }
 

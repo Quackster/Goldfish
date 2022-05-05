@@ -13,6 +13,7 @@ public abstract class HabboScene {
         return new Scene(pane, Krishna.getClient().getPrimaryStage().getWidth(), Krishna.getClient().getPrimaryStage().getMaxHeight(), Color.BLACK);
     }
 
+    public abstract boolean isReady();
     public abstract void init();
 
     public abstract void updateTick();

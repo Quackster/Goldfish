@@ -5,13 +5,13 @@ plugins {
 
 javafx {
     version = "11.0.2"
-    modules = [ 'javafx.controls', 'javafx.media', 'javafx.base', 'javafx.graphics' ]
+    modules = [ 'javafx.controls', 'javafx.media', 'javafx.base', 'javafx.graphics', 'javafx.swing' ]
 }
 
 sourceCompatibility = "1.11"
 targetCompatibility = "1.11"
 
-mainClassName = 'org.alexdev.matteo.Matteo'
+mainClassName = 'org.alexdev.krishna.Krishna'
 
 repositories {
     flatDir {
@@ -33,11 +33,16 @@ dependencies {
     implementation name: 'javafx.swt'
 
      */
+
+    // https://mvnrepository.com/artifact/org.openjfx/javafx-swing
+    //implementation group: 'org.openjfx', name: 'javafx-swing', version: '19-ea+6'
+
 }
 
 // Create fat jar with libraries inside of it.
 task fatJar(type: Jar) {
     zip64 true
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
     manifest {
         attributes 'Main-Class': mainClassName
     }

@@ -1,6 +1,7 @@
 package org.alexdev.krishna.util;
 
 import javafx.geometry.Point2D;
+import javafx.stage.Window;
 import org.alexdev.krishna.Krishna;
 
 public class DimensionUtil {
@@ -10,7 +11,19 @@ public class DimensionUtil {
 
     public static Point2D getCenterCords(int width, int height) {
         return new Point2D(
-                (Krishna.getClient().getPrimaryStage().getWidth() / 2) - (width / 2),
-                (Krishna.getClient().getPrimaryStage().getHeight() / 2) - (height / 2));
+                roundEven((getProgramWidth() / 2) - (width / 2)),
+                roundEven(getProgramHeight() / 2) - (height / 2));
+    }
+
+    public static double getProgramWidth() {
+        return Krishna.getClient().getPrimaryStage().getScene().getWidth();
+    }
+
+    public static double getProgramHeight() {
+        return Krishna.getClient().getPrimaryStage().getScene().getHeight();
+    }
+
+    public static long roundEven(double d) {
+        return (Math.round(d / 2) * 2);
     }
 }
