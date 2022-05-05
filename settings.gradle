@@ -1,0 +1,2 @@
+include 'Client'
+project(":Client").projectDir = file("Client")

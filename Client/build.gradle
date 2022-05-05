@@ -1,0 +1,47 @@
+plugins {
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.10'
+}
+
+javafx {
+    version = "11.0.2"
+    modules = [ 'javafx.controls', 'javafx.media', 'javafx.base', 'javafx.graphics' ]
+}
+
+sourceCompatibility = "1.11"
+targetCompatibility = "1.11"
+
+mainClassName = 'org.alexdev.matteo.Matteo'
+
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+
+    mavenCentral()
+}
+
+dependencies {
+    /*
+    implementation name: 'javafx.base'
+    implementation name: 'javafx.controls'
+    implementation name: 'javafx.fxml'
+    implementation name: 'javafx.graphics'
+    implementation name: 'javafx.media'
+    implementation name: 'javafx.swing'
+    implementation name: 'javafx.web'
+    implementation name: 'javafx.swt'
+
+     */
+}
+
+// Create fat jar with libraries inside of it.
+task fatJar(type: Jar) {
+    zip64 true
+    manifest {
+        attributes 'Main-Class': mainClassName
+    }
+    baseName = project.name + '-all'
+    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
