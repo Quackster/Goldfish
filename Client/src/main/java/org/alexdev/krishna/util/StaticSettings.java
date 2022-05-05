@@ -11,7 +11,7 @@ public class StaticSettings {
         double width = screenSize.getWidth();
         double height = screenSize.getHeight();
 
-        WIDTH = (int)(width * 0.6);
-        HEIGHT = (int)(height * 0.6);
+        WIDTH = (int)(width * 0.5);
+        HEIGHT = (int)(height * 0.5);
     }
 }

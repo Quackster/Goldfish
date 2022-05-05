@@ -14,6 +14,8 @@ public abstract class HabboScene {
     }
 
     public abstract void init();
+
+    public abstract void updateTick();
     public abstract void renderTick();
 
     public abstract Scene getScene();

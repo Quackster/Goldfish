@@ -8,6 +8,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import org.alexdev.krishna.scenes.HabboScene;
 import org.alexdev.krishna.scenes.HabboSceneType;
+import org.alexdev.krishna.scenes.hotelview.HotelViewManager;
 import org.alexdev.krishna.scenes.loader.LoaderManager;
 import org.alexdev.krishna.util.StaticSettings;
 import javafx.scene.robot.Robot;
@@ -26,6 +27,7 @@ public class HabboClient extends Application implements Runnable {
     private int fps;
     private int ups;
     private Robot robot;
+    private boolean isRunning = false;
 
     public HabboClient() {
         this.scenes = new ConcurrentHashMap<>();
@@ -34,6 +36,8 @@ public class HabboClient extends Application implements Runnable {
     @Override
     public void init() {
         Krishna.setClient(this);
+
+        this.isRunning = true;
         new Thread(this).start();
     }
 
@@ -44,12 +48,12 @@ public class HabboClient extends Application implements Runnable {
     public void run() {
         long lastTime = System.nanoTime();
         double unprocessed = 0;
-        double ns = 1000000000.0 / 60.0;
+        double ns = 1000000000.0 / 24.0;
         int frames = 0;
         int updates = 0;
         long last = System.currentTimeMillis();
 
-        while (true) {
+        while (this.isRunning) {
             long now = System.nanoTime();
             unprocessed += (now - lastTime) / ns;
             lastTime = now;
@@ -57,7 +61,7 @@ public class HabboClient extends Application implements Runnable {
             while (unprocessed >= 1) {
                 updates++;
                 //Do game updates.
-                //update();
+                update();
                 unprocessed -= 1;
                 render = true;
             }
@@ -67,7 +71,7 @@ public class HabboClient extends Application implements Runnable {
                 double start = System.currentTimeMillis();
                 //Render game.
                 render();
-                double sleep = ((1000 / MAX_FPS) - (System.currentTimeMillis() - start));
+                double sleep = (1000 / MAX_FPS - (System.currentTimeMillis() - start));
                 if (sleep > 0) {
                     try {
                         Thread.sleep((long) sleep);
@@ -83,10 +87,16 @@ public class HabboClient extends Application implements Runnable {
                 fps = frames;
                 ups = updates;
                 //Print fps and ups to console.
-                System.out.println(fps + "fps, " + ups + "ups");
+                //System.out.println(fps + "fps, " + ups + "ups");
                 frames = 0;
                 updates = 0;
             }
+        }
+    }
+
+    private void update() {
+        for (var scene : this.scenes.values()) {
+            scene.updateTick();
         }
     }
 
@@ -113,34 +123,28 @@ public class HabboClient extends Application implements Runnable {
         this.showStage(HabboSceneType.LOADER);
     }
 
-    public Point2D getMouseX() {
-        return this.robot.getMousePosition();
+    @Override
+    public void stop(){
+        this.isRunning = false;
     }
 
-    private void showStage(HabboSceneType type) {
-        var habboScene = this.scenes.get(type);
+    public void showStage(HabboSceneType type) {
+        var scene = this.scenes.get(type);
 
-        if (habboScene != null)
+        if (scene != null)
         {
-            habboScene.init();
-            this.primaryStage.setScene(habboScene.getScene());
+            scene.init();
+            this.primaryStage.setScene(scene.getScene());
         }
     }
 
     private void setupStages() {
         this.scenes.put(HabboSceneType.LOADER, new LoaderManager());
-    }
-
-    public Scene getMainScene() {
-        return mainScene;
+        this.scenes.put(HabboSceneType.HOTEL_VIEW, new HotelViewManager());
     }
 
     public Stage getPrimaryStage() {
         return primaryStage;
-    }
-
-    public StackPane getRootStackPane() {
-        return rootStackPane;
     }
 
     public ConcurrentMap<HabboSceneType, HabboScene> getScenes() {
