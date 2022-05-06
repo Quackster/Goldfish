@@ -11,6 +11,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import org.alexdev.krishna.HabboClient;
 import org.alexdev.krishna.Krishna;
+import org.alexdev.krishna.game.GameLoop;
 import org.alexdev.krishna.scenes.HabboScene;
 import org.alexdev.krishna.util.DateUtil;
 import org.alexdev.krishna.util.DimensionUtil;
@@ -180,7 +181,7 @@ public class HotelViewManager extends HabboScene {
         if (tTimeLeft <= 0)
             tOffset = Math.abs(tmoveLeft);
         else
-            tOffset = (int) (Math.abs((tmoveLeft / tTimeLeft)) / HabboClient.MAX_FPS);
+            tOffset = (int) (Math.abs((tmoveLeft / tTimeLeft)) / GameLoop.MAX_FPS);
 
         this.topReveal.setY(this.topReveal.getY() - tOffset);
         this.bottomReveal.setY(this.bottomReveal.getY() + tOffset);
