@@ -9,7 +9,7 @@ import org.alexdev.krishna.scenes.HabboSceneType;
 import java.util.concurrent.ConcurrentMap;
 
 public class GameLoop implements Runnable {
-    public static final int MAX_FPS = 24;
+    public static final int MAX_FPS = 10;
 
     private Thread gameLoop;
     private boolean isRunning;

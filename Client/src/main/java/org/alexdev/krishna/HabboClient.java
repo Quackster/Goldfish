@@ -4,9 +4,10 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import org.alexdev.krishna.game.GameLoop;
 import org.alexdev.krishna.scenes.HabboScene;
 import org.alexdev.krishna.scenes.HabboSceneType;
 import org.alexdev.krishna.scenes.hotelview.HotelViewManager;
@@ -17,18 +18,11 @@ import javafx.scene.robot.Robot;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-public class HabboClient extends Application implements Runnable {
-    public static final int MAX_FPS = 24;
-
-    private Scene mainScene;
+public class HabboClient extends Application {
     private Stage primaryStage;
-    private Pane pane;
+    private GameLoop gameLoop;
 
-    private ConcurrentMap<HabboSceneType, HabboScene> scenes;
-    private int fps;
-    private int ups;
-    private Robot robot;
-    private boolean isRunning = false;
+    private final ConcurrentMap<HabboSceneType, HabboScene> scenes;
 
     public HabboClient() {
         this.scenes = new ConcurrentHashMap<>();
@@ -37,105 +31,46 @@ public class HabboClient extends Application implements Runnable {
     @Override
     public void init() {
         Krishna.setClient(this);
-
-        this.isRunning = true;
-        new Thread(this).start();
+        startGameLoop();
     }
 
-    /**
-     * The whole rendering cycling.
-     */
-    @Override
-    public void run() {
-        long lastTime = System.nanoTime();
-        double unprocessed = 0;
-        double nsPerTick = 1000000000.0 / HabboClient.MAX_FPS;
-        int frames = 0;
-        int ticks = 0;
-        long lastTimer1 = System.currentTimeMillis();
-        while (isRunning) {
-            long now = System.nanoTime();
-            unprocessed += (now - lastTime) / nsPerTick;
-            lastTime = now;
-            while (unprocessed >= 1) {
-                ticks++;
-                unprocessed -= 1;
-
-                update();
-                render();
-            }
-
-            try {
-                Thread.sleep(2);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            frames++;
-            if (System.currentTimeMillis() - lastTimer1 > 1000) {
-                lastTimer1 += 1000;
-                //System.out.println(ticks + " ticks, " + frames + " fps");
-                frames = 0;
-                ticks = 0;
-            }
+    public void startGameLoop() {
+        if (this.gameLoop != null) {
+            stopGameLoop();
         }
+
+        this.gameLoop = new GameLoop();
     }
 
-    private void update() {
-        for (var scene : this.scenes.values()) {
-            if (!scene.isReady()) {
-                continue;
-            }
-
-            Platform.runLater(() -> {
-                try {
-                    scene.updateTick();
-                } catch (Exception ex) {
-                    System.out.println("Scene crash: ");
-                    ex.printStackTrace();
-                }
-            });
+    public void stopGameLoop() {
+        if (this.gameLoop == null) {
+            return;
         }
-    }
 
-    private void render() {
-        for (var scene : this.scenes.values()) {
-            if (!scene.isReady()) {
-                continue;
-            }
-
-            Platform.runLater(() -> {
-                try {
-                    scene.renderTick();
-                } catch (Exception ex) {
-                    System.out.println("Scene crash: ");
-                    ex.printStackTrace();
-                }
-            });
-        }
+        this.gameLoop.setRunning(false);
+        this.gameLoop = null;
     }
 
     @Override
     public void start(Stage primaryStage) {
-        this.robot = new Robot();
-
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Habbo Client");
 
-        this.pane = new Pane();
-        this.mainScene = new Scene(this.pane, StaticSettings.WIDTH, StaticSettings.HEIGHT, Color.BLACK);
+        Pane pane = new Pane();
+        Scene mainScene = new Scene(pane, StaticSettings.WIDTH, StaticSettings.HEIGHT, Color.BLACK);
 
-        primaryStage.setScene(this.mainScene);
+        primaryStage.setScene(mainScene);
         primaryStage.show();
 
         this.setupStages();
         // this.showStage(HabboSceneType.LOADER);
-         this.showStage(HabboSceneType.HOTEL_VIEW);
+        this.showStage(HabboSceneType.HOTEL_VIEW);
     }
 
     @Override
     public void stop(){
-        this.isRunning = false;
+        if (this.gameLoop != null)
+            this.gameLoop.setRunning(false);
     }
 
     public void showStage(HabboSceneType type) {
@@ -144,9 +79,22 @@ public class HabboClient extends Application implements Runnable {
         if (scene != null)
         {
             scene.init();
+            setupScene(scene);
             this.primaryStage.setScene(scene.getScene());
             scene.renderTick();
         }
+    }
+
+    private void setupScene(HabboScene scene) {
+        scene.getScene().setOnMouseClicked(x -> {
+            if (x.getButton() == MouseButton.SECONDARY) {
+                if (this.gameLoop != null) {
+                    stopGameLoop();
+                } else {
+                    startGameLoop();
+                }
+            }
+        });
     }
 
     private void setupStages() {

@@ -19,11 +19,11 @@ public class DimensionUtil {
     }
 
     public static double getRight(ImageView imageView) {
-        return imageView.getX();
+        return imageView.getX() + imageView.getImage().getWidth();
     }
 
     public static double getLeft(ImageView imageView) {
-        return imageView.getX() + imageView.getImage().getWidth();
+        return imageView.getX();
     }
 
     public static double getProgramWidth() {

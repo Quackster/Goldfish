@@ -39,7 +39,7 @@ public class HotelViewManager extends HabboScene {
     private long pViewOpenTime = 0;
     private long pViewCloseTime = 0;
 
-    public static int CLOUD_Z_INDEX = 5000;
+    public static int CLOUD_Z_INDEX = 3000;
     private static int TURN_POINT = 330;
 
     public boolean queueOpenView = false;
@@ -90,24 +90,12 @@ public class HotelViewManager extends HabboScene {
         this.pane.getChildren().add(topReveal);
 
 
-        this.thinBlueBar.setViewOrder(6000);
+        this.thinBlueBar.setViewOrder(5000);
         this.sun.setViewOrder(4000);
         this.viewLeft.setViewOrder(3000);
         this.viewRight.setViewOrder(2000);
-        //this.bottomReveal.setViewOrder(-1000);
+        this.bottomReveal.setViewOrder(-1000);
         this.topReveal.setViewOrder(-1000);
-
-        /*
-        this.cloudPane = new Pane();
-        this.cloud = new ImageView();
-        this.cloud.setImage(new Image(new File("resources/scenes/hotel_view/clouds/cloud_0_left.png").toURI().toString()));
-        this.cloud.set
-        this.cloud.setX(280);
-        this.cloud.setY(280);
-        this.cloudPane.getChildren().add(cloud);
-        this.pane.getChildren().set(0, cloudPane);
-
-        this.cloud.setViewOrder(CLOUD_Z_INDEX);*/
 
         this.queueOpenView = true;
         this.isInitialised = true;
@@ -132,6 +120,7 @@ public class HotelViewManager extends HabboScene {
         long timeDifference = DateUtil.getCurrentTimeSeconds() - this.timeSinceStart;
         if (timeDifference % 3 == 0 && this.clouds.size() < 1) {
             var cloud = new Cloud(TURN_POINT, "cloud_0_left");
+            cloud.setViewOrder(CLOUD_Z_INDEX);
             cloud.init();
             this.clouds.add(cloud);
             this.pane.getChildren().add(cloud);
