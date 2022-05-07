@@ -21,6 +21,7 @@ public class Cloud extends Pane {
     private ImageView cloud;
     private int pVertDir;
     private int pCloudDir;
+    private int yChange;
 
     public Cloud(int turnPoint, String fileName) {
         this.pTurnPoint = turnPoint;
@@ -33,6 +34,7 @@ public class Cloud extends Pane {
     public void init() {
         this.cloud = new ImageView();
         this.pCloudDir = -1;
+        this.yChange = 0;
 
         this.cloud.setImage(new Image(new File("resources/scenes/hotel_view/clouds/" + fileName + ".png").toURI().toString()));
         this.cloud.setX(280);
@@ -41,19 +43,19 @@ public class Cloud extends Pane {
     }
 
     public void update() {
-        if (DimensionUtil.getRight(this.cloud) > this.pTurnPoint &&
-            DimensionUtil.getLeft(this.cloud) <= this.pTurnPoint) {
+        if (DimensionUtil.getTopRight(this.cloud) > this.pTurnPoint &&
+            DimensionUtil.getTopLeft(this.cloud) <= this.pTurnPoint) {
             this.turn();
             this.pVertDir = 0;
             this.isTurning = true;
         } else {
             if (this.isTurning) {
-                // this.isFinished = true; // dispose after fully turning, used for development purposes
+                //this.isFinished = true; // dispose after fully turning, used for development purposes
             }
             this.isTurning = false;
         }
 
-        if (DimensionUtil.getLeft(this.cloud) == this.pTurnPoint) {
+        if (DimensionUtil.getTopLeft(this.cloud) == this.pTurnPoint) {
             this.pVertDir = this.pCloudDir * -1;
         }
 
@@ -61,6 +63,7 @@ public class Cloud extends Pane {
 
         if (this.cloud.getX() % 2 == 0) {
             this.cloud.setY(this.cloud.getY() + this.pVertDir);
+            this.yChange++;
         }
     }
 
@@ -69,7 +72,7 @@ public class Cloud extends Pane {
             pCloudDir = pVertDir;
         }
 
-        var tWidth = DimensionUtil.getRight(this.cloud) - pTurnPoint;
+        var tWidth = DimensionUtil.getTopRight(this.cloud) - pTurnPoint;
         var tHeigth = (-tWidth / 2) - 1;
 
         //System.out.println(tWidth + " // " + tHeigth);
@@ -103,52 +106,37 @@ public class Cloud extends Pane {
             e.printStackTrace();
         }
 
-        int newWidth = (int) (this.cloud.getImage().getWidth() - (DimensionUtil.getRight(this.cloud) - this.pTurnPoint));
+        int leftWidth = (int) (this.cloud.getImage().getWidth() - (DimensionUtil.getTopRight(this.cloud) - this.pTurnPoint));
+        int rightWidth = (int) rightImage.getWidth() - leftWidth;
+        //System.out.println("left: " + leftWidth + " // right: " + rightWidth + " // tWidth " + tWidth);
 
-        if (newWidth > 0) {
-            var croppedLeft = leftImage.getSubimage(0, 0, newWidth, (int) leftImage.getHeight());
-            var croppedRight = leftImage.getSubimage(newWidth, 0, (int) leftImage.getWidth() - newWidth, (int) leftImage.getHeight());
+        if (leftWidth > 0) {
+            var croppedLeft = leftImage.getSubimage(0, 0, leftWidth, (int) leftImage.getHeight());
+            var croppedRight = rightImage.getSubimage(leftWidth, 0, rightWidth, (int) rightImage.getHeight());
 
             //rightImage.getSubimage(newWidth, 0, (int) rightImage.getWidth() - newWidth, (int) rightImage.getHeight());
-
             //BufferedImage img = new BufferedImage((int) rightImage.getWidth(), (int) rightImage.getHeight(), BufferedImage.TYPE_INT_RGB);
 
-            /*
-            try {
+            int width = croppedLeft.getWidth() + croppedRight.getWidth();
+            int height = Math.max(croppedLeft.getHeight(), croppedRight.getHeight());
+
+              /*try {
                 ImageIO.write(croppedLeft, "png", new File("left_cloud.png"));
                 ImageIO.write(croppedRight, "png", new File("right_cloud.png"));
-                ImageIO.write(joinBufferedImage(croppedLeft, croppedRight), "png", new File("joined_cloud.png"));
+
+                    ImageIO.write(joinBufferedImage(croppedLeft, croppedRight, width, height), "png", new File("join_cloud.png"));
             } catch (IOException e) {
                 e.printStackTrace();
             }*/
 
-            this.cloud.setImage(SwingFXUtils.toFXImage(joinBufferedImage(croppedLeft, croppedRight), null));
+            this.cloud.setImage(SwingFXUtils.toFXImage(joinBufferedImage(croppedLeft, croppedRight, width, height, 0), null));
         } else {
             this.cloud.setImage(SwingFXUtils.toFXImage(rightImage, null));
         }
-
-        //        this.cloud.setImage(SwingFXUtils.toFXImage(newImage, null));
-
-        //image.getGraphics()
-    }
-
-    public static BufferedImage horizontalFlip(BufferedImage img) {
-        int w = img.getWidth();
-        int h = img.getHeight();
-        BufferedImage flippedImage = new BufferedImage(w, h, img.getType());
-        Graphics2D g = flippedImage.createGraphics();
-        g.drawImage(img, 0, 0, w, h, w, 0, 0, h, null);
-        g.dispose();
-        return flippedImage;
     }
 
 
-    public static BufferedImage joinBufferedImage(BufferedImage img1,
-                                                  BufferedImage img2) {
-        //int offset = 2;
-        int width = img1.getWidth() + img2.getWidth();
-        int height = Math.max(img1.getHeight(), img2.getHeight());
-
+    public static BufferedImage joinBufferedImage(BufferedImage img1, BufferedImage img2, int width, int height, int newY) {
         BufferedImage newImage = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
         Graphics2D g2 = newImage.createGraphics();
         Color oldColor = g2.getColor();
@@ -162,11 +150,31 @@ public class Cloud extends Pane {
 
         g2.setColor(oldColor);
         g2.drawImage(img1, null, 0, 0);
-        g2.drawImage(img2, null, img1.getWidth(), 0);
+        g2.drawImage(img2, null, img1.getWidth(), newY);
         g2.dispose();
+
         return newImage;
     }
 
+    private static BufferedImage trimImage(BufferedImage image) {
+        int width = image.getWidth();
+        int height = image.getHeight();
+        int top = height / 2;
+        int bottom = top;
+        int left = width / 2 ;
+        int right = left;
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                if (image.getRGB(x, y) != 0){
+                    top    = Math.min(top, y);
+                    bottom = Math.max(bottom, y);
+                    left   = Math.min(left, x);
+                    right  = Math.max(right, x);
+                }
+            }
+        }
+        return image.getSubimage(left, top, Math.max(right - left, 1), Math.max(bottom - top, 1));
+    }
     /*
     public void update() {
         var left = images.get("left");

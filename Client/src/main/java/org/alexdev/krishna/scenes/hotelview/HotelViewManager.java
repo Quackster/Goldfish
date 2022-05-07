@@ -39,7 +39,7 @@ public class HotelViewManager extends HabboScene {
     private long pViewOpenTime = 0;
     private long pViewCloseTime = 0;
 
-    public static int CLOUD_Z_INDEX = 3000;
+    public static int CLOUD_Z_INDEX = 4000;
     private static int TURN_POINT = 330;
 
     public boolean queueOpenView = false;
@@ -87,11 +87,10 @@ public class HotelViewManager extends HabboScene {
         this.pane.getChildren().add(this.viewRight);
         this.pane.getChildren().add(this.viewLeft);
         this.pane.getChildren().add(this.bottomReveal);
-        this.pane.getChildren().add(topReveal);
+        this.pane.getChildren().add(this.topReveal);
 
-
-        this.thinBlueBar.setViewOrder(5000);
-        this.sun.setViewOrder(4000);
+        this.thinBlueBar.setViewOrder(6000);
+        this.sun.setViewOrder(6000);
         this.viewLeft.setViewOrder(3000);
         this.viewRight.setViewOrder(2000);
         this.bottomReveal.setViewOrder(-1000);
