@@ -133,7 +133,7 @@ public class Cloud extends Pane {
 
         if (leftWidth > 0) {
             var croppedLeft = leftImage.getSubimage(0, 0, leftWidth, (int) leftImage.getHeight());
-            var croppedRight = rightImage.getSubimage(leftWidth, 0, rightWidth, (int) rightImage.getHeight());*/
+            var croppedRight = rightImage.getSubimage(leftWidth, 0, rightWidth, (int) rightImage.getHeight());
 
 
             this.image.setImage(SwingFXUtils.toFXImage(joinBufferedImage(croppedLeft, croppedRight, 0, 0 /* tdesrect[2], tdesrect[2] */), null));
