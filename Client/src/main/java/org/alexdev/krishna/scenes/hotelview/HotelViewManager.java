@@ -121,12 +121,21 @@ public class HotelViewManager extends HabboScene {
 
         long timeDifference = DateUtil.getCurrentTimeSeconds() - this.timeSinceStart;
         if (timeDifference % 3 == 0 && this.clouds.size() < 1) {
-            var cloud = new Cloud(TURN_POINT, "cloud_0_left");
-            cloud.setViewOrder(CLOUD_Z_INDEX);
-            cloud.init();
-            this.clouds.add(cloud);
-            this.pane.getChildren().add(cloud);
+            addCloud("cloud_0_left", 280, 120);
+            addCloud("cloud_1_left", 280, 90);
+            addCloud("cloud_2_left", 280, 60);
+            addCloud("cloud_3_left", 280, 30);
         }
+    }
+
+    public void addCloud(String fileName, int initX, int initY)
+    {
+        var cloud = new Cloud(TURN_POINT, fileName, initX, initY);
+        cloud.setViewOrder(CLOUD_Z_INDEX);
+        cloud.init();
+        
+        this.clouds.add(cloud);
+        this.pane.getChildren().add(cloud);
     }
 
     public void renderTick() {
