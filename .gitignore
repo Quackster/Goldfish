@@ -12,7 +12,7 @@
 .idea/workspace.xml
 /*.jar
 figuredata.xml
-gradlew
+gradlew.bat
 run.bat
 
 /tools/db/schema.sql
