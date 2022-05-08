@@ -18,7 +18,7 @@ public class Cloud extends Pane {
     //private Map<String, ImageView> images;
     private boolean isFinished;
     private boolean isTurning;
-    private ImageView cloud;
+    private ImageView image;
     private int pVertDir;
     private int pCloudDir;
     private int yChange;
@@ -32,37 +32,37 @@ public class Cloud extends Pane {
     }
 
     public void init() {
-        this.cloud = new ImageView();
+        this.image = new ImageView();
         this.pCloudDir = -1;
         this.yChange = 0;
 
-        this.cloud.setImage(new Image(new File("resources/scenes/hotel_view/clouds/" + fileName + ".png").toURI().toString()));
-        this.cloud.setX(280);
-        this.cloud.setY(280);
-        this.getChildren().add(this.cloud);
+        this.image.setImage(new Image(new File("resources/scenes/hotel_view/clouds/" + fileName + ".png").toURI().toString()));
+        this.image.setX(280);
+        this.image.setY(DimensionUtil.roundEven(DimensionUtil.getProgramHeight() * 0.30));
+        this.getChildren().add(this.image);
     }
 
     public void update() {
-        if (DimensionUtil.getTopRight(this.cloud) > this.pTurnPoint &&
-            DimensionUtil.getTopLeft(this.cloud) <= this.pTurnPoint) {
+        if (DimensionUtil.getTopRight(this.image) > this.pTurnPoint &&
+            DimensionUtil.getTopLeft(this.image) <= this.pTurnPoint) {
             this.turn();
             this.pVertDir = 0;
             this.isTurning = true;
         } else {
             if (this.isTurning) {
-                //this.isFinished = true; // dispose after fully turning, used for development purposes
+                this.isFinished = true; // dispose after fully turning, used for development purposes
             }
             this.isTurning = false;
         }
 
-        if (DimensionUtil.getTopLeft(this.cloud) == this.pTurnPoint) {
+        if (DimensionUtil.getTopLeft(this.image) == this.pTurnPoint) {
             this.pVertDir = this.pCloudDir * -1;
         }
 
-        this.cloud.setX(this.cloud.getX() + 1); // locH
+        this.image.setX(this.image.getX() + 1); // locH
 
-        if (this.cloud.getX() % 2 == 0) {
-            this.cloud.setY(this.cloud.getY() + this.pVertDir);
+        if (this.image.getX() % 2 == 0) {
+            this.image.setY(this.image.getY() + this.pVertDir);
             this.yChange++;
         }
     }
@@ -71,9 +71,6 @@ public class Cloud extends Pane {
         if (this.pVertDir != 0) {
             pCloudDir = pVertDir;
         }
-
-        var tWidth = DimensionUtil.getTopRight(this.cloud) - pTurnPoint;
-        var tHeigth = (-tWidth / 2) - 1;
 
         //System.out.println(tWidth + " // " + tHeigth);
 
@@ -106,7 +103,7 @@ public class Cloud extends Pane {
             e.printStackTrace();
         }
 
-        int leftWidth = (int) (this.cloud.getImage().getWidth() - (DimensionUtil.getTopRight(this.cloud) - this.pTurnPoint));
+        int leftWidth = (int) (this.image.getImage().getWidth() - (DimensionUtil.getTopRight(this.image) - this.pTurnPoint));
         int rightWidth = (int) rightImage.getWidth() - leftWidth;
         //System.out.println("left: " + leftWidth + " // right: " + rightWidth + " // tWidth " + tWidth);
 
@@ -116,10 +113,6 @@ public class Cloud extends Pane {
 
             //rightImage.getSubimage(newWidth, 0, (int) rightImage.getWidth() - newWidth, (int) rightImage.getHeight());
             //BufferedImage img = new BufferedImage((int) rightImage.getWidth(), (int) rightImage.getHeight(), BufferedImage.TYPE_INT_RGB);
-
-            int width = croppedLeft.getWidth() + croppedRight.getWidth();
-            int height = Math.max(croppedLeft.getHeight(), croppedRight.getHeight());
-
               /*try {
                 ImageIO.write(croppedLeft, "png", new File("left_cloud.png"));
                 ImageIO.write(croppedRight, "png", new File("right_cloud.png"));
@@ -129,28 +122,31 @@ public class Cloud extends Pane {
                 e.printStackTrace();
             }*/
 
-            this.cloud.setImage(SwingFXUtils.toFXImage(joinBufferedImage(croppedLeft, croppedRight, width, height, 0), null));
+            this.image.setImage(SwingFXUtils.toFXImage(joinBufferedImage(croppedLeft, croppedRight), null));
         } else {
-            this.cloud.setImage(SwingFXUtils.toFXImage(rightImage, null));
+            this.image.setImage(SwingFXUtils.toFXImage(rightImage, null));
         }
     }
 
 
-    public static BufferedImage joinBufferedImage(BufferedImage img1, BufferedImage img2, int width, int height, int newY) {
+    public static BufferedImage joinBufferedImage(BufferedImage leftImage, BufferedImage rightImage) {
+        int width = leftImage.getWidth() + rightImage.getWidth();
+        int height = Math.max(leftImage.getHeight(), rightImage.getHeight());
+
         BufferedImage newImage = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
         Graphics2D g2 = newImage.createGraphics();
         Color oldColor = g2.getColor();
 
-        //clear
+        // clear
         g2.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR));
         g2.fillRect(0, 0, width, height);
 
-        //reset composite
+        // reset composite
         g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
 
         g2.setColor(oldColor);
-        g2.drawImage(img1, null, 0, 0);
-        g2.drawImage(img2, null, img1.getWidth(), newY);
+        g2.drawImage(leftImage, null, 0, 0);
+        g2.drawImage(rightImage, null, leftImage.getWidth(), 0);
         g2.dispose();
 
         return newImage;
@@ -258,7 +254,15 @@ public class Cloud extends Pane {
         }
     }*/
 
+    public ImageView getImage() {
+        return image;
+    }
+
     public boolean isFinished() {
         return isFinished;
+    }
+
+    public void setFinished(boolean finished) {
+        isFinished = finished;
     }
 }

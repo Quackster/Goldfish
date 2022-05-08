@@ -1,15 +1,11 @@
 package org.alexdev.krishna.scenes.hotelview;
 
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.image.PixelReader;
-import javafx.scene.image.WritableImage;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import org.alexdev.krishna.HabboClient;
 import org.alexdev.krishna.Krishna;
 import org.alexdev.krishna.game.GameLoop;
 import org.alexdev.krishna.scenes.HabboScene;
@@ -28,7 +24,8 @@ public class HotelViewManager extends HabboScene {
 
     private ImageView viewLeft;
     private ImageView viewRight;
-    private ImageView thinBlueBar;
+    private ImageView stretchLeft;
+    private ImageView stretchRight;
     private ImageView sun;
     private List<Cloud> clouds;
 
@@ -66,13 +63,16 @@ public class HotelViewManager extends HabboScene {
         this.bottomReveal.setFill(Color.BLACK);
 
         this.viewLeft = new ImageView();
-        this.viewLeft.setImage(new Image(new File("resources/scenes/hotel_view/countries/br_large.png").toURI().toString()));
+        this.viewLeft.setImage(new Image(new File("resources/scenes/hotel_view/countries/au.png").toURI().toString()));
 
         this.viewRight = new ImageView();
-        this.viewRight.setImage(new Image(new File("resources/scenes/hotel_view/br_right.png").toURI().toString()));
+        this.viewRight.setImage(new Image(new File("resources/scenes/hotel_view/us_right.png").toURI().toString()));
 
-        this.thinBlueBar = new ImageView();
-        this.thinBlueBar.setImage(new Image(new File("resources/scenes/hotel_view/thin_blue_bar_2.png").toURI().toString()));
+        this.stretchLeft = new ImageView();
+        this.stretchLeft.setImage(new Image(new File("resources/scenes/hotel_view/stretch_left.png").toURI().toString()));
+
+        this.stretchRight = new ImageView();
+        this.stretchRight.setImage(new Image(new File("resources/scenes/hotel_view/stretch_right.png").toURI().toString()));
 
         this.sun = new ImageView();
         this.sun.setImage(new Image(new File("resources/scenes/hotel_view/sun.png").toURI().toString()));
@@ -80,16 +80,19 @@ public class HotelViewManager extends HabboScene {
 
         this.pViewOpenTime = System.currentTimeMillis() + MAX_VIEW_TIME;
         this.bottomReveal.setY(Krishna.getClient().getPrimaryStage().getHeight() / 2);
+
         this.stretchBars();
 
         this.pane.getChildren().add(this.sun);
-        this.pane.getChildren().add(this.thinBlueBar);
+        this.pane.getChildren().add(this.stretchLeft);
+        this.pane.getChildren().add(this.stretchRight);
         this.pane.getChildren().add(this.viewRight);
         this.pane.getChildren().add(this.viewLeft);
         this.pane.getChildren().add(this.bottomReveal);
         this.pane.getChildren().add(this.topReveal);
 
-        this.thinBlueBar.setViewOrder(6000);
+        this.stretchLeft.setViewOrder(6000);
+        this.stretchRight.setViewOrder(6000);
         this.sun.setViewOrder(6000);
         this.viewLeft.setViewOrder(3000);
         this.viewRight.setViewOrder(2000);
@@ -142,7 +145,19 @@ public class HotelViewManager extends HabboScene {
         this.sun.setY(0);
 
         // Stretch the background across entire screen
-        this.thinBlueBar.setFitHeight(mainWidth);
+        if (this.stretchLeft.getFitHeight() != mainWidth) {
+            this.stretchLeft.setFitHeight(mainWidth);
+        }
+
+        this.stretchRight.setX(DimensionUtil.getTopRight(this.stretchLeft));
+
+        if (this.stretchRight.getFitWidth() != (mainWidth - this.stretchLeft.getImage().getWidth())) {
+            this.stretchRight.setFitWidth(mainWidth - this.stretchLeft.getImage().getWidth());
+        }
+
+        if (this.stretchRight.getFitHeight() != mainHeight) {
+            this.stretchRight.setFitHeight(mainHeight);
+        }
 
         // Set left view to... bottom left
         this.viewLeft.setY(mainHeight - this.viewLeft.getImage().getHeight());
