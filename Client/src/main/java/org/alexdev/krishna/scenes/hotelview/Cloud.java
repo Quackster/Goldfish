@@ -105,31 +105,52 @@ public class Cloud extends Pane {
 
         int leftWidth = (int) (this.image.getImage().getWidth() - (DimensionUtil.getTopRight(this.image) - this.pTurnPoint));
         int rightWidth = (int) rightImage.getWidth() - leftWidth;
-        //System.out.println("left: " + leftWidth + " // right: " + rightWidth + " // tWidth " + tWidth);
+
+        /*
+        int rightWidth = (int) (DimensionUtil.getTopRight(this.image) - this.pTurnPoint);
+        int rightHeight = -rightWidth / 2 - 1;
+
+        int leftWidth = rightImage.getWidth() - rightWidth;
+        int leftHeight = -leftWidth / 2;
+
+        var pImgheight = 60;
+        var tSourceheight = leftImage.getHeight();
+
+        var imgRect = new int[] {0, 0, leftImage.getWidth(), leftImage.getHeight()};
+        var tSource = subtractRect(imgRect, new int[] {0, 0, rightWidth, 0});
+        var rect = new int[] {0, (int) (pImgheight / 2 - tSourceheight / 2 + rightHeight), 0, (int) (pImgheight / 2 - tSourceheight / 2 + rightHeight)};
+        var tdesrect = addRect(tSource, rect);
+
+        System.out.println(rightWidth);
+        System.out.println(rightHeight);
+        System.out.println(leftWidth);
+        System.out.println(leftHeight);
+
+        System.out.println("[" + imgRect[0] + ", "  + imgRect[1] + ", "  + imgRect[2] + ", "  + imgRect[3] + "]");
+        System.out.println("[" + tSource[0] + ", "  + tSource[1] + ", "  + tSource[2] + ", "  + tSource[3] + "]");
+        System.out.println("[" + tdesrect[0] + ", "  + tdesrect[1] + ", "  + tdesrect[2] + ", "  + tdesrect[3] + "]");
+        System.out.println("----------");*/
 
         if (leftWidth > 0) {
             var croppedLeft = leftImage.getSubimage(0, 0, leftWidth, (int) leftImage.getHeight());
-            var croppedRight = rightImage.getSubimage(leftWidth, 0, rightWidth, (int) rightImage.getHeight());
+            var croppedRight = rightImage.getSubimage(leftWidth, 0, rightWidth, (int) rightImage.getHeight());*/
 
-            //rightImage.getSubimage(newWidth, 0, (int) rightImage.getWidth() - newWidth, (int) rightImage.getHeight());
-            //BufferedImage img = new BufferedImage((int) rightImage.getWidth(), (int) rightImage.getHeight(), BufferedImage.TYPE_INT_RGB);
-              /*try {
-                ImageIO.write(croppedLeft, "png", new File("left_cloud.png"));
-                ImageIO.write(croppedRight, "png", new File("right_cloud.png"));
 
-                    ImageIO.write(joinBufferedImage(croppedLeft, croppedRight, width, height), "png", new File("join_cloud.png"));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }*/
-
-            this.image.setImage(SwingFXUtils.toFXImage(joinBufferedImage(croppedLeft, croppedRight), null));
+            this.image.setImage(SwingFXUtils.toFXImage(joinBufferedImage(croppedLeft, croppedRight, 0, 0 /* tdesrect[2], tdesrect[2] */), null));
         } else {
             this.image.setImage(SwingFXUtils.toFXImage(rightImage, null));
         }
     }
 
+    private int[] subtractRect(int[] a, int[] b) {
+        return new int[] {a[0] - b[0], a[1] - b[1], a[2] - b[2], a[3] - b[3]};
+    }
 
-    public static BufferedImage joinBufferedImage(BufferedImage leftImage, BufferedImage rightImage) {
+    private int[] addRect(int[] a, int[] b) {
+        return new int[] {a[0] + b[0], a[1] + b[1], a[2] + b[2], a[3] + b[3]};
+    }
+
+    public static BufferedImage joinBufferedImage(BufferedImage leftImage, BufferedImage rightImage, int x, int y) {
         int width = leftImage.getWidth() + rightImage.getWidth();
         int height = Math.max(leftImage.getHeight(), rightImage.getHeight());
 
@@ -145,8 +166,8 @@ public class Cloud extends Pane {
         g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
 
         g2.setColor(oldColor);
-        g2.drawImage(leftImage, null, 0, 0);
-        g2.drawImage(rightImage, null, leftImage.getWidth(), 0);
+        g2.drawImage(leftImage, null, 0, x);
+        g2.drawImage(rightImage, null, leftImage.getWidth(), y);
         g2.dispose();
 
         return newImage;
