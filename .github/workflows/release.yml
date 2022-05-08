@@ -20,7 +20,8 @@ jobs:
           cache: gradle
       - name: Build with Gradle
         run: ./gradlew fatJar
-
+      - name: Rename files
+        run: cp Client/build/libs/Client-all.jar Krishna.jar
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
@@ -28,5 +29,4 @@ jobs:
           prerelease: true
           title: "Development Build"
           files: |
-            LICENSE.txt
-            Client/build/libs/Client-all.jar
+            Krishna.jar
