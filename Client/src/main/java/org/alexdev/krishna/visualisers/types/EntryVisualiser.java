@@ -1,4 +1,4 @@
-package org.alexdev.krishna.rendering.visualisers.types;
+package org.alexdev.krishna.visualisers.types;
 
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -7,11 +7,12 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import org.alexdev.krishna.HabboClient;
+import org.alexdev.krishna.game.resources.ResourceManager;
 import org.alexdev.krishna.rendering.game.GameLoop;
 import org.alexdev.krishna.scripts.Cloud;
 import org.alexdev.krishna.util.DateUtil;
 import org.alexdev.krishna.util.DimensionUtil;
-import org.alexdev.krishna.rendering.visualisers.Visualiser;
+import org.alexdev.krishna.visualisers.Visualiser;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -68,14 +69,14 @@ public class EntryVisualiser extends Visualiser {
         this.bottomReveal.setFill(Color.BLACK);
 
         this.topRight = new ImageView();
-        this.topRight.setImage(new Image(new File("resources/scenes/hotel_view/top_right_shadow.png").toURI().toString()));
+        this.topRight.setImage(ResourceManager.getInstance().getFxImage("scenes/hotel_view/top_right_shadow.png"));
         this.topRight.setY(this.topRight.getImage().getHeight() * -1);
 
         this.bottomLeft = new ImageView();
-        this.bottomLeft.setImage(new Image(new File("resources/scenes/hotel_view/countries/br_large_noclouds.png").toURI().toString()));
+        this.bottomLeft.setImage(ResourceManager.getInstance().getFxImage("scenes/hotel_view/countries/br_large_noclouds.png"));
 
         this.bottomRight = new ImageView();
-        this.bottomRight.setImage(new Image(new File("resources/scenes/hotel_view/br_right.png").toURI().toString()));
+        this.bottomRight.setImage(ResourceManager.getInstance().getFxImage("scenes/hotel_view/br_right.png"));
 
         this.stretchLeft = new Rectangle(1,1);//= new ImageView();
         this.stretchLeft.setFill(Color.rgb(117, 175, 203));

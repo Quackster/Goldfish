@@ -1,4 +1,4 @@
-package org.alexdev.krishna.rendering.visualisers;
+package org.alexdev.krishna.visualisers;
 
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
@@ -9,7 +9,7 @@ import org.alexdev.krishna.util.DimensionUtil;
 
 public abstract class Visualiser {
     protected static Scene create(Pane pane) {
-        pane.getChildren().addAll(HabboClient.getInstance().getInterfaces());   
+        pane.getChildren().addAll(HabboClient.getInstance().getInterfaces());
         return new Scene(pane, DimensionUtil.getProgramWidth(), DimensionUtil.getProgramHeight(), Color.BLACK);
     }
 

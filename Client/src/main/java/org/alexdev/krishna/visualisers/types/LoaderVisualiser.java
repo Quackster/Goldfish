@@ -1,6 +1,7 @@
-package org.alexdev.krishna.rendering.visualisers.types;
+package org.alexdev.krishna.visualisers.types;
 
 import javafx.application.Platform;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -12,8 +13,9 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
 import org.alexdev.krishna.HabboClient;
-import org.alexdev.krishna.rendering.visualisers.Visualiser;
-import org.alexdev.krishna.rendering.visualisers.VisualiserType;
+import org.alexdev.krishna.game.resources.ResourceManager;
+import org.alexdev.krishna.visualisers.Visualiser;
+import org.alexdev.krishna.visualisers.VisualiserType;
 import org.alexdev.krishna.util.DateUtil;
 import org.alexdev.krishna.util.DimensionUtil;
 
@@ -43,11 +45,11 @@ public class LoaderVisualiser extends Visualiser {
         this.pane.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
 
         this.loadingLogo = new ImageView();
-        this.loadingLogo.setImage(new Image(new File("resources/scenes/loader/logo.png").toURI().toString()));
+        this.loadingLogo.setImage(ResourceManager.getInstance().getFxImage("scenes/loader/logo.png"));
         this.loadingLogo.setPreserveRatio(true);
 
         this.loadingBar = new ImageView();
-        this.loadingBar.setImage(new Image(new File("resources/scenes/loader/loader_bar_0.png").toURI().toString()));
+        this.loadingBar.setImage(ResourceManager.getInstance().getFxImage("scenes/loader/loader_bar_0.png"));
         this.loadingBar.setVisible(false);
         this.loadingBar.setPreserveRatio(true);
 
@@ -113,7 +115,7 @@ public class LoaderVisualiser extends Visualiser {
             if (progress <= 100 && (progress % 25) == 0) {
                 Platform.runLater(() -> {
                     this.loadingBar.setVisible(true);
-                    this.loadingBar.setImage(new Image(new File("resources/scenes/loader/loader_bar_" + progress + ".png").toURI().toString()));
+                    this.loadingBar.setImage(ResourceManager.getInstance().getFxImage("scenes/loader/loader_bar_" + progress + ".png"));
                 });
             }
         } else {

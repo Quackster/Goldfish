@@ -7,20 +7,18 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.scene.text.Font;
+import org.alexdev.krishna.game.resources.ResourceManager;
+import org.alexdev.krishna.interfaces.Dialog;
+import org.alexdev.krishna.interfaces.Interface;
 import org.alexdev.krishna.rendering.game.GameLoop;
-import org.alexdev.krishna.rendering.interfaces.Interface;
-import org.alexdev.krishna.rendering.interfaces.Dialog;
 import org.alexdev.krishna.util.DimensionUtil;
-import org.alexdev.krishna.rendering.visualisers.Visualiser;
-import org.alexdev.krishna.rendering.visualisers.VisualiserType;
-import org.alexdev.krishna.rendering.visualisers.types.EntryVisualiser;
-import org.alexdev.krishna.rendering.visualisers.types.LoaderVisualiser;
-import org.alexdev.krishna.rendering.visualisers.types.RoomVisualiser;
+import org.alexdev.krishna.visualisers.Visualiser;
+import org.alexdev.krishna.visualisers.VisualiserType;
+import org.alexdev.krishna.visualisers.types.EntryVisualiser;
+import org.alexdev.krishna.visualisers.types.LoaderVisualiser;
+import org.alexdev.krishna.visualisers.types.RoomVisualiser;
 
 import java.awt.*;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
@@ -73,6 +71,10 @@ public class HabboClient extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        // Needed for volter font shit :)
+        System.setProperty("prism.lcdtext", "false");
+        System.setProperty("prism.subpixeltext", "false");
+
         this.loadFonts();
 
         this.primaryStage = primaryStage;
@@ -105,12 +107,11 @@ public class HabboClient extends Application {
 
     public void loadFonts() {
         try {
-            volter = Font.loadFont(new FileInputStream(new File("resources/volter/volter.woff")), 9);
-            volterBold = Font.loadFont(new FileInputStream(new File("resources/volter/volter_bold.woff")), 9);
-            volterLarge = Font.loadFont(new FileInputStream(new File("resources/volter/volter.woff")), 18);
-            volterBoldLarge = Font.loadFont(new FileInputStream(new File("resources/volter/volter_bold.woff")), 18);
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
+            volter = Font.loadFont(ResourceManager.getInstance().getResource("volter/volter.woff").openStream(), 9);
+            volterBold = Font.loadFont(ResourceManager.getInstance().getResource("volter/volter_bold.woff").openStream(), 9);
+            volterLarge = Font.loadFont(ResourceManager.getInstance().getResource("volter/volter.woff").openStream(), 18);
+            volterBoldLarge = Font.loadFont(ResourceManager.getInstance().getResource("volter/volter_bold.woff").openStream(), 18);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

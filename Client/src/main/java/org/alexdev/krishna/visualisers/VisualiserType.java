@@ -1,4 +1,4 @@
-package org.alexdev.krishna.rendering.visualisers;
+package org.alexdev.krishna.visualisers;
 
 public enum VisualiserType {
     LOADER, HOTEL_VIEW, ROOM

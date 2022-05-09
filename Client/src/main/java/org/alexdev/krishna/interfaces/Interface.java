@@ -1,4 +1,4 @@
-package org.alexdev.krishna.rendering.interfaces;
+package org.alexdev.krishna.interfaces;
 
 import javafx.scene.layout.Pane;
 

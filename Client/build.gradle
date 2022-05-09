@@ -22,22 +22,13 @@ repositories {
 }
 
 dependencies {
-    /*
-    implementation name: 'javafx.base'
-    implementation name: 'javafx.controls'
-    implementation name: 'javafx.fxml'
-    implementation name: 'javafx.graphics'
-    implementation name: 'javafx.media'
-    implementation name: 'javafx.swing'
-    implementation name: 'javafx.web'
-    implementation name: 'javafx.swt'
-
-     */
-
-    // https://mvnrepository.com/artifact/org.openjfx/javafx-swing
-    //implementation group: 'org.openjfx', name: 'javafx-swing', version: '19-ea+6'
 
 }
+
+//print sourceSets.main.resources.srcDirs
+
+//sourceSets.main.resources.srcDirs = [ "../" ]
+//sourceSets.main.resources.includes = [ "loader.config" ]
 
 // Create fat jar with libraries inside of it.
 task fatJar(type: Jar) {

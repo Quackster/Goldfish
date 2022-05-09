@@ -1,4 +1,4 @@
-package org.alexdev.krishna.rendering.interfaces;
+package org.alexdev.krishna.interfaces;
 
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -21,6 +21,7 @@ import javafx.scene.paint.Color;
 import java.io.File;
 
 import org.alexdev.krishna.HabboClient;
+import org.alexdev.krishna.game.resources.ResourceManager;
 
 public class Dialog extends Interface {
     public VBox content;
@@ -54,15 +55,15 @@ public class Dialog extends Interface {
 
         Pane topLeft = new Pane();
         topLeft.setPrefSize(16, 21);
-        topLeft.setBackground(new Background(new BackgroundImage(new Image(new File("resources/dialog/top_left.png").toURI().toString(), 16, 21, false, true), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        topLeft.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("dialog/top_left.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
 
         topCenter = new Pane();
         topCenter.setMinSize(1, 21);
-        topCenter.setBackground(new Background(new BackgroundImage(new Image(new File("resources/dialog/top_center.png").toURI().toString(), 2, 21, false, true), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        topCenter.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("dialog/top_center.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
 
         Pane topRight = new Pane();
         topRight.setPrefSize(16, 21);
-        topRight.setBackground(new Background(new BackgroundImage(new Image(new File("resources/dialog/top_right.png").toURI().toString(), 16, 21, false, true), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        topRight.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("dialog/top_right.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
 
         top.getChildren().addAll(topLeft, topCenter, topRight);
 
@@ -72,7 +73,7 @@ public class Dialog extends Interface {
 
         centerLeft = new Pane();
         centerLeft.setPrefWidth(16);
-        centerLeft.setBackground(new Background(new BackgroundImage(new Image(new File("resources/dialog/center_left.png").toURI().toString(), 16, 1, false, true), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        centerLeft.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("dialog/center_left.png"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
 
         centerCenter = new Pane();
         centerCenter.setMinSize(1, 1);
@@ -80,7 +81,7 @@ public class Dialog extends Interface {
 
         centerRight = new Pane();
         centerRight.setPrefWidth(16);
-        centerRight.setBackground(new Background(new BackgroundImage(new Image(new File("resources/dialog/center_right.png").toURI().toString(), 16, 1, false, true), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        centerRight.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("dialog/center_right.png"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
 
         center.getChildren().addAll(centerLeft, centerCenter, centerRight);
 
@@ -90,15 +91,15 @@ public class Dialog extends Interface {
 
         Pane bottomLeft = new Pane();
         bottomLeft.setPrefSize(16, 16);
-        bottomLeft.setBackground(new Background(new BackgroundImage(new Image(new File("resources/dialog/bottom_left.png").toURI().toString(), 16, 16, false, true), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        bottomLeft.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("dialog/bottom_left.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
 
         bottomCenter = new Pane();
         bottomCenter.setMinSize(1, 19);
-        bottomCenter.setBackground(new Background(new BackgroundImage(new Image(new File("resources/dialog/bottom_center.png").toURI().toString(), 1, 16, false, true), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        bottomCenter.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("dialog/bottom_center.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
 
         Pane bottomRight = new Pane();
         bottomRight.setPrefSize(16, 16);
-        bottomRight.setBackground(new Background(new BackgroundImage(new Image(new File("resources/dialog/bottom_right.png").toURI().toString(), 16, 16, false, true), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        bottomRight.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("dialog/bottom_right.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
 
         bottom.getChildren().addAll(bottomLeft, bottomCenter, bottomRight);
 
@@ -123,7 +124,7 @@ public class Dialog extends Interface {
         content.setLayoutX(16);
         content.setLayoutY(21);
 
-        System.out.println(content.getWidth() + " " + content.getHeight());
+        // System.out.println(content.getWidth() + " " + content.getHeight());
 
         var topArea = new Pane();
         //topArea.setBackground(new Background(new BackgroundFill(Color.RED, CornerRadii.EMPTY, Insets.EMPTY)));

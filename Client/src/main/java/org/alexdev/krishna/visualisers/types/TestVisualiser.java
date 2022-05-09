@@ -1,8 +1,8 @@
-package org.alexdev.krishna.rendering.visualisers.types;
+package org.alexdev.krishna.visualisers.types;
 
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
-import org.alexdev.krishna.rendering.visualisers.Visualiser;
+import org.alexdev.krishna.visualisers.Visualiser;
 
 public class TestVisualiser extends Visualiser {
     private Pane pane;

@@ -1,16 +1,15 @@
 package org.alexdev.krishna.scripts;
 
 import javafx.embed.swing.SwingFXUtils;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import org.alexdev.krishna.game.resources.ResourceManager;
 import org.alexdev.krishna.util.DimensionUtil;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 
 public class Cloud extends Pane {
     private int pTurnPoint;
@@ -42,7 +41,7 @@ public class Cloud extends Pane {
         else
             this.pVertDir = 1;
 
-        this.cloud.setImage(new Image(new File(getCloudPath()).toURI().toString()));
+        this.cloud.setImage(ResourceManager.getInstance().getFxImage(this.getCloudPath()));
 
         // If the X is at the start, subtract its width so it slowly slides instead of just suddenly appearing
         if (this.initX <= 0)
@@ -61,9 +60,12 @@ public class Cloud extends Pane {
         this.rightImage = null;
 
         try {
-            this.rightImage = ImageIO.read(new File(this.getFlippedCloudPath())); // eventually C:\\ImageTest\\pic2.jpg
-            this.leftImage = ImageIO.read(new File(this.getCloudPath())); // eventually C:\\ImageTest\\pic2.jpg
-        } catch (IOException e) {
+            this.rightImage = ResourceManager.getInstance().getAwtImage(this.getFlippedCloudPath()); // eventually C:\\ImageTest\\pic2.jpg
+            this.leftImage = ResourceManager.getInstance().getAwtImage(this.getCloudPath()); // eventually C:\\ImageTest\\pic2.jpg
+
+            ImageIO.write(this.rightImage, "png", new File("test.png"));
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -144,7 +146,7 @@ public class Cloud extends Pane {
     }
 
     private String getCloudPath() {
-        return "resources/scenes/hotel_view/clouds/" + this.fileName + "_" + this.direction + ".png";
+        return "scenes/hotel_view/clouds/" + this.fileName + "_" + this.direction + ".png";
     }
 
     private String getFlippedCloudPath() {
@@ -154,7 +156,7 @@ public class Cloud extends Pane {
             oppositeDirection = "right";
         }
 
-        return "resources/scenes/hotel_view/clouds/" + this.fileName + "_" + oppositeDirection + ".png";
+        return "scenes/hotel_view/clouds/" + this.fileName + "_" + oppositeDirection + ".png";
     }
 
     public boolean isFinished() {
