@@ -37,8 +37,12 @@ public class Cloud extends Pane {
         this.initX = initX;
         this.initY = initY;
         this.cloud = new ImageView();
-        this.pCloudDir = -1;
-        this.pVertDir = -1;
+        //this.pCloudDir = -1;
+
+        if (direction.equals("left"))
+            this.pVertDir = -1;
+        else
+            this.pVertDir = 1;
     }
 
     public void init() {
@@ -67,22 +71,24 @@ public class Cloud extends Pane {
 
     public void update() {
         // loop around the corner, dev only
-        if (DimensionUtil.getTopLeft(this.cloud) == 350) {
+        //if (DimensionUtil.getTopLeft(this.cloud) == 350) {
+        //    this.isFinished = true;
+        // }
+
+        // Cloud went off-screen, dispose
+        if (DimensionUtil.getLeft(this.cloud) > DimensionUtil.getProgramWidth()) {
             this.isFinished = true;
         }
 
-        if (DimensionUtil.getTopRight(this.cloud) > this.pTurnPoint &&
-            DimensionUtil.getTopLeft(this.cloud) <= this.pTurnPoint) {
+        if (DimensionUtil.getRight(this.cloud) > this.pTurnPoint &&
+            DimensionUtil.getLeft(this.cloud) <= this.pTurnPoint) {
             this.turn();
             this.isTurning = true;
         } else {
-            if (this.isTurning) {
-                //this.isFinished = true; // dispose after fully turning, used for development purposes
-            }
             this.isTurning = false;
         }
 
-        if (DimensionUtil.getTopLeft(this.cloud) == this.pTurnPoint) {
+        if (DimensionUtil.getLeft(this.cloud) == this.pTurnPoint) {
             this.pVertDir = this.pCloudDir * -1;
         }
 
@@ -95,12 +101,13 @@ public class Cloud extends Pane {
 
     private void turn() {
         if (this.pVertDir != 0) {
-            pCloudDir = pVertDir;
+            this.pCloudDir = pVertDir; // Save previous direction
         }
 
-        pVertDir = 0;
+        // No Y direction when turning
+        this.pVertDir = 0;
 
-        int leftWidth = (int) (this.cloud.getImage().getWidth() - (DimensionUtil.getTopRight(this.cloud) - this.pTurnPoint));
+        int leftWidth = (int) (this.cloud.getImage().getWidth() - (DimensionUtil.getRight(this.cloud) - this.pTurnPoint));
         int rightWidth = (int) this.rightImage.getWidth() - leftWidth;
 
         if (leftWidth > 0) {

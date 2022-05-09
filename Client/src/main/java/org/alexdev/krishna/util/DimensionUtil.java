@@ -17,20 +17,12 @@ public class DimensionUtil {
                 roundEven(getProgramHeight() / 2) - (height / 2));
     }
 
-    public static double getTopRight(ImageView imageView) {
+    public static double getRight(ImageView imageView) {
         return imageView.getX() + imageView.getImage().getWidth();
     }
 
-    public static double getTopLeft(ImageView imageView) {
+    public static double getLeft(ImageView imageView) {
         return imageView.getX();
-    }
-
-    public static double getBottomRight(ImageView imageView) {
-        return imageView.getY() + imageView.getImage().getHeight();
-    }
-
-    public static double getBottomLeft(ImageView imageView) {
-        return imageView.getY();
     }
 
     public static double getProgramWidth() {

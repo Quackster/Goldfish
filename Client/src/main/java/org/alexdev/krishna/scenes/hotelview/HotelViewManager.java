@@ -15,12 +15,15 @@ import org.alexdev.krishna.util.DimensionUtil;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
 
 public class HotelViewManager extends HabboScene {
     private Pane pane;
     private Scene scene;
     private boolean isInitialised;
     private long timeSinceStart;
+    private long timeNextCloud;
     private final int pTurnPoint = 330;
 
     private ImageView topRight;
@@ -69,7 +72,7 @@ public class HotelViewManager extends HabboScene {
         this.topRight.setY(this.topRight.getImage().getHeight() * -1);
 
         this.bottomLeft = new ImageView();
-        this.bottomLeft.setImage(new Image(new File("resources/scenes/hotel_view/countries/br_large.png").toURI().toString()));
+        this.bottomLeft.setImage(new Image(new File("resources/scenes/hotel_view/countries/br_large_noclouds.png").toURI().toString()));
 
         this.bottomRight = new ImageView();
         this.bottomRight.setImage(new Image(new File("resources/scenes/hotel_view/br_right.png").toURI().toString()));
@@ -112,6 +115,14 @@ public class HotelViewManager extends HabboScene {
         this.queueOpenView = true;
         this.queueAnimateSign = true;
         this.isInitialised = true;
+
+        // Kickstart some clouds :^)
+        for (int i = 0; i < ThreadLocalRandom.current().nextInt(2, 5); i++) {
+            int initX = this.pTurnPoint + ThreadLocalRandom.current().nextInt(30, (int) (DimensionUtil.getProgramWidth()*0.5));;
+            int initY = ThreadLocalRandom.current().nextInt(0, (int) (DimensionUtil.getProgramHeight()*0.66));
+
+            this.addCloud("right", initX, initY);
+        }
     }
 
     /**
@@ -153,6 +164,7 @@ public class HotelViewManager extends HabboScene {
         // Set right view to... bottom right
         this.bottomRight.setX(mainWidth - this.bottomRight.getImage().getWidth());
         this.bottomRight.setY(mainHeight - this.bottomRight.getImage().getHeight());
+
     }
 
     /**
@@ -170,20 +182,21 @@ public class HotelViewManager extends HabboScene {
         // Remove old clouds
         this.clouds.removeIf(Cloud::isFinished);
 
-        long timeDifference = DateUtil.getCurrentTimeSeconds() - this.timeSinceStart;
-        if (timeDifference % 3 == 0 && this.clouds.size() < 1) {
-            addCloud("cloud_0", "left", 280, 120);
-            addCloud("cloud_1", "left", 280, 90);
-            addCloud("cloud_2", "left", 280, 60);
-            addCloud("cloud_3", "left", 280, 30);
+        if (DateUtil.getCurrentTimeSeconds() > this.timeNextCloud && this.clouds.size() < 12) {
+            int initX = 0;
+            int initY = ThreadLocalRandom.current().nextInt(0, (int) (DimensionUtil.getProgramHeight()*0.66));
+
+            this.addCloud("left", initX, initY);
+            this.timeNextCloud = DateUtil.getCurrentTimeSeconds() + ThreadLocalRandom.current().nextInt(1, 4);
         }
     }
 
     /**
      * Add cloud handler
      */
-    public void addCloud(String fileName, String direction, int initX, int initY) {
-        var cloud = new Cloud(this.pTurnPoint, fileName, direction, initX, initY);
+    public void addCloud(String direction, int initX, int initY) {
+        var cloudType = ThreadLocalRandom.current().nextInt(4);
+        var cloud = new Cloud(this.pTurnPoint, "cloud_" + cloudType, direction, initX, initY);
         cloud.setViewOrder(CLOUD_Z_INDEX);
         cloud.init();
 
