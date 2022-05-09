@@ -3,10 +3,13 @@ package org.alexdev.krishna.rendering.visualisers;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+
+import org.alexdev.krishna.HabboClient;
 import org.alexdev.krishna.util.DimensionUtil;
 
 public abstract class Visualiser {
     protected static Scene create(Pane pane) {
+        pane.getChildren().addAll(HabboClient.getInstance().getInterfaces());   
         return new Scene(pane, DimensionUtil.getProgramWidth(), DimensionUtil.getProgramHeight(), Color.BLACK);
     }
 

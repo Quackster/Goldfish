@@ -6,7 +6,10 @@ import javafx.scene.layout.Pane;
 import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.scene.text.Font;
 import org.alexdev.krishna.rendering.game.GameLoop;
+import org.alexdev.krishna.rendering.interfaces.Interface;
+import org.alexdev.krishna.rendering.interfaces.Dialog;
 import org.alexdev.krishna.util.DimensionUtil;
 import org.alexdev.krishna.rendering.visualisers.Visualiser;
 import org.alexdev.krishna.rendering.visualisers.VisualiserType;
@@ -15,18 +18,30 @@ import org.alexdev.krishna.rendering.visualisers.types.LoaderVisualiser;
 import org.alexdev.krishna.rendering.visualisers.types.RoomVisualiser;
 
 import java.awt.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 public class HabboClient extends Application {
+    public static Font volter;
+    public static Font volterBold;
+    public static Font volterLarge;
+    public static Font volterBoldLarge;
+
     private static HabboClient instance;
     private Stage primaryStage;
     private GameLoop gameLoop;
 
     private final ConcurrentMap<VisualiserType, Visualiser> visualisers;
+    private final List<Interface> interfaces;
 
     public HabboClient() {
         this.visualisers = new ConcurrentHashMap<>();
+        this.interfaces = new ArrayList<Interface>();
     }
 
     public static void main(String[] args) {
@@ -58,6 +73,8 @@ public class HabboClient extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        this.loadFonts();
+
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Habbo Client");
 
@@ -75,14 +92,27 @@ public class HabboClient extends Application {
         primaryStage.show();
 
         this.setupVisualisers();
+        this.setupInterfaces();
         //this.showStage(HabboSceneType.LOADER);
-        this.showVisualiser(VisualiserType.HOTEL_VIEW);
+        this.showVisualiser(VisualiserType.LOADER);
     }
 
     @Override
     public void stop(){
         if (this.gameLoop != null)
             this.gameLoop.setRunning(false);
+    }
+
+    public void loadFonts() {
+        try {
+            volter = Font.loadFont(new FileInputStream(new File("resources/volter/volter.woff")), 9);
+            volterBold = Font.loadFont(new FileInputStream(new File("resources/volter/volter_bold.woff")), 9);
+            volterLarge = Font.loadFont(new FileInputStream(new File("resources/volter/volter.woff")), 18);
+            volterBoldLarge = Font.loadFont(new FileInputStream(new File("resources/volter/volter_bold.woff")), 18);
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     public void showVisualiser(VisualiserType type) {
@@ -114,12 +144,20 @@ public class HabboClient extends Application {
         this.visualisers.put(VisualiserType.ROOM, new RoomVisualiser());
     }
 
+    private void setupInterfaces() {
+        this.interfaces.add(new Dialog());
+    }
+
     public Stage getPrimaryStage() {
         return primaryStage;
     }
 
     public ConcurrentMap<VisualiserType, Visualiser> getVisualisers() {
         return visualisers;
+    }
+
+    public List<Interface> getInterfaces() {
+        return interfaces;
     }
 
     public static HabboClient getInstance() {

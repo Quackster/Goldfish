@@ -1,10 +1,16 @@
 package org.alexdev.krishna.rendering.visualisers.types;
 
 import javafx.application.Platform;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+
 import org.alexdev.krishna.HabboClient;
 import org.alexdev.krishna.rendering.visualisers.Visualiser;
 import org.alexdev.krishna.rendering.visualisers.VisualiserType;
@@ -34,6 +40,7 @@ public class LoaderVisualiser extends Visualiser {
 
         this.pane = new Pane();
         this.scene = Visualiser.create(this.pane);
+        this.pane.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
 
         this.loadingLogo = new ImageView();
         this.loadingLogo.setImage(new Image(new File("resources/scenes/loader/logo.png").toURI().toString()));
