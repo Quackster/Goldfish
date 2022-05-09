@@ -8,6 +8,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.scene.text.Font;
 import org.alexdev.krishna.game.resources.ResourceManager;
+import org.alexdev.krishna.interfaces.Alert;
 import org.alexdev.krishna.interfaces.Dialog;
 import org.alexdev.krishna.interfaces.Interface;
 import org.alexdev.krishna.rendering.game.GameLoop;
@@ -146,7 +147,7 @@ public class HabboClient extends Application {
     }
 
     private void setupInterfaces() {
-        this.interfaces.add(new Dialog());
+        this.interfaces.add(new Alert("This is a test"));
     }
 
     public Stage getPrimaryStage() {
