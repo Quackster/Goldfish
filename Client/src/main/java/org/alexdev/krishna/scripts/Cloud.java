@@ -62,9 +62,6 @@ public class Cloud extends Pane {
         try {
             this.rightImage = ResourceManager.getInstance().getAwtImage(this.getFlippedCloudPath()); // eventually C:\\ImageTest\\pic2.jpg
             this.leftImage = ResourceManager.getInstance().getAwtImage(this.getCloudPath()); // eventually C:\\ImageTest\\pic2.jpg
-
-            ImageIO.write(this.rightImage, "png", new File("test.png"));
-
         } catch (Exception e) {
             e.printStackTrace();
         }
