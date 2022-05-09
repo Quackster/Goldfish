@@ -23,8 +23,9 @@ public class HotelViewManager extends HabboScene {
     private long timeSinceStart;
     private final int pTurnPoint = 330;
 
-    private ImageView viewLeft;
-    private ImageView viewRight;
+    private ImageView topRight;
+    private ImageView bottomLeft;
+    private ImageView bottomRight;
     private Rectangle stretchLeft;
     private Rectangle stretchRight;
     private ImageView sun;
@@ -37,10 +38,11 @@ public class HotelViewManager extends HabboScene {
     private long pViewOpenTime = 0;
     private long pViewCloseTime = 0;
 
-    public static int CLOUD_Z_INDEX = 4000;
+    public static int CLOUD_Z_INDEX = 5000;
 
     public boolean queueOpenView = false;
     public boolean queueCloseView = false;
+    private boolean queueAnimateSign = false;
 
     public HotelViewManager() {
         this.timeSinceStart = (System.currentTimeMillis() / 1000L);
@@ -62,11 +64,15 @@ public class HotelViewManager extends HabboScene {
         this.bottomReveal = new Rectangle(1,1);
         this.bottomReveal.setFill(Color.BLACK);
 
-        this.viewLeft = new ImageView();
-        this.viewLeft.setImage(new Image(new File("resources/scenes/hotel_view/countries/br_large.png").toURI().toString()));
+        this.topRight = new ImageView();
+        this.topRight.setImage(new Image(new File("resources/scenes/hotel_view/top_right_shadow.png").toURI().toString()));
+        this.topRight.setY(this.topRight.getImage().getHeight() * -1);
 
-        this.viewRight = new ImageView();
-        this.viewRight.setImage(new Image(new File("resources/scenes/hotel_view/br_right.png").toURI().toString()));
+        this.bottomLeft = new ImageView();
+        this.bottomLeft.setImage(new Image(new File("resources/scenes/hotel_view/countries/br_large.png").toURI().toString()));
+
+        this.bottomRight = new ImageView();
+        this.bottomRight.setImage(new Image(new File("resources/scenes/hotel_view/br_right.png").toURI().toString()));
 
         this.stretchLeft = new Rectangle(1,1);//= new ImageView();
         this.stretchLeft.setFill(Color.rgb(117, 175, 203));
@@ -88,23 +94,29 @@ public class HotelViewManager extends HabboScene {
         this.pane.getChildren().add(this.sun);
         this.pane.getChildren().add(this.stretchLeft);
         this.pane.getChildren().add(this.stretchRight);
-        this.pane.getChildren().add(this.viewRight);
-        this.pane.getChildren().add(this.viewLeft);
+        this.pane.getChildren().add(this.topRight);
+        this.pane.getChildren().add(this.bottomRight);
+        this.pane.getChildren().add(this.bottomLeft);
         this.pane.getChildren().add(this.bottomReveal);
         this.pane.getChildren().add(this.topReveal);
 
-        this.stretchLeft.setViewOrder(6000);
-        this.stretchRight.setViewOrder(6000);
-        this.sun.setViewOrder(5000);
-        this.viewLeft.setViewOrder(3000);
-        this.viewRight.setViewOrder(2000);
+        this.stretchLeft.setViewOrder(7000);
+        this.stretchRight.setViewOrder(7000);
+        this.sun.setViewOrder(6000);
+        this.bottomLeft.setViewOrder(4000);
+        this.bottomRight.setViewOrder(3000);
+        this.topRight.setViewOrder(2000);
         this.bottomReveal.setViewOrder(-1000);
         this.topReveal.setViewOrder(-1000);
 
         this.queueOpenView = true;
+        this.queueAnimateSign = true;
         this.isInitialised = true;
     }
 
+    /**
+     * Update tick to resize the images and boxes necessary for responsiveness
+     */
     public void update() {
         if (!this.isInitialised)
             return;
@@ -113,8 +125,11 @@ public class HotelViewManager extends HabboScene {
             this.openView();
         }
 
+        if (this.queueAnimateSign) {
+            this.animSign();
+        }
+
         this.updateClouds();
-        this.animSign();
 
         var mainWidth = DimensionUtil.getProgramWidth();
         var mainHeight = DimensionUtil.getProgramHeight();
@@ -133,13 +148,16 @@ public class HotelViewManager extends HabboScene {
         // Stretch the background - END
 
         // Set left view to... bottom left
-        this.viewLeft.setY(mainHeight - this.viewLeft.getImage().getHeight());
+        this.bottomLeft.setY(mainHeight - this.bottomLeft.getImage().getHeight());
 
         // Set right view to... bottom right
-        this.viewRight.setX(mainWidth - this.viewRight.getImage().getWidth());
-        this.viewRight.setY(mainHeight - this.viewRight.getImage().getHeight());
+        this.bottomRight.setX(mainWidth - this.bottomRight.getImage().getWidth());
+        this.bottomRight.setY(mainHeight - this.bottomRight.getImage().getHeight());
     }
 
+    /**
+     * Tick method for cloud animations
+     */
     private void updateClouds() {
         for (var cloud : this.clouds) {
             cloud.update();
@@ -161,6 +179,9 @@ public class HotelViewManager extends HabboScene {
         }
     }
 
+    /**
+     * Add cloud handler
+     */
     public void addCloud(String fileName, String direction, int initX, int initY) {
         var cloud = new Cloud(this.pTurnPoint, fileName, direction, initX, initY);
         cloud.setViewOrder(CLOUD_Z_INDEX);
@@ -170,10 +191,37 @@ public class HotelViewManager extends HabboScene {
         this.pane.getChildren().add(cloud);
     }
 
+    /**
+     * Animate Habbo Hotel sign
+     */
     public void animSign() {
+        // Only animate after the reveal bars have finished animating
+        if (this.queueOpenView) {
+            return;
+        }
 
+        if (!this.queueAnimateSign) {
+            return;
+        }
+
+        if (this.topRight.getY() < 0) {
+            var verticalPosition = 30;
+
+            if (this.topRight.getY() == ((verticalPosition - 1) * -1)) {
+                verticalPosition--; // Gotta get pixel perfect
+            }
+
+            this.topRight.setY(this.topRight.getY() + verticalPosition);
+        } else {
+            this.queueAnimateSign = false;
+        }
     }
 
+    /**
+     * "openView" the reveal bars when the hotel view first loads
+     *
+     * source code ported from v14 Habbo client
+     */
     public void openView() {
         if (!this.queueOpenView)
             return;
@@ -202,6 +250,9 @@ public class HotelViewManager extends HabboScene {
         }
     }
 
+    /**
+     * Stretch the reveal bars across the window
+     */
     private void stretchBars() {
         this.topReveal.setWidth(HabboClient.getInstance().getPrimaryStage().getWidth());
         this.topReveal.setHeight(HabboClient.getInstance().getPrimaryStage().getHeight() / 2);
@@ -209,6 +260,9 @@ public class HotelViewManager extends HabboScene {
         this.bottomReveal.setHeight(HabboClient.getInstance().getPrimaryStage().getHeight() / 2);
     }
 
+    /**
+     * When the reveal task is finished, set these to invisible
+     */
     private void viewTaskFinished() {
         this.topReveal.setVisible(false);
         this.bottomReveal.setVisible(false);
