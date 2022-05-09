@@ -1,6 +1,6 @@
 # About
 
-Krishna is a project written in Java using the JDK 11 standard and the JavaFX platform. The project centers recreating the Shockwave Habbo experience while adding more quality of life additions from its successors. Krishna aims to be feature complete. 
+Krishna is a project written in Java using the JDK 11 standard and the JavaFX platform. The project centers on recreating the Shockwave Habbo experience and aesthetic from 2005-2009 while adding more quality of life additions from its successors. Krishna aims to be feature complete. 
 
 # Images
 
