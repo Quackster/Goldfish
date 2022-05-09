@@ -17,7 +17,6 @@ public class Cloud extends Pane {
     private String fileName;
     private String direction;
     private boolean isFinished;
-    private boolean isTurning;
 
     private ImageView cloud;
     private BufferedImage leftImage;
@@ -33,7 +32,6 @@ public class Cloud extends Pane {
         this.fileName = fileName;
         this.direction = direction;
         this.isFinished = false;
-        this.isTurning = false;
         this.initX = initX;
         this.initY = initY;
         this.cloud = new ImageView();
@@ -71,22 +69,9 @@ public class Cloud extends Pane {
     }
 
     public void update() {
-        // loop around the corner, dev only
-        //if (DimensionUtil.getTopLeft(this.cloud) == 350) {
-        //    this.isFinished = true;
-        // }
-
-        // Cloud went off-screen, dispose
-        if (DimensionUtil.getLeft(this.cloud) > DimensionUtil.getProgramWidth()) {
-            this.isFinished = true;
-        }
-
         if (DimensionUtil.getRight(this.cloud) > this.pTurnPoint &&
             DimensionUtil.getLeft(this.cloud) <= this.pTurnPoint) {
             this.turn();
-            this.isTurning = true;
-        } else {
-            this.isTurning = false;
         }
 
         if (DimensionUtil.getLeft(this.cloud) == this.pTurnPoint) {
@@ -98,11 +83,16 @@ public class Cloud extends Pane {
         if (this.cloud.getX() % 2 == 0) {
             this.cloud.setY(this.cloud.getY() + this.pVertDir);
         }
+
+        // Cloud went off-screen, dispose
+        if (DimensionUtil.getLeft(this.cloud) > DimensionUtil.getProgramWidth()) {
+            this.isFinished = true;
+        }
     }
 
     private void turn() {
         if (this.pVertDir != 0) {
-            this.pCloudDir = pVertDir; // Save previous direction
+            this.pCloudDir = this.pVertDir; // Save previous direction
         }
 
         // No Y direction when turning
