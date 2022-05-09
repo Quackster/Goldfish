@@ -21,11 +21,12 @@ public class HotelViewManager extends HabboScene {
     private Scene scene;
     private boolean isInitialised;
     private long timeSinceStart;
+    private final int pTurnPoint = 330;
 
     private ImageView viewLeft;
     private ImageView viewRight;
-    private ImageView stretchLeft;
-    private ImageView stretchRight;
+    private Rectangle stretchLeft;
+    private Rectangle stretchRight;
     private ImageView sun;
     private List<Cloud> clouds;
 
@@ -37,7 +38,6 @@ public class HotelViewManager extends HabboScene {
     private long pViewCloseTime = 0;
 
     public static int CLOUD_Z_INDEX = 4000;
-    private static int TURN_POINT = 330;
 
     public boolean queueOpenView = false;
     public boolean queueCloseView = false;
@@ -63,16 +63,18 @@ public class HotelViewManager extends HabboScene {
         this.bottomReveal.setFill(Color.BLACK);
 
         this.viewLeft = new ImageView();
-        this.viewLeft.setImage(new Image(new File("resources/scenes/hotel_view/countries/au.png").toURI().toString()));
+        this.viewLeft.setImage(new Image(new File("resources/scenes/hotel_view/countries/br_large.png").toURI().toString()));
 
         this.viewRight = new ImageView();
-        this.viewRight.setImage(new Image(new File("resources/scenes/hotel_view/us_right.png").toURI().toString()));
+        this.viewRight.setImage(new Image(new File("resources/scenes/hotel_view/br_right.png").toURI().toString()));
 
-        this.stretchLeft = new ImageView();
-        this.stretchLeft.setImage(new Image(new File("resources/scenes/hotel_view/stretch_left.png").toURI().toString()));
+        this.stretchLeft = new Rectangle(1,1);//= new ImageView();
+        this.stretchLeft.setFill(Color.rgb(117, 175, 203));
+        //this.stretchLeft.setImage(new Image(new File("resources/scenes/hotel_view/stretch_left.png").toURI().toString()));
 
-        this.stretchRight = new ImageView();
-        this.stretchRight.setImage(new Image(new File("resources/scenes/hotel_view/stretch_right.png").toURI().toString()));
+        this.stretchRight = new Rectangle(1,1);
+        this.stretchRight.setFill(Color.rgb(139, 205, 233));
+        //this.stretchRight.setImage(new Image(new File("resources/scenes/hotel_view/stretch_right.png").toURI().toString()));
 
         this.sun = new ImageView();
         this.sun.setImage(new Image(new File("resources/scenes/hotel_view/sun.png").toURI().toString()));
@@ -93,7 +95,7 @@ public class HotelViewManager extends HabboScene {
 
         this.stretchLeft.setViewOrder(6000);
         this.stretchRight.setViewOrder(6000);
-        this.sun.setViewOrder(6000);
+        this.sun.setViewOrder(5000);
         this.viewLeft.setViewOrder(3000);
         this.viewRight.setViewOrder(2000);
         this.bottomReveal.setViewOrder(-1000);
@@ -103,8 +105,39 @@ public class HotelViewManager extends HabboScene {
         this.isInitialised = true;
     }
 
-    public void updateTick() {
+    public void update() {
+        if (!this.isInitialised)
+            return;
+
+        if (this.queueOpenView) {
+            this.openView();
+        }
+
         this.updateClouds();
+        this.animSign();
+
+        var mainWidth = DimensionUtil.getProgramWidth();
+        var mainHeight = DimensionUtil.getProgramHeight();
+
+        // Center da sun
+        this.sun.setX(DimensionUtil.getCenterCords(this.sun.getImage().getWidth(), this.sun.getImage().getHeight()).getX());
+        this.sun.setY(0);
+
+        // Stretch the background - START
+        this.stretchLeft.setHeight(mainHeight);
+        this.stretchLeft.setWidth(this.pTurnPoint);
+
+        this.stretchRight.setX(this.stretchLeft.getWidth());
+        this.stretchRight.setWidth(mainWidth - this.stretchLeft.getWidth());
+        this.stretchRight.setHeight(mainHeight);
+        // Stretch the background - END
+
+        // Set left view to... bottom left
+        this.viewLeft.setY(mainHeight - this.viewLeft.getImage().getHeight());
+
+        // Set right view to... bottom right
+        this.viewRight.setX(mainWidth - this.viewRight.getImage().getWidth());
+        this.viewRight.setY(mainHeight - this.viewRight.getImage().getHeight());
     }
 
     private void updateClouds() {
@@ -121,59 +154,24 @@ public class HotelViewManager extends HabboScene {
 
         long timeDifference = DateUtil.getCurrentTimeSeconds() - this.timeSinceStart;
         if (timeDifference % 3 == 0 && this.clouds.size() < 1) {
-            addCloud("cloud_0_left", 280, 120);
-            addCloud("cloud_1_left", 280, 90);
-            addCloud("cloud_2_left", 280, 60);
-            addCloud("cloud_3_left", 280, 30);
+            addCloud("cloud_0", "left", 280, 120);
+            addCloud("cloud_1", "left", 280, 90);
+            addCloud("cloud_2", "left", 280, 60);
+            addCloud("cloud_3", "left", 280, 30);
         }
     }
 
-    public void addCloud(String fileName, int initX, int initY)
-    {
-        var cloud = new Cloud(TURN_POINT, fileName, initX, initY);
+    public void addCloud(String fileName, String direction, int initX, int initY) {
+        var cloud = new Cloud(this.pTurnPoint, fileName, direction, initX, initY);
         cloud.setViewOrder(CLOUD_Z_INDEX);
         cloud.init();
-        
+
         this.clouds.add(cloud);
         this.pane.getChildren().add(cloud);
     }
 
-    public void renderTick() {
-        if (!this.isInitialised)
-            return;
+    public void animSign() {
 
-        if (this.queueOpenView) {
-            this.openView();
-        }
-
-        var mainWidth = DimensionUtil.getProgramWidth();
-        var mainHeight = DimensionUtil.getProgramHeight();
-
-        // Center da sun
-        this.sun.setX(DimensionUtil.getCenterCords(this.sun.getImage().getWidth(), this.sun.getImage().getHeight()).getX());
-        this.sun.setY(0);
-
-        // Stretch the background across entire screen
-        if (this.stretchLeft.getFitHeight() != mainWidth) {
-            this.stretchLeft.setFitHeight(mainWidth);
-        }
-
-        this.stretchRight.setX(DimensionUtil.getTopRight(this.stretchLeft));
-
-        if (this.stretchRight.getFitWidth() != (mainWidth - this.stretchLeft.getImage().getWidth())) {
-            this.stretchRight.setFitWidth(mainWidth - this.stretchLeft.getImage().getWidth());
-        }
-
-        if (this.stretchRight.getFitHeight() != mainHeight) {
-            this.stretchRight.setFitHeight(mainHeight);
-        }
-
-        // Set left view to... bottom left
-        this.viewLeft.setY(mainHeight - this.viewLeft.getImage().getHeight());
-
-        // Set right view to... bottom right
-        this.viewRight.setX(mainWidth - this.viewRight.getImage().getWidth());
-        this.viewRight.setY(mainHeight - this.viewRight.getImage().getHeight());
     }
 
     public void openView() {

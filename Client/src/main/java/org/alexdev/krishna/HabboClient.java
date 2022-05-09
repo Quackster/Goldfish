@@ -1,7 +1,6 @@
 package org.alexdev.krishna;
 
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.scene.input.MouseButton;
@@ -13,7 +12,6 @@ import org.alexdev.krishna.scenes.HabboSceneType;
 import org.alexdev.krishna.scenes.hotelview.HotelViewManager;
 import org.alexdev.krishna.scenes.loader.LoaderManager;
 import org.alexdev.krishna.util.StaticSettings;
-import javafx.scene.robot.Robot;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -86,7 +84,7 @@ public class HabboClient extends Application {
             scene.init();
             setupScene(scene);
             this.primaryStage.setScene(scene.getScene());
-            scene.renderTick();
+            scene.update();
         }
     }
 

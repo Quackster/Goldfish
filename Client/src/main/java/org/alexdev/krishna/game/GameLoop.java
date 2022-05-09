@@ -33,8 +33,6 @@ public class GameLoop implements Runnable {
             while (unprocessed >= 1) {
                 ticks++;
                 unprocessed -= 1;
-
-                update();
                 render();
             }
 
@@ -54,23 +52,6 @@ public class GameLoop implements Runnable {
         }
     }
 
-    private void update() {
-        for (var scene : HabboClient.getInstance().getScenes().values()) {
-            if (!scene.isReady()) {
-                continue;
-            }
-
-            Platform.runLater(() -> {
-                try {
-                    scene.updateTick();
-                } catch (Exception ex) {
-                    System.out.println("Scene crash: ");
-                    ex.printStackTrace();
-                }
-            });
-        }
-    }
-
     private void render() {
         for (var scene : HabboClient.getInstance().getScenes().values()) {
             if (!scene.isReady()) {
@@ -79,7 +60,7 @@ public class GameLoop implements Runnable {
 
             Platform.runLater(() -> {
                 try {
-                    scene.renderTick();
+                    scene.update();
                 } catch (Exception ex) {
                     System.out.println("Scene crash: ");
                     ex.printStackTrace();

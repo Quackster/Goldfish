@@ -15,32 +15,54 @@ import java.io.IOException;
 public class Cloud extends Pane {
     private int pTurnPoint;
     private String fileName;
+    private String direction;
     private boolean isFinished;
     private boolean isTurning;
+
     private ImageView cloud;
+    private BufferedImage leftImage;
+    private BufferedImage rightImage;
+
     private int pVertDir;
     private int pCloudDir;
     private int initX;
     private int initY;
 
-    public Cloud(int turnPoint, String fileName, int initX, int initY) {
+    public Cloud(int turnPoint, String fileName, String direction, int initX, int initY) {
         this.pTurnPoint = turnPoint;
         this.fileName = fileName;
+        this.direction = direction;
         this.isFinished = false;
         this.isTurning = false;
         this.initX = initX;
         this.initY = initY;
-    }
-
-    public void init() {
         this.cloud = new ImageView();
         this.pCloudDir = -1;
         this.pVertDir = -1;
+    }
 
-        this.cloud.setImage(new Image(new File("resources/scenes/hotel_view/clouds/" + fileName + ".png").toURI().toString()));
+    public void init() {
+        this.cloud.setImage(new Image(new File(getCloudPath()).toURI().toString()));
         this.cloud.setX(this.initX);
         this.cloud.setY(this.initY);
+
+        this.loadClouds();
         this.getChildren().add(this.cloud);
+    }
+
+    private void loadClouds() {
+        this.leftImage = null;
+        this.rightImage = null;
+        try
+        {
+
+            this.rightImage = ImageIO.read(new File(this.getFlippedCloudPath())); // eventually C:\\ImageTest\\pic2.jpg
+            this.leftImage = ImageIO.read(new File(this.getCloudPath())); // eventually C:\\ImageTest\\pic2.jpg
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     public void update() {
@@ -78,41 +100,12 @@ public class Cloud extends Pane {
 
         pVertDir = 0;
 
-        BufferedImage leftImage = null;
-        BufferedImage rightImage = null;
-        try
-        {
-            String direction = null;
-
-            if (this.fileName.split("_")[2].equals("left")) {
-                direction = "right";
-            } else {
-                direction = "left";
-            }
-
-            var fileName = this.fileName.split("_")[0] + "_" + this.fileName.split("_")[1] + "_" + direction;
-            rightImage = ImageIO.read(new File("resources/scenes/hotel_view/clouds/" + fileName + ".png")); // eventually C:\\ImageTest\\pic2.jpg
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-
-        try
-        {
-            leftImage = ImageIO.read(new File("resources/scenes/hotel_view/clouds/" + this.fileName + ".png")); // eventually C:\\ImageTest\\pic2.jpg
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-
         int leftWidth = (int) (this.cloud.getImage().getWidth() - (DimensionUtil.getTopRight(this.cloud) - this.pTurnPoint));
-        int rightWidth = (int) rightImage.getWidth() - leftWidth;
+        int rightWidth = (int) this.rightImage.getWidth() - leftWidth;
 
         if (leftWidth > 0) {
-            var croppedLeft = leftImage.getSubimage(0, 0, leftWidth, (int) leftImage.getHeight());
-            var croppedRight = rightImage.getSubimage(leftWidth, 0, rightWidth, (int) rightImage.getHeight());
+            var croppedLeft = this.leftImage.getSubimage(0, 0, leftWidth, (int) this.leftImage.getHeight());
+            var croppedRight = this.rightImage.getSubimage(leftWidth, 0, rightWidth, (int) this.rightImage.getHeight());
 
             int width = croppedLeft.getWidth() + croppedRight.getWidth();
             int height = Math.max(croppedLeft.getHeight(), croppedRight.getHeight());
@@ -127,11 +120,10 @@ public class Cloud extends Pane {
             }
             
         } else {
-            this.cloud.setImage(SwingFXUtils.toFXImage(rightImage, null));
+            this.cloud.setImage(SwingFXUtils.toFXImage(this.rightImage, null));
             this.setTranslateY(-1);
         }
     }
-
 
     public static BufferedImage joinBufferedImage(BufferedImage img1, BufferedImage img2, int width, int height, int y, int y2) {
         BufferedImage newImage = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
@@ -151,6 +143,20 @@ public class Cloud extends Pane {
         g2.dispose();
 
         return newImage;
+    }
+
+    private String getCloudPath() {
+        return "resources/scenes/hotel_view/clouds/" + this.fileName + "_" + this.direction + ".png";
+    }
+
+    private String getFlippedCloudPath() {
+        String oppositeDirection = this.direction;
+
+        if (oppositeDirection.equals("left")) {
+            oppositeDirection = "right";
+        }
+
+        return "resources/scenes/hotel_view/clouds/" + this.fileName + "_" + oppositeDirection + ".png";
     }
 
     public boolean isFinished() {

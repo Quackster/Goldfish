@@ -77,10 +77,25 @@ public class LoaderManager extends HabboScene {
         this.isInitialised = true;
     }
 
-    public void updateTick() {
+    public void update() {
         if (!this.isInitialised)
             return;
 
+        this.handleResize();
+        this.progressLoader();
+    }
+
+    private void handleResize() {
+        var loadingLogoCords = DimensionUtil.getCenterCords(this.loadingLogo.getImage().getWidth(), this.loadingLogo.getImage().getHeight());
+        this.loadingLogo.setX(loadingLogoCords.getX());
+        this.loadingLogo.setY(DimensionUtil.roundEven(loadingLogoCords.getY() - (loadingLogoCords.getY() * 0.20)));
+
+        var loadingBarCords = DimensionUtil.getCenterCords(this.loadingBar.getImage().getWidth(), this.loadingBar.getImage().getHeight());
+        this.loadingBar.setX(loadingBarCords.getX());
+        this.loadingBar.setY(DimensionUtil.roundEven(loadingBarCords.getY() + (loadingBarCords.getY() * 0.80)));
+    }
+
+    private void progressLoader() {
         long timeDifference = DateUtil.getCurrentTimeSeconds() - this.timeSinceStart;
         long tickInterval = 2; //
 
@@ -102,26 +117,6 @@ public class LoaderManager extends HabboScene {
                 Platform.runLater(() -> HabboClient.getInstance().showStage(HabboSceneType.HOTEL_VIEW));
             }
         }
-    }
-
-    public void renderTick() {
-        if (!this.isInitialised)
-            return;
-
-        /*if (isDragged) {
-            this.logo.setX(X);
-            this.logo.setY(Y);
-        } else {*/
-
-        var loadingLogoCords = DimensionUtil.getCenterCords(this.loadingLogo.getImage().getWidth(), this.loadingLogo.getImage().getHeight());
-        this.loadingLogo.setX(loadingLogoCords.getX());
-        this.loadingLogo.setY(DimensionUtil.roundEven(loadingLogoCords.getY() - (loadingLogoCords.getY() * 0.20)));
-
-        var loadingBarCords = DimensionUtil.getCenterCords(this.loadingBar.getImage().getWidth(), this.loadingBar.getImage().getHeight());
-        this.loadingBar.setX(loadingBarCords.getX());
-        this.loadingBar.setY(DimensionUtil.roundEven(loadingBarCords.getY() + (loadingBarCords.getY() * 0.80)));
-
-        //}
     }
 
     @Override

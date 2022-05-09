@@ -12,9 +12,7 @@ public abstract class HabboScene {
 
     public abstract boolean isReady();
     public abstract void init();
-
-    public abstract void updateTick();
-    public abstract void renderTick();
+    public abstract void update();
 
     public abstract Scene getScene();
 }
