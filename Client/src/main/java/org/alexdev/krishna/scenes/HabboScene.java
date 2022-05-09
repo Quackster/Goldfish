@@ -2,9 +2,7 @@ package org.alexdev.krishna.scenes;
 
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import org.alexdev.krishna.Krishna;
 import org.alexdev.krishna.util.DimensionUtil;
 
 public abstract class HabboScene {

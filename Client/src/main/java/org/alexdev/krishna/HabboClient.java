@@ -19,6 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 public class HabboClient extends Application {
+    private static HabboClient instance;
     private Stage primaryStage;
     private GameLoop gameLoop;
 
@@ -28,10 +29,8 @@ public class HabboClient extends Application {
         this.scenes = new ConcurrentHashMap<>();
     }
 
-    @Override
-    public void init() {
-        Krishna.setClient(this);
-        startGameLoop();
+    public static void main(String[] args) {
+        Application.launch();
     }
 
     public void startGameLoop() {
@@ -49,6 +48,12 @@ public class HabboClient extends Application {
 
         this.gameLoop.setRunning(false);
         this.gameLoop = null;
+    }
+
+    @Override
+    public void init() {
+        instance = this;
+        startGameLoop();
     }
 
     @Override
@@ -108,5 +113,8 @@ public class HabboClient extends Application {
 
     public ConcurrentMap<HabboSceneType, HabboScene> getScenes() {
         return scenes;
+    }
+    public static HabboClient getInstance() {
+        return instance;
     }
 }

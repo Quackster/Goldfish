@@ -13,12 +13,4 @@ public class Krishna {
     public static void main(String[] args) {
         Application.launch(HabboClient.class);
     }
-
-    public static HabboClient getClient() {
-        return client;
-    }
-
-    public static void setClient(HabboClient instance) {
-        client = instance;
-    }
 }

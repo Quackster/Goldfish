@@ -6,7 +6,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import org.alexdev.krishna.Krishna;
+import org.alexdev.krishna.HabboClient;
 import org.alexdev.krishna.game.GameLoop;
 import org.alexdev.krishna.scenes.HabboScene;
 import org.alexdev.krishna.util.DateUtil;
@@ -79,7 +79,7 @@ public class HotelViewManager extends HabboScene {
         this.sun.setX(DimensionUtil.getCenterCords(this.sun.getImage().getWidth(), this.sun.getImage().getHeight()).getX());
 
         this.pViewOpenTime = System.currentTimeMillis() + MAX_VIEW_TIME;
-        this.bottomReveal.setY(Krishna.getClient().getPrimaryStage().getHeight() / 2);
+        this.bottomReveal.setY(HabboClient.getInstance().getPrimaryStage().getHeight() / 2);
 
         this.stretchBars();
 
@@ -205,10 +205,10 @@ public class HotelViewManager extends HabboScene {
     }
 
     private void stretchBars() {
-        this.topReveal.setWidth(Krishna.getClient().getPrimaryStage().getWidth());
-        this.topReveal.setHeight(Krishna.getClient().getPrimaryStage().getHeight() / 2);
-        this.bottomReveal.setWidth(Krishna.getClient().getPrimaryStage().getWidth());
-        this.bottomReveal.setHeight(Krishna.getClient().getPrimaryStage().getHeight() / 2);
+        this.topReveal.setWidth(HabboClient.getInstance().getPrimaryStage().getWidth());
+        this.topReveal.setHeight(HabboClient.getInstance().getPrimaryStage().getHeight() / 2);
+        this.bottomReveal.setWidth(HabboClient.getInstance().getPrimaryStage().getWidth());
+        this.bottomReveal.setHeight(HabboClient.getInstance().getPrimaryStage().getHeight() / 2);
     }
 
     private void viewTaskFinished() {

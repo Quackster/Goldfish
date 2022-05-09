@@ -2,11 +2,6 @@ package org.alexdev.krishna.game;
 
 import javafx.application.Platform;
 import org.alexdev.krishna.HabboClient;
-import org.alexdev.krishna.Krishna;
-import org.alexdev.krishna.scenes.HabboScene;
-import org.alexdev.krishna.scenes.HabboSceneType;
-
-import java.util.concurrent.ConcurrentMap;
 
 public class GameLoop implements Runnable {
     public static final int MAX_FPS = 10;
@@ -60,7 +55,7 @@ public class GameLoop implements Runnable {
     }
 
     private void update() {
-        for (var scene : Krishna.getClient().getScenes().values()) {
+        for (var scene : HabboClient.getInstance().getScenes().values()) {
             if (!scene.isReady()) {
                 continue;
             }
@@ -77,7 +72,7 @@ public class GameLoop implements Runnable {
     }
 
     private void render() {
-        for (var scene : Krishna.getClient().getScenes().values()) {
+        for (var scene : HabboClient.getInstance().getScenes().values()) {
             if (!scene.isReady()) {
                 continue;
             }

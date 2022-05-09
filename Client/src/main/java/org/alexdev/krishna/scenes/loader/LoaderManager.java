@@ -5,7 +5,7 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
-import org.alexdev.krishna.Krishna;
+import org.alexdev.krishna.HabboClient;
 import org.alexdev.krishna.scenes.HabboScene;
 import org.alexdev.krishna.scenes.HabboSceneType;
 import org.alexdev.krishna.util.DateUtil;
@@ -99,7 +99,7 @@ public class LoaderManager extends HabboScene {
 
             if (progress == 112) {
                 this.isInitialised = false;
-                Platform.runLater(() -> Krishna.getClient().showStage(HabboSceneType.HOTEL_VIEW));
+                Platform.runLater(() -> HabboClient.getInstance().showStage(HabboSceneType.HOTEL_VIEW));
             }
         }
     }
