@@ -6,12 +6,13 @@ import javafx.scene.layout.Pane;
 import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import org.alexdev.krishna.game.GameLoop;
+import org.alexdev.krishna.rendering.game.GameLoop;
 import org.alexdev.krishna.util.DimensionUtil;
-import org.alexdev.krishna.visualisers.Visualiser;
-import org.alexdev.krishna.visualisers.VisualiserType;
-import org.alexdev.krishna.visualisers.entry.EntryVisualiser;
-import org.alexdev.krishna.visualisers.loader.LoaderVisualiser;
+import org.alexdev.krishna.rendering.visualisers.Visualiser;
+import org.alexdev.krishna.rendering.visualisers.VisualiserType;
+import org.alexdev.krishna.rendering.visualisers.types.EntryVisualiser;
+import org.alexdev.krishna.rendering.visualisers.types.LoaderVisualiser;
+import org.alexdev.krishna.rendering.visualisers.types.RoomVisualiser;
 
 import java.awt.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -87,8 +88,7 @@ public class HabboClient extends Application {
     public void showVisualiser(VisualiserType type) {
         var visualiser = this.visualisers.get(type);
 
-        if (visualiser != null)
-        {
+        if (visualiser != null) {
             visualiser.init();
             setupVisualiser(visualiser);
             this.primaryStage.setScene(visualiser.getScene());
@@ -111,6 +111,7 @@ public class HabboClient extends Application {
     private void setupVisualisers() {
         this.visualisers.put(VisualiserType.LOADER, new LoaderVisualiser());
         this.visualisers.put(VisualiserType.HOTEL_VIEW, new EntryVisualiser());
+        this.visualisers.put(VisualiserType.ROOM, new RoomVisualiser());
     }
 
     public Stage getPrimaryStage() {

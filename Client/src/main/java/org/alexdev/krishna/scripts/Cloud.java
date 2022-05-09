@@ -1,4 +1,4 @@
-package org.alexdev.krishna.scripts.entry;
+package org.alexdev.krishna.scripts;
 
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;

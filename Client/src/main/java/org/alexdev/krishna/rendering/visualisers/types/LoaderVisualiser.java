@@ -1,4 +1,4 @@
-package org.alexdev.krishna.visualisers.loader;
+package org.alexdev.krishna.rendering.visualisers.types;
 
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -6,8 +6,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import org.alexdev.krishna.HabboClient;
-import org.alexdev.krishna.visualisers.Visualiser;
-import org.alexdev.krishna.visualisers.VisualiserType;
+import org.alexdev.krishna.rendering.visualisers.Visualiser;
+import org.alexdev.krishna.rendering.visualisers.VisualiserType;
 import org.alexdev.krishna.util.DateUtil;
 import org.alexdev.krishna.util.DimensionUtil;
 

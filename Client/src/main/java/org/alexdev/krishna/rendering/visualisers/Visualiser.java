@@ -1,4 +1,4 @@
-package org.alexdev.krishna.visualisers;
+package org.alexdev.krishna.rendering.visualisers;
 
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;

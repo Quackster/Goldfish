@@ -1,4 +1,4 @@
-package org.alexdev.krishna.visualisers.entry;
+package org.alexdev.krishna.rendering.visualisers.types;
 
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -7,11 +7,11 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import org.alexdev.krishna.HabboClient;
-import org.alexdev.krishna.game.GameLoop;
-import org.alexdev.krishna.scripts.entry.Cloud;
+import org.alexdev.krishna.rendering.game.GameLoop;
+import org.alexdev.krishna.scripts.Cloud;
 import org.alexdev.krishna.util.DateUtil;
 import org.alexdev.krishna.util.DimensionUtil;
-import org.alexdev.krishna.visualisers.Visualiser;
+import org.alexdev.krishna.rendering.visualisers.Visualiser;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -190,12 +190,12 @@ public class EntryVisualiser extends Visualiser {
         // Remove old clouds
         this.clouds.removeIf(Cloud::isFinished);
 
-        if (DateUtil.getCurrentTimeSeconds() > this.timeNextCloud && this.clouds.size() < 12) {
+        if (DateUtil.getCurrentTimeSeconds() > this.timeNextCloud && this.clouds.size() < 24) {
             int initX = 0;
             int initY = ThreadLocalRandom.current().nextInt(0, (int) (DimensionUtil.getProgramHeight()*0.66));
 
             this.addCloud("left", initX, initY);
-            this.timeNextCloud = DateUtil.getCurrentTimeSeconds() + ThreadLocalRandom.current().nextInt(1, 4);
+            this.timeNextCloud = DateUtil.getCurrentTimeSeconds() + ThreadLocalRandom.current().nextInt(1, 10);
         }
     }
 
