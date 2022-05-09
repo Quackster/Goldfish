@@ -1,4 +1,4 @@
-package org.alexdev.krishna.scenes.hotelview;
+package org.alexdev.krishna.visualisers.entry;
 
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -8,17 +8,17 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import org.alexdev.krishna.HabboClient;
 import org.alexdev.krishna.game.GameLoop;
-import org.alexdev.krishna.scenes.HabboScene;
+import org.alexdev.krishna.scripts.entry.Cloud;
 import org.alexdev.krishna.util.DateUtil;
 import org.alexdev.krishna.util.DimensionUtil;
+import org.alexdev.krishna.visualisers.Visualiser;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
 
-public class HotelViewManager extends HabboScene {
+public class EntryVisualiser extends Visualiser {
     private Pane pane;
     private Scene scene;
     private boolean isInitialised;
@@ -47,7 +47,7 @@ public class HotelViewManager extends HabboScene {
     public boolean queueCloseView = false;
     private boolean queueAnimateSign = false;
 
-    public HotelViewManager() {
+    public EntryVisualiser() {
         this.timeSinceStart = (System.currentTimeMillis() / 1000L);
     }
 
@@ -59,7 +59,7 @@ public class HotelViewManager extends HabboScene {
         this.clouds = new ArrayList<>();
 
         this.pane = new Pane();
-        this.scene = HabboScene.create(this.pane);
+        this.scene = Visualiser.create(this.pane);
 
         this.topReveal = new Rectangle(1,1);
         this.topReveal.setFill(Color.BLACK);
@@ -116,12 +116,20 @@ public class HotelViewManager extends HabboScene {
         this.queueAnimateSign = true;
         this.isInitialised = true;
 
-        // Kickstart some clouds :^)
-        for (int i = 0; i < ThreadLocalRandom.current().nextInt(2, 5); i++) {
+        // Kickstart some clouds after turn point :^)
+        for (int i = 0; i < ThreadLocalRandom.current().nextInt(2, 5) + 1; i++) {
             int initX = this.pTurnPoint + ThreadLocalRandom.current().nextInt(30, (int) (DimensionUtil.getProgramWidth()*0.5));;
             int initY = ThreadLocalRandom.current().nextInt(0, (int) (DimensionUtil.getProgramHeight()*0.66));
 
             this.addCloud("right", initX, initY);
+        }
+
+        // Kickstart some clouds before turn point :^)
+        for (int i = 0; i < ThreadLocalRandom.current().nextInt(1, 2) + 1; i++) {
+            int initX = this.pTurnPoint - ThreadLocalRandom.current().nextInt(35, 60);
+            int initY = ThreadLocalRandom.current().nextInt(0, (int) (DimensionUtil.getProgramHeight()*0.66));
+
+            this.addCloud("left", initX, initY);
         }
     }
 
@@ -198,7 +206,6 @@ public class HotelViewManager extends HabboScene {
         var cloudType = ThreadLocalRandom.current().nextInt(4);
         var cloud = new Cloud(this.pTurnPoint, "cloud_" + cloudType, direction, initX, initY);
         cloud.setViewOrder(CLOUD_Z_INDEX);
-        cloud.init();
 
         this.clouds.add(cloud);
         this.pane.getChildren().add(cloud);

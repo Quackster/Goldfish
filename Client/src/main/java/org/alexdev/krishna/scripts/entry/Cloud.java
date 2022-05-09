@@ -1,4 +1,4 @@
-package org.alexdev.krishna.scenes.hotelview;
+package org.alexdev.krishna.scripts.entry;
 
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
@@ -43,11 +43,15 @@ public class Cloud extends Pane {
             this.pVertDir = -1;
         else
             this.pVertDir = 1;
-    }
 
-    public void init() {
         this.cloud.setImage(new Image(new File(getCloudPath()).toURI().toString()));
-        this.cloud.setX(this.initX);
+
+        // If the X is at the start, subtract its width so it slowly slides instead of just suddenly appearing
+        if (this.initX <= 0)
+            this.cloud.setX(this.initX - this.cloud.getImage().getWidth());
+        else
+            this.cloud.setX(this.initX);
+
         this.cloud.setY(this.initY);
 
         this.loadClouds();
@@ -57,14 +61,11 @@ public class Cloud extends Pane {
     private void loadClouds() {
         this.leftImage = null;
         this.rightImage = null;
-        try
-        {
 
+        try {
             this.rightImage = ImageIO.read(new File(this.getFlippedCloudPath())); // eventually C:\\ImageTest\\pic2.jpg
             this.leftImage = ImageIO.read(new File(this.getCloudPath())); // eventually C:\\ImageTest\\pic2.jpg
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

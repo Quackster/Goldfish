@@ -1,4 +1,4 @@
-package org.alexdev.krishna.scenes.loader;
+package org.alexdev.krishna.visualisers.loader;
 
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -6,14 +6,14 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import org.alexdev.krishna.HabboClient;
-import org.alexdev.krishna.scenes.HabboScene;
-import org.alexdev.krishna.scenes.HabboSceneType;
+import org.alexdev.krishna.visualisers.Visualiser;
+import org.alexdev.krishna.visualisers.VisualiserType;
 import org.alexdev.krishna.util.DateUtil;
 import org.alexdev.krishna.util.DimensionUtil;
 
 import java.io.File;
 
-public class LoaderManager extends HabboScene {
+public class LoaderVisualiser extends Visualiser {
     private Pane pane;
     private Scene scene;
     private boolean isInitialised;
@@ -23,7 +23,7 @@ public class LoaderManager extends HabboScene {
     private ImageView loadingBar;
     private int ticked = -1;
 
-    public LoaderManager() {
+    public LoaderVisualiser() {
         this.timeSinceStart = DateUtil.getCurrentTimeSeconds();
     }
 
@@ -33,7 +33,7 @@ public class LoaderManager extends HabboScene {
             return;
 
         this.pane = new Pane();
-        this.scene = HabboScene.create(this.pane);
+        this.scene = Visualiser.create(this.pane);
 
         this.loadingLogo = new ImageView();
         this.loadingLogo.setImage(new Image(new File("resources/scenes/loader/logo.png").toURI().toString()));
@@ -114,7 +114,7 @@ public class LoaderManager extends HabboScene {
 
             if (progress == 112) {
                 this.isInitialised = false;
-                Platform.runLater(() -> HabboClient.getInstance().showStage(HabboSceneType.HOTEL_VIEW));
+                Platform.runLater(() -> HabboClient.getInstance().showVisualiser(VisualiserType.HOTEL_VIEW));
             }
         }
     }

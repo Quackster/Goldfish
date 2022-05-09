@@ -1,11 +1,11 @@
-package org.alexdev.krishna.scenes;
+package org.alexdev.krishna.visualisers;
 
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import org.alexdev.krishna.util.DimensionUtil;
 
-public abstract class HabboScene {
+public abstract class Visualiser {
     protected static Scene create(Pane pane) {
         return new Scene(pane, DimensionUtil.getProgramWidth(), DimensionUtil.getProgramHeight(), Color.BLACK);
     }

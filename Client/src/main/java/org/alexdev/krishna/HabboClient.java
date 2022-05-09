@@ -7,12 +7,13 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import org.alexdev.krishna.game.GameLoop;
-import org.alexdev.krishna.scenes.HabboScene;
-import org.alexdev.krishna.scenes.HabboSceneType;
-import org.alexdev.krishna.scenes.hotelview.HotelViewManager;
-import org.alexdev.krishna.scenes.loader.LoaderManager;
-import org.alexdev.krishna.util.StaticSettings;
+import org.alexdev.krishna.util.DimensionUtil;
+import org.alexdev.krishna.visualisers.Visualiser;
+import org.alexdev.krishna.visualisers.VisualiserType;
+import org.alexdev.krishna.visualisers.entry.EntryVisualiser;
+import org.alexdev.krishna.visualisers.loader.LoaderVisualiser;
 
+import java.awt.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -21,10 +22,10 @@ public class HabboClient extends Application {
     private Stage primaryStage;
     private GameLoop gameLoop;
 
-    private final ConcurrentMap<HabboSceneType, HabboScene> scenes;
+    private final ConcurrentMap<VisualiserType, Visualiser> visualisers;
 
     public HabboClient() {
-        this.scenes = new ConcurrentHashMap<>();
+        this.visualisers = new ConcurrentHashMap<>();
     }
 
     public static void main(String[] args) {
@@ -59,15 +60,22 @@ public class HabboClient extends Application {
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Habbo Client");
 
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        double width = screenSize.getWidth();
+        double height = screenSize.getHeight();
+
+        var WIDTH = (int) DimensionUtil.roundEven(width * 0.5);
+        var HEIGHT = (int) DimensionUtil.roundEven(height * 0.5);
+
         Pane pane = new Pane();
-        Scene mainScene = new Scene(pane, StaticSettings.WIDTH, StaticSettings.HEIGHT, Color.BLACK);
+        Scene mainScene = new Scene(pane, WIDTH, HEIGHT, Color.BLACK);
 
         primaryStage.setScene(mainScene);
         primaryStage.show();
 
-        this.setupStages();
-        // this.showStage(HabboSceneType.LOADER);
-        this.showStage(HabboSceneType.HOTEL_VIEW);
+        this.setupVisualisers();
+        //this.showStage(HabboSceneType.LOADER);
+        this.showVisualiser(VisualiserType.HOTEL_VIEW);
     }
 
     @Override
@@ -76,20 +84,20 @@ public class HabboClient extends Application {
             this.gameLoop.setRunning(false);
     }
 
-    public void showStage(HabboSceneType type) {
-        var scene = this.scenes.get(type);
+    public void showVisualiser(VisualiserType type) {
+        var visualiser = this.visualisers.get(type);
 
-        if (scene != null)
+        if (visualiser != null)
         {
-            scene.init();
-            setupScene(scene);
-            this.primaryStage.setScene(scene.getScene());
-            scene.update();
+            visualiser.init();
+            setupVisualiser(visualiser);
+            this.primaryStage.setScene(visualiser.getScene());
+            visualiser.update();
         }
     }
 
-    private void setupScene(HabboScene scene) {
-        scene.getScene().setOnMouseClicked(x -> {
+    private void setupVisualiser(Visualiser visualiser) {
+        visualiser.getScene().setOnMouseClicked(x -> {
             if (x.getButton() == MouseButton.SECONDARY) {
                 if (this.gameLoop != null) {
                     stopGameLoop();
@@ -100,18 +108,19 @@ public class HabboClient extends Application {
         });
     }
 
-    private void setupStages() {
-        this.scenes.put(HabboSceneType.LOADER, new LoaderManager());
-        this.scenes.put(HabboSceneType.HOTEL_VIEW, new HotelViewManager());
+    private void setupVisualisers() {
+        this.visualisers.put(VisualiserType.LOADER, new LoaderVisualiser());
+        this.visualisers.put(VisualiserType.HOTEL_VIEW, new EntryVisualiser());
     }
 
     public Stage getPrimaryStage() {
         return primaryStage;
     }
 
-    public ConcurrentMap<HabboSceneType, HabboScene> getScenes() {
-        return scenes;
+    public ConcurrentMap<VisualiserType, Visualiser> getVisualisers() {
+        return visualisers;
     }
+
     public static HabboClient getInstance() {
         return instance;
     }

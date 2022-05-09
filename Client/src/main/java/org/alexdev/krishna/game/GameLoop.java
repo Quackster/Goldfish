@@ -4,7 +4,7 @@ import javafx.application.Platform;
 import org.alexdev.krishna.HabboClient;
 
 public class GameLoop implements Runnable {
-    public static final int MAX_FPS = 10;
+    public static final int MAX_FPS = 12;
 
     private Thread gameLoop;
     private boolean isRunning;
@@ -53,7 +53,7 @@ public class GameLoop implements Runnable {
     }
 
     private void render() {
-        for (var scene : HabboClient.getInstance().getScenes().values()) {
+        for (var scene : HabboClient.getInstance().getVisualisers().values()) {
             if (!scene.isReady()) {
                 continue;
             }
