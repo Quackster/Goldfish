@@ -19,7 +19,7 @@ public class ResourceManager {
 
     public BufferedImage getAwtImage(String url) {
         try {
-            return ImageIO.read(Objects.requireNonNull(getClass().getResource("/sprites/" + url)));
+            return ImageIO.read(Objects.requireNonNull(getClass().getResource("/" + url)));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -28,7 +28,7 @@ public class ResourceManager {
     }
 
     public URL getResource(String url) {
-        return getClass().getResource("/sprites/" + url);
+        return getClass().getResource("/" + url);
     }
 
     public static ResourceManager getInstance() {

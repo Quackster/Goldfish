@@ -1,6 +1,7 @@
 package org.alexdev.krishna;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.scene.input.MouseButton;
@@ -9,27 +10,27 @@ import javafx.stage.Stage;
 import javafx.scene.text.Font;
 import org.alexdev.krishna.game.resources.ResourceManager;
 import org.alexdev.krishna.interfaces.Alert;
-import org.alexdev.krishna.interfaces.Dialog;
 import org.alexdev.krishna.interfaces.Interface;
-import org.alexdev.krishna.rendering.game.GameLoop;
+import org.alexdev.krishna.game.GameLoop;
 import org.alexdev.krishna.util.DimensionUtil;
 import org.alexdev.krishna.visualisers.Visualiser;
 import org.alexdev.krishna.visualisers.VisualiserType;
-import org.alexdev.krishna.visualisers.types.EntryVisualiser;
-import org.alexdev.krishna.visualisers.types.LoaderVisualiser;
-import org.alexdev.krishna.visualisers.types.RoomVisualiser;
+import org.alexdev.krishna.visualisers.types.entry.EntryVisualiser;
+import org.alexdev.krishna.visualisers.types.loader.LoaderVisualiser;
+import org.alexdev.krishna.visualisers.types.room.RoomVisualiser;
 
 import java.awt.*;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.*;
 
 public class HabboClient extends Application {
     public static Font volter;
     public static Font volterBold;
     public static Font volterLarge;
     public static Font volterBoldLarge;
+
+    private ScheduledExecutorService schedulerService;
 
     private static HabboClient instance;
     private Stage primaryStage;
@@ -41,6 +42,7 @@ public class HabboClient extends Application {
     public HabboClient() {
         this.visualisers = new ConcurrentHashMap<>();
         this.interfaces = new ArrayList<Interface>();
+        this.schedulerService =  Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
     }
 
     public static void main(String[] args) {
@@ -76,7 +78,7 @@ public class HabboClient extends Application {
         System.setProperty("prism.lcdtext", "false");
         System.setProperty("prism.subpixeltext", "false");
 
-        this.loadFonts();
+        //this.loadFonts();
 
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Habbo Client");
@@ -107,14 +109,16 @@ public class HabboClient extends Application {
     }
 
     public void loadFonts() {
-        try {
-            volter = Font.loadFont(ResourceManager.getInstance().getResource("volter/volter.woff").openStream(), 9);
-            volterBold = Font.loadFont(ResourceManager.getInstance().getResource("volter/volter_bold.woff").openStream(), 9);
-            volterLarge = Font.loadFont(ResourceManager.getInstance().getResource("volter/volter.woff").openStream(), 18);
-            volterBoldLarge = Font.loadFont(ResourceManager.getInstance().getResource("volter/volter_bold.woff").openStream(), 18);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        new Thread(() -> {
+            try {
+                volter = Font.loadFont(ResourceManager.getInstance().getResource("sprites/volter/volter.woff").openStream(), 9);
+                volterBold = Font.loadFont(ResourceManager.getInstance().getResource("sprites/volter/volter_bold.woff").openStream(), 9);
+                volterLarge = Font.loadFont(ResourceManager.getInstance().getResource("sprites/volter/volter.woff").openStream(), 18);
+                volterBoldLarge = Font.loadFont(ResourceManager.getInstance().getResource("sprites/volter/volter_bold.woff").openStream(), 18);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 
     public void showVisualiser(VisualiserType type) {
@@ -124,7 +128,7 @@ public class HabboClient extends Application {
             visualiser.init();
             setupVisualiser(visualiser);
             this.primaryStage.setScene(visualiser.getScene());
-            visualiser.update();
+            //visualiser.update();
         }
     }
 
@@ -142,8 +146,8 @@ public class HabboClient extends Application {
 
     private void setupVisualisers() {
         this.visualisers.put(VisualiserType.LOADER, new LoaderVisualiser());
-        this.visualisers.put(VisualiserType.HOTEL_VIEW, new EntryVisualiser());
-        this.visualisers.put(VisualiserType.ROOM, new RoomVisualiser());
+        //this.visualisers.put(VisualiserType.HOTEL_VIEW, new EntryVisualiser());
+        //this.visualisers.put(VisualiserType.ROOM, new RoomVisualiser());
     }
 
     private void setupInterfaces() {
@@ -164,5 +168,9 @@ public class HabboClient extends Application {
 
     public static HabboClient getInstance() {
         return instance;
+    }
+
+    public ScheduledExecutorService getScheduler() {
+        return schedulerService;
     }
 }

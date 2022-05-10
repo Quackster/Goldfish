@@ -97,15 +97,15 @@ public class Dialog extends Interface {
 
         topLeft = new Pane();
         topLeft.setPrefSize(16, 16);
-        topLeft.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("dialog/top_left_notitle.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        topLeft.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/dialog/top_left_notitle.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
 
         topCenter = new Pane();
         topCenter.setMinSize(1, 16);
-        topCenter.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("dialog/top_center_notitle.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        topCenter.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/dialog/top_center_notitle.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
 
         topRight = new Pane();
         topRight.setPrefSize(16, 16);
-        topRight.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("dialog/top_right_notitle.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        topRight.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/dialog/top_right_notitle.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
 
         top.getChildren().addAll(topLeft, topCenter, topRight);
 
@@ -115,7 +115,7 @@ public class Dialog extends Interface {
 
         centerLeft = new Pane();
         centerLeft.setPrefWidth(16);
-        centerLeft.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("dialog/center_left.png"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        centerLeft.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/dialog/center_left.png"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
 
         centerCenter = new Pane();
         centerCenter.setMinSize(1, 1);
@@ -123,7 +123,7 @@ public class Dialog extends Interface {
 
         centerRight = new Pane();
         centerRight.setPrefWidth(16);
-        centerRight.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("dialog/center_right.png"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        centerRight.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/dialog/center_right.png"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
 
         center.getChildren().addAll(centerLeft, centerCenter, centerRight);
 
@@ -133,15 +133,15 @@ public class Dialog extends Interface {
 
         Pane bottomLeft = new Pane();
         bottomLeft.setPrefSize(16, 16);
-        bottomLeft.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("dialog/bottom_left.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        bottomLeft.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/dialog/bottom_left.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
 
         bottomCenter = new Pane();
         bottomCenter.setMinSize(1, 19);
-        bottomCenter.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("dialog/bottom_center.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        bottomCenter.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/dialog/bottom_center.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
 
         Pane bottomRight = new Pane();
         bottomRight.setPrefSize(16, 16);
-        bottomRight.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("dialog/bottom_right.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        bottomRight.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/dialog/bottom_right.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
 
         bottom.getChildren().addAll(bottomLeft, bottomCenter, bottomRight);
 
@@ -183,15 +183,15 @@ public class Dialog extends Interface {
 
         Pane innerTopLeft = new Pane();
         innerTopLeft.setPrefSize(5, 5);
-        innerTopLeft.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("dialog/inner/top_left.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        innerTopLeft.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/dialog/inner/top_left.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
 
         innerTopCenter = new Pane();
         innerTopCenter.setMinSize(1, 5);
-        innerTopCenter.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("dialog/inner/top_center.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        innerTopCenter.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/dialog/inner/top_center.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
 
         Pane innerTopRight = new Pane();
         innerTopRight.setPrefSize(6, 5);
-        innerTopRight.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("dialog/inner/top_right.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        innerTopRight.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/dialog/inner/top_right.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
 
         innerTop.getChildren().addAll(innerTopLeft, innerTopCenter, innerTopRight);
 
@@ -201,7 +201,7 @@ public class Dialog extends Interface {
 
         innerCenterLeft = new Pane();
         innerCenterLeft.setPrefWidth(5);
-        innerCenterLeft.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("dialog/inner/center_left.png"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        innerCenterLeft.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/dialog/inner/center_left.png"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
 
         innerCenterCenter = new Pane();
         innerCenterCenter.setMinSize(1, 1);
@@ -209,7 +209,7 @@ public class Dialog extends Interface {
 
         innerCenterRight = new Pane();
         innerCenterRight.setPrefWidth(6);
-        innerCenterRight.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("dialog/inner/center_right.png"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        innerCenterRight.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/dialog/inner/center_right.png"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
 
         innerCenter.getChildren().addAll(innerCenterLeft, innerCenterCenter, innerCenterRight);
 
@@ -219,15 +219,15 @@ public class Dialog extends Interface {
 
         Pane innerBottomLeft = new Pane();
         innerBottomLeft.setPrefSize(5, 6);
-        innerBottomLeft.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("dialog/inner/bottom_left.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        innerBottomLeft.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/dialog/inner/bottom_left.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
 
         innerBottomCenter = new Pane();
         innerBottomCenter.setMinSize(1, 6);
-        innerBottomCenter.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("dialog/inner/bottom_center.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        innerBottomCenter.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/dialog/inner/bottom_center.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
 
         Pane innerBottomRight = new Pane();
         innerBottomRight.setPrefSize(6, 6);
-        innerBottomRight.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("dialog/inner/bottom_right.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        innerBottomRight.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/dialog/inner/bottom_right.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
 
         innerBottom.getChildren().addAll(innerBottomLeft, innerBottomCenter, innerBottomRight);
 
@@ -240,13 +240,13 @@ public class Dialog extends Interface {
         top.setMinHeight(21);
 
         topLeft.setPrefSize(16, 21);
-        topLeft.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("dialog/top_left.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        topLeft.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/dialog/top_left.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
 
         topCenter.setMinSize(1, 21);
-        topCenter.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("dialog/top_center.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        topCenter.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/dialog/top_center.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
 
         topRight.setPrefSize(16, 21);
-        topRight.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("dialog/top_right.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        topRight.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/dialog/top_right.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
 
         this.title = new Label(title);
         this.title.setBackground(new Background(new BackgroundFill(Color.web("#6794A7"), CornerRadii.EMPTY, Insets.EMPTY)));

@@ -1,7 +1,8 @@
-package org.alexdev.krishna.visualisers.types;
+package org.alexdev.krishna.visualisers.types.room;
 
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
+import org.alexdev.krishna.visualisers.Component;
 import org.alexdev.krishna.visualisers.Visualiser;
 
 public class RoomVisualiser extends Visualiser {
@@ -24,6 +25,11 @@ public class RoomVisualiser extends Visualiser {
     @Override
     public void update() {
 
+    }
+
+    @Override
+    public Component getComponent() {
+        return null;
     }
 
     @Override

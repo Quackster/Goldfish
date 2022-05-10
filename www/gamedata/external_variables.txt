@@ -1,0 +1,7 @@
+hotel.view.image.top.right=https://cdn.classichabbo.com/krishna/assets/hotel_view/top_right_shadow.png
+hotel.view.image.bottom.right=https://cdn.classichabbo.com/krishna/assets/hotel_view/br_right.png
+hotel.view.image.bottom.left=https://cdn.classichabbo.com/krishna/assets/hotel_view/countries/br_large_noclouds.png
+hotel.view.image.sun=https://cdn.classichabbo.com/krishna/assets/hotel_view/sun.png
+hotel.view.left.color=rgb(117, 175, 203)
+hotel.view.right.color=rgb(139, 205, 233)
+hotel.view.cloud.turn.point=330

@@ -9,7 +9,7 @@ import org.alexdev.krishna.util.DimensionUtil;
 
 public abstract class Visualiser {
     protected static Scene create(Pane pane) {
-        pane.getChildren().addAll(HabboClient.getInstance().getInterfaces());
+        //pane.getChildren().addAll(HabboClient.getInstance().getInterfaces());
         return new Scene(pane, DimensionUtil.getProgramWidth(), DimensionUtil.getProgramHeight(), Color.BLACK);
     }
 
@@ -17,5 +17,6 @@ public abstract class Visualiser {
     public abstract void init();
     public abstract void update();
 
+    public abstract Component getComponent();
     public abstract Scene getScene();
 }

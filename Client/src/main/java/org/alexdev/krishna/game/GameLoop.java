@@ -1,4 +1,4 @@
-package org.alexdev.krishna.rendering.game;
+package org.alexdev.krishna.game;
 
 import javafx.application.Platform;
 import org.alexdev.krishna.HabboClient;

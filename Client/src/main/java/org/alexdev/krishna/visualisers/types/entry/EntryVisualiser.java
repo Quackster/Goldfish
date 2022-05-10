@@ -1,4 +1,4 @@
-package org.alexdev.krishna.visualisers.types;
+package org.alexdev.krishna.visualisers.types.entry;
 
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -7,14 +7,15 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import org.alexdev.krishna.HabboClient;
-import org.alexdev.krishna.game.resources.ResourceManager;
-import org.alexdev.krishna.rendering.game.GameLoop;
+import org.alexdev.krishna.game.values.ValueType;
+import org.alexdev.krishna.game.values.types.PropertiesManager;
+import org.alexdev.krishna.game.GameLoop;
 import org.alexdev.krishna.scripts.Cloud;
 import org.alexdev.krishna.util.DateUtil;
 import org.alexdev.krishna.util.DimensionUtil;
+import org.alexdev.krishna.visualisers.Component;
 import org.alexdev.krishna.visualisers.Visualiser;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -25,7 +26,7 @@ public class EntryVisualiser extends Visualiser {
     private boolean isInitialised;
     private long timeSinceStart;
     private long timeNextCloud;
-    private final int pTurnPoint = 330;
+    private int cloudTurnPoint = 330;
 
     private ImageView topRight;
     private ImageView bottomLeft;
@@ -58,6 +59,7 @@ public class EntryVisualiser extends Visualiser {
             return;
 
         this.clouds = new ArrayList<>();
+        this.cloudTurnPoint = PropertiesManager.getInstance().getInt("hotel.view.cloud.turn.point");
 
         this.pane = new Pane();
         this.scene = Visualiser.create(this.pane);
@@ -69,25 +71,25 @@ public class EntryVisualiser extends Visualiser {
         this.bottomReveal.setFill(Color.BLACK);
 
         this.topRight = new ImageView();
-        this.topRight.setImage(ResourceManager.getInstance().getFxImage("scenes/hotel_view/top_right_shadow.png"));
+        this.topRight.setImage(new Image(PropertiesManager.getInstance().getString("hotel.view.image.top.right")));
         this.topRight.setY(this.topRight.getImage().getHeight() * -1);
 
         this.bottomLeft = new ImageView();
-        this.bottomLeft.setImage(ResourceManager.getInstance().getFxImage("scenes/hotel_view/countries/br_large_noclouds.png"));
+        this.bottomLeft.setImage(new Image(PropertiesManager.getInstance().getString("hotel.view.image.bottom.left")));
 
         this.bottomRight = new ImageView();
-        this.bottomRight.setImage(ResourceManager.getInstance().getFxImage("scenes/hotel_view/br_right.png"));
+        this.bottomRight.setImage(new Image(PropertiesManager.getInstance().getString("hotel.view.image.bottom.right")));
 
         this.stretchLeft = new Rectangle(1,1);//= new ImageView();
-        this.stretchLeft.setFill(Color.rgb(117, 175, 203));
+        this.stretchLeft.setFill((Color) PropertiesManager.getInstance().getType("hotel.view.left.color", ValueType.COLOR_RGB));
         //this.stretchLeft.setImage(new Image(new File("resources/scenes/hotel_view/stretch_left.png").toURI().toString()));
 
         this.stretchRight = new Rectangle(1,1);
-        this.stretchRight.setFill(Color.rgb(139, 205, 233));
+        this.stretchRight.setFill((Color) PropertiesManager.getInstance().getType("hotel.view.right.color", ValueType.COLOR_RGB));
         //this.stretchRight.setImage(new Image(new File("resources/scenes/hotel_view/stretch_right.png").toURI().toString()));
 
         this.sun = new ImageView();
-        this.sun.setImage(new Image(new File("resources/scenes/hotel_view/sun.png").toURI().toString()));
+        this.sun.setImage(new Image(PropertiesManager.getInstance().getString("hotel.view.image.sun")));
         this.sun.setX(DimensionUtil.getCenterCords(this.sun.getImage().getWidth(), this.sun.getImage().getHeight()).getX());
 
         this.pViewOpenTime = System.currentTimeMillis() + MAX_VIEW_TIME;
@@ -119,7 +121,7 @@ public class EntryVisualiser extends Visualiser {
 
         // Kickstart some clouds after turn point :^)
         for (int i = 0; i < ThreadLocalRandom.current().nextInt(2, 5) + 1; i++) {
-            int initX = this.pTurnPoint + ThreadLocalRandom.current().nextInt(30, (int) (DimensionUtil.getProgramWidth()*0.5));;
+            int initX = this.cloudTurnPoint + ThreadLocalRandom.current().nextInt(30, (int) (DimensionUtil.getProgramWidth()*0.5));;
             int initY = ThreadLocalRandom.current().nextInt(0, (int) (DimensionUtil.getProgramHeight()*0.66));
 
             this.addCloud("right", initX, initY);
@@ -127,7 +129,7 @@ public class EntryVisualiser extends Visualiser {
 
         // Kickstart some clouds before turn point :^)
         for (int i = 0; i < ThreadLocalRandom.current().nextInt(1, 2) + 1; i++) {
-            int initX = this.pTurnPoint - ThreadLocalRandom.current().nextInt(35, 60);
+            int initX = this.cloudTurnPoint - ThreadLocalRandom.current().nextInt(35, 60);
             int initY = ThreadLocalRandom.current().nextInt(0, (int) (DimensionUtil.getProgramHeight()*0.66));
 
             this.addCloud("left", initX, initY);
@@ -160,7 +162,7 @@ public class EntryVisualiser extends Visualiser {
 
         // Stretch the background - START
         this.stretchLeft.setHeight(mainHeight);
-        this.stretchLeft.setWidth(this.pTurnPoint);
+        this.stretchLeft.setWidth(this.cloudTurnPoint);
 
         this.stretchRight.setX(this.stretchLeft.getWidth());
         this.stretchRight.setWidth(mainWidth - this.stretchLeft.getWidth());
@@ -174,6 +176,11 @@ public class EntryVisualiser extends Visualiser {
         this.bottomRight.setX(mainWidth - this.bottomRight.getImage().getWidth());
         this.bottomRight.setY(mainHeight - this.bottomRight.getImage().getHeight());
 
+    }
+
+    @Override
+    public Component getComponent() {
+        return null;
     }
 
     /**
@@ -205,7 +212,7 @@ public class EntryVisualiser extends Visualiser {
      */
     public void addCloud(String direction, int initX, int initY) {
         var cloudType = ThreadLocalRandom.current().nextInt(4);
-        var cloud = new Cloud(this.pTurnPoint, "cloud_" + cloudType, direction, initX, initY);
+        var cloud = new Cloud(this.cloudTurnPoint, "cloud_" + cloudType, direction, initX, initY);
         cloud.setViewOrder(CLOUD_Z_INDEX);
 
         this.clouds.add(cloud);
