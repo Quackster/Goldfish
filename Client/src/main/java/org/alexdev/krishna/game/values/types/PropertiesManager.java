@@ -7,6 +7,7 @@ import org.alexdev.krishna.game.values.Values;
 import org.alexdev.krishna.util.libraries.AsyncClientAction;
 
 import java.io.*;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
@@ -22,29 +23,25 @@ public class PropertiesManager extends Values {
 
     }
 
-    private void loadConfig() {
+    public void loadConfig() throws IOException {
         this.setFinished(false);
         this.properties = new HashMap<>();
 
         System.out.println("Loading system configuration...");
 
-        try (InputStream resource = ResourceManager.getInstance().getResource("loader.config").openStream()) {
-            readLines(resource);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        InputStream resource = ResourceManager.getInstance().getResource("loader.config").openStream();
+        readLines(resource);
+        resource.close();
 
         System.out.println(properties.size() + " configuration keys loaded");
     }
 
-    private void loadVariables() {
+    public void loadVariables() throws IOException {
         System.out.println("Loading external variables...");
 
-        try (InputStream resource = new URL(this.properties.get("external.variables")).openStream()) {
-            readLines(resource);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        InputStream resource = new URL(this.properties.get("external.variables")).openStream();
+        readLines(resource);
+        resource.close();
 
         System.out.println(properties.size() + " configuration keys loaded");
     }
@@ -59,19 +56,11 @@ public class PropertiesManager extends Values {
         }
     }
 
-    public static void init() {
+    public static PropertiesManager getInstance() {
         if (instance == null) {
             instance = new PropertiesManager();
         }
 
-        HabboClient.getInstance().getScheduler().schedule(() -> {
-            instance.loadConfig();
-            instance.loadVariables();
-            instance.setFinished(true);
-        }, 0, TimeUnit.SECONDS);
-    }
-
-    public static PropertiesManager getInstance() {
         return instance;
     }
 }

@@ -11,6 +11,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
 import org.alexdev.krishna.HabboClient;
+import org.alexdev.krishna.game.scheduler.SchedulerManager;
 import org.alexdev.krishna.game.values.types.PropertiesManager;
 import org.alexdev.krishna.game.resources.ResourceManager;
 import org.alexdev.krishna.util.libraries.ClientLoadStep;
@@ -20,7 +21,9 @@ import org.alexdev.krishna.util.DateUtil;
 import org.alexdev.krishna.util.DimensionUtil;
 import org.alexdev.krishna.visualisers.VisualiserType;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class LoaderVisualiser extends Visualiser {
@@ -34,7 +37,7 @@ public class LoaderVisualiser extends Visualiser {
     private ImageView loadingLogo;
     private ImageView loadingBar;
     private int loaderProgress;
-    private Map<String, ClientLoadStep> loaderSteps;
+    private List<String> loaderSteps;
 
     public LoaderVisualiser() {
         this.timeSinceStart = DateUtil.getCurrentTimeSeconds();
@@ -48,22 +51,19 @@ public class LoaderVisualiser extends Visualiser {
         this.component = new LoaderComponent();
 
         this.loaderProgress = 0;
-        this.loaderSteps = new HashMap<>();
-        this.loaderSteps.put("load_client_config", LoaderComponent::loadClientConfig);
-        this.loaderSteps.put("load_external_variables", LoaderComponent::loadExternalVariables);
+        this.loaderSteps = new ArrayList<>();
+        this.loaderSteps.add("load_client_config");
+        this.loaderSteps.add("load_external_variables");
 
         this.pane = new Pane();
         this.scene = Visualiser.create(this.pane);
         this.pane.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
 
         this.loadingLogo = new ImageView();
-        //this.loadingLogo.setImage(ResourceManager.getInstance().getFxImage("sprites/scenes/loader/logo.png"));
-        this.loadingLogo.setPreserveRatio(true);
+        this.loadingLogo.setImage(ResourceManager.getInstance().getFxImage("sprites/scenes/loader/logo.png"));
 
         this.loadingBar = new ImageView();
-        //this.loadingBar.setImage(ResourceManager.getInstance().getFxImage("sprites/scenes/loader/loader_bar_0.png"));
-        this.loadingBar.setVisible(false);
-        this.loadingBar.setPreserveRatio(true);
+        this.loadingBar.setImage(ResourceManager.getInstance().getFxImage("sprites/scenes/loader/loader_bar_0.png"));;
 
         this.pane.getChildren().add(this.loadingLogo);
         this.pane.getChildren().add(this.loadingBar);
@@ -95,7 +95,7 @@ public class LoaderVisualiser extends Visualiser {
         });
          */
 
-        //this.isInitialised = true;
+        this.isInitialised = true;
 
     }
 
@@ -130,18 +130,49 @@ public class LoaderVisualiser extends Visualiser {
     }
 
     private void progressLoader() {
-        /*
-        if (PropertiesManager.getInstance().isFinished()) {
+        try {
+            // Load basic client configuration
+            if (this.loaderSteps.contains("load_client_config")) {
+                if (this.component.getClientConfigTask() == null) {
+                    this.component.setClientConfigTask(
+                            SchedulerManager.getInstance().getCachedPool().submit(() -> {
+                                return this.component.loadClientConfig();
+                            })
+                    );
 
-            this.loaderProgress += 100;
-        } else {
+                    return;
+                }
 
-        }*/
+                if (this.component.getClientConfigTask().isDone()) {
+                    if (this.component.getClientConfigTask().get()) {
+                        this.loaderSteps.remove("load_client_config");
+                        this.loaderProgress += 50;
+                    }
+                }
+            }
 
-        new Thread(() -> {
-            //if (PropertiesManager.getInstance() == null)
-            //    PropertiesManager.init();
-        }).start();
+            // Load external variables
+            if (this.loaderSteps.contains("load_external_variables")) {
+                if (this.component.getExternalTextsTask() == null) {
+                    this.component.setExternalTextsTask(
+                            SchedulerManager.getInstance().getCachedPool().submit(() -> {
+                                return this.component.loadExternalVariables();
+                            })
+                    );
+
+                    return;
+                }
+
+                if (this.component.getExternalTextsTask().isDone()) {
+                    if (this.component.getExternalTextsTask().get()) {
+                        this.loaderSteps.remove("load_external_variables");
+                        this.loaderProgress += 50;
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     @Override

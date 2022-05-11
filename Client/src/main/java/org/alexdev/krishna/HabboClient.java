@@ -42,7 +42,6 @@ public class HabboClient extends Application {
     public HabboClient() {
         this.visualisers = new ConcurrentHashMap<>();
         this.interfaces = new ArrayList<Interface>();
-        this.schedulerService =  Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
     }
 
     public static void main(String[] args) {
@@ -128,7 +127,7 @@ public class HabboClient extends Application {
             visualiser.init();
             setupVisualiser(visualiser);
             this.primaryStage.setScene(visualiser.getScene());
-            //visualiser.update();
+            visualiser.update();
         }
     }
 
@@ -146,7 +145,7 @@ public class HabboClient extends Application {
 
     private void setupVisualisers() {
         this.visualisers.put(VisualiserType.LOADER, new LoaderVisualiser());
-        //this.visualisers.put(VisualiserType.HOTEL_VIEW, new EntryVisualiser());
+        this.visualisers.put(VisualiserType.HOTEL_VIEW, new EntryVisualiser());
         //this.visualisers.put(VisualiserType.ROOM, new RoomVisualiser());
     }
 
