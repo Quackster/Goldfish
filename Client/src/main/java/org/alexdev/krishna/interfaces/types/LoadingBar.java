@@ -47,6 +47,12 @@ public class LoadingBar extends Interface {
             return;
         }
 
+        // This fixes the issue by making transparent areas also mouse-transparent, however I would suggest not adding a child
+        // ImageView and instead setting the background image of this (as in LoadingBar / this.setBackground) - feel free to
+        // message me if you have any questions :) - Parsnip
+
+        setPickOnBounds(false);
+        
         this.loaderSteps = new ArrayList<>();
         this.loaderSteps.add("load_client_config");
         this.loaderSteps.add("load_external_variables");

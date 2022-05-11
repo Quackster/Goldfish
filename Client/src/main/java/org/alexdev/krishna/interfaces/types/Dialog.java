@@ -3,7 +3,6 @@ package org.alexdev.krishna.interfaces.types;
 import org.alexdev.krishna.HabboClient;
 import org.alexdev.krishna.game.resources.ResourceManager;
 
-import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -47,6 +46,7 @@ public class Dialog extends Interface {
     private int paddingTop;
     private int paddingBottom;
 
+    private boolean isSized;
     private boolean isInitialised;
 
     private double mousePressedX;
@@ -65,31 +65,6 @@ public class Dialog extends Interface {
         });
 
         initBackground();
-
-        Platform.runLater(() -> {
-            content.setLayoutX(paddingLeft);
-            content.setLayoutY(paddingTop + (title != null ? 20 : 0));
-
-            var contentWidth = content != null ? (content.getWidth() + paddingLeft + paddingRight) : 0;
-            var contentHeight = content != null ? (content.getHeight() + paddingTop + paddingBottom) : 0;
-
-            var width = title != null ? Math.max(title.getWidth(), contentWidth) : contentWidth;
-            var height = title != null ? contentHeight + 15 : contentHeight;
-
-            setSize(width, height);
-
-            if (title != null)
-                title.setLayoutX(Math.round((width / 2) - (title.getWidth() / 2)));
-
-            if (dragArea != null)
-                dragArea.setPrefSize(width, 31);
-
-            if (innerBackground != null) {
-                innerBackground.setLayoutX(paddingLeft);
-                innerBackground.setLayoutY(paddingTop + (title != null ? 20 : 0));
-                setInnerSize(content.getWidth(), content.getHeight());
-            }
-        });
 
         // Base initialisation done, override when extending if necessary
         this.isInitialised = true;
@@ -306,6 +281,33 @@ public class Dialog extends Interface {
     public void update() {
         if (!this.isInitialised)
             return;
+
+        if (!this.isSized && content.getWidth() > 0) {
+            content.setLayoutX(paddingLeft);
+            content.setLayoutY(paddingTop + (title != null ? 20 : 0));
+    
+            var contentWidth = content != null ? (content.getWidth() + paddingLeft + paddingRight) : 0;
+            var contentHeight = content != null ? (content.getHeight() + paddingTop + paddingBottom) : 0;
+    
+            var width = title != null ? Math.max(title.getWidth(), contentWidth) : contentWidth;
+            var height = title != null ? contentHeight + 15 : contentHeight;
+    
+            setSize(width, height);
+    
+            if (title != null)
+                title.setLayoutX(Math.round((width / 2) - (title.getWidth() / 2)));
+    
+            if (dragArea != null)
+                dragArea.setPrefSize(width, 31);
+    
+            if (innerBackground != null) {
+                innerBackground.setLayoutX(paddingLeft);
+                innerBackground.setLayoutY(paddingTop + (title != null ? 20 : 0));
+                setInnerSize(content.getWidth(), content.getHeight());
+            }
+
+            this.isSized = true;
+        }
 
         if (this.draggedX != -1 && this.draggedY != -1) {
             this.setTranslateX(this.draggedX + this.getTranslateX() - this.mousePressedX);
