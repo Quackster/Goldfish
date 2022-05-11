@@ -13,6 +13,7 @@ import org.alexdev.krishna.HabboClient;
 import org.alexdev.krishna.game.resources.ResourceManager;
 import org.alexdev.krishna.game.scheduler.SchedulerManager;
 import org.alexdev.krishna.game.values.types.PropertiesManager;
+import org.alexdev.krishna.game.values.types.TextsManager;
 import org.alexdev.krishna.util.DateUtil;
 import org.alexdev.krishna.util.DimensionUtil;
 import org.alexdev.krishna.util.libraries.ClientLoadStep;
@@ -27,6 +28,7 @@ import java.util.concurrent.Future;
 public class LoaderComponent implements Component {
     private Future<Boolean> clientConfigTask;
     private Future<Boolean> externalTextsTask;
+    private Future<Boolean> externalVariablesTask;
 
     public LoaderComponent() {
 
@@ -54,12 +56,31 @@ public class LoaderComponent implements Component {
         return true;
     }
 
+    public boolean loadExternalTexts() {
+        try {
+            TextsManager.getInstance().loadTexts();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
+
+        return true;
+    }
+
     public Future<Boolean> getClientConfigTask() {
         return clientConfigTask;
     }
 
     public void setClientConfigTask(Future<Boolean> clientConfigTask) {
         this.clientConfigTask = clientConfigTask;
+    }
+
+    public Future<Boolean> getExternalVariablesTask() {
+        return externalVariablesTask;
+    }
+
+    public void setExternalVariablesTask(Future<Boolean> externalVariablesTask) {
+        this.externalVariablesTask = externalVariablesTask;
     }
 
     public Future<Boolean> getExternalTextsTask() {

@@ -12,19 +12,14 @@ import javafx.scene.paint.Color;
 
 import org.alexdev.krishna.HabboClient;
 import org.alexdev.krishna.game.scheduler.SchedulerManager;
-import org.alexdev.krishna.game.values.types.PropertiesManager;
 import org.alexdev.krishna.game.resources.ResourceManager;
-import org.alexdev.krishna.util.libraries.ClientLoadStep;
-import org.alexdev.krishna.visualisers.Component;
 import org.alexdev.krishna.visualisers.Visualiser;
 import org.alexdev.krishna.util.DateUtil;
 import org.alexdev.krishna.util.DimensionUtil;
 import org.alexdev.krishna.visualisers.VisualiserType;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class LoaderVisualiser extends Visualiser {
     private LoaderComponent component;
@@ -54,6 +49,7 @@ public class LoaderVisualiser extends Visualiser {
         this.loaderSteps = new ArrayList<>();
         this.loaderSteps.add("load_client_config");
         this.loaderSteps.add("load_external_variables");
+        this.loaderSteps.add("load_external_texts");
 
         this.pane = new Pane();
         this.scene = Visualiser.create(this.pane);
@@ -113,7 +109,7 @@ public class LoaderVisualiser extends Visualiser {
             this.loadingBar.setImage(ResourceManager.getInstance().getFxImage("sprites/scenes/loader/loader_bar_" + this.loaderProgress + ".png"));
         }
 
-        if (this.loaderProgress == 100) {
+        if (this.loaderProgress >= 100) {
             this.isInitialised = false;
             Platform.runLater(() -> HabboClient.getInstance().showVisualiser(VisualiserType.HOTEL_VIEW));
         }
@@ -135,9 +131,7 @@ public class LoaderVisualiser extends Visualiser {
             if (this.loaderSteps.contains("load_client_config")) {
                 if (this.component.getClientConfigTask() == null) {
                     this.component.setClientConfigTask(
-                            SchedulerManager.getInstance().getCachedPool().submit(() -> {
-                                return this.component.loadClientConfig();
-                            })
+                            SchedulerManager.getInstance().getCachedPool().submit(() -> this.component.loadClientConfig())
                     );
 
                     return;
@@ -146,18 +140,34 @@ public class LoaderVisualiser extends Visualiser {
                 if (this.component.getClientConfigTask().isDone()) {
                     if (this.component.getClientConfigTask().get()) {
                         this.loaderSteps.remove("load_client_config");
-                        this.loaderProgress += 50;
+                        this.loaderProgress += 25;
                     }
                 }
             }
 
             // Load external variables
             if (this.loaderSteps.contains("load_external_variables")) {
+                if (this.component.getExternalVariablesTask() == null) {
+                    this.component.setExternalVariablesTask(
+                            SchedulerManager.getInstance().getCachedPool().submit(() -> this.component.loadExternalVariables())
+                    );
+
+                    return;
+                }
+
+                if (this.component.getExternalVariablesTask().isDone()) {
+                    if (this.component.getExternalVariablesTask().get()) {
+                        this.loaderSteps.remove("load_external_variables");
+                        this.loaderProgress += 25;
+                    }
+                }
+            }
+
+            // Load external variables
+            if (this.loaderSteps.contains("load_external_texts")) {
                 if (this.component.getExternalTextsTask() == null) {
                     this.component.setExternalTextsTask(
-                            SchedulerManager.getInstance().getCachedPool().submit(() -> {
-                                return this.component.loadExternalVariables();
-                            })
+                            SchedulerManager.getInstance().getCachedPool().submit(() -> this.component.loadExternalTexts())
                     );
 
                     return;
@@ -165,7 +175,7 @@ public class LoaderVisualiser extends Visualiser {
 
                 if (this.component.getExternalTextsTask().isDone()) {
                     if (this.component.getExternalTextsTask().get()) {
-                        this.loaderSteps.remove("load_external_variables");
+                        this.loaderSteps.remove("load_external_texts");
                         this.loaderProgress += 50;
                     }
                 }

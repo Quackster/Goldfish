@@ -11,15 +11,15 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Values implements AsyncClientAction {
-    public Map<String, String> properties;
+    public Map<String, String> values;
     private boolean isFinished;
 
     public String getString(String s) {
-        return this.properties.get(s);
+        return this.values.get(s);
     }
 
     public int getInt(String s) {
-        return Integer.parseInt(this.properties.get(s));
+        return Integer.parseInt(this.values.get(s));
     }
 
     public Object getType(String s, ValueType type) {
@@ -47,7 +47,7 @@ public class Values implements AsyncClientAction {
         for (var line : doc) {
             String key = line.substring(0, line.indexOf("="));
             String value = line.substring(line.indexOf("=") + 1);
-            this.properties.put(key, value);
+            this.values.put(key, value);
         }
     }
 
