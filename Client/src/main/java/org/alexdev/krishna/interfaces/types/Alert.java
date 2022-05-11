@@ -4,6 +4,7 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import org.alexdev.krishna.interfaces.InterfaceType;
 
 public class Alert extends Dialog {
     private String text;
@@ -39,6 +40,11 @@ public class Alert extends Dialog {
         this.isInitialised = true;
     }
 
+    @Override
+    public void sceneChanged() {
+        this.toFront();
+    }
+
     /**
      * Update tick to resize the images and boxes necessary for responsiveness
      */
@@ -54,5 +60,10 @@ public class Alert extends Dialog {
     @Override
     public boolean isReady() {
         return isInitialised;
+    }
+
+    @Override
+    public InterfaceType getType() {
+        return InterfaceType.ALERT;
     }
 }

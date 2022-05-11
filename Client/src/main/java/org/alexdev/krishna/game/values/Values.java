@@ -15,11 +15,35 @@ public class Values implements AsyncClientAction {
     private boolean isFinished;
 
     public String getString(String s) {
-        return this.values.get(s);
+        try {
+            return this.values.get(s);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public String getString(String s, String d) {
+        try {
+            return this.values.get(s);
+        } catch (Exception e) {
+            return d;
+        }
     }
 
     public int getInt(String s) {
-        return Integer.parseInt(this.values.get(s));
+        try {
+            return Integer.parseInt(this.values.get(s));
+        } catch (Exception ex) {
+            return 0;
+        }
+    }
+
+    public int getInt(String s, int d) {
+        try {
+            return Integer.parseInt(this.values.get(s));
+        } catch (Exception ex) {
+            return d;
+        }
     }
 
     public Object getType(String s, ValueType type) {
@@ -38,6 +62,29 @@ public class Values implements AsyncClientAction {
                 );
             default:
                 throw new IllegalStateException("Unexpected type: " + type);
+        }
+    }
+
+    public Object getType(String s, ValueType type, Object d) {
+        try {
+            switch (type) {
+                case COLOR_RGB:
+                    String value = this.getString(s)
+                            .replace("rgb", "")
+                            .replace("(", "")
+                            .replace(")", "")
+                            .replace(" ", "");
+
+                    return Color.rgb(
+                            Integer.parseInt(value.split(",")[0]),
+                            Integer.parseInt(value.split(",")[1]),
+                            Integer.parseInt(value.split(",")[2])
+                    );
+                default:
+                    throw new IllegalStateException("Unexpected type: " + type);
+            }
+        } catch (Exception ex) {
+            return d;
         }
     }
 

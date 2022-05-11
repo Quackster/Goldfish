@@ -63,7 +63,7 @@ public class EntryVisualiser extends Visualiser {
         this.component = new EntryComponent(this);
 
         this.clouds = new ArrayList<>();
-        this.cloudTurnPoint = PropertiesManager.getInstance().getInt("hotel.view.cloud.turn.point");
+        this.cloudTurnPoint = PropertiesManager.getInstance().getInt("hotel.view.cloud.turn.point", 330);
 
         this.pane = new Pane();
         this.scene = HabboClient.getInstance().createScene(this.pane);
@@ -75,21 +75,21 @@ public class EntryVisualiser extends Visualiser {
         this.bottomReveal.setFill(Color.BLACK);
 
         this.topRight = new ImageView();
-        this.topRight.setImage(new Image(PropertiesManager.getInstance().getString("hotel.view.image.top.right")));
+        this.topRight.setImage(new Image(PropertiesManager.getInstance().getString("hotel.view.image.top.right", ""), true));
         this.topRight.setY(this.topRight.getImage().getHeight() * -1);
 
         this.bottomLeft = new ImageView();
-        this.bottomLeft.setImage(new Image(PropertiesManager.getInstance().getString("hotel.view.image.bottom.left")));
+        this.bottomLeft.setImage(new Image(PropertiesManager.getInstance().getString("hotel.view.image.bottom.left", ""), true));
 
         this.bottomRight = new ImageView();
-        this.bottomRight.setImage(new Image(PropertiesManager.getInstance().getString("hotel.view.image.bottom.right")));
+        this.bottomRight.setImage(new Image(PropertiesManager.getInstance().getString("hotel.view.image.bottom.right", ""), true));
 
         this.stretchLeft = new Rectangle(1,1);//= new ImageView();
-        this.stretchLeft.setFill((Color) PropertiesManager.getInstance().getType("hotel.view.left.color", ValueType.COLOR_RGB));
+        this.stretchLeft.setFill((Color) PropertiesManager.getInstance().getType("hotel.view.left.color", ValueType.COLOR_RGB, Color.rgb(117, 175, 203)));
         //this.stretchLeft.setImage(new Image(new File("resources/scenes/hotel_view/stretch_left.png").toURI().toString()));
 
         this.stretchRight = new Rectangle(1,1);
-        this.stretchRight.setFill((Color) PropertiesManager.getInstance().getType("hotel.view.right.color", ValueType.COLOR_RGB));
+        this.stretchRight.setFill((Color) PropertiesManager.getInstance().getType("hotel.view.right.color", ValueType.COLOR_RGB, Color.rgb(139, 205, 233)));
         //this.stretchRight.setImage(new Image(new File("resources/scenes/hotel_view/stretch_right.png").toURI().toString()));
 
         this.sun = new ImageView();

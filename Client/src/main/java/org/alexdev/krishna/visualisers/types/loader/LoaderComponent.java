@@ -3,6 +3,7 @@ package org.alexdev.krishna.visualisers.types.loader;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -46,6 +47,7 @@ public class LoaderComponent implements Component {
             PropertiesManager.getInstance().loadConfig();
         } catch (Exception ex) {
             ex.printStackTrace();
+            return false;
         }
 
         return PropertiesManager.getInstance().isFinished();
@@ -59,7 +61,7 @@ public class LoaderComponent implements Component {
             return false;
         }
 
-        return true;
+        return PropertiesManager.getInstance().isFinished();
     }
 
     public boolean loadExternalTexts() {

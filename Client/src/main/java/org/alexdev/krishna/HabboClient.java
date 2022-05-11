@@ -36,9 +36,13 @@ public class HabboClient extends Application {
 
     private final ConcurrentMap<VisualiserType, Visualiser> visualisers;
     private final CopyOnWriteArrayList<Interface> interfaces;
+    private Visualiser currentVisualiser;
 
     public HabboClient() {
         this.visualisers = new ConcurrentHashMap<>();
+        this.visualisers.put(VisualiserType.LOADER, new LoaderVisualiser());
+        this.visualisers.put(VisualiserType.HOTEL_VIEW, new EntryVisualiser());
+
         this.interfaces = new CopyOnWriteArrayList<>();
     }
 
@@ -112,8 +116,6 @@ public class HabboClient extends Application {
         primaryStage.setScene(mainScene);
         primaryStage.show();
 
-        this.setupVisualisers();
-        this.setupInterfaces();
         //this.showStage(HabboSceneType.LOADER);
         this.showVisualiser(VisualiserType.LOADER);
     }
@@ -141,19 +143,18 @@ public class HabboClient extends Application {
         var visualiser = this.visualisers.get(type);
 
         if (visualiser != null) {
+            this.currentVisualiser = visualiser;
             setupVisualiser(visualiser);
             this.primaryStage.setScene(visualiser.getScene());
+
+            visualiser.getPane().getChildren().addAll(this.interfaces);
+            this.interfaces.forEach(Interface::sceneChanged);
         }
     }
 
     /**
-     * Create new scene management
+     * Set up the visualiser we're about to show
      */
-    public Scene createScene(Pane pane) {
-        pane.getChildren().addAll(this.interfaces);
-        return new Scene(pane, DimensionUtil.getProgramWidth(), DimensionUtil.getProgramHeight(), Color.BLACK);
-    }
-
     private void setupVisualiser(Visualiser visualiser) {
         visualiser.init();
         visualiser.getComponent().init();
@@ -170,14 +171,37 @@ public class HabboClient extends Application {
         });
     }
 
-    private void setupVisualisers() {
-        this.visualisers.put(VisualiserType.LOADER, new LoaderVisualiser());
-        this.visualisers.put(VisualiserType.HOTEL_VIEW, new EntryVisualiser());
-        //this.visualisers.put(VisualiserType.ROOM, new RoomVisualiser());
+    /**
+     * Method to initialise interface
+     * @param control
+     */
+    private void setupInterface(Interface control) {
+        control.init();
+        control.update();
     }
 
-    private void setupInterfaces() {
-        this.interfaces.add(new Alert("This is a test"));
+    /**
+     * Create new scene management
+     */
+    public Scene createScene(Pane pane) {
+        return new Scene(pane, DimensionUtil.getProgramWidth(), DimensionUtil.getProgramHeight(), Color.BLACK);
+    }
+
+    /**
+     * Queue new interface to appear on next scene change
+     */
+    public void queue(Interface control) {
+        this.setupInterface(control);
+        this.interfaces.add(control);
+    }
+
+    /**
+     * Submit new interface to appear on next scene change
+     */
+    public void submit(Interface control) {
+        this.setupInterface(control);
+        this.interfaces.add(control);
+        this.currentVisualiser.getPane().getChildren().add(control);
     }
 
     public Stage getPrimaryStage() {
@@ -194,5 +218,9 @@ public class HabboClient extends Application {
 
     public static HabboClient getInstance() {
         return instance;
+    }
+
+    public Visualiser getCurrentVisualiser() {
+        return currentVisualiser;
     }
 }

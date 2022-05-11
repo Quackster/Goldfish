@@ -19,6 +19,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import org.alexdev.krishna.interfaces.Interface;
+import org.alexdev.krishna.interfaces.InterfaceType;
 
 public class Dialog extends Interface {
     private HBox top;
@@ -92,6 +93,11 @@ public class Dialog extends Interface {
 
         // Base initialisation done, override when extending if necessary
         this.isInitialised = true;
+    }
+
+    @Override
+    public void sceneChanged() {
+        this.toFront();
     }
 
     private void initBackground() {
@@ -265,11 +271,10 @@ public class Dialog extends Interface {
 
         dragArea = new Pane();
 
-        dragArea.setOnMousePressed((event) -> {
+        dragArea.setOnMousePressed(event -> {
             this.mousePressedX = event.getX();
             this.mousePressedY = event.getY();
         });
-
 
         dragArea.setOnMouseDragged(event -> {
             this.draggedX = event.getX();
@@ -297,6 +302,7 @@ public class Dialog extends Interface {
         this.paddingLeft = paddingLeft;
     }
 
+    @Override
     public void update() {
         if (!this.isInitialised)
             return;
@@ -313,5 +319,10 @@ public class Dialog extends Interface {
     @Override
     public boolean isReady() {
         return isInitialised;
+    }
+
+    @Override
+    public InterfaceType getType() {
+        return InterfaceType.DIALOG;
     }
 }
