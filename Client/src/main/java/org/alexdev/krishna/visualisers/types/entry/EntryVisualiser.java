@@ -23,6 +23,8 @@ import java.util.concurrent.ThreadLocalRandom;
 public class EntryVisualiser extends Visualiser {
     private Pane pane;
     private Scene scene;
+    private EntryComponent component;
+
     private boolean isInitialised;
     private long timeSinceStart;
     private long timeNextCloud;
@@ -57,6 +59,8 @@ public class EntryVisualiser extends Visualiser {
     public void init() {
         if (this.isInitialised)
             return;
+
+        this.component = new EntryComponent(this);
 
         this.clouds = new ArrayList<>();
         this.cloudTurnPoint = PropertiesManager.getInstance().getInt("hotel.view.cloud.turn.point");
@@ -118,22 +122,6 @@ public class EntryVisualiser extends Visualiser {
         this.queueOpenView = true;
         this.queueAnimateSign = true;
         this.isInitialised = true;
-
-        // Kickstart some clouds after turn point :^)
-        for (int i = 0; i < ThreadLocalRandom.current().nextInt(2, 5) + 1; i++) {
-            int initX = this.cloudTurnPoint + ThreadLocalRandom.current().nextInt(30, (int) (DimensionUtil.getProgramWidth()*0.5));;
-            int initY = ThreadLocalRandom.current().nextInt(0, (int) (DimensionUtil.getProgramHeight()*0.66));
-
-            this.addCloud("right", initX, initY);
-        }
-
-        // Kickstart some clouds before turn point :^)
-        for (int i = 0; i < ThreadLocalRandom.current().nextInt(1, 2) + 1; i++) {
-            int initX = this.cloudTurnPoint - ThreadLocalRandom.current().nextInt(35, 60);
-            int initY = ThreadLocalRandom.current().nextInt(0, (int) (DimensionUtil.getProgramHeight()*0.66));
-
-            this.addCloud("left", initX, initY);
-        }
     }
 
     /**
@@ -178,11 +166,6 @@ public class EntryVisualiser extends Visualiser {
 
     }
 
-    @Override
-    public Component getComponent() {
-        return null;
-    }
-
     /**
      * Tick method for cloud animations
      */
@@ -202,21 +185,9 @@ public class EntryVisualiser extends Visualiser {
             int initX = 0;
             int initY = ThreadLocalRandom.current().nextInt(0, (int) (DimensionUtil.getProgramHeight()*0.66));
 
-            this.addCloud("left", initX, initY);
+            this.component.addCloud("left", initX, initY);
             this.timeNextCloud = DateUtil.getCurrentTimeSeconds() + ThreadLocalRandom.current().nextInt(1, 10);
         }
-    }
-
-    /**
-     * Add cloud handler
-     */
-    public void addCloud(String direction, int initX, int initY) {
-        var cloudType = ThreadLocalRandom.current().nextInt(4);
-        var cloud = new Cloud(this.cloudTurnPoint, "cloud_" + cloudType, direction, initX, initY);
-        cloud.setViewOrder(CLOUD_Z_INDEX);
-
-        this.clouds.add(cloud);
-        this.pane.getChildren().add(cloud);
     }
 
     /**
@@ -294,6 +265,30 @@ public class EntryVisualiser extends Visualiser {
     private void viewTaskFinished() {
         this.topReveal.setVisible(false);
         this.bottomReveal.setVisible(false);
+    }
+
+    /**
+     * Turn point for when the cloud turns
+     */
+    public int getCloudTurnPoint() {
+        return cloudTurnPoint;
+    }
+
+    /**
+     * List of active clouds
+     */
+    public List<Cloud> getClouds() {
+        return clouds;
+    }
+
+    @Override
+    public Component getComponent() {
+        return component;
+    }
+
+    @Override
+    public Pane getPane() {
+        return pane;
     }
 
     @Override

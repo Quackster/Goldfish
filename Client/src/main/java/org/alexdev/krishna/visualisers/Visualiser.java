@@ -13,5 +13,6 @@ public abstract class Visualiser {
     public abstract void update();
 
     public abstract Component getComponent();
+    public abstract Pane getPane();
     public abstract Scene getScene();
 }

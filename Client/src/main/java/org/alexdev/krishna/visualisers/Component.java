@@ -7,4 +7,5 @@ import org.alexdev.krishna.HabboClient;
 import org.alexdev.krishna.util.DimensionUtil;
 
 public interface Component {
+    void init();
 }

@@ -35,11 +35,11 @@ public class HabboClient extends Application {
     private GameLoop gameLoop;
 
     private final ConcurrentMap<VisualiserType, Visualiser> visualisers;
-    private final List<Interface> interfaces;
+    private final CopyOnWriteArrayList<Interface> interfaces;
 
     public HabboClient() {
         this.visualisers = new ConcurrentHashMap<>();
-        this.interfaces = new ArrayList<>();
+        this.interfaces = new CopyOnWriteArrayList<>();
     }
 
     public static void main(String[] args) {
@@ -122,10 +122,8 @@ public class HabboClient extends Application {
         var visualiser = this.visualisers.get(type);
 
         if (visualiser != null) {
-            visualiser.init();
             setupVisualiser(visualiser);
             this.primaryStage.setScene(visualiser.getScene());
-            visualiser.update();
         }
     }
 
@@ -138,6 +136,10 @@ public class HabboClient extends Application {
     }
 
     private void setupVisualiser(Visualiser visualiser) {
+        visualiser.init();
+        visualiser.getComponent().init();
+        visualiser.update();
+
         visualiser.getScene().setOnMouseClicked(x -> {
             if (x.getButton() == MouseButton.SECONDARY) {
                 if (this.gameLoop != null) {

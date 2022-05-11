@@ -191,6 +191,11 @@ public class LoaderVisualiser extends Visualiser {
     }
 
     @Override
+    public Pane getPane() {
+        return pane;
+    }
+
+    @Override
     public boolean isReady() {
         return isInitialised;
     }

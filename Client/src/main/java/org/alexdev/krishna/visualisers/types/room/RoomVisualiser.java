@@ -34,6 +34,11 @@ public class RoomVisualiser extends Visualiser {
     }
 
     @Override
+    public Pane getPane() {
+        return pane;
+    }
+
+    @Override
     public Scene getScene() {
         return null;
     }

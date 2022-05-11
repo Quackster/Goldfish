@@ -34,6 +34,13 @@ public class LoaderComponent implements Component {
 
     }
 
+    @Override
+    public void init() {
+        this.clientConfigTask = null;
+        this.externalTextsTask = null;
+        this.externalVariablesTask = null;
+    }
+
     public boolean loadClientConfig() {
         try {
             PropertiesManager.getInstance().loadConfig();
