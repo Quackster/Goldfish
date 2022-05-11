@@ -1,8 +1,13 @@
 package org.alexdev.krishna.interfaces.types;
 
 import javafx.application.Platform;
+import javafx.geometry.Insets;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import org.alexdev.krishna.HabboClient;
 import org.alexdev.krishna.game.resources.ResourceManager;
 import org.alexdev.krishna.game.scheduler.SchedulerManager;
@@ -41,6 +46,7 @@ public class LoadingBar extends Interface {
         if (this.isInitialised) {
             return;
         }
+
         this.loaderSteps = new ArrayList<>();
         this.loaderSteps.add("load_client_config");
         this.loaderSteps.add("load_external_variables");
@@ -52,6 +58,8 @@ public class LoadingBar extends Interface {
         this.loadingBar = new ImageView();
         this.loadingBar.setImage(ResourceManager.getInstance().getFxImage("sprites/scenes/loader/loader_bar_0.png"));
         this.getChildren().add(this.loadingBar);
+
+        // this.setBackground(new Background(new BackgroundFill(Color.BLUE, CornerRadii.EMPTY, Insets.EMPTY)));
 
         this.loadingBar.setOnMousePressed(event -> {
             this.mousePressedX = event.getX();
@@ -69,7 +77,7 @@ public class LoadingBar extends Interface {
 
     @Override
     public void sceneChanged() {
-        this.loadingBar.toFront();
+         this.setViewOrder(-2000);
     }
 
     @Override
@@ -79,6 +87,9 @@ public class LoadingBar extends Interface {
 
     @Override
     public void update() {
+        if (!this.isInitialised)
+            return;
+
         if (this.loaderProgress >= 75) {
             if (HabboClient.getInstance().getCurrentVisualiser() instanceof LoaderVisualiser)
                 Platform.runLater(() -> HabboClient.getInstance().showVisualiser(VisualiserType.HOTEL_VIEW));
