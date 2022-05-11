@@ -34,9 +34,11 @@ public class TextsManager extends Values {
         List<String> doc = new BufferedReader(new InputStreamReader(resource)).lines().collect(Collectors.toList());
 
         for (var line : doc) {
-            String key = line.substring(0, line.indexOf("="));
-            String value = line.substring(line.indexOf("=") + 1);
-            this.values.put(key, value);
+            if (line.contains("=")) {
+                String key = line.substring(0, line.indexOf("="));
+                String value = line.substring(line.indexOf("=") + 1);
+                this.values.put(key, value);
+            }
         }
     }
 

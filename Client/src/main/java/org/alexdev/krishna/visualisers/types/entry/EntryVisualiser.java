@@ -62,7 +62,7 @@ public class EntryVisualiser extends Visualiser {
         this.cloudTurnPoint = PropertiesManager.getInstance().getInt("hotel.view.cloud.turn.point");
 
         this.pane = new Pane();
-        this.scene = Visualiser.create(this.pane);
+        this.scene = HabboClient.getInstance().createScene(this.pane);
 
         this.topReveal = new Rectangle(1,1);
         this.topReveal.setFill(Color.BLACK);

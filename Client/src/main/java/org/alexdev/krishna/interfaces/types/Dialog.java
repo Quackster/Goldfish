@@ -1,4 +1,4 @@
-package org.alexdev.krishna.interfaces;
+package org.alexdev.krishna.interfaces.types;
 
 import org.alexdev.krishna.HabboClient;
 import org.alexdev.krishna.game.resources.ResourceManager;
@@ -18,6 +18,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import org.alexdev.krishna.interfaces.Interface;
 
 public class Dialog extends Interface {
     private HBox top;
@@ -45,10 +46,13 @@ public class Dialog extends Interface {
     private int paddingTop;
     private int paddingBottom;
 
-    private double x;
-    private double y;
-
     private boolean isInitialised;
+
+    private double mousePressedX;
+    private double mousePressedY;
+
+    private double draggedX;
+    private double draggedY;
 
     @Override
     public void init() {
@@ -85,6 +89,9 @@ public class Dialog extends Interface {
                 setInnerSize(content.getWidth(), content.getHeight());
             }
         });
+
+        // Base initialisation done, override when extending if necessary
+        this.isInitialised = true;
     }
 
     private void initBackground() {
@@ -259,15 +266,20 @@ public class Dialog extends Interface {
         dragArea = new Pane();
 
         dragArea.setOnMousePressed((event) -> {
-            x = event.getX();
-            y = event.getY();
+            this.mousePressedX = event.getX();
+            this.mousePressedY = event.getY();
         });
 
+
         dragArea.setOnMouseDragged(event -> {
+            this.draggedX = event.getX();
+            this.draggedY = event.getY();
+            /*
             setManaged(false);
             this.setTranslateX(event.getX() + this.getTranslateX() - x);
             this.setTranslateY(event.getY() + this.getTranslateY() - y);
             event.consume();
+             */
         });
 
         getChildren().addAll(this.title, dragArea);
@@ -288,6 +300,14 @@ public class Dialog extends Interface {
     public void update() {
         if (!this.isInitialised)
             return;
+
+        if (this.draggedX != -1 && this.draggedY != -1) {
+            this.setTranslateX(this.draggedX + this.getTranslateX() - this.mousePressedX);
+            this.setTranslateY(this.draggedY + this.getTranslateY() - this.mousePressedY);
+
+            this.draggedX = -1;
+            this.draggedY = -1;
+        }
     }
 
     @Override

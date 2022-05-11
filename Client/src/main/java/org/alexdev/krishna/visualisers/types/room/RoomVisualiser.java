@@ -2,6 +2,7 @@ package org.alexdev.krishna.visualisers.types.room;
 
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
+import org.alexdev.krishna.HabboClient;
 import org.alexdev.krishna.visualisers.Component;
 import org.alexdev.krishna.visualisers.Visualiser;
 
@@ -17,7 +18,7 @@ public class RoomVisualiser extends Visualiser {
             return;
 
         this.pane = new Pane();
-        this.scene = Visualiser.create(this.pane);
+        this.scene = HabboClient.getInstance().createScene(this.pane);
 
         this.isInitialised = true;
     }

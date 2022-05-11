@@ -33,7 +33,7 @@ public class GameLoop implements Runnable {
             while (unprocessed >= 1) {
                 ticks++;
                 unprocessed -= 1;
-                render();
+                update();
             }
 
             try {
@@ -52,7 +52,22 @@ public class GameLoop implements Runnable {
         }
     }
 
-    private void render() {
+    private void update() {
+        for (var interfacefx : HabboClient.getInstance().getInterfaces()) {
+            if (!interfacefx.isReady()) {
+                continue;
+            }
+
+            Platform.runLater(() -> {
+                try {
+                    interfacefx.update();
+                } catch (Exception ex) {
+                    System.out.println("Interface crash: ");
+                    ex.printStackTrace();
+                }
+            });
+        }
+
         for (var scene : HabboClient.getInstance().getVisualisers().values()) {
             if (!scene.isReady()) {
                 continue;

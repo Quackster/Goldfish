@@ -1,4 +1,4 @@
-package org.alexdev.krishna.interfaces;
+package org.alexdev.krishna.interfaces.types;
 
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -42,11 +42,13 @@ public class Alert extends Dialog {
     /**
      * Update tick to resize the images and boxes necessary for responsiveness
      */
+    @Override
     public void update() {
         if (!this.isInitialised)
             return;
 
-        // do
+        // Drag stuff
+        super.update();
     }
 
     @Override

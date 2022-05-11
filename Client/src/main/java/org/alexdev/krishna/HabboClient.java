@@ -1,7 +1,6 @@
 package org.alexdev.krishna;
 
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.scene.input.MouseButton;
@@ -9,7 +8,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.scene.text.Font;
 import org.alexdev.krishna.game.resources.ResourceManager;
-import org.alexdev.krishna.interfaces.Alert;
+import org.alexdev.krishna.interfaces.types.Alert;
 import org.alexdev.krishna.interfaces.Interface;
 import org.alexdev.krishna.game.GameLoop;
 import org.alexdev.krishna.util.DimensionUtil;
@@ -17,7 +16,6 @@ import org.alexdev.krishna.visualisers.Visualiser;
 import org.alexdev.krishna.visualisers.VisualiserType;
 import org.alexdev.krishna.visualisers.types.entry.EntryVisualiser;
 import org.alexdev.krishna.visualisers.types.loader.LoaderVisualiser;
-import org.alexdev.krishna.visualisers.types.room.RoomVisualiser;
 
 import java.awt.*;
 import java.util.List;
@@ -41,7 +39,7 @@ public class HabboClient extends Application {
 
     public HabboClient() {
         this.visualisers = new ConcurrentHashMap<>();
-        this.interfaces = new ArrayList<Interface>();
+        this.interfaces = new ArrayList<>();
     }
 
     public static void main(String[] args) {
@@ -77,7 +75,7 @@ public class HabboClient extends Application {
         System.setProperty("prism.lcdtext", "false");
         System.setProperty("prism.subpixeltext", "false");
 
-        //this.loadFonts();
+        this.loadFonts();
 
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Habbo Client");
@@ -129,6 +127,14 @@ public class HabboClient extends Application {
             this.primaryStage.setScene(visualiser.getScene());
             visualiser.update();
         }
+    }
+
+    /**
+     * Create new scene management
+     */
+    public Scene createScene(Pane pane) {
+        pane.getChildren().addAll(this.interfaces);
+        return new Scene(pane, DimensionUtil.getProgramWidth(), DimensionUtil.getProgramHeight(), Color.BLACK);
     }
 
     private void setupVisualiser(Visualiser visualiser) {

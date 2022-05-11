@@ -52,7 +52,7 @@ public class LoaderVisualiser extends Visualiser {
         this.loaderSteps.add("load_external_texts");
 
         this.pane = new Pane();
-        this.scene = Visualiser.create(this.pane);
+        this.scene = HabboClient.getInstance().createScene(this.pane);
         this.pane.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
 
         this.loadingLogo = new ImageView();
@@ -99,6 +99,11 @@ public class LoaderVisualiser extends Visualiser {
         if (!this.isInitialised)
             return;
 
+        if (this.loaderProgress >= 100) {
+            this.isInitialised = false;
+            Platform.runLater(() -> HabboClient.getInstance().showVisualiser(VisualiserType.HOTEL_VIEW));
+        }
+
         this.handleResize();
         this.updateLoader();
         this.progressLoader();
@@ -107,11 +112,6 @@ public class LoaderVisualiser extends Visualiser {
     private void updateLoader() {
         if (this.loaderProgress >= 0) {
             this.loadingBar.setImage(ResourceManager.getInstance().getFxImage("sprites/scenes/loader/loader_bar_" + this.loaderProgress + ".png"));
-        }
-
-        if (this.loaderProgress >= 100) {
-            this.isInitialised = false;
-            Platform.runLater(() -> HabboClient.getInstance().showVisualiser(VisualiserType.HOTEL_VIEW));
         }
     }
 
