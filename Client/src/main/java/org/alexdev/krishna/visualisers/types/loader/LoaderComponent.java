@@ -46,10 +46,9 @@ public class LoaderComponent implements Component {
             PropertiesManager.getInstance().loadConfig();
         } catch (Exception ex) {
             ex.printStackTrace();
-            return false;
         }
 
-        return true;
+        return PropertiesManager.getInstance().isFinished();
     }
 
     public boolean loadExternalVariables() {
@@ -71,7 +70,7 @@ public class LoaderComponent implements Component {
             return false;
         }
 
-        return true;
+        return TextsManager.getInstance().isFinished();
     }
 
     public Future<Boolean> getClientConfigTask() {

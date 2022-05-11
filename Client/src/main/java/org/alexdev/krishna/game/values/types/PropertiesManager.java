@@ -27,9 +27,11 @@ public class PropertiesManager extends Values {
         resource.close();
 
         System.out.println(values.size() + " configuration keys loaded");
+        this.setFinished(true);
     }
 
     public void loadVariables() throws IOException {
+        this.setFinished(false);
         System.out.println("Loading external variables...");
 
         InputStream resource = new URL(this.values.get("external.variables")).openStream();
@@ -37,6 +39,7 @@ public class PropertiesManager extends Values {
         resource.close();
 
         System.out.println(values.size() + " configuration keys loaded");
+        this.setFinished(true);
     }
 
     private void readLines(InputStream resource) {

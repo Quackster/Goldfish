@@ -7,10 +7,11 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.scene.text.Font;
+import org.alexdev.krishna.game.InterfaceUpdateLoop;
 import org.alexdev.krishna.game.resources.ResourceManager;
 import org.alexdev.krishna.interfaces.types.Alert;
 import org.alexdev.krishna.interfaces.Interface;
-import org.alexdev.krishna.game.GameLoop;
+import org.alexdev.krishna.game.GameUpdateLoop;
 import org.alexdev.krishna.util.DimensionUtil;
 import org.alexdev.krishna.visualisers.Visualiser;
 import org.alexdev.krishna.visualisers.VisualiserType;
@@ -19,7 +20,6 @@ import org.alexdev.krishna.visualisers.types.loader.LoaderVisualiser;
 
 import java.awt.*;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.concurrent.*;
 
 public class HabboClient extends Application {
@@ -28,11 +28,11 @@ public class HabboClient extends Application {
     public static Font volterLarge;
     public static Font volterBoldLarge;
 
-    private ScheduledExecutorService schedulerService;
-
     private static HabboClient instance;
     private Stage primaryStage;
-    private GameLoop gameLoop;
+
+    private GameUpdateLoop gameUpdateLoop;
+    private InterfaceUpdateLoop interfaceUpdateLoop;
 
     private final ConcurrentMap<VisualiserType, Visualiser> visualisers;
     private final CopyOnWriteArrayList<Interface> interfaces;
@@ -46,27 +46,46 @@ public class HabboClient extends Application {
         Application.launch();
     }
 
-    public void startGameLoop() {
-        if (this.gameLoop != null) {
-            stopGameLoop();
+    public void startGameUpdateLoops() {
+        if (this.gameUpdateLoop != null) {
+            stopGameUpdateLoops();
         }
 
-        this.gameLoop = new GameLoop();
+        this.gameUpdateLoop = new GameUpdateLoop();
     }
 
-    public void stopGameLoop() {
-        if (this.gameLoop == null) {
+    public void stopGameUpdateLoops() {
+        if (this.gameUpdateLoop == null) {
             return;
         }
 
-        this.gameLoop.setRunning(false);
-        this.gameLoop = null;
+        this.gameUpdateLoop.setRunning(false);
+        this.gameUpdateLoop = null;
+    }
+
+    public void startInterfaceUpdateLoops() {
+        if (this.interfaceUpdateLoop != null) {
+            stopInterfaceUpdateLoops();
+        }
+
+        this.interfaceUpdateLoop = new InterfaceUpdateLoop();
+    }
+
+    public void stopInterfaceUpdateLoops() {
+        if (this.interfaceUpdateLoop == null) {
+            return;
+        }
+
+        this.interfaceUpdateLoop.setRunning(false);
+        this.interfaceUpdateLoop = null;
     }
 
     @Override
     public void init() {
         instance = this;
-        startGameLoop();
+
+        startGameUpdateLoops();
+        startInterfaceUpdateLoops();
     }
 
     @Override
@@ -101,8 +120,8 @@ public class HabboClient extends Application {
 
     @Override
     public void stop(){
-        if (this.gameLoop != null)
-            this.gameLoop.setRunning(false);
+        if (this.gameUpdateLoop != null)
+            this.gameUpdateLoop.setRunning(false);
     }
 
     public void loadFonts() {
@@ -142,10 +161,10 @@ public class HabboClient extends Application {
 
         visualiser.getScene().setOnMouseClicked(x -> {
             if (x.getButton() == MouseButton.SECONDARY) {
-                if (this.gameLoop != null) {
-                    stopGameLoop();
+                if (this.gameUpdateLoop != null) {
+                    stopGameUpdateLoops();
                 } else {
-                    startGameLoop();
+                    startGameUpdateLoops();
                 }
             }
         });
@@ -175,9 +194,5 @@ public class HabboClient extends Application {
 
     public static HabboClient getInstance() {
         return instance;
-    }
-
-    public ScheduledExecutorService getScheduler() {
-        return schedulerService;
     }
 }

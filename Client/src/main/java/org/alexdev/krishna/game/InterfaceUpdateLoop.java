@@ -3,13 +3,13 @@ package org.alexdev.krishna.game;
 import javafx.application.Platform;
 import org.alexdev.krishna.HabboClient;
 
-public class GameLoop implements Runnable {
-    public static final int MAX_FPS = 15;
+public class InterfaceUpdateLoop implements Runnable {
+    public static final int MAX_FPS = 24;
 
     private Thread gameLoop;
     private boolean isRunning;
 
-    public GameLoop() {
+    public InterfaceUpdateLoop() {
         this.isRunning = true;
         this.gameLoop = new Thread(this);
         this.gameLoop.start();
@@ -67,24 +67,9 @@ public class GameLoop implements Runnable {
                 }
             });
         }
-
-        for (var scene : HabboClient.getInstance().getVisualisers().values()) {
-            if (!scene.isReady()) {
-                continue;
-            }
-
-            Platform.runLater(() -> {
-                try {
-                    scene.update();
-                } catch (Exception ex) {
-                    System.out.println("Scene crash: ");
-                    ex.printStackTrace();
-                }
-            });
-        }
     }
 
-    public Thread getGameLoop() {
+    public Thread getThread() {
         return gameLoop;
     }
 

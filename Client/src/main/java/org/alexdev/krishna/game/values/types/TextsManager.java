@@ -19,6 +19,7 @@ public class TextsManager extends Values {
     }
 
     public void loadTexts() throws IOException {
+        this.setFinished(false);
         this.values = new HashMap<>();
 
         System.out.println("Loading external texts...");
@@ -28,6 +29,7 @@ public class TextsManager extends Values {
         resource.close();
 
         System.out.println(this.values.size() + " texts keys loaded");
+        this.setFinished(true);
     }
 
     private void readLines(InputStream resource) {

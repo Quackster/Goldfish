@@ -9,7 +9,7 @@ import javafx.scene.shape.Rectangle;
 import org.alexdev.krishna.HabboClient;
 import org.alexdev.krishna.game.values.ValueType;
 import org.alexdev.krishna.game.values.types.PropertiesManager;
-import org.alexdev.krishna.game.GameLoop;
+import org.alexdev.krishna.game.GameUpdateLoop;
 import org.alexdev.krishna.scripts.Cloud;
 import org.alexdev.krishna.util.DateUtil;
 import org.alexdev.krishna.util.DimensionUtil;
@@ -238,7 +238,7 @@ public class EntryVisualiser extends Visualiser {
         if (tTimeLeft <= 0)
             tOffset = Math.abs(tmoveLeft);
         else
-            tOffset = (int) (Math.abs((tmoveLeft / tTimeLeft)) / GameLoop.MAX_FPS);
+            tOffset = (int) (Math.abs((tmoveLeft / tTimeLeft)) / GameUpdateLoop.MAX_FPS);
 
         this.topReveal.setY(this.topReveal.getY() - tOffset);
         this.bottomReveal.setY(this.bottomReveal.getY() + tOffset);
