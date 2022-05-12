@@ -1,10 +1,12 @@
 package org.alexdev.krishna.interfaces.types;
 
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
+import org.alexdev.krishna.controls.ButtonLarge;
+import org.alexdev.krishna.controls.Label;
 import org.alexdev.krishna.interfaces.InterfaceType;
+
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.layout.VBox;
 
 public class Alert extends Dialog {
     private String text;
@@ -22,19 +24,23 @@ public class Alert extends Dialog {
 
         super.init();
 
-        var e = new Pane();
-        //e.setBackground(new Background(new BackgroundFill(Color.BEIGE, null, null)));
-        e.setMinSize(250, 250);
+        var content = new VBox();
+        content.setMaxWidth(500);
         
-        var e1 = new Pane();
-        e1.setBackground(new Background(new BackgroundFill(Color.RED, null, null)));
-        e1.setMinSize(50, 50);
+        var text = new Label(this.text);
+        text.setWrapText(true);
+        text.setLineSpacing(3);
+        text.setPadding(new Insets(29, 24, 34, 12));
 
-        e.getChildren().add(e1);
+        var ok = new ButtonLarge("OK");
+        ok.setAlignment(Pos.CENTER);
+        ok.setPadding(new Insets(0, 0, 13, -5));
+        
+        content.getChildren().addAll(text, ok);
         
         setPadding(9, 10, 11, 10);
-        setTitle("Notice");
-        setContent(e);
+        setTitle("Notice!");
+        setContent(content);
         initInnerBackground();
 
         this.isInitialised = true;
@@ -42,7 +48,6 @@ public class Alert extends Dialog {
 
     @Override
     public void sceneChanged() {
-        this.toFront();
     }
 
     /**

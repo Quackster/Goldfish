@@ -1,11 +1,16 @@
 package org.alexdev.krishna.interfaces.types;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.stream.Collectors;
+
 import org.alexdev.krishna.HabboClient;
 import org.alexdev.krishna.game.resources.ResourceManager;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BackgroundImage;
@@ -19,6 +24,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import org.alexdev.krishna.interfaces.Interface;
 import org.alexdev.krishna.interfaces.InterfaceType;
+import org.alexdev.krishna.util.DimensionUtil;
 
 public class Dialog extends Interface {
     private HBox top;
@@ -52,19 +58,21 @@ public class Dialog extends Interface {
     private double mousePressedX;
     private double mousePressedY;
 
+    private boolean clicked;
     private double draggedX;
     private double draggedY;
+
+    // TO-DO -
+    // pick on bounds (clicking corner outside of background moves to front)
 
     @Override
     public void init() {
         if (this.isInitialised)
             return;
 
-        setOnMouseClicked(event -> {
-            toFront();
-        });
+        this.initBackground();
 
-        initBackground();
+        this.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> this.clicked = true);
 
         // Base initialisation done, override when extending if necessary
         this.isInitialised = true;
@@ -72,7 +80,6 @@ public class Dialog extends Interface {
 
     @Override
     public void sceneChanged() {
-        this.toFront();
     }
 
     private void initBackground() {
@@ -222,6 +229,7 @@ public class Dialog extends Interface {
         innerBackground.getChildren().addAll(innerTop, innerCenter, innerBottom);
 
         getChildren().add(innerBackground);
+        content.toFront();
     }
 
     protected void setTitle(String title) {
@@ -293,6 +301,12 @@ public class Dialog extends Interface {
             var height = title != null ? contentHeight + 15 : contentHeight;
     
             setSize(width, height);
+            setLayoutX(Math.ceil((HabboClient.getInstance().getPrimaryStage().getWidth() - this.getWidth()) / 2));
+            setLayoutY(Math.ceil((HabboClient.getInstance().getPrimaryStage().getHeight() - this.getHeight()) / 2));
+
+            var coords = DimensionUtil.getCenterCords(width, height);
+            this.setLayoutX(coords.getX());
+            this.setLayoutY(coords.getY());
     
             if (title != null)
                 title.setLayoutX(Math.round((width / 2) - (title.getWidth() / 2)));
@@ -307,6 +321,11 @@ public class Dialog extends Interface {
             }
 
             this.isSized = true;
+        }
+
+        if (this.clicked) {
+            this.toFront();
+            this.clicked = false;
         }
 
         if (this.draggedX != -1 && this.draggedY != -1) {
