@@ -4,6 +4,8 @@ import javax.imageio.ImageIO;
 
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
+import javafx.scene.text.Font;
+import org.alexdev.krishna.game.scheduler.SchedulerManager;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -15,6 +17,12 @@ import java.util.Objects;
 
 public class ResourceManager {
     private static ResourceManager instance;
+
+    public Font volter;
+    public Font volterBold;
+    public Font volterLarge;
+    public Font volterBoldLarge;
+
     public Map<String, Image> fxImages;
     public Map<String, Image> webImages;
     public Map<String, BufferedImage> awtImages;
@@ -23,6 +31,19 @@ public class ResourceManager {
         this.fxImages = new HashMap<>();
         this.awtImages = new HashMap<>();
         this.webImages = new HashMap<>();
+    }
+
+    public void loadFonts() {
+        SchedulerManager.getInstance().getCachedPool().submit(() -> {
+            try {
+                this.volter = javafx.scene.text.Font.loadFont(ResourceManager.getInstance().getResource("sprites/volter/volter.woff").openStream(), 9);
+                this.volterBold = javafx.scene.text.Font.loadFont(ResourceManager.getInstance().getResource("sprites/volter/volter_bold.woff").openStream(), 9);
+                this.volterLarge = javafx.scene.text.Font.loadFont(ResourceManager.getInstance().getResource("sprites/volter/volter.woff").openStream(), 18);
+                this.volterBoldLarge = Font.loadFont(ResourceManager.getInstance().getResource("sprites/volter/volter_bold.woff").openStream(), 18);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     public Image getWebImage(String httpUrl) {
@@ -75,6 +96,22 @@ public class ResourceManager {
 
     public URL getResource(String url) {
         return getClass().getResource("/" + url);
+    }
+
+    public Font getVolter() {
+        return volter;
+    }
+
+    public Font getVolterBold() {
+        return volterBold;
+    }
+
+    public Font getVolterLarge() {
+        return volterLarge;
+    }
+
+    public Font getVolterBoldLarge() {
+        return volterBoldLarge;
     }
 
     public static ResourceManager getInstance() {

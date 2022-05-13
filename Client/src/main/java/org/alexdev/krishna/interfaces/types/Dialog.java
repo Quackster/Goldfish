@@ -249,7 +249,7 @@ public class Dialog extends Interface {
         this.title.setPadding(new Insets(4, 9, 0, 9));
         this.title.setLayoutY(5);
         this.title.setAlignment(Pos.CENTER);
-        this.title.setFont(HabboClient.volterBold);
+        this.title.setFont(ResourceManager.getInstance().getVolterBold());
         this.title.setTextFill(Color.web("#EEEEEE"));
 
         dragArea = new Pane();

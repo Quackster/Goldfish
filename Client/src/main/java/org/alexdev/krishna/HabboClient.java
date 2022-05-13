@@ -29,11 +29,6 @@ import java.util.Map;
 import java.util.concurrent.*;
 
 public class HabboClient extends Application {
-    public static Font volter;
-    public static Font volterBold;
-    public static Font volterLarge;
-    public static Font volterBoldLarge;
-
     private static HabboClient instance;
     private Stage primaryStage;
 
@@ -105,7 +100,7 @@ public class HabboClient extends Application {
         System.setProperty("prism.lcdtext", "false");
         System.setProperty("prism.subpixeltext", "false");
 
-        this.loadFonts();
+        ResourceManager.getInstance().loadFonts();
 
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Habbo Client");
@@ -131,19 +126,6 @@ public class HabboClient extends Application {
     public void stop(){
         this.stopGameUpdateLoop();
         this.stopInterfaceUpdateLoop();
-    }
-
-    public void loadFonts() {
-        SchedulerManager.getInstance().getCachedPool().submit(() -> {
-            try {
-                volter = Font.loadFont(ResourceManager.getInstance().getResource("sprites/volter/volter.woff").openStream(), 9);
-                volterBold = Font.loadFont(ResourceManager.getInstance().getResource("sprites/volter/volter_bold.woff").openStream(), 9);
-                volterLarge = Font.loadFont(ResourceManager.getInstance().getResource("sprites/volter/volter.woff").openStream(), 18);
-                volterBoldLarge = Font.loadFont(ResourceManager.getInstance().getResource("sprites/volter/volter_bold.woff").openStream(), 18);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
     }
 
     public void showVisualiser(VisualiserType type) {
