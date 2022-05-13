@@ -323,11 +323,13 @@ public class Dialog extends Interface {
             this.isSized = true;
         }
 
+        // Click bring-to-front handler
         if (this.clicked) {
             this.toFront();
             this.clicked = false;
         }
 
+        // Dragging
         if (this.draggedX != -1 && this.draggedY != -1) {
             this.setTranslateX(this.draggedX + this.getTranslateX() - this.mousePressedX);
             this.setTranslateY(this.draggedY + this.getTranslateY() - this.mousePressedY);
