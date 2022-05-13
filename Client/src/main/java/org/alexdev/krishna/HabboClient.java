@@ -10,12 +10,10 @@ import javafx.scene.layout.Pane;
 import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import javafx.scene.text.Font;
-import org.alexdev.krishna.game.InterfaceUpdateLoop;
+import org.alexdev.krishna.game.scheduler.types.InterfaceScheduler;
 import org.alexdev.krishna.game.resources.ResourceManager;
-import org.alexdev.krishna.game.scheduler.SchedulerManager;
 import org.alexdev.krishna.interfaces.Interface;
-import org.alexdev.krishna.game.GameUpdateLoop;
+import org.alexdev.krishna.game.scheduler.types.GraphicsScheduler;
 import org.alexdev.krishna.util.DimensionUtil;
 import org.alexdev.krishna.visualisers.Visualiser;
 import org.alexdev.krishna.visualisers.VisualiserType;
@@ -27,13 +25,14 @@ import java.awt.*;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
+import java.util.stream.Collectors;
 
 public class HabboClient extends Application {
     private static HabboClient instance;
     private Stage primaryStage;
 
-    private GameUpdateLoop gameUpdateLoop;
-    private InterfaceUpdateLoop interfaceUpdateLoop;
+    private GraphicsScheduler gameScheduler;
+    private InterfaceScheduler interfaceScheduler;
 
     private final Map<VisualiserType, Visualiser> visualisers;
     private final List<Interface> interfaces;
@@ -52,46 +51,12 @@ public class HabboClient extends Application {
         Application.launch();
     }
 
-    public void startGameUpdateLoops() {
-        if (this.gameUpdateLoop != null) {
-            stopGameUpdateLoop();
-        }
-
-        this.gameUpdateLoop = new GameUpdateLoop();
-    }
-
-    public void stopGameUpdateLoop() {
-        if (this.gameUpdateLoop == null) {
-            return;
-        }
-
-        this.gameUpdateLoop.setRunning(false);
-        this.gameUpdateLoop = null;
-    }
-
-    public void startInterfaceUpdateLoops() {
-        if (this.interfaceUpdateLoop != null) {
-            stopInterfaceUpdateLoop();
-        }
-
-        this.interfaceUpdateLoop = new InterfaceUpdateLoop();
-    }
-
-    public void stopInterfaceUpdateLoop() {
-        if (this.interfaceUpdateLoop == null) {
-            return;
-        }
-
-        this.interfaceUpdateLoop.setRunning(false);
-        this.interfaceUpdateLoop = null;
-    }
-
     @Override
     public void init() {
         instance = this;
 
-        startGameUpdateLoops();
-        startInterfaceUpdateLoops();
+        startGameScheduler();
+        startInterfaceScheduler();
     }
 
     @Override
@@ -118,17 +83,21 @@ public class HabboClient extends Application {
         primaryStage.setScene(mainScene);
         primaryStage.show();
 
-        this.showVisualiser(VisualiserType.LOADER);
+        this.showVisualiser(VisualiserType.ROOM);
         // this.showVisualiser(VisualiserType.ROOM);
     }
 
     @Override
     public void stop(){
-        this.stopGameUpdateLoop();
-        this.stopInterfaceUpdateLoop();
+        this.stopGameScheduler();
+        this.stopInterfaceScheduler();
     }
 
     public void showVisualiser(VisualiserType type) {
+        if (this.currentVisualiser != null) {
+            this.currentVisualiser.stop();
+        }
+
         var visualiser = this.visualisers.get(type);
 
         if (visualiser != null) {
@@ -136,7 +105,7 @@ public class HabboClient extends Application {
             setupVisualiser(visualiser);
             this.primaryStage.setScene(visualiser.getScene());
 
-            visualiser.getPane().getChildren().addAll(this.interfaces);
+            visualiser.getPane().getChildren().addAll(this.interfaces.stream().map(Interface::getPane).collect(Collectors.toList()));
             this.interfaces.forEach(Interface::sceneChanged);
         }
     }
@@ -145,16 +114,16 @@ public class HabboClient extends Application {
      * Set up the visualiser we're about to show
      */
     private void setupVisualiser(Visualiser visualiser) {
-        visualiser.init();
+        visualiser.start();
         visualiser.getComponent().init();
         visualiser.update();
 
         visualiser.getScene().setOnMouseClicked(x -> {
             if (x.getButton() == MouseButton.SECONDARY) {
-                if (this.gameUpdateLoop != null) {
-                    stopGameUpdateLoop();
+                if (this.gameScheduler != null) {
+                    stopGameScheduler();
                 } else {
-                    startGameUpdateLoops();
+                    startGameScheduler();
                 }
             }
         });
@@ -165,7 +134,7 @@ public class HabboClient extends Application {
      * @param control
      */
     private void setupInterface(Interface control) {
-        control.init();
+        control.start();
         control.update();
     }
 
@@ -185,8 +154,50 @@ public class HabboClient extends Application {
         this.interfaces.add(control);
     }
 
+    public void startGameScheduler() {
+        if (this.gameScheduler != null) {
+            stopGameScheduler();
+        }
+
+        this.gameScheduler = new GraphicsScheduler();
+    }
+
+    public void stopGameScheduler() {
+        if (this.gameScheduler == null) {
+            return;
+        }
+
+        this.gameScheduler.setRunning(false);
+        this.gameScheduler = null;
+    }
+
+    public void startInterfaceScheduler() {
+        if (this.interfaceScheduler != null) {
+            stopInterfaceScheduler();
+        }
+
+        this.interfaceScheduler = new InterfaceScheduler();
+    }
+
+    public void stopInterfaceScheduler() {
+        if (this.interfaceScheduler == null) {
+            return;
+        }
+
+        this.interfaceScheduler.setRunning(false);
+        this.interfaceScheduler = null;
+    }
+
     public Stage getPrimaryStage() {
         return primaryStage;
+    }
+
+    public GraphicsScheduler getGameScheduler() {
+        return gameScheduler;
+    }
+
+    public InterfaceScheduler getInterfaceScheduler() {
+        return interfaceScheduler;
     }
 
     public Map<VisualiserType, Visualiser> getVisualisers() {

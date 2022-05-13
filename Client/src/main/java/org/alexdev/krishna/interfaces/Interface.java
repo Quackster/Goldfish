@@ -6,15 +6,17 @@ import java.util.stream.Collectors;
 import org.alexdev.krishna.HabboClient;
 
 import javafx.scene.layout.Pane;
+import org.alexdev.krishna.game.scheduler.GameUpdate;
 
-public abstract class Interface extends Pane {
-    public abstract boolean isReady();
-    public abstract void init();
+public abstract class Interface extends GameUpdate {
+    public abstract void start();
+    public abstract void stop();
+
     public abstract void sceneChanged();
     public abstract void update();
+    public abstract Pane getPane();
     public abstract InterfaceType getType();
 
-    @Override
     public void toFront() {
         var viewOrderValues = HabboClient.getInstance()
             .getCurrentVisualiser()
@@ -24,6 +26,6 @@ public abstract class Interface extends Pane {
             .map(c -> c.getViewOrder())
             .collect(Collectors.toList());
             
-        this.setViewOrder(Collections.min(viewOrderValues) - 1);
+        this.getPane().setViewOrder(Collections.min(viewOrderValues) - 1);
     }
 }

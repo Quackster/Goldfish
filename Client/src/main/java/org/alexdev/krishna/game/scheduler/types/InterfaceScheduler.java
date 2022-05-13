@@ -1,18 +1,12 @@
-package org.alexdev.krishna.game;
+package org.alexdev.krishna.game.scheduler.types;
 
 import javafx.application.Platform;
-import org.alexdev.krishna.HabboClient;
+import org.alexdev.krishna.game.scheduler.Scheduler;
 
-public class InterfaceUpdateLoop implements Runnable {
+public class InterfaceScheduler extends Scheduler {
     public static final int MAX_FPS = 24;
 
-    private Thread gameLoop;
-    private boolean isRunning;
-
-    public InterfaceUpdateLoop() {
-        this.isRunning = true;
-        this.gameLoop = new Thread(this);
-        this.gameLoop.start();
+    public InterfaceScheduler() {
     }
 
     /**
@@ -26,7 +20,8 @@ public class InterfaceUpdateLoop implements Runnable {
         int frames = 0;
         int ticks = 0;
         long lastTimer1 = System.currentTimeMillis();
-        while (isRunning) {
+
+        while (this.isRunning()) {
             long now = System.nanoTime();
             unprocessed += (now - lastTime) / nsPerTick;
             lastTime = now;
@@ -53,11 +48,7 @@ public class InterfaceUpdateLoop implements Runnable {
     }
 
     private void update() {
-        for (var interfacefx : HabboClient.getInstance().getInterfaces()) {
-            if (!interfacefx.isReady()) {
-                continue;
-            }
-
+        for (var interfacefx : this.getUpdatesRequired()) {
             Platform.runLater(() -> {
                 try {
                     interfacefx.update();
@@ -67,17 +58,5 @@ public class InterfaceUpdateLoop implements Runnable {
                 }
             });
         }
-    }
-
-    public Thread getThread() {
-        return gameLoop;
-    }
-
-    public boolean isRunning() {
-        return isRunning;
-    }
-
-    public void setRunning(boolean running) {
-        isRunning = running;
     }
 }

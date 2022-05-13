@@ -1,5 +1,6 @@
 package org.alexdev.krishna.interfaces.types;
 
+import org.alexdev.krishna.HabboClient;
 import org.alexdev.krishna.controls.ButtonLarge;
 import org.alexdev.krishna.controls.Label;
 import org.alexdev.krishna.interfaces.InterfaceType;
@@ -11,18 +12,13 @@ import javafx.scene.layout.VBox;
 public class Alert extends Dialog {
     private String text;
 
-    private boolean isInitialised;
-
     public Alert(String text) {
         this.text = text;
     }
 
     @Override
-    public void init() {
-        if (this.isInitialised)
-            return;
-
-        super.init();
+    public void start() {
+        super.start();
 
         var content = new VBox();
         content.setMaxWidth(500);
@@ -43,9 +39,16 @@ public class Alert extends Dialog {
         setContent(content);
         initInnerBackground();
 
-        this.isInitialised = true;
+        // Queue to receive
+        HabboClient.getInstance().getInterfaceScheduler().receiveUpdate(this);
     }
 
+    @Override
+    public void stop() {
+        super.stop();
+
+        HabboClient.getInstance().getInterfaceScheduler().removeUpdate(this);
+    }
     @Override
     public void sceneChanged() {
     }
@@ -55,16 +58,8 @@ public class Alert extends Dialog {
      */
     @Override
     public void update() {
-        if (!this.isInitialised)
-            return;
-
         // Drag stuff
         super.update();
-    }
-
-    @Override
-    public boolean isReady() {
-        return isInitialised;
     }
 
     @Override

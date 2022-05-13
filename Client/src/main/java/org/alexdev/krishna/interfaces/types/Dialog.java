@@ -1,9 +1,5 @@
 package org.alexdev.krishna.interfaces.types;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.stream.Collectors;
-
 import org.alexdev.krishna.HabboClient;
 import org.alexdev.krishna.game.resources.ResourceManager;
 
@@ -27,6 +23,8 @@ import org.alexdev.krishna.interfaces.InterfaceType;
 import org.alexdev.krishna.util.DimensionUtil;
 
 public class Dialog extends Interface {
+    private Pane pane;
+
     private HBox top;
     private Pane topLeft;
     private Pane topCenter;
@@ -53,7 +51,6 @@ public class Dialog extends Interface {
     private int paddingBottom;
 
     private boolean isSized;
-    private boolean isInitialised;
 
     private double mousePressedX;
     private double mousePressedY;
@@ -66,16 +63,15 @@ public class Dialog extends Interface {
     // pick on bounds (clicking corner outside of background moves to front)
 
     @Override
-    public void init() {
-        if (this.isInitialised)
-            return;
-
+    public void start() {
+        this.pane = new Pane();
         this.initBackground();
+        this.pane.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> this.clicked = true);
+    }
 
-        this.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> this.clicked = true);
+    @Override
+    public void stop() {
 
-        // Base initialisation done, override when extending if necessary
-        this.isInitialised = true;
     }
 
     @Override
@@ -142,7 +138,7 @@ public class Dialog extends Interface {
 
         background.getChildren().addAll(top, center, bottom);
 
-        getChildren().add(background);
+        this.pane.getChildren().add(background);
     }
 
     private void setSize(double width, double height) {
@@ -228,7 +224,7 @@ public class Dialog extends Interface {
 
         innerBackground.getChildren().addAll(innerTop, innerCenter, innerBottom);
 
-        getChildren().add(innerBackground);
+        this.pane.getChildren().add(innerBackground);
         content.toFront();
     }
 
@@ -270,12 +266,12 @@ public class Dialog extends Interface {
              */
         });
 
-        getChildren().addAll(this.title, dragArea);
+        this.pane.getChildren().addAll(this.title, dragArea);
     }
 
     protected void setContent(Pane content) {
         this.content = content;
-        getChildren().add(content);
+        this.pane.getChildren().add(content);
     }
 
     protected void setPadding(int paddingTop, int paddingRight, int paddingBottom, int paddingLeft) {
@@ -287,9 +283,6 @@ public class Dialog extends Interface {
 
     @Override
     public void update() {
-        if (!this.isInitialised)
-            return;
-
         if (!this.isSized && content.getWidth() > 0) {
             content.setLayoutX(paddingLeft);
             content.setLayoutY(paddingTop + (title != null ? 20 : 0));
@@ -301,12 +294,12 @@ public class Dialog extends Interface {
             var height = title != null ? contentHeight + 15 : contentHeight;
     
             setSize(width, height);
-            setLayoutX(Math.ceil((HabboClient.getInstance().getPrimaryStage().getWidth() - this.getWidth()) / 2));
-            setLayoutY(Math.ceil((HabboClient.getInstance().getPrimaryStage().getHeight() - this.getHeight()) / 2));
+            this.pane.setLayoutX(Math.ceil((HabboClient.getInstance().getPrimaryStage().getWidth() - this.pane.getWidth()) / 2));
+            this.pane.setLayoutY(Math.ceil((HabboClient.getInstance().getPrimaryStage().getHeight() - this.pane.getHeight()) / 2));
 
             var coords = DimensionUtil.getCenterCords(width, height);
-            this.setLayoutX(coords.getX());
-            this.setLayoutY(coords.getY());
+            this.pane.setLayoutX(coords.getX());
+            this.pane.setLayoutY(coords.getY());
     
             if (title != null)
                 title.setLayoutX(Math.round((width / 2) - (title.getWidth() / 2)));
@@ -325,14 +318,14 @@ public class Dialog extends Interface {
 
         // Click bring-to-front handler
         if (this.clicked) {
-            this.toFront();
+            super.toFront();
             this.clicked = false;
         }
 
         // Dragging
         if (this.draggedX != -1 && this.draggedY != -1) {
-            this.setTranslateX(this.draggedX + this.getTranslateX() - this.mousePressedX);
-            this.setTranslateY(this.draggedY + this.getTranslateY() - this.mousePressedY);
+            this.pane.setTranslateX(this.draggedX + this.pane.getTranslateX() - this.mousePressedX);
+            this.pane.setTranslateY(this.draggedY + this.pane.getTranslateY() - this.mousePressedY);
 
             this.draggedX = -1;
             this.draggedY = -1;
@@ -340,8 +333,8 @@ public class Dialog extends Interface {
     }
 
     @Override
-    public boolean isReady() {
-        return isInitialised;
+    public Pane getPane() {
+        return pane;
     }
 
     @Override

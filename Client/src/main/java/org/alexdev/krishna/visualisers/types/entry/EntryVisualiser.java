@@ -10,7 +10,7 @@ import org.alexdev.krishna.HabboClient;
 import org.alexdev.krishna.game.resources.ResourceManager;
 import org.alexdev.krishna.game.values.ValueType;
 import org.alexdev.krishna.game.values.types.PropertiesManager;
-import org.alexdev.krishna.game.GameUpdateLoop;
+import org.alexdev.krishna.game.scheduler.types.GraphicsScheduler;
 import org.alexdev.krishna.scripts.Cloud;
 import org.alexdev.krishna.util.DateUtil;
 import org.alexdev.krishna.util.DimensionUtil;
@@ -26,7 +26,6 @@ public class EntryVisualiser extends Visualiser {
     private Scene scene;
     private EntryComponent component;
 
-    private boolean isInitialised;
     private long timeSinceStart;
     private long timeNextCloud;
     private int cloudTurnPoint = 330;
@@ -57,10 +56,7 @@ public class EntryVisualiser extends Visualiser {
     }
 
     @Override
-    public void init() {
-        if (this.isInitialised)
-            return;
-
+    public void start() {
         this.component = new EntryComponent(this);
 
         this.clouds = new ArrayList<>();
@@ -122,16 +118,20 @@ public class EntryVisualiser extends Visualiser {
 
         this.queueOpenView = true;
         this.queueAnimateSign = true;
-        this.isInitialised = true;
+
+        // Queue to receive
+        HabboClient.getInstance().getGameScheduler().receiveUpdate(this);
+    }
+
+    @Override
+    public void stop() {
+        HabboClient.getInstance().getGameScheduler().removeUpdate(this);
     }
 
     /**
      * Update tick to resize the images and boxes necessary for responsiveness
      */
     public void update() {
-        if (!this.isInitialised)
-            return;
-
         if (this.queueOpenView) {
             this.openView();
         }
@@ -239,7 +239,7 @@ public class EntryVisualiser extends Visualiser {
         if (tTimeLeft <= 0)
             tOffset = Math.abs(tmoveLeft);
         else
-            tOffset = (int) (Math.abs((tmoveLeft / tTimeLeft)) / GameUpdateLoop.MAX_FPS);
+            tOffset = (int) (Math.abs((tmoveLeft / tTimeLeft)) / GraphicsScheduler.MAX_FPS);
 
         this.topReveal.setY(this.topReveal.getY() - tOffset);
         this.bottomReveal.setY(this.bottomReveal.getY() + tOffset);
@@ -290,11 +290,6 @@ public class EntryVisualiser extends Visualiser {
     @Override
     public Pane getPane() {
         return pane;
-    }
-
-    @Override
-    public boolean isReady() {
-        return isInitialised;
     }
 
     @Override

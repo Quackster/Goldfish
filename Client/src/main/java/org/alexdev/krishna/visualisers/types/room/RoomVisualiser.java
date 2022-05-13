@@ -26,15 +26,11 @@ public class RoomVisualiser extends Visualiser {
 
     private Scene scene;
 
-    private boolean isInitialised;
     private ImageView loadingBar;
     private RoomComponent component;
 
     @Override
-    public void init() {
-        if (this.isInitialised)
-            return;
-
+    public void start() {
         this.component = new RoomComponent(this);
 
         this.pane = new Pane();
@@ -71,7 +67,12 @@ public class RoomVisualiser extends Visualiser {
             System.out.println("testing 456");
         });
 
-        this.isInitialised = true;
+        HabboClient.getInstance().getInterfaceScheduler().receiveUpdate(this);
+    }
+
+    @Override
+    public void stop() {
+        HabboClient.getInstance().getInterfaceScheduler().removeUpdate(this);
     }
 
     @Override
@@ -98,10 +99,5 @@ public class RoomVisualiser extends Visualiser {
     @Override
     public Scene getScene() {
         return scene;
-    }
-
-    @Override
-    public boolean isReady() {
-        return this.isInitialised;
     }
 }

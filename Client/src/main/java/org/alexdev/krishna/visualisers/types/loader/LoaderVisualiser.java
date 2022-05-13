@@ -21,7 +21,6 @@ public class LoaderVisualiser extends Visualiser {
 
     private Pane pane;
     private Scene scene;
-    private boolean isInitialised;
     private ImageView loadingLogo;
 
     public LoaderVisualiser() {
@@ -29,10 +28,7 @@ public class LoaderVisualiser extends Visualiser {
     }
 
     @Override
-    public void init() {
-        if (this.isInitialised)
-            return;
-
+    public void start() {
         this.component = new LoaderComponent();
 
         this.pane = new Pane();
@@ -47,42 +43,18 @@ public class LoaderVisualiser extends Visualiser {
         HabboClient.getInstance().submit(new Alert("Users online: 20\nDaily player peak count: 23\nList of users online:\n\nMyetz (Flash), Deku (Flash), Cup-A-Jo (Executable), Rods (Executable),\nRybak (Flash), tracemitch (Flash),\nfaas10 (Executable), kosov (Flash), fishterry (Flash), Freeroam (Flash), Kurt12 (Flash)\nAward (Flash), thom (Flash), Parsnip (Executable), zidro (Executable), Mario (Executable)\n\n"));
         HabboClient.getInstance().submit(new Alert("Project Havana - Habbo Hotel v31 emulation\n\nRelease: r31_20090312_0433_13751_b40895fb610dbe96dc7b9d6477eeeb4\n\nContributors:\n - ThuGie, Copyright, Raptosaur, Hoshiko, TOMYSSHADOW, Elijah\n   Romauld, Glaceon, Nillus, Holo Team, Meth0d, office.boy, bbadzz\n\n   Big thanks to Sefhriloff & Ascii for assisting with SnowStorm.\n\nMade by Quackster from RaGEZONE"));
         HabboClient.getInstance().submit(new Alert("Give your room a name!"));
-        //Creating the mouse event handler
-        /*
-        this.logo.setOnMousePressed(x -> {
-            isDragged = true;
-        });
 
-        this.logo.setOnMouseReleased(x -> {
-            isDragged = false;
-        });
+        // Queue to receive
+        HabboClient.getInstance().getInterfaceScheduler().receiveUpdate(this);
+    }
 
-        this.scene.setOnMouseMoved(x -> {
-            X = x.getSceneX();
-            Y = x.getSceneY();
-        });
-
-        this.scene.setOnMouseDragged(x -> {
-            X = x.getSceneX();
-            Y = x.getSceneY();
-        });
-
-        this.scene.setOnMouseDragged(x -> {
-            X = x.getSceneX();
-            Y = x.getSceneY();
-        });
-         */
-
-        this.isInitialised = true;
-
+    @Override
+    public void stop() {
+        HabboClient.getInstance().getInterfaceScheduler().removeUpdate(this);
     }
 
     @Override
     public void update() {
-        if (!this.isInitialised)
-            return;
-
-
         this.handleResize();
     }
 
@@ -100,11 +72,6 @@ public class LoaderVisualiser extends Visualiser {
     @Override
     public Pane getPane() {
         return pane;
-    }
-
-    @Override
-    public boolean isReady() {
-        return isInitialised;
     }
 
     @Override
