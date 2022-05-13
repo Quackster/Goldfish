@@ -21,45 +21,27 @@ public class Alert extends Dialog {
         super.start();
 
         var content = new VBox();
-        content.setMaxWidth(500);
         
         var text = new Label(this.text);
+        text.setAlignment(Pos.CENTER);
         text.setWrapText(true);
         text.setLineSpacing(3);
         text.setPadding(new Insets(29, 24, 34, 12));
+        text.setMinWidth(203);
 
         var ok = new ButtonLarge("OK");
         ok.setAlignment(Pos.CENTER);
         ok.setPadding(new Insets(0, 0, 13, -5));
-        
+        ok.setOnMouseClicked(e -> this.stop());
+
         content.getChildren().addAll(text, ok);
         
-        setPadding(9, 10, 11, 10);
-        setTitle("Notice!");
-        setContent(content);
-        initInnerBackground();
+        this.setPadding(9, 10, 11, 10);
+        this.setTitle("Notice!");
+        this.setContent(content);
+        this.initInnerBackground();
 
-        // Queue to receive
         HabboClient.getInstance().getInterfaceScheduler().receiveUpdate(this);
-    }
-
-    @Override
-    public void stop() {
-        super.stop();
-
-        HabboClient.getInstance().getInterfaceScheduler().removeUpdate(this);
-    }
-    @Override
-    public void sceneChanged() {
-    }
-
-    /**
-     * Update tick to resize the images and boxes necessary for responsiveness
-     */
-    @Override
-    public void update() {
-        // Drag stuff
-        super.update();
     }
 
     @Override

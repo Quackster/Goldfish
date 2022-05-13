@@ -83,7 +83,7 @@ public class HabboClient extends Application {
         primaryStage.setScene(mainScene);
         primaryStage.show();
 
-        this.showVisualiser(VisualiserType.ROOM);
+        this.showVisualiser(VisualiserType.LOADER);
         // this.showVisualiser(VisualiserType.ROOM);
     }
 
