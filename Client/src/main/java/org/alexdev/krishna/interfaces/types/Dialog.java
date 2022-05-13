@@ -1,13 +1,12 @@
 package org.alexdev.krishna.interfaces.types;
 
-import org.alexdev.krishna.HabboClient;
+import org.alexdev.krishna.Movie;
 import org.alexdev.krishna.game.resources.ResourceManager;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.control.Label;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BackgroundImage;
@@ -78,8 +77,8 @@ public class Dialog extends Interface {
         var parent = (Pane) this.getPane().getParent();
         parent.getChildren().remove(this.getPane());
 
-        HabboClient.getInstance().getInterfaces().remove(this);
-        HabboClient.getInstance().getInterfaceScheduler().removeUpdate(this);
+        Movie.getInstance().getInterfaces().remove(this);
+        Movie.getInstance().getInterfaceScheduler().removeUpdate(this);
     }
 
     @Override
@@ -98,8 +97,8 @@ public class Dialog extends Interface {
             var height = this.title != null ? contentHeight + 15 : contentHeight;
     
             setSize(width, height);
-            this.pane.setLayoutX(Math.ceil((HabboClient.getInstance().getPrimaryStage().getWidth() - this.pane.getWidth()) / 2));
-            this.pane.setLayoutY(Math.ceil((HabboClient.getInstance().getPrimaryStage().getHeight() - this.pane.getHeight()) / 2));
+            this.pane.setLayoutX(Math.ceil((Movie.getInstance().getPrimaryStage().getWidth() - this.pane.getWidth()) / 2));
+            this.pane.setLayoutY(Math.ceil((Movie.getInstance().getPrimaryStage().getHeight() - this.pane.getHeight()) / 2));
 
             var coords = DimensionUtil.getCenterCords(width, height);
             this.pane.setLayoutX(coords.getX());

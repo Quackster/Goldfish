@@ -1,17 +1,13 @@
 package org.alexdev.krishna.visualisers.types.room;
 
-import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import org.alexdev.krishna.HabboClient;
+import org.alexdev.krishna.Movie;
 import org.alexdev.krishna.game.resources.ResourceManager;
+import org.alexdev.krishna.interfaces.types.Alert;
+import org.alexdev.krishna.interfaces.types.LoadingBar;
 import org.alexdev.krishna.util.DimensionUtil;
-import org.alexdev.krishna.visualisers.Component;
 import org.alexdev.krishna.visualisers.Visualiser;
 
 public class RoomVisualiser extends Visualiser {
@@ -36,7 +32,7 @@ public class RoomVisualiser extends Visualiser {
         this.pane = new Pane();
         this.room = new Pane();
 
-        this.scene = HabboClient.getInstance().createScene(this.pane);
+        this.scene = Movie.getInstance().createScene(this.pane);
 
 
         this.loadingBar = new ImageView();
@@ -67,12 +63,17 @@ public class RoomVisualiser extends Visualiser {
             System.out.println("testing 456");
         });
 
-        HabboClient.getInstance().getInterfaceScheduler().receiveUpdate(this);
+        // Add loader bar to the interfaces, make it transition from loading to hotel view easily
+        Movie.getInstance().createObject(new Alert("Users online: 20\nDaily player peak count: 23\nList of users online:\n\nMyetz (Flash), Deku (Flash), Cup-A-Jo (Executable), Rods (Executable),\nRybak (Flash), tracemitch (Flash),\nfaas10 (Executable), kosov (Flash), fishterry (Flash), Freeroam (Flash), Kurt12 (Flash)\nAward (Flash), thom (Flash), Parsnip (Executable), zidro (Executable), Mario (Executable)\n\n"));
+        Movie.getInstance().createObject(new Alert("Project Havana - Habbo Hotel v31 emulation\n\nRelease: r31_20090312_0433_13751_b40895fb610dbe96dc7b9d6477eeeb4\n\nContributors:\n - ThuGie, Copyright, Raptosaur, Hoshiko, TOMYSSHADOW, Elijah\n   Romauld, Glaceon, Nillus, Holo Team, Meth0d, office.boy, bbadzz\n\n   Big thanks to Sefhriloff & Ascii for assisting with SnowStorm.\n\nMade by Quackster from RaGEZONE"));
+        Movie.getInstance().createObject(new Alert("Give your room a name!"));
+
+        Movie.getInstance().getInterfaceScheduler().receiveUpdate(this);
     }
 
     @Override
     public void stop() {
-        HabboClient.getInstance().getInterfaceScheduler().removeUpdate(this);
+        Movie.getInstance().getInterfaceScheduler().removeUpdate(this);
     }
 
     @Override

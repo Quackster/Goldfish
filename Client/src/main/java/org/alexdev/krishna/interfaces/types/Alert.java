@@ -1,6 +1,7 @@
 package org.alexdev.krishna.interfaces.types;
 
-import org.alexdev.krishna.HabboClient;
+import javafx.scene.input.MouseEvent;
+import org.alexdev.krishna.Movie;
 import org.alexdev.krishna.controls.ButtonLarge;
 import org.alexdev.krishna.controls.Label;
 import org.alexdev.krishna.interfaces.InterfaceType;
@@ -41,7 +42,7 @@ public class Alert extends Dialog {
         this.setContent(content);
         this.initInnerBackground();
 
-        HabboClient.getInstance().getInterfaceScheduler().receiveUpdate(this);
+        Movie.getInstance().getInterfaceScheduler().receiveUpdate(this);
     }
 
     @Override
