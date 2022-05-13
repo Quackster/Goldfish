@@ -7,6 +7,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import org.alexdev.krishna.HabboClient;
+import org.alexdev.krishna.game.resources.ResourceManager;
 import org.alexdev.krishna.game.values.ValueType;
 import org.alexdev.krishna.game.values.types.PropertiesManager;
 import org.alexdev.krishna.game.GameUpdateLoop;
@@ -75,14 +76,14 @@ public class EntryVisualiser extends Visualiser {
         this.bottomReveal.setFill(Color.BLACK);
 
         this.topRight = new ImageView();
-        this.topRight.setImage(new Image(PropertiesManager.getInstance().getString("hotel.view.image.top.right", ""), true));
+        this.topRight.setImage(ResourceManager.getInstance().getWebImage(PropertiesManager.getInstance().getString("hotel.view.image.top.right", "")));
         this.topRight.setY(this.topRight.getImage().getHeight() * -1);
 
         this.bottomLeft = new ImageView();
-        this.bottomLeft.setImage(new Image(PropertiesManager.getInstance().getString("hotel.view.image.bottom.left", ""), true));
+        this.bottomLeft.setImage(ResourceManager.getInstance().getWebImage(PropertiesManager.getInstance().getString("hotel.view.image.bottom.left", "")));
 
         this.bottomRight = new ImageView();
-        this.bottomRight.setImage(new Image(PropertiesManager.getInstance().getString("hotel.view.image.bottom.right", ""), true));
+        this.bottomRight.setImage(ResourceManager.getInstance().getWebImage(PropertiesManager.getInstance().getString("hotel.view.image.bottom.right", "")));
 
         this.stretchLeft = new Rectangle(1,1);//= new ImageView();
         this.stretchLeft.setFill((Color) PropertiesManager.getInstance().getType("hotel.view.left.color", ValueType.COLOR_RGB, Color.rgb(117, 175, 203)));

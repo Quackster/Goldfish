@@ -13,6 +13,7 @@ import javafx.stage.Stage;
 import javafx.scene.text.Font;
 import org.alexdev.krishna.game.InterfaceUpdateLoop;
 import org.alexdev.krishna.game.resources.ResourceManager;
+import org.alexdev.krishna.game.scheduler.SchedulerManager;
 import org.alexdev.krishna.interfaces.Interface;
 import org.alexdev.krishna.game.GameUpdateLoop;
 import org.alexdev.krishna.util.DimensionUtil;
@@ -133,7 +134,7 @@ public class HabboClient extends Application {
     }
 
     public void loadFonts() {
-        new Thread(() -> {
+        SchedulerManager.getInstance().getCachedPool().submit(() -> {
             try {
                 volter = Font.loadFont(ResourceManager.getInstance().getResource("sprites/volter/volter.woff").openStream(), 9);
                 volterBold = Font.loadFont(ResourceManager.getInstance().getResource("sprites/volter/volter_bold.woff").openStream(), 9);
@@ -142,7 +143,7 @@ public class HabboClient extends Application {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }).start();
+        });
     }
 
     public void showVisualiser(VisualiserType type) {
