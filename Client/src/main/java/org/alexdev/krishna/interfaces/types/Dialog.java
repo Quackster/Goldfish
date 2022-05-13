@@ -68,6 +68,7 @@ public class Dialog extends Interface {
     public void start() {
         this.pane = new Pane();
         this.pane.setOnMousePressed(e -> this.clicked = true);
+        this.pane.setVisible(false);
         
         this.initBackground();
     }
@@ -117,6 +118,7 @@ public class Dialog extends Interface {
             }
 
             this.isSized = true;
+            this.getPane().setVisible(true);
         }
 
         // Click bring-to-front handler

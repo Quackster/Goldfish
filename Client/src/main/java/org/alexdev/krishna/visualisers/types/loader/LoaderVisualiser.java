@@ -35,11 +35,6 @@ public class LoaderVisualiser extends Visualiser {
 
         // Add loader bar to the interfaces, make it transition from loading to hotel view easily
         Movie.getInstance().createObject(new LoadingBar(this));
-        Movie.getInstance().createObject(new Alert("Users online: 20\nDaily player peak count: 23\nList of users online:\n\nMyetz (Flash), Deku (Flash), Cup-A-Jo (Executable), Rods (Executable),\nRybak (Flash), tracemitch (Flash),\nfaas10 (Executable), kosov (Flash), fishterry (Flash), Freeroam (Flash), Kurt12 (Flash)\nAward (Flash), thom (Flash), Parsnip (Executable), zidro (Executable), Mario (Executable)\n\n"));
-        Movie.getInstance().createObject(new Alert("Project Havana - Habbo Hotel v31 emulation\n\nRelease: r31_20090312_0433_13751_b40895fb6101dbe96dc7b9d6477eeeb4\n\nContributors:\n - ThuGie, Copyright, Raptosaur, Hoshiko, TOMYSSHADOW, Elijah\n   Romauld, Glaceon, Nillus, Holo Team, Meth0d, office.boy, bbadzz\n\n   Big thanks to Sefhriloff & Ascii for assisting with SnowStorm.\n\nMade by Quackster from RaGEZONE"));
-        Movie.getInstance().createObject(new Alert("Your friend is offline."));
-        Movie.getInstance().createObject(new Alert("Give your room a name!"));
-        Movie.getInstance().createObject(new Alert("Your verification code is:\nQBqfv9cE"));
 
         // Queue to receive
         Movie.getInstance().getInterfaceScheduler().receiveUpdate(this);

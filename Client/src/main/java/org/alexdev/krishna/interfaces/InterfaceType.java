@@ -5,5 +5,6 @@ import javafx.scene.layout.Pane;
 public enum InterfaceType {
     DIALOG,
     ALERT,
-    LOADING_BAR
+    LOADING_BAR,
+    ENTRY_TOOLBAR
 }

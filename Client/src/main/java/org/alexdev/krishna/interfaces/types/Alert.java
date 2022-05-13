@@ -1,6 +1,5 @@
 package org.alexdev.krishna.interfaces.types;
 
-import javafx.scene.input.MouseEvent;
 import org.alexdev.krishna.Movie;
 import org.alexdev.krishna.controls.ButtonLarge;
 import org.alexdev.krishna.controls.Label;
