@@ -1,7 +1,5 @@
 package org.alexdev.krishna.controls;
 
-import org.alexdev.krishna.HabboClient;
-
 import javafx.scene.paint.Color;
 import org.alexdev.krishna.game.resources.ResourceManager;
 

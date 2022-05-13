@@ -1,14 +1,8 @@
 package org.alexdev.krishna.interfaces.types;
 
-import javafx.application.Platform;
-import javafx.geometry.Insets;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import org.alexdev.krishna.HabboClient;
+import org.alexdev.krishna.Movie;
 import org.alexdev.krishna.game.resources.ResourceManager;
 import org.alexdev.krishna.game.scheduler.SchedulerManager;
 import org.alexdev.krishna.interfaces.Interface;
@@ -72,12 +66,12 @@ public class LoadingBar extends Interface {
             this.draggedY = event.getY();
         });
 
-        HabboClient.getInstance().getInterfaceScheduler().receiveUpdate(this);
+        Movie.getInstance().getInterfaceScheduler().receiveUpdate(this);
     }
 
     @Override
     public void stop() {
-        HabboClient.getInstance().getInterfaceScheduler().removeUpdate(this);
+        Movie.getInstance().getInterfaceScheduler().removeUpdate(this);
     }
 
 
@@ -89,8 +83,8 @@ public class LoadingBar extends Interface {
     @Override
     public void update() {
         if (this.loaderProgress >= 75) {
-            if (HabboClient.getInstance().getCurrentVisualiser() instanceof LoaderVisualiser) {
-                HabboClient.getInstance().showVisualiser(VisualiserType.HOTEL_VIEW);
+            if (Movie.getInstance().getCurrentVisualiser() instanceof LoaderVisualiser) {
+                Movie.getInstance().showVisualiser(VisualiserType.HOTEL_VIEW);
             }
         }
 

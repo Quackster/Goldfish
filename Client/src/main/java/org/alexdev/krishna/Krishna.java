@@ -3,7 +3,7 @@ package org.alexdev.krishna;
 import javafx.application.Application;
 
 public class Krishna {
-    private static HabboClient client;
+    private static Movie client;
 
     /**
      * Main call of Java application
@@ -11,6 +11,6 @@ public class Krishna {
      * @param args System arguments
      */
     public static void main(String[] args) {
-        Application.launch(HabboClient.class);
+        Application.launch(Movie.class);
     }
 }

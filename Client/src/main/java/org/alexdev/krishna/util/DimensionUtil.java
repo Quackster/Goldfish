@@ -2,7 +2,7 @@ package org.alexdev.krishna.util;
 
 import javafx.geometry.Point2D;
 import javafx.scene.image.ImageView;
-import org.alexdev.krishna.HabboClient;
+import org.alexdev.krishna.Movie;
 
 // LocV = Y
 // LocH = X
@@ -26,11 +26,11 @@ public class DimensionUtil {
     }
 
     public static double getProgramWidth() {
-        return HabboClient.getInstance().getPrimaryStage().getScene().getWidth();
+        return Movie.getInstance().getPrimaryStage().getScene().getWidth();
     }
 
     public static double getProgramHeight() {
-        return HabboClient.getInstance().getPrimaryStage().getScene().getHeight();
+        return Movie.getInstance().getPrimaryStage().getScene().getHeight();
     }
 
     public static long roundEven(double d) {

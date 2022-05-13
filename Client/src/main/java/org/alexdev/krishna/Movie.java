@@ -27,8 +27,8 @@ import java.util.Map;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
-public class HabboClient extends Application {
-    private static HabboClient instance;
+public class Movie extends Application {
+    private static Movie instance;
     private Stage primaryStage;
 
     private GraphicsScheduler gameScheduler;
@@ -38,7 +38,7 @@ public class HabboClient extends Application {
     private final List<Interface> interfaces;
     private Visualiser currentVisualiser;
 
-    public HabboClient() {
+    public Movie() {
         this.visualisers = new ConcurrentHashMap<>();
         this.visualisers.put(VisualiserType.LOADER, new LoaderVisualiser());
         this.visualisers.put(VisualiserType.HOTEL_VIEW, new EntryVisualiser());
@@ -105,7 +105,12 @@ public class HabboClient extends Application {
             setupVisualiser(visualiser);
             this.primaryStage.setScene(visualiser.getScene());
 
-            visualiser.getPane().getChildren().addAll(this.interfaces.stream().map(Interface::getPane).collect(Collectors.toList()));
+            this.interfaces.forEach(control -> {
+                if (!visualiser.getPane().getChildren().contains(control.getPane())) {
+                    visualiser.getPane().getChildren().add(control.getPane());
+                }
+            });
+            //visualiser.getPane().getChildren().addAll(this.interfaces.stream().map(Interface::getPane).collect(Collectors.toList()));
             this.interfaces.forEach(Interface::sceneChanged);
         }
     }
@@ -147,11 +152,24 @@ public class HabboClient extends Application {
     }
 
     /**
-     * Submit new interface to appear on current scene
+     * Create interface to appear on current scene
      */
-    public void submit(Interface control) {
+    public void createObject(Interface control) {
         this.setupInterface(control);
         this.interfaces.add(control);
+
+        if (!this.currentVisualiser.getPane().getChildren().contains(control.getPane())) {
+            this.currentVisualiser.getPane().getChildren().add(control.getPane());
+        }
+    }
+
+    public void removeObject(Interface control) {
+        control.stop();
+        this.interfaces.remove(control);
+
+        if (this.currentVisualiser.getPane().getChildren().contains(control.getPane())) {
+            this.currentVisualiser.getPane().getChildren().remove(control.getPane());
+        }
     }
 
     public void startGameScheduler() {
@@ -208,7 +226,7 @@ public class HabboClient extends Application {
         return interfaces;
     }
 
-    public static HabboClient getInstance() {
+    public static Movie getInstance() {
         return instance;
     }
 

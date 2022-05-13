@@ -1,6 +1,6 @@
 package org.alexdev.krishna.interfaces.types;
 
-import org.alexdev.krishna.HabboClient;
+import org.alexdev.krishna.Movie;
 import org.alexdev.krishna.game.resources.ResourceManager;
 
 import javafx.geometry.Insets;
@@ -70,9 +70,7 @@ public class Dialog extends Interface {
     }
 
     @Override
-    public void stop() {
-
-    }
+    public void stop() { }
 
     @Override
     public void sceneChanged() {
@@ -294,8 +292,8 @@ public class Dialog extends Interface {
             var height = title != null ? contentHeight + 15 : contentHeight;
     
             setSize(width, height);
-            this.pane.setLayoutX(Math.ceil((HabboClient.getInstance().getPrimaryStage().getWidth() - this.pane.getWidth()) / 2));
-            this.pane.setLayoutY(Math.ceil((HabboClient.getInstance().getPrimaryStage().getHeight() - this.pane.getHeight()) / 2));
+            this.pane.setLayoutX(Math.ceil((Movie.getInstance().getPrimaryStage().getWidth() - this.pane.getWidth()) / 2));
+            this.pane.setLayoutY(Math.ceil((Movie.getInstance().getPrimaryStage().getHeight() - this.pane.getHeight()) / 2));
 
             var coords = DimensionUtil.getCenterCords(width, height);
             this.pane.setLayoutX(coords.getX());

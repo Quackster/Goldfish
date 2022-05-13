@@ -6,7 +6,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import org.alexdev.krishna.HabboClient;
+import org.alexdev.krishna.Movie;
 import org.alexdev.krishna.game.resources.ResourceManager;
 import org.alexdev.krishna.game.values.ValueType;
 import org.alexdev.krishna.game.values.types.PropertiesManager;
@@ -63,7 +63,7 @@ public class EntryVisualiser extends Visualiser {
         this.cloudTurnPoint = PropertiesManager.getInstance().getInt("hotel.view.cloud.turn.point", 330);
 
         this.pane = new Pane();
-        this.scene = HabboClient.getInstance().createScene(this.pane);
+        this.scene = Movie.getInstance().createScene(this.pane);
 
         this.topReveal = new Rectangle(1,1);
         this.topReveal.setFill(Color.BLACK);
@@ -94,7 +94,7 @@ public class EntryVisualiser extends Visualiser {
         this.sun.setX(DimensionUtil.getCenterCords(this.sun.getImage().getWidth(), this.sun.getImage().getHeight()).getX());
 
         this.pViewOpenTime = System.currentTimeMillis() + MAX_VIEW_TIME;
-        this.bottomReveal.setY(HabboClient.getInstance().getPrimaryStage().getHeight() / 2);
+        this.bottomReveal.setY(Movie.getInstance().getPrimaryStage().getHeight() / 2);
 
         this.stretchBars();
 
@@ -120,12 +120,12 @@ public class EntryVisualiser extends Visualiser {
         this.queueAnimateSign = true;
 
         // Queue to receive
-        HabboClient.getInstance().getGameScheduler().receiveUpdate(this);
+        Movie.getInstance().getGameScheduler().receiveUpdate(this);
     }
 
     @Override
     public void stop() {
-        HabboClient.getInstance().getGameScheduler().removeUpdate(this);
+        Movie.getInstance().getGameScheduler().removeUpdate(this);
     }
 
     /**
@@ -254,10 +254,10 @@ public class EntryVisualiser extends Visualiser {
      * Stretch the reveal bars across the window
      */
     private void stretchBars() {
-        this.topReveal.setWidth(HabboClient.getInstance().getPrimaryStage().getWidth());
-        this.topReveal.setHeight(HabboClient.getInstance().getPrimaryStage().getHeight() / 2);
-        this.bottomReveal.setWidth(HabboClient.getInstance().getPrimaryStage().getWidth());
-        this.bottomReveal.setHeight(HabboClient.getInstance().getPrimaryStage().getHeight() / 2);
+        this.topReveal.setWidth(Movie.getInstance().getPrimaryStage().getWidth());
+        this.topReveal.setHeight(Movie.getInstance().getPrimaryStage().getHeight() / 2);
+        this.bottomReveal.setWidth(Movie.getInstance().getPrimaryStage().getWidth());
+        this.bottomReveal.setHeight(Movie.getInstance().getPrimaryStage().getHeight() / 2);
     }
 
     /**
