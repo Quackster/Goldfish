@@ -188,20 +188,11 @@ public class HabboClient extends Application {
     }
 
     /**
-     * Queue new interface to appear on next scene change
-     */
-    public void queue(Interface control) {
-        this.setupInterface(control);
-        this.interfaces.add(control);
-    }
-
-    /**
-     * Submit new interface to appear on next scene change
+     * Submit new interface to appear on current scene
      */
     public void submit(Interface control) {
         this.setupInterface(control);
         this.interfaces.add(control);
-        this.currentVisualiser.getPane().getChildren().add(control);
     }
 
     public Stage getPrimaryStage() {
