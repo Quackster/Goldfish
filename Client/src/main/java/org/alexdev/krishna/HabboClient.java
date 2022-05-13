@@ -1,7 +1,11 @@
 package org.alexdev.krishna;
 
 import javafx.application.Application;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
@@ -9,7 +13,6 @@ import javafx.stage.Stage;
 import javafx.scene.text.Font;
 import org.alexdev.krishna.game.InterfaceUpdateLoop;
 import org.alexdev.krishna.game.resources.ResourceManager;
-import org.alexdev.krishna.interfaces.types.Alert;
 import org.alexdev.krishna.interfaces.Interface;
 import org.alexdev.krishna.game.GameUpdateLoop;
 import org.alexdev.krishna.util.DimensionUtil;
@@ -17,9 +20,11 @@ import org.alexdev.krishna.visualisers.Visualiser;
 import org.alexdev.krishna.visualisers.VisualiserType;
 import org.alexdev.krishna.visualisers.types.entry.EntryVisualiser;
 import org.alexdev.krishna.visualisers.types.loader.LoaderVisualiser;
+import org.alexdev.krishna.visualisers.types.room.RoomVisualiser;
 
 import java.awt.*;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.*;
 
 public class HabboClient extends Application {
@@ -34,14 +39,15 @@ public class HabboClient extends Application {
     private GameUpdateLoop gameUpdateLoop;
     private InterfaceUpdateLoop interfaceUpdateLoop;
 
-    private final ConcurrentMap<VisualiserType, Visualiser> visualisers;
-    private final CopyOnWriteArrayList<Interface> interfaces;
+    private final Map<VisualiserType, Visualiser> visualisers;
+    private final List<Interface> interfaces;
     private Visualiser currentVisualiser;
 
     public HabboClient() {
         this.visualisers = new ConcurrentHashMap<>();
         this.visualisers.put(VisualiserType.LOADER, new LoaderVisualiser());
         this.visualisers.put(VisualiserType.HOTEL_VIEW, new EntryVisualiser());
+        this.visualisers.put(VisualiserType.ROOM, new RoomVisualiser());
 
         this.interfaces = new CopyOnWriteArrayList<>();
     }
@@ -52,13 +58,13 @@ public class HabboClient extends Application {
 
     public void startGameUpdateLoops() {
         if (this.gameUpdateLoop != null) {
-            stopGameUpdateLoops();
+            stopGameUpdateLoop();
         }
 
         this.gameUpdateLoop = new GameUpdateLoop();
     }
 
-    public void stopGameUpdateLoops() {
+    public void stopGameUpdateLoop() {
         if (this.gameUpdateLoop == null) {
             return;
         }
@@ -69,13 +75,13 @@ public class HabboClient extends Application {
 
     public void startInterfaceUpdateLoops() {
         if (this.interfaceUpdateLoop != null) {
-            stopInterfaceUpdateLoops();
+            stopInterfaceUpdateLoop();
         }
 
         this.interfaceUpdateLoop = new InterfaceUpdateLoop();
     }
 
-    public void stopInterfaceUpdateLoops() {
+    public void stopInterfaceUpdateLoop() {
         if (this.interfaceUpdateLoop == null) {
             return;
         }
@@ -116,14 +122,14 @@ public class HabboClient extends Application {
         primaryStage.setScene(mainScene);
         primaryStage.show();
 
-        //this.showStage(HabboSceneType.LOADER);
         this.showVisualiser(VisualiserType.LOADER);
+        // this.showVisualiser(VisualiserType.ROOM);
     }
 
     @Override
     public void stop(){
-        if (this.gameUpdateLoop != null)
-            this.gameUpdateLoop.setRunning(false);
+        this.stopGameUpdateLoop();
+        this.stopInterfaceUpdateLoop();
     }
 
     public void loadFonts() {
@@ -163,7 +169,7 @@ public class HabboClient extends Application {
         visualiser.getScene().setOnMouseClicked(x -> {
             if (x.getButton() == MouseButton.SECONDARY) {
                 if (this.gameUpdateLoop != null) {
-                    stopGameUpdateLoops();
+                    stopGameUpdateLoop();
                 } else {
                     startGameUpdateLoops();
                 }
@@ -184,6 +190,7 @@ public class HabboClient extends Application {
      * Create new scene management
      */
     public Scene createScene(Pane pane) {
+        pane.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
         return new Scene(pane, DimensionUtil.getProgramWidth(), DimensionUtil.getProgramHeight(), Color.BLACK);
     }
 
@@ -199,7 +206,7 @@ public class HabboClient extends Application {
         return primaryStage;
     }
 
-    public ConcurrentMap<VisualiserType, Visualiser> getVisualisers() {
+    public Map<VisualiserType, Visualiser> getVisualisers() {
         return visualisers;
     }
 

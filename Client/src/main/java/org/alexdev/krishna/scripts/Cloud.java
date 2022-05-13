@@ -5,14 +5,13 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import org.alexdev.krishna.game.resources.ResourceManager;
 import org.alexdev.krishna.util.DimensionUtil;
-import org.alexdev.krishna.util.libraries.AsyncClientAction;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
-public class Cloud extends Pane implements AsyncClientAction {
+public class Cloud extends Pane {
     private int pTurnPoint;
     private String fileName;
     private String direction;
@@ -157,12 +156,10 @@ public class Cloud extends Pane implements AsyncClientAction {
         return "sprites/scenes/hotel_view/clouds/" + this.fileName + "_" + oppositeDirection + ".png";
     }
 
-    @Override
     public void setFinished(boolean finished) {
         this.isFinished = finished;
     }
 
-    @Override
     public boolean isFinished() {
         return isFinished;
     }

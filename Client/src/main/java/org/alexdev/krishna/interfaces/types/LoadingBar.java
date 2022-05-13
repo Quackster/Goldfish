@@ -97,8 +97,9 @@ public class LoadingBar extends Interface {
             return;
 
         if (this.loaderProgress >= 75) {
-            if (HabboClient.getInstance().getCurrentVisualiser() instanceof LoaderVisualiser)
-                Platform.runLater(() -> HabboClient.getInstance().showVisualiser(VisualiserType.HOTEL_VIEW));
+            if (HabboClient.getInstance().getCurrentVisualiser() instanceof LoaderVisualiser) {
+                HabboClient.getInstance().showVisualiser(VisualiserType.HOTEL_VIEW);
+            }
         }
 
         updateLoader();

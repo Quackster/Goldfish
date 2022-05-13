@@ -37,7 +37,6 @@ public class LoaderVisualiser extends Visualiser {
 
         this.pane = new Pane();
         this.scene = HabboClient.getInstance().createScene(this.pane);
-        this.pane.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
 
         this.loadingLogo = new ImageView();
         this.loadingLogo.setImage(ResourceManager.getInstance().getFxImage("sprites/scenes/loader/logo.png"));

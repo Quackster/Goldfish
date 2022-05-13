@@ -1,7 +1,6 @@
 package org.alexdev.krishna.game.values;
 
 import javafx.scene.paint.Color;
-import org.alexdev.krishna.util.libraries.AsyncClientAction;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -10,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class Values implements AsyncClientAction {
+public class Values {
     public Map<String, String> values;
     private boolean isFinished;
 
@@ -98,12 +97,10 @@ public class Values implements AsyncClientAction {
         }
     }
 
-    @Override
     public void setFinished(boolean finished) {
         this.isFinished = finished;
     }
 
-    @Override
     public boolean isFinished() {
         return isFinished;
     }
