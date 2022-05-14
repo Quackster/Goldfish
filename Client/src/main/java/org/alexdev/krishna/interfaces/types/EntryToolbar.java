@@ -57,9 +57,6 @@ public class EntryToolbar extends Interface {
         Movie.getInstance().getInterfaces().remove(this);
         Movie.getInstance().getInterfaceScheduler().removeUpdate(this);
     }
-
-    @Override
-    public void sceneChanged() {}
     
     @Override
     public void update() {

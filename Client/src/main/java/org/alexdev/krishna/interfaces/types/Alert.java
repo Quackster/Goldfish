@@ -32,7 +32,7 @@ public class Alert extends Dialog {
         var ok = new ButtonLarge("OK");
         ok.setAlignment(Pos.CENTER);
         ok.setPadding(new Insets(0, 0, 13, -5));
-        ok.setOnMouseClicked(e -> this.stop());
+        ok.setOnMouseClicked(e -> this.remove());
 
         content.getChildren().addAll(text, ok);
         
@@ -42,6 +42,13 @@ public class Alert extends Dialog {
         this.initInnerBackground();
 
         Movie.getInstance().getInterfaceScheduler().receiveUpdate(this);
+    }
+
+    @Override
+    public void stop() {
+        super.stop();
+
+        Movie.getInstance().getInterfaceScheduler().removeUpdate(this);
     }
 
     @Override

@@ -35,6 +35,7 @@ public class LoaderVisualiser extends Visualiser {
 
         // Add loader bar to the interfaces, make it transition from loading to hotel view easily
         Movie.getInstance().createObject(new LoadingBar(this));
+        Movie.getInstance().createObject(new Alert("test 123"));
 
         // Queue to receive
         Movie.getInstance().getInterfaceScheduler().receiveUpdate(this);

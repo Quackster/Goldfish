@@ -1,6 +1,7 @@
 package org.alexdev.krishna;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.layout.Background;
@@ -110,8 +111,6 @@ public class Movie extends Application {
                     visualiser.getPane().getChildren().add(control.getPane());
                 }
             });
-            //visualiser.getPane().getChildren().addAll(this.interfaces.stream().map(Interface::getPane).collect(Collectors.toList()));
-            this.interfaces.forEach(Interface::sceneChanged);
         }
     }
 
@@ -155,21 +154,25 @@ public class Movie extends Application {
      * Create interface to appear on current scene
      */
     public void createObject(Interface control) {
-        this.setupInterface(control);
-        this.interfaces.add(control);
+        Platform.runLater(() -> {
+            this.setupInterface(control);
+            this.interfaces.add(control);
 
-        if (!this.currentVisualiser.getPane().getChildren().contains(control.getPane())) {
-            this.currentVisualiser.getPane().getChildren().add(control.getPane());
-        }
+            if (!this.currentVisualiser.getPane().getChildren().contains(control.getPane())) {
+                this.currentVisualiser.getPane().getChildren().add(control.getPane());
+            }
+        });
     }
 
     public void removeObject(Interface control) {
-        control.stop();
-        this.interfaces.remove(control);
+        Platform.runLater(() -> {
+            control.stop();
+            this.interfaces.remove(control);
 
-        if (this.currentVisualiser.getPane().getChildren().contains(control.getPane())) {
-            this.currentVisualiser.getPane().getChildren().remove(control.getPane());
-        }
+            if (this.currentVisualiser.getPane().getChildren().contains(control.getPane())) {
+                this.currentVisualiser.getPane().getChildren().remove(control.getPane());
+            }
+        });
     }
 
     public void startGameScheduler() {

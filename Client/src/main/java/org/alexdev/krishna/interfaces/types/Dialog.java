@@ -75,15 +75,8 @@ public class Dialog extends Interface {
 
     @Override
     public void stop() {
-        var parent = (Pane) this.getPane().getParent();
-        parent.getChildren().remove(this.getPane());
 
-        Movie.getInstance().getInterfaces().remove(this);
-        Movie.getInstance().getInterfaceScheduler().removeUpdate(this);
     }
-
-    @Override
-    public void sceneChanged() {}
     
     @Override
     public void update() {
@@ -334,7 +327,7 @@ public class Dialog extends Interface {
         this.closeButton.setPrefSize(13, 13);
         this.closeButton.setLayoutY(6);
         this.closeButton.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/dialog/close_button.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
-        this.closeButton.setOnMouseClicked(e -> this.stop());
+        this.closeButton.setOnMouseClicked(e -> this.remove());
 
         this.pane.getChildren().addAll(this.title, this.dragArea, this.closeButton);
     }

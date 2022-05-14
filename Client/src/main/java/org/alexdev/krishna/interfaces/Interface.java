@@ -16,7 +16,6 @@ public abstract class Interface extends GameUpdate {
         Movie.getInstance().removeObject(this);
     }
 
-    public abstract void sceneChanged();
     public abstract void update();
     public abstract Pane getPane();
     public abstract InterfaceType getType();
