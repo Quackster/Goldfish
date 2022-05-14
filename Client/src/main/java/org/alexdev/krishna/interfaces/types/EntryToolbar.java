@@ -3,33 +3,23 @@ package org.alexdev.krishna.interfaces.types;
 import org.alexdev.krishna.Movie;
 import org.alexdev.krishna.controls.ImageButton;
 import org.alexdev.krishna.controls.Label;
-import org.alexdev.krishna.game.resources.ResourceManager;
 import org.alexdev.krishna.interfaces.Interface;
 import org.alexdev.krishna.interfaces.InterfaceType;
 
 import javafx.scene.Cursor;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.BackgroundImage;
-import javafx.scene.layout.BackgroundPosition;
-import javafx.scene.layout.BackgroundRepeat;
-import javafx.scene.layout.BackgroundSize;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import org.alexdev.krishna.visualisers.Visualiser;
 
 public class EntryToolbar extends Interface {
-    private Pane pane;
-
     // TO-DO
     // - handle resizing
     // - add user icon
 
     @Override
     public void start() {
-        this.pane = new Pane();
-        this.pane.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
-        this.pane.setLayoutY(Movie.getInstance().getCurrentVisualiser().getPane().getHeight());
+        this.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
+        this.setLayoutY(Movie.getInstance().getCurrentVisualiser().getPane().getHeight());
 
         var userLabel = new Label("Parsnip", "#FFFFFF");
         userLabel.setLayoutX(51);
@@ -88,8 +78,8 @@ public class EntryToolbar extends Interface {
         helpButton.setLayoutX(915);
         helpButton.setOnMouseClicked(e -> Movie.getInstance().createObject(new Alert("helpButton clicked")));
         
-        this.pane.getChildren().addAll(userLabel, mottoLabel, updateIdLabel, clubTitleLabel, clubDescLabel);
-        this.pane.getChildren().addAll(clubButton, chatButton, friendsButton, navigatorButton, eventsButton, catalogueButton, gamesButton, helpButton);
+        this.getChildren().addAll(userLabel, mottoLabel, updateIdLabel, clubTitleLabel, clubDescLabel);
+        this.getChildren().addAll(clubButton, chatButton, friendsButton, navigatorButton, eventsButton, catalogueButton, gamesButton, helpButton);
 
         Movie.getInstance().getInterfaceScheduler().receiveUpdate(this);
     }
@@ -101,16 +91,11 @@ public class EntryToolbar extends Interface {
 
     @Override
     public void update() {
-        this.pane.setPrefSize(Movie.getInstance().getPrimaryStage().getWidth(), 55);
+        this.setPrefSize(Movie.getInstance().getPrimaryStage().getWidth(), 55);
 
-        if (this.pane.getLayoutY() != Movie.getInstance().getCurrentVisualiser().getPane().getHeight() - this.pane.getHeight()) {
-            this.pane.setLayoutY(this.pane.getLayoutY() - 5);
+        if (this.getLayoutY() != Movie.getInstance().getCurrentVisualiser().getPane().getHeight() - this.getHeight()) {
+            this.setLayoutY(this.getLayoutY() - 5);
         }
-    }
-
-    @Override
-    public Pane getPane() {
-        return this.pane;
     }
 
     @Override
