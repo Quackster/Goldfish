@@ -15,9 +15,11 @@ public class EntryToolbar extends Interface {
     // TO-DO
     // - handle resizing
     // - add user icon
+    private int scrollOffset;
 
     @Override
     public void start() {
+        this.scrollOffset = 0;
         this.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
         this.setLayoutY(Movie.getInstance().getCurrentVisualiser().getPane().getHeight());
 
@@ -77,6 +79,7 @@ public class EntryToolbar extends Interface {
         var helpButton = new ImageButton("sprites/entry_toolbar/help.png");
         helpButton.setLayoutX(915);
         helpButton.setOnMouseClicked(e -> Movie.getInstance().createObject(new Alert("helpButton clicked")));
+        //helpButton.setOnMouseClicked(e -> this.scrollOffset = 0);
         
         this.getChildren().addAll(userLabel, mottoLabel, updateIdLabel, clubTitleLabel, clubDescLabel);
         this.getChildren().addAll(clubButton, chatButton, friendsButton, navigatorButton, eventsButton, catalogueButton, gamesButton, helpButton);
@@ -93,9 +96,11 @@ public class EntryToolbar extends Interface {
     public void update() {
         this.setPrefSize(Movie.getInstance().getPrimaryStage().getWidth(), 55);
 
-        if (this.getLayoutY() != Movie.getInstance().getCurrentVisualiser().getPane().getHeight() - this.getHeight()) {
-            this.setLayoutY(this.getLayoutY() - 5);
+        if (this.scrollOffset != 55) {
+            this.scrollOffset += 5;
         }
+
+        this.setLayoutY(Movie.getInstance().getCurrentVisualiser().getPane().getHeight() - scrollOffset);
     }
 
     @Override
