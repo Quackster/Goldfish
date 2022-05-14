@@ -10,6 +10,7 @@ import org.alexdev.krishna.interfaces.types.Alert;
 import org.alexdev.krishna.interfaces.types.LoadingBar;
 import org.alexdev.krishna.visualisers.Visualiser;
 import org.alexdev.krishna.util.DimensionUtil;
+import org.alexdev.krishna.visualisers.VisualiserType;
 
 public class LoaderVisualiser extends Visualiser {
     private LoaderComponent component;
@@ -35,7 +36,7 @@ public class LoaderVisualiser extends Visualiser {
 
         // Add loader bar to the interfaces, make it transition from loading to hotel view easily
         Movie.getInstance().createObject(new LoadingBar(this));
-        Movie.getInstance().createObject(new Alert("test 123"));
+        // Movie.getInstance().createObject(new Alert("test 123"));
 
         // Queue to receive
         Movie.getInstance().getInterfaceScheduler().receiveUpdate(this);
@@ -70,5 +71,10 @@ public class LoaderVisualiser extends Visualiser {
     @Override
     public Scene getScene() {
         return scene;
+    }
+
+    @Override
+    public VisualiserType getType() {
+        return VisualiserType.LOADER;
     }
 }

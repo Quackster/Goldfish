@@ -18,6 +18,7 @@ import org.alexdev.krishna.util.DateUtil;
 import org.alexdev.krishna.util.DimensionUtil;
 import org.alexdev.krishna.visualisers.Component;
 import org.alexdev.krishna.visualisers.Visualiser;
+import org.alexdev.krishna.visualisers.VisualiserType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -304,5 +305,10 @@ public class EntryVisualiser extends Visualiser {
     @Override
     public Scene getScene() {
         return scene;
+    }
+
+    @Override
+    public VisualiserType getType() {
+        return VisualiserType.HOTEL_VIEW;
     }
 }

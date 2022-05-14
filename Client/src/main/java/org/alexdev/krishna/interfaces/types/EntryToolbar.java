@@ -10,6 +10,7 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import org.alexdev.krishna.visualisers.Visualiser;
 
 public class EntryToolbar extends Interface {
     @Override
@@ -30,7 +31,7 @@ public class EntryToolbar extends Interface {
         updateIdLabel.setUnderline(true);
         updateIdLabel.setCursor(Cursor.HAND);
         updateIdLabel.setOnMouseClicked(e -> Movie.getInstance().createObject(new Alert("updateIdLabel clicked")));
-        
+
         var clubTitleLabel = new Label("Habbo Club", "#FFFFFF");
         clubTitleLabel.setLayoutX(287);
         clubTitleLabel.setLayoutY(19);
@@ -50,7 +51,7 @@ public class EntryToolbar extends Interface {
     public void stop() {
         Movie.getInstance().getInterfaceScheduler().removeUpdate(this);
     }
-    
+
     @Override
     public void update() {
         this.setPrefSize(Movie.getInstance().getPrimaryStage().getWidth(), 55);

@@ -9,6 +9,7 @@ import org.alexdev.krishna.interfaces.types.Alert;
 import org.alexdev.krishna.interfaces.types.LoadingBar;
 import org.alexdev.krishna.util.DimensionUtil;
 import org.alexdev.krishna.visualisers.Visualiser;
+import org.alexdev.krishna.visualisers.VisualiserType;
 
 public class RoomVisualiser extends Visualiser {
     private Pane pane;
@@ -100,5 +101,10 @@ public class RoomVisualiser extends Visualiser {
     @Override
     public Scene getScene() {
         return scene;
+    }
+
+    @Override
+    public VisualiserType getType() {
+        return VisualiserType.ROOM;
     }
 }

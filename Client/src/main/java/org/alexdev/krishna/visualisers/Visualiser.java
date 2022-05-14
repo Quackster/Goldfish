@@ -14,4 +14,10 @@ public abstract class Visualiser implements GameUpdate {
     public abstract Component getComponent();
     public abstract Pane getPane();
     public abstract Scene getScene();
+    public abstract VisualiserType getType();
+
+    @Override
+    public String toString() {
+        return getType().name();
+    }
 }
