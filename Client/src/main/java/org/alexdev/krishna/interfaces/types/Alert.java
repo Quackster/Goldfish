@@ -8,6 +8,7 @@ import org.alexdev.krishna.interfaces.InterfaceType;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.layout.VBox;
+import org.alexdev.krishna.visualisers.Visualiser;
 
 public class Alert extends Dialog {
     private String text;
@@ -32,7 +33,7 @@ public class Alert extends Dialog {
         var ok = new ButtonLarge("OK");
         ok.setAlignment(Pos.CENTER);
         ok.setPadding(new Insets(0, 0, 13, -5));
-        ok.setOnMouseClicked(e -> this.stop());
+        ok.setOnMouseClicked(e -> this.remove());
 
         content.getChildren().addAll(text, ok);
         
@@ -42,6 +43,18 @@ public class Alert extends Dialog {
         this.initInnerBackground();
 
         Movie.getInstance().getInterfaceScheduler().receiveUpdate(this);
+    }
+
+    @Override
+    public void stop() {
+        super.stop();
+
+        Movie.getInstance().getInterfaceScheduler().removeUpdate(this);
+    }
+
+    @Override
+    public void visualiserChanged(Visualiser previousVisualiser, Visualiser currentVisualiser) {
+        super.toFront(); // Always bring to front when we move visualisers
     }
 
     @Override

@@ -1,6 +1,7 @@
 package org.alexdev.krishna;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.layout.Background;
@@ -25,7 +26,6 @@ import java.awt.*;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
-import java.util.stream.Collectors;
 
 public class Movie extends Application {
     private static Movie instance;
@@ -94,25 +94,29 @@ public class Movie extends Application {
     }
 
     public void showVisualiser(VisualiserType type) {
-        if (this.currentVisualiser != null) {
-            this.currentVisualiser.stop();
-        }
+        Platform.runLater(() -> {
+            var previousVisualiser = this.currentVisualiser;
 
-        var visualiser = this.visualisers.get(type);
+            if (previousVisualiser != null) {
+                previousVisualiser.stop();
+            }
 
-        if (visualiser != null) {
-            this.currentVisualiser = visualiser;
-            setupVisualiser(visualiser);
-            this.primaryStage.setScene(visualiser.getScene());
+            var visualiser = this.visualisers.get(type);
 
-            this.interfaces.forEach(control -> {
-                if (!visualiser.getPane().getChildren().contains(control.getPane())) {
-                    visualiser.getPane().getChildren().add(control.getPane());
-                }
-            });
-            //visualiser.getPane().getChildren().addAll(this.interfaces.stream().map(Interface::getPane).collect(Collectors.toList()));
-            this.interfaces.forEach(Interface::sceneChanged);
-        }
+            if (visualiser != null) {
+                this.currentVisualiser = visualiser;
+                setupVisualiser(visualiser);
+                this.primaryStage.setScene(visualiser.getScene());
+
+                this.interfaces.forEach(control -> {
+                    if (!visualiser.getPane().getChildren().contains(control)) {
+                        visualiser.getPane().getChildren().add(control);
+                    }
+
+                    control.visualiserChanged(previousVisualiser, this.currentVisualiser);
+                });
+            }
+        });
     }
 
     /**
@@ -141,6 +145,7 @@ public class Movie extends Application {
     private void setupInterface(Interface control) {
         control.start();
         control.update();
+        control.visualiserChanged(null, this.currentVisualiser);
     }
 
     /**
@@ -155,21 +160,25 @@ public class Movie extends Application {
      * Create interface to appear on current scene
      */
     public void createObject(Interface control) {
-        this.setupInterface(control);
-        this.interfaces.add(control);
+        Platform.runLater(() -> {
+            this.setupInterface(control);
+            this.interfaces.add(control);
 
-        if (!this.currentVisualiser.getPane().getChildren().contains(control.getPane())) {
-            this.currentVisualiser.getPane().getChildren().add(control.getPane());
-        }
+            if (!this.currentVisualiser.getPane().getChildren().contains(control)) {
+                this.currentVisualiser.getPane().getChildren().add(control);
+            }
+        });
     }
 
     public void removeObject(Interface control) {
-        control.stop();
-        this.interfaces.remove(control);
+        Platform.runLater(() -> {
+            if (this.currentVisualiser.getPane().getChildren().contains(control)) {
+                this.currentVisualiser.getPane().getChildren().remove(control);
+            }
 
-        if (this.currentVisualiser.getPane().getChildren().contains(control.getPane())) {
-            this.currentVisualiser.getPane().getChildren().remove(control.getPane());
-        }
+            control.stop();
+            this.interfaces.remove(control);
+        });
     }
 
     public void startGameScheduler() {

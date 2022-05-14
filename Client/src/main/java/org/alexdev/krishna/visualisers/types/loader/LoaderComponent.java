@@ -27,7 +27,6 @@ public class LoaderComponent implements Component {
             PropertiesManager.getInstance().loadConfig();
         } catch (Exception ex) {
             ex.printStackTrace();
-            return false;
         }
 
         return PropertiesManager.getInstance().isFinished();
@@ -38,7 +37,6 @@ public class LoaderComponent implements Component {
             PropertiesManager.getInstance().loadVariables();
         } catch (Exception ex) {
             ex.printStackTrace();
-            return false;
         }
 
         return PropertiesManager.getInstance().isFinished();
@@ -49,7 +47,6 @@ public class LoaderComponent implements Component {
             TextsManager.getInstance().loadTexts();
         } catch (Exception ex) {
             ex.printStackTrace();
-            return false;
         }
 
         return TextsManager.getInstance().isFinished();

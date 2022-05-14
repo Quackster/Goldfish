@@ -16,6 +16,7 @@ import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import org.alexdev.krishna.visualisers.Visualiser;
 
 public class EntryToolbar extends Interface {
     private Pane pane;
@@ -44,7 +45,7 @@ public class EntryToolbar extends Interface {
         updateIdLabel.setUnderline(true);
         updateIdLabel.setCursor(Cursor.HAND);
         updateIdLabel.setOnMouseClicked(e -> Movie.getInstance().createObject(new Alert("updateIdLabel clicked")));
-        
+
         var clubTitleLabel = new Label("Habbo Club", "#FFFFFF");
         clubTitleLabel.setLayoutX(287);
         clubTitleLabel.setLayoutY(19);
@@ -95,16 +96,9 @@ public class EntryToolbar extends Interface {
 
     @Override
     public void stop() {
-        var parent = (Pane) this.getPane().getParent();
-        parent.getChildren().remove(this.getPane());
-
-        Movie.getInstance().getInterfaces().remove(this);
         Movie.getInstance().getInterfaceScheduler().removeUpdate(this);
     }
 
-    @Override
-    public void sceneChanged() {}
-    
     @Override
     public void update() {
         this.pane.setPrefSize(Movie.getInstance().getPrimaryStage().getWidth(), 55);

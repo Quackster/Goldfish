@@ -5,7 +5,7 @@ import javafx.scene.layout.Pane;
 
 import org.alexdev.krishna.game.scheduler.GameUpdate;
 
-public abstract class Visualiser extends GameUpdate {
+public abstract class Visualiser implements GameUpdate {
     public abstract void start();
     public abstract void stop();
 
@@ -14,4 +14,10 @@ public abstract class Visualiser extends GameUpdate {
     public abstract Component getComponent();
     public abstract Pane getPane();
     public abstract Scene getScene();
+    public abstract VisualiserType getType();
+
+    @Override
+    public String toString() {
+        return getType().name();
+    }
 }

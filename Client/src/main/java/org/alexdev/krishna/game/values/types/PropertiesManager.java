@@ -12,19 +12,17 @@ import java.util.stream.Collectors;
 public class PropertiesManager extends Values {
     private static PropertiesManager instance;
 
-    public PropertiesManager() {
-
-    }
-
     public void loadConfig() throws IOException {
         this.setFinished(false);
         this.values = new HashMap<>();
 
-        System.out.println("Loading system configuration...");
+        //System.out.println("Loading system configuration...");
 
         InputStream resource = ResourceManager.getInstance().getResource("loader.config").openStream();
         readLines(resource);
         resource.close();
+
+        System.out.println(this.values);
 
         System.out.println(values.size() + " configuration keys loaded");
         this.setFinished(true);
@@ -32,13 +30,18 @@ public class PropertiesManager extends Values {
 
     public void loadVariables() throws IOException {
         this.setFinished(false);
-        System.out.println("Loading external variables...");
+
+        if (this.values == null || this.values.isEmpty()) {
+            return;
+        }
+
+        //System.out.println("Loading external variables...");
 
         InputStream resource = new URL(this.values.get("external.variables")).openStream();
         readLines(resource);
         resource.close();
 
-        System.out.println(values.size() + " configuration keys loaded");
+        System.out.println(values.size() + " external variables loaded");
         this.setFinished(true);
     }
 
