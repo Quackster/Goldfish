@@ -14,15 +14,16 @@ import java.util.stream.Collectors;
 public class TextsManager extends Values {
     private static TextsManager instance;
 
-    public TextsManager() {
-
-    }
-
     public void loadTexts() throws IOException {
-        this.setFinished(false);
         this.values = new HashMap<>();
+        this.setFinished(false);
 
-        System.out.println("Loading external texts...");
+        if (PropertiesManager.getInstance().getValues() == null ||
+            PropertiesManager.getInstance().getValues().isEmpty()) {
+            return;
+        }
+
+        //System.out.println("Loading external texts...");
 
         InputStream resource = new URL(PropertiesManager.getInstance().getString("external.texts")).openStream();
         readLines(resource);

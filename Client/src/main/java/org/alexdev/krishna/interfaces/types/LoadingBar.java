@@ -35,7 +35,7 @@ public class LoadingBar extends Interface {
     }
 
     @Override
-    public void start() {
+    public void init() {
         // This fixes the issue by making transparent areas also mouse-transparent, however I would suggest not adding a child
         // ImageView and instead setting the background image of this (as in LoadingBar / this.setBackground) - feel free to
         // message me if you have any questions :) - Parsnip
@@ -66,6 +66,11 @@ public class LoadingBar extends Interface {
             this.draggedY = event.getY();
         });
 
+
+    }
+
+    @Override
+    public void start() {
         Movie.getInstance().getInterfaceScheduler().receiveUpdate(this);
     }
 
@@ -74,15 +79,9 @@ public class LoadingBar extends Interface {
         Movie.getInstance().getInterfaceScheduler().removeUpdate(this);
     }
 
-
-    @Override
-    public void sceneChanged() {
-
-    }
-
     @Override
     public void update() {
-        if (this.loaderProgress >= 75) {
+        if (this.loaderProgress >= 100) {
             if (Movie.getInstance().getCurrentVisualiser() instanceof LoaderVisualiser) {
                 Movie.getInstance().showVisualiser(VisualiserType.HOTEL_VIEW);
             }
@@ -132,6 +131,8 @@ public class LoadingBar extends Interface {
                     if (this.component.getClientConfigTask().get()) {
                         this.loaderSteps.remove("load_client_config");
                         this.loaderProgress += 25;
+                    } else {
+                        this.component.setClientConfigTask(null);
                     }
                 }
             }
@@ -150,6 +151,8 @@ public class LoadingBar extends Interface {
                     if (this.component.getExternalVariablesTask().get()) {
                         this.loaderSteps.remove("load_external_variables");
                         this.loaderProgress += 25;
+                    } else {
+                        this.component.setExternalVariablesTask(null);
                     }
                 }
             }
@@ -167,7 +170,9 @@ public class LoadingBar extends Interface {
                 if (this.component.getExternalTextsTask().isDone()) {
                     if (this.component.getExternalTextsTask().get()) {
                         this.loaderSteps.remove("load_external_texts");
-                        this.loaderProgress += 25;
+                        this.loaderProgress += 50;
+                    } else {
+                        this.component.setExternalTextsTask(null);
                     }
                 }
             }
