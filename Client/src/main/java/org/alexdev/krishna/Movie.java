@@ -172,9 +172,17 @@ public class Movie extends Application {
 
     public void removeObject(Interface control) {
         Platform.runLater(() -> {
-            if (this.currentVisualiser.getPane().getChildren().contains(control)) {
-                this.currentVisualiser.getPane().getChildren().remove(control);
-            }
+            this.visualisers.values().forEach(visualiser -> {
+                if (visualiser != null && visualiser.getPane() != null) {
+                    if (visualiser.getPane().getChildren().contains(control)) {
+                        visualiser.getPane().getChildren().remove(control);
+                    }
+                }
+            });
+
+            //if (this.currentVisualiser.getPane().getChildren().contains(control)) {
+            //    this.currentVisualiser.getPane().getChildren().remove(control);
+            //}
 
             control.stop();
             this.interfaces.remove(control);
