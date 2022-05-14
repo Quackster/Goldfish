@@ -8,8 +8,9 @@ import org.alexdev.krishna.Movie;
 
 import javafx.scene.layout.Pane;
 import org.alexdev.krishna.game.scheduler.GameUpdate;
+import org.alexdev.krishna.visualisers.Visualiser;
 
-public abstract class Interface  extends Pane implements GameUpdate {
+public abstract class Interface extends Pane implements GameUpdate {
     public abstract void start();
     public abstract void stop();
 
@@ -19,6 +20,14 @@ public abstract class Interface  extends Pane implements GameUpdate {
 
     public abstract void update();
     public abstract InterfaceType getType();
+
+    /**
+     * Called when the visualiser changes.
+     *
+     * @param oldVisualiser the previous visualiser, if NULL then the {@currentVisualiser} is the first visualiser this interface appears in
+     * @param newVisualiser the current visualiser
+     */
+    public void visualiserChanged(Visualiser previousVisualiser, Visualiser currentVisualiser) { }
 
     @Override
     public void toFront() {

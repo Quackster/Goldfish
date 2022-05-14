@@ -8,6 +8,7 @@ import org.alexdev.krishna.interfaces.InterfaceType;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.layout.VBox;
+import org.alexdev.krishna.visualisers.Visualiser;
 
 public class Alert extends Dialog {
     private String text;
@@ -49,6 +50,11 @@ public class Alert extends Dialog {
         super.stop();
 
         Movie.getInstance().getInterfaceScheduler().removeUpdate(this);
+    }
+
+    @Override
+    public void visualiserChanged(Visualiser previousVisualiser, Visualiser currentVisualiser) {
+        super.toFront(); // Always bring to front when we move visualisers
     }
 
     @Override

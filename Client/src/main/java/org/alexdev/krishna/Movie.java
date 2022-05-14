@@ -26,7 +26,6 @@ import java.awt.*;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
-import java.util.stream.Collectors;
 
 public class Movie extends Application {
     private static Movie instance;
@@ -96,8 +95,10 @@ public class Movie extends Application {
 
     public void showVisualiser(VisualiserType type) {
         Platform.runLater(() -> {
-            if (this.currentVisualiser != null) {
-                this.currentVisualiser.stop();
+            var previousVisualiser = this.currentVisualiser;
+
+            if (previousVisualiser != null) {
+                previousVisualiser.stop();
             }
 
             var visualiser = this.visualisers.get(type);
@@ -112,7 +113,7 @@ public class Movie extends Application {
                         visualiser.getPane().getChildren().add(control);
                     }
 
-                    control.toFront();
+                    control.visualiserChanged(previousVisualiser, this.currentVisualiser);
                 });
             }
         });
@@ -144,7 +145,7 @@ public class Movie extends Application {
     private void setupInterface(Interface control) {
         control.start();
         control.update();
-        control.toFront();
+        control.visualiserChanged(null, this.currentVisualiser);
     }
 
     /**

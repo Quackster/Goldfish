@@ -21,6 +21,7 @@ import javafx.scene.paint.Color;
 import org.alexdev.krishna.interfaces.Interface;
 import org.alexdev.krishna.interfaces.InterfaceType;
 import org.alexdev.krishna.util.DimensionUtil;
+import org.alexdev.krishna.visualisers.Visualiser;
 
 public class Dialog extends Interface {
     private HBox top;
@@ -125,6 +126,11 @@ public class Dialog extends Interface {
             this.draggedX = -1;
             this.draggedY = -1;
         }
+    }
+
+    @Override
+    public void visualiserChanged(Visualiser previousVisualiser, Visualiser currentVisualiser) {
+
     }
 
     @Override
