@@ -12,12 +12,9 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
 public class EntryToolbar extends Interface {
-    private Pane pane;
-
     @Override
     public void start() {
-        this.pane = new Pane();
-        this.pane.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
+        this.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
 
         var userLabel = new Label("Parsnip", "#FFFFFF");
         userLabel.setLayoutX(51);
@@ -44,28 +41,19 @@ public class EntryToolbar extends Interface {
         clubDescLabel.setCursor(Cursor.HAND);
         clubDescLabel.setOnMouseClicked(e -> Movie.getInstance().createObject(new Alert("clubDescLabel clicked")));
 
-        this.pane.getChildren().addAll(userLabel, mottoLabel, updateIdLabel, clubTitleLabel, clubDescLabel);
+        this.getChildren().addAll(userLabel, mottoLabel, updateIdLabel, clubTitleLabel, clubDescLabel);
 
         Movie.getInstance().getInterfaceScheduler().receiveUpdate(this);
     }
 
     @Override
     public void stop() {
-        var parent = (Pane) this.getPane().getParent();
-        parent.getChildren().remove(this.getPane());
-
-        Movie.getInstance().getInterfaces().remove(this);
         Movie.getInstance().getInterfaceScheduler().removeUpdate(this);
     }
     
     @Override
     public void update() {
-        this.pane.setPrefSize(Movie.getInstance().getPrimaryStage().getWidth(), 55);
-    }
-
-    @Override
-    public Pane getPane() {
-        return this.pane;
+        this.setPrefSize(Movie.getInstance().getPrimaryStage().getWidth(), 55);
     }
 
     @Override

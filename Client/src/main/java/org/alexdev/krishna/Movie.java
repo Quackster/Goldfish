@@ -95,23 +95,27 @@ public class Movie extends Application {
     }
 
     public void showVisualiser(VisualiserType type) {
-        if (this.currentVisualiser != null) {
-            this.currentVisualiser.stop();
-        }
+        Platform.runLater(() -> {
+            if (this.currentVisualiser != null) {
+                this.currentVisualiser.stop();
+            }
 
-        var visualiser = this.visualisers.get(type);
+            var visualiser = this.visualisers.get(type);
 
-        if (visualiser != null) {
-            this.currentVisualiser = visualiser;
-            setupVisualiser(visualiser);
-            this.primaryStage.setScene(visualiser.getScene());
+            if (visualiser != null) {
+                this.currentVisualiser = visualiser;
+                setupVisualiser(visualiser);
+                this.primaryStage.setScene(visualiser.getScene());
 
-            this.interfaces.forEach(control -> {
-                if (!visualiser.getPane().getChildren().contains(control.getPane())) {
-                    visualiser.getPane().getChildren().add(control.getPane());
-                }
-            });
-        }
+                this.interfaces.forEach(control -> {
+                    if (!visualiser.getPane().getChildren().contains(control)) {
+                        visualiser.getPane().getChildren().add(control);
+                    }
+
+                    control.toFront();
+                });
+            }
+        });
     }
 
     /**
@@ -140,6 +144,7 @@ public class Movie extends Application {
     private void setupInterface(Interface control) {
         control.start();
         control.update();
+        control.toFront();
     }
 
     /**
@@ -158,20 +163,20 @@ public class Movie extends Application {
             this.setupInterface(control);
             this.interfaces.add(control);
 
-            if (!this.currentVisualiser.getPane().getChildren().contains(control.getPane())) {
-                this.currentVisualiser.getPane().getChildren().add(control.getPane());
+            if (!this.currentVisualiser.getPane().getChildren().contains(control)) {
+                this.currentVisualiser.getPane().getChildren().add(control);
             }
         });
     }
 
     public void removeObject(Interface control) {
         Platform.runLater(() -> {
+            if (this.currentVisualiser.getPane().getChildren().contains(control)) {
+                this.currentVisualiser.getPane().getChildren().remove(control);
+            }
+
             control.stop();
             this.interfaces.remove(control);
-
-            if (this.currentVisualiser.getPane().getChildren().contains(control.getPane())) {
-                this.currentVisualiser.getPane().getChildren().remove(control.getPane());
-            }
         });
     }
 

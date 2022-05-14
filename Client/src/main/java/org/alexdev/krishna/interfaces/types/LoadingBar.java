@@ -15,7 +15,6 @@ import org.alexdev.krishna.visualisers.types.loader.LoaderVisualiser;
 import java.util.ArrayList;
 
 public class LoadingBar extends Interface {
-    private Pane pane;
     private ImageView loadingBar;
 
     private int loaderProgress;
@@ -39,8 +38,7 @@ public class LoadingBar extends Interface {
         // This fixes the issue by making transparent areas also mouse-transparent, however I would suggest not adding a child
         // ImageView and instead setting the background image of this (as in LoadingBar / this.setBackground) - feel free to
         // message me if you have any questions :) - Parsnip
-        this.pane = new Pane();
-        this.pane.setPickOnBounds(false);
+        this.setPickOnBounds(false);
         
         this.loaderSteps = new ArrayList<>();
         this.loaderSteps.add("load_client_config");
@@ -52,7 +50,7 @@ public class LoadingBar extends Interface {
 
         this.loadingBar = new ImageView();
         this.loadingBar.setImage(ResourceManager.getInstance().getFxImage("sprites/scenes/loader/loader_bar_0.png"));
-        this.pane.getChildren().add(this.loadingBar);
+        this.getChildren().add(this.loadingBar);
 
         // this.setBackground(new Background(new BackgroundFill(Color.BLUE, CornerRadii.EMPTY, Insets.EMPTY)));
 
@@ -90,8 +88,8 @@ public class LoadingBar extends Interface {
 
     private void dragging() {
         if (this.draggedX != -1 && this.draggedY != -1) {
-            this.pane.setTranslateX(this.draggedX + this.pane.getTranslateX() - this.mousePressedX);
-            this.pane.setTranslateY(this.draggedY + this.pane.getTranslateY() - this.mousePressedY);
+            this.setTranslateX(this.draggedX + this.getTranslateX() - this.mousePressedX);
+            this.setTranslateY(this.draggedY + this.getTranslateY() - this.mousePressedY);
 
             this.draggedX = -1;
             this.draggedY = -1;
@@ -174,11 +172,6 @@ public class LoadingBar extends Interface {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-    }
-
-    @Override
-    public Pane getPane() {
-        return pane;
     }
 
     @Override

@@ -23,8 +23,6 @@ import org.alexdev.krishna.interfaces.InterfaceType;
 import org.alexdev.krishna.util.DimensionUtil;
 
 public class Dialog extends Interface {
-    private Pane pane;
-
     private HBox top;
     private Pane topLeft;
     private Pane topCenter;
@@ -66,16 +64,15 @@ public class Dialog extends Interface {
 
     @Override
     public void start() {
-        this.pane = new Pane();
-        this.pane.setOnMousePressed(e -> this.clicked = true);
-        this.pane.setVisible(false);
-        
+        this.setOnMousePressed(e -> this.clicked = true);
+        this.setVisible(false);
         this.initBackground();
     }
 
     @Override
     public void stop() {
-
+        this.clicked = false;
+        this.isSized = true;
     }
     
     @Override
@@ -83,27 +80,27 @@ public class Dialog extends Interface {
         if (!this.isSized && this.content.getWidth() > 0) {
             this.content.setLayoutX(this.paddingLeft);
             this.content.setLayoutY(this.paddingTop + (this.title != null ? 20 : 0));
-    
+
             var contentWidth = this.content != null ? (this.content.getWidth() + this.paddingLeft + this.paddingRight) : 0;
             var contentHeight = this.content != null ? (this.content.getHeight() + this.paddingTop + this.paddingBottom) : 0;
-    
+
             var width = this.title != null ? Math.max(this.title.getWidth(), contentWidth) : contentWidth;
             var height = this.title != null ? contentHeight + 15 : contentHeight;
-    
+
             setSize(width, height);
-            this.pane.setLayoutX(Math.ceil((Movie.getInstance().getPrimaryStage().getWidth() - this.pane.getWidth()) / 2));
-            this.pane.setLayoutY(Math.ceil((Movie.getInstance().getPrimaryStage().getHeight() - this.pane.getHeight()) / 2));
+            this.setLayoutX(Math.ceil((Movie.getInstance().getPrimaryStage().getWidth() - this.getWidth()) / 2));
+            this.setLayoutY(Math.ceil((Movie.getInstance().getPrimaryStage().getHeight() - this.getHeight()) / 2));
 
             var coords = DimensionUtil.getCenterCords(width, height);
-            this.pane.setLayoutX(coords.getX());
-            this.pane.setLayoutY(coords.getY());
-    
+            this.setLayoutX(coords.getX());
+            this.setLayoutY(coords.getY());
+
             if (this.title != null) {
                 this.title.setLayoutX(Math.round((width / 2) - (this.title.getWidth() / 2)) - 2);
                 this.dragArea.setPrefSize(width, 31);
                 this.closeButton.setLayoutX(width - 25);
-            }              
-    
+            }
+
             if (this.innerBackground != null) {
                 this.innerBackground.setLayoutX(paddingLeft);
                 this.innerBackground.setLayoutY(paddingTop + (title != null ? 20 : 0));
@@ -111,7 +108,7 @@ public class Dialog extends Interface {
             }
 
             this.isSized = true;
-            this.getPane().setVisible(true);
+            this.setVisible(true);
         }
 
         // Click bring-to-front handler
@@ -122,17 +119,12 @@ public class Dialog extends Interface {
 
         // Dragging
         if (this.draggedX != -1 && this.draggedY != -1) {
-            this.pane.setTranslateX(this.draggedX + this.pane.getTranslateX() - this.mousePressedX);
-            this.pane.setTranslateY(this.draggedY + this.pane.getTranslateY() - this.mousePressedY);
+            this.setTranslateX(this.draggedX + this.getTranslateX() - this.mousePressedX);
+            this.setTranslateY(this.draggedY + this.getTranslateY() - this.mousePressedY);
 
             this.draggedX = -1;
             this.draggedY = -1;
         }
-    }
-
-    @Override
-    public Pane getPane() {
-        return this.pane;
     }
 
     @Override
@@ -200,7 +192,7 @@ public class Dialog extends Interface {
 
         background.getChildren().addAll(this.top, center, bottom);
 
-        this.pane.getChildren().add(background);
+        this.getChildren().add(background);
     }
 
     protected void initInnerBackground() {
@@ -262,7 +254,7 @@ public class Dialog extends Interface {
 
         this.innerBackground.getChildren().addAll(innerTop, innerCenter, innerBottom);
 
-        this.pane.getChildren().add(this.innerBackground);
+        this.getChildren().add(this.innerBackground);
         content.toFront();
     }
 
@@ -329,12 +321,12 @@ public class Dialog extends Interface {
         this.closeButton.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/dialog/close_button.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
         this.closeButton.setOnMouseClicked(e -> this.remove());
 
-        this.pane.getChildren().addAll(this.title, this.dragArea, this.closeButton);
+        this.getChildren().addAll(this.title, this.dragArea, this.closeButton);
     }
 
     protected void setContent(Pane content) {
         this.content = content;
-        this.pane.getChildren().add(this.content);
+        this.getChildren().add(this.content);
     }
 
     protected void setPadding(int paddingTop, int paddingRight, int paddingBottom, int paddingLeft) {
