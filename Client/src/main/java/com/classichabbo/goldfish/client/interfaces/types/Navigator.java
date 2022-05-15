@@ -28,12 +28,27 @@ public class Navigator extends Dialog {
         var room = new ButtonLarge("Go to room UI");
         room.setAlignment(Pos.CENTER);
         room.setPadding(new Insets(0, 0, 13, -5));
-        room.setOnMouseClicked(e -> Movie.getInstance().showVisualiser(VisualiserType.ROOM));
+        room.setOnMouseClicked(e -> {
+            if (Movie.getInstance().getCurrentVisualiser().getType() == VisualiserType.ROOM) {
+                Movie.getInstance().createObject(new Alert("You are already on the room UI"));
+            }
+            else {
+                this.setHidden(true);
+                Movie.getInstance().showVisualiser(VisualiserType.ROOM);
+            }
+        });
 
-        var entry = new ButtonLarge("Go to entry UI");
+        var entry = new ButtonLarge("Go to hotelview");
         entry.setAlignment(Pos.CENTER);
         entry.setPadding(new Insets(0, 0, 13, -5));
-        entry.setOnMouseClicked(e -> Movie.getInstance().showVisualiser(VisualiserType.HOTEL_VIEW));
+        entry.setOnMouseClicked(e -> {
+            if (Movie.getInstance().getCurrentVisualiser().getType() == VisualiserType.HOTEL_VIEW) {
+                Movie.getInstance().createObject(new Alert("You are already on the hotelview"));
+            }
+            else {
+                Movie.getInstance().showVisualiser(VisualiserType.HOTEL_VIEW);
+            }
+        });
 
         content.getChildren().addAll(text, room, entry);
         

@@ -14,6 +14,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import com.classichabbo.goldfish.client.Movie;
+import com.classichabbo.goldfish.client.interfaces.InterfaceType;
 import com.classichabbo.goldfish.client.interfaces.types.EntryToolbar;
 import com.classichabbo.goldfish.client.interfaces.types.LoadingBar;
 import com.classichabbo.goldfish.client.interfaces.types.Navigator;
@@ -60,6 +61,8 @@ public class EntryVisualiser extends Visualiser {
 
     @Override
     public void start() {
+        Movie.getInstance().getInterfaces().stream().filter(i -> i.getType() == InterfaceType.ROOM_TOOLBAR).findFirst().ifPresent(i -> i.remove());
+
         this.component = new EntryComponent(this);
 
         this.clouds = new ArrayList<>();

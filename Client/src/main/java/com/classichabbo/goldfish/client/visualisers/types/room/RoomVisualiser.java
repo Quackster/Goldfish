@@ -5,6 +5,8 @@ import com.classichabbo.goldfish.client.visualisers.Visualiser;
 import com.classichabbo.goldfish.client.visualisers.VisualiserType;
 import com.classichabbo.goldfish.client.interfaces.InterfaceType;
 import com.classichabbo.goldfish.client.interfaces.types.Alert;
+import com.classichabbo.goldfish.client.interfaces.types.RoomToolbar;
+
 import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -29,7 +31,7 @@ public class RoomVisualiser extends Visualiser {
     @Override
     public void start() {
         Movie.getInstance().getInterfaces().stream().filter(i -> i.getType() == InterfaceType.ENTRY_TOOLBAR).findFirst().ifPresent(i -> i.remove());
-
+        Movie.getInstance().createObject(new RoomToolbar());
         this.component = new RoomComponent(this);
 
         this.pane = new Pane();
