@@ -54,7 +54,11 @@ public class EntryComponent implements Component {
 
         // Remove loading bar (moved to here so it removes it before it starts animating)
         // (if this is wrong please don't hate me was just finalising EntryToolbar) :)
-        Movie.getInstance().getInterfaces().stream().filter(x -> x instanceof LoadingBar).findFirst().ifPresent(loadingBar -> Movie.getInstance().removeObject(loadingBar));
+        var loadingBar = Movie.getInstance().getInterfaces().stream().filter(x -> x instanceof LoadingBar).findFirst().orElse(null);//ifPresent(loadingBar -> Movie.getInstance().removeObject(loadingBar));
+
+        if (loadingBar != null) {
+            loadingBar.remove();
+        }
 
         Movie.getInstance().createObject(new EntryToolbar(this.entryVisualiser));
         Movie.getInstance().createObject(new Navigator());
