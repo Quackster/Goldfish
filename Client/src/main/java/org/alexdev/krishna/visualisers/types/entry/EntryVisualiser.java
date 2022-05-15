@@ -273,7 +273,7 @@ public class EntryVisualiser extends Visualiser {
      * When the reveal task is finished, set these to invisible
      */
     private void viewTaskFinished() {
-        Movie.getInstance().createObject(new EntryToolbar());
+        Movie.getInstance().createObject(new EntryToolbar(this));
         this.topReveal.setVisible(false);
         this.bottomReveal.setVisible(false);
     }
@@ -293,7 +293,7 @@ public class EntryVisualiser extends Visualiser {
     }
 
     @Override
-    public Component getComponent() {
+    public EntryComponent getComponent() {
         return component;
     }
 

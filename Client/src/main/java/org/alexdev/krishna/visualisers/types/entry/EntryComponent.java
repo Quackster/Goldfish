@@ -1,5 +1,7 @@
 package org.alexdev.krishna.visualisers.types.entry;
 
+import org.alexdev.krishna.Movie;
+import org.alexdev.krishna.interfaces.types.Alert;
 import org.alexdev.krishna.scripts.Cloud;
 import org.alexdev.krishna.util.DimensionUtil;
 import org.alexdev.krishna.visualisers.Component;
@@ -42,5 +44,9 @@ public class EntryComponent implements Component {
 
         this.entryVisualiser.getClouds().add(cloud);
         this.entryVisualiser.getPane().getChildren().add(cloud);
+    }
+
+    public void loggedIn() {
+        Movie.getInstance().createObject(new Alert("Project Havana - Habbo Hotel v31 emulation\n\nRelease: r31_20090312_0433_13751_b40895fb610dbe96dc7b9d6477eeeb4\n\nContributors:\n - ThuGie, Copyright, Raptosaur, Hoshiko, TOMYSSHADOW, Elijah\n   Romauld, Glaceon, Nillus, Holo Team, Meth0d, office.boy, bbadzz\n\n   Big thanks to Sefhriloff & Ascii for assisting with SnowStorm.\n\nMade by Quackster from RaGEZONE"));
     }
 }
