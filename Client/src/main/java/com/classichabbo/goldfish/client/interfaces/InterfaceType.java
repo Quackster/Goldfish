@@ -4,5 +4,6 @@ public enum InterfaceType {
     DIALOG,
     ALERT,
     LOADING_BAR,
-    ENTRY_TOOLBAR
+    ENTRY_TOOLBAR,
+    NAVIGATOR
 }

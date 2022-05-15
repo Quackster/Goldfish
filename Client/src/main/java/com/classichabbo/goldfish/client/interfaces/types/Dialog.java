@@ -50,6 +50,7 @@ public class Dialog extends Interface {
     private int paddingTop;
     private int paddingBottom;
 
+    private boolean isHidden;
     private boolean isSized;
 
     private double mousePressedX;
@@ -109,7 +110,14 @@ public class Dialog extends Interface {
             }
 
             this.isSized = true;
-            this.setVisible(true);
+
+            if (!this.isHidden) {
+                this.setVisible(true);
+            }
+        }
+
+        if (this.isSized) {
+            this.setVisible(!this.isHidden);
         }
 
         // Click bring-to-front handler
@@ -288,6 +296,14 @@ public class Dialog extends Interface {
         this.innerBottomCenter.setPrefWidth(width);
     }
 
+    public void setHidden(boolean isHidden) {
+        this.isHidden = isHidden;
+    }
+
+    public boolean getHidden() {
+        return this.isHidden;
+    }
+
     protected void setTitle(String title) {
         this.top.setMinHeight(21);
 
@@ -325,7 +341,7 @@ public class Dialog extends Interface {
         this.closeButton.setPrefSize(13, 13);
         this.closeButton.setLayoutY(6);
         this.closeButton.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/dialog/close_button.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
-        this.closeButton.setOnMouseClicked(e -> this.remove());
+        this.closeButton.setOnMouseClicked(e -> this.closeButtonClicked());
 
         this.getChildren().addAll(this.title, this.dragArea, this.closeButton);
     }
@@ -340,5 +356,9 @@ public class Dialog extends Interface {
         this.paddingRight = paddingRight;
         this.paddingBottom = paddingBottom;
         this.paddingLeft = paddingLeft;
+    }
+
+    protected void closeButtonClicked() {
+        this.remove();
     }
 }

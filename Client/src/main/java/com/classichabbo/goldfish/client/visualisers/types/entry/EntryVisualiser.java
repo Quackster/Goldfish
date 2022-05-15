@@ -15,6 +15,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.interfaces.types.EntryToolbar;
+import com.classichabbo.goldfish.client.interfaces.types.LoadingBar;
+import com.classichabbo.goldfish.client.interfaces.types.Navigator;
 import com.classichabbo.goldfish.client.util.DateUtil;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
 
@@ -125,6 +127,8 @@ public class EntryVisualiser extends Visualiser {
         //Movie.getInstance().createObject(new Alert("Your friend is offline."));
         //Movie.getInstance().createObject(new Alert("Give your room a name!"));
         //Movie.getInstance().createObject(new Alert("Your verification code is:\nQBqfv9cE"));
+
+        Movie.getInstance().getInterfaces().stream().filter(x -> x instanceof LoadingBar).findFirst().ifPresent(loadingBar -> loadingBar.toFront());
 
         // Queue to receive
         Movie.getInstance().getGameScheduler().receiveUpdate(this);
@@ -271,7 +275,14 @@ public class EntryVisualiser extends Visualiser {
      * When the reveal task is finished, set these to invisible
      */
     private void viewTaskFinished() {
-        Movie.getInstance().createObject(new EntryToolbar(this));
+        // Remove loading bar (moved to here so it removes it before it starts animating)
+        // (if this is wrong please don't hate me was just finalising EntryToolbar) :)
+        Movie.getInstance().getInterfaces().stream().filter(x -> x instanceof LoadingBar).findFirst().ifPresent(loadingBar -> Movie.getInstance().removeObject(loadingBar));
+        this.getComponent().loggedIn();
+
+        Movie.getInstance().createObject(new EntryToolbar());
+        Movie.getInstance().createObject(new Navigator());
+
         this.topReveal.setVisible(false);
         this.bottomReveal.setVisible(false);
     }
