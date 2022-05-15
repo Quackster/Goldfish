@@ -121,12 +121,7 @@ public class EntryToolbar extends Interface {
                 this.scrollOffset += 5;
             } else {
                 // Remove loading bar
-                var loadingBar = Movie.getInstance().getInterfaces().stream().filter(x -> x instanceof LoadingBar).findFirst().orElse(null);
-
-                if (loadingBar != null) {
-                    Movie.getInstance().removeObject(loadingBar);
-                }
-
+                Movie.getInstance().getInterfaces().stream().filter(x -> x instanceof LoadingBar).findFirst().ifPresent(loadingBar -> Movie.getInstance().removeObject(loadingBar));
                 this.entryVisualiser.getComponent().loggedIn();
                 this.animateEntryBar = false;
             }
@@ -146,6 +141,7 @@ public class EntryToolbar extends Interface {
         // Move bar to the bottom, always
         this.setPrefSize(DimensionUtil.getProgramWidth(), 55);
 
+        // Only move to button once it's finished animating
         if (!this.animateEntryBar)
             this.setLayoutY(DimensionUtil.getProgramHeight() - this.getPrefHeight());
     }
