@@ -127,7 +127,6 @@ public class EntryVisualiser extends Visualiser {
         //Movie.getInstance().createObject(new Alert("Your friend is offline."));
         //Movie.getInstance().createObject(new Alert("Give your room a name!"));
         //Movie.getInstance().createObject(new Alert("Your verification code is:\nQBqfv9cE"));
-        Movie.getInstance().createObject(new EntryToolbar());
 
         // Queue to receive
         Movie.getInstance().getGameScheduler().receiveUpdate(this);
@@ -274,6 +273,7 @@ public class EntryVisualiser extends Visualiser {
      * When the reveal task is finished, set these to invisible
      */
     private void viewTaskFinished() {
+        Movie.getInstance().createObject(new EntryToolbar());
         this.topReveal.setVisible(false);
         this.bottomReveal.setVisible(false);
     }
