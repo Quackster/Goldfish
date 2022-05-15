@@ -296,14 +296,6 @@ public class Dialog extends Interface {
         this.innerBottomCenter.setPrefWidth(width);
     }
 
-    public void setHidden(boolean isHidden) {
-        this.isHidden = isHidden;
-    }
-
-    public boolean getHidden() {
-        return this.isHidden;
-    }
-
     protected void setTitle(String title) {
         this.top.setMinHeight(21);
 
@@ -360,5 +352,23 @@ public class Dialog extends Interface {
 
     protected void closeButtonClicked() {
         this.remove();
+    }
+
+    public void toggleVisibility() {
+        this.setHidden(!this.isHidden);
+    }
+
+    public void setHidden(boolean isHidden) {
+        this.isHidden = isHidden;
+
+        if (this.isHidden) {
+            this.toBack();
+        } else {
+            this.toFront();
+        }
+    }
+
+    public boolean isHidden() {
+        return this.isHidden;
     }
 }

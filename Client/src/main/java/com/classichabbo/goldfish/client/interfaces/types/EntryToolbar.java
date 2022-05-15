@@ -7,6 +7,7 @@ import com.classichabbo.goldfish.client.game.resources.ResourceManager;
 import com.classichabbo.goldfish.client.interfaces.Interface;
 import com.classichabbo.goldfish.client.interfaces.InterfaceType;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
+import com.classichabbo.goldfish.client.visualisers.types.entry.EntryVisualiser;
 import javafx.scene.image.Image;
 
 import javafx.scene.Cursor;
@@ -15,6 +16,7 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.paint.Color;
 
 public class EntryToolbar extends Interface {
+    private final EntryVisualiser entryVisualiser;
     private ImageButton gamesButton;
     private ImageButton helpButton;
     private ImageButton catalogueButton;
@@ -26,10 +28,15 @@ public class EntryToolbar extends Interface {
     private int scrollOffset;
     private boolean finishedScroll;
 
+    public EntryToolbar(EntryVisualiser entryVisualiser) {
+        this.entryVisualiser = entryVisualiser;
+    }
+
     @Override
     public void start() {
         this.scrollOffset = 0;
-        
+        this.finishedScroll = false;
+
         this.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
 
         var userHead = new ImageButton(new Image("https://cdn.classichabbo.com/habbo-imaging/avatarimage?figure=hd-180-1.hr-100-61.ch-210-66.lg-270-82.sh-290-80&size=b&head=1&direction=3&head_direction=3&gesture=std"));
@@ -76,7 +83,7 @@ public class EntryToolbar extends Interface {
         friendsButton.setOnMouseClicked(e -> Movie.getInstance().createObject(new Alert("friendsButton clicked")));
         
         this.navigatorButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/entry_toolbar/navigator.png"));
-        navigatorButton.setOnMouseClicked(e -> Movie.getInstance().getInterfaces().stream().filter(x -> x instanceof Navigator).findFirst().ifPresent(navigator -> ((Navigator)navigator).toggleNavigator()));
+        navigatorButton.setOnMouseClicked(e -> Movie.getInstance().getInterfaces().stream().filter(x -> x instanceof Navigator).findFirst().ifPresent(navigator -> ((Navigator)navigator).toggleVisibility()));
         
         this.eventsButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/entry_toolbar/events.png"));
         eventsButton.setOnMouseClicked(e -> Movie.getInstance().createObject(new Alert("eventsButton clicked")));
@@ -103,6 +110,7 @@ public class EntryToolbar extends Interface {
 
     @Override
     public void update() {
+        /*
         if (this.scrollOffset != 55) {
             this.scrollOffset += 5;
         }
@@ -112,6 +120,13 @@ public class EntryToolbar extends Interface {
 
         if (this.finishedScroll) {
             Movie.getInstance().getInterfaces().stream().filter(i -> i.getType() == InterfaceType.NAVIGATOR).findFirst().ifPresent(i -> ((Navigator)i).setHidden(false));
+        }*/
+        if (!this.finishedScroll) {
+            if (this.scrollOffset != 55) {
+                this.scrollOffset += 5;
+            } else {
+                this.finishedScroll = true;
+            }
         }
 
         // Handle resizing of window

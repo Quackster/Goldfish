@@ -131,7 +131,11 @@ public class EntryVisualiser extends Visualiser {
         //Movie.getInstance().createObject(new Alert("Give your room a name!"));
         //Movie.getInstance().createObject(new Alert("Your verification code is:\nQBqfv9cE"));
 
-        Movie.getInstance().getInterfaces().stream().filter(x -> x instanceof LoadingBar).findFirst().ifPresent(loadingBar -> loadingBar.toFront());
+        var loadingBar = Movie.getInstance().getInterfaces().stream().filter(x -> x instanceof LoadingBar).findFirst().orElse(null);
+
+        if (loadingBar != null) {
+            loadingBar.toFront();
+        }
 
         // Queue to receive
         Movie.getInstance().getGameScheduler().receiveUpdate(this);
@@ -278,13 +282,7 @@ public class EntryVisualiser extends Visualiser {
      * When the reveal task is finished, set these to invisible
      */
     private void viewTaskFinished() {
-        // Remove loading bar (moved to here so it removes it before it starts animating)
-        // (if this is wrong please don't hate me was just finalising EntryToolbar) :)
-        Movie.getInstance().getInterfaces().stream().filter(x -> x instanceof LoadingBar).findFirst().ifPresent(loadingBar -> Movie.getInstance().removeObject(loadingBar));
         this.getComponent().loggedIn();
-
-        Movie.getInstance().createObject(new EntryToolbar());
-        Movie.getInstance().createObject(new Navigator());
 
         this.topReveal.setVisible(false);
         this.bottomReveal.setVisible(false);

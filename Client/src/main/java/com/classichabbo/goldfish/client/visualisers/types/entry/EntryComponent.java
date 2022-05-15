@@ -1,5 +1,8 @@
 package com.classichabbo.goldfish.client.visualisers.types.entry;
 
+import com.classichabbo.goldfish.client.interfaces.types.EntryToolbar;
+import com.classichabbo.goldfish.client.interfaces.types.LoadingBar;
+import com.classichabbo.goldfish.client.interfaces.types.Navigator;
 import com.classichabbo.goldfish.client.visualisers.Component;
 import com.classichabbo.goldfish.client.visualisers.VisualiserType;
 import com.classichabbo.goldfish.client.game.values.types.PropertiesManager;
@@ -49,8 +52,11 @@ public class EntryComponent implements Component {
     public void loggedIn() {
         // Movie.getInstance().createObject(new Alert("Project Havana - Habbo Hotel v31 emulation\n\nRelease: r31_20090312_0433_13751_b40895fb610dbe96dc7b9d6477eeeb4\n\nContributors:\n - ThuGie, Copyright, Raptosaur, Hoshiko, TOMYSSHADOW, Elijah\n   Romauld, Glaceon, Nillus, Holo Team, Meth0d, office.boy, bbadzz\n\n   Big thanks to Sefhriloff & Ascii for assisting with SnowStorm.\n\nMade by Quackster from RaGEZONE"));
 
-        if (PropertiesManager.getInstance().getString("visualiser.entry", "").length() > 0) {
-            Movie.getInstance().showVisualiser(VisualiserType.valueOf(PropertiesManager.getInstance().getString("visualiser.entry", "")));
-        }
+        // Remove loading bar (moved to here so it removes it before it starts animating)
+        // (if this is wrong please don't hate me was just finalising EntryToolbar) :)
+        Movie.getInstance().getInterfaces().stream().filter(x -> x instanceof LoadingBar).findFirst().ifPresent(loadingBar -> Movie.getInstance().removeObject(loadingBar));
+
+        Movie.getInstance().createObject(new EntryToolbar(this.entryVisualiser));
+        Movie.getInstance().createObject(new Navigator());
     }
 }
