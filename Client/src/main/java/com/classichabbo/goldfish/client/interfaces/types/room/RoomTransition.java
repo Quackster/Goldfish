@@ -29,7 +29,7 @@ public class RoomTransition extends Interface {
         this.blackBackground.setFill(Color.BLACK);
         this.getChildren().add(this.blackBackground);
 
-        this.timer = System.currentTimeMillis() + 500;
+        this.timer = System.currentTimeMillis() + 300;
 
         Movie.getInstance().getInterfaceScheduler().receiveUpdate(this);
     }
