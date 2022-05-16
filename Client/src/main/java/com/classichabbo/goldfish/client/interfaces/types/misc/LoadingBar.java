@@ -9,14 +9,17 @@ import com.classichabbo.goldfish.client.visualisers.VisualiserType;
 import com.classichabbo.goldfish.client.visualisers.types.loader.LoaderComponent;
 import com.classichabbo.goldfish.client.visualisers.types.loader.LoaderVisualiser;
 import javafx.scene.image.ImageView;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 
 import java.util.ArrayList;
 
 public class LoadingBar extends Interface {
-    private ImageView loadingBar;
+    private ImageView loaderBar;
+    private Rectangle loaderProgress;
 
     private int totalLoaderProgress;
-    private int loaderProgress;
+    private int queueLoaderProgress;
 
     private ArrayList<String> loaderSteps;
 
@@ -39,27 +42,31 @@ public class LoadingBar extends Interface {
         // ImageView and instead setting the background image of this (as in LoadingBar / this.setBackground) - feel free to
         // message me if you have any questions :) - Parsnip
         this.setPickOnBounds(false);
+
+        this.queueLoaderProgress = 0;
+        this.totalLoaderProgress = 0;
         
         this.loaderSteps = new ArrayList<>();
         this.loaderSteps.add("load_client_config");
         this.loaderSteps.add("load_external_variables");
         this.loaderSteps.add("load_external_texts");
 
-        this.totalLoaderProgress = 0;
         this.component = this.loaderVisualiser.getComponent();
 
-        this.loadingBar = new ImageView();
-        this.loadingBar.setImage(ResourceManager.getInstance().getFxImage("sprites/scenes/loader/loader_bar_0.png"));
-        this.getChildren().add(this.loadingBar);
+        this.loaderBar = new ImageView();
+        this.loaderBar.setImage(ResourceManager.getInstance().getFxImage("sprites/scenes/loader/loader_bar_0.png"));
+        this.getChildren().add(this.loaderBar);
 
-        // this.setBackground(new Background(new BackgroundFill(Color.BLUE, CornerRadii.EMPTY, Insets.EMPTY)));
+        this.loaderProgress = new Rectangle(0, 12);
+        this.loaderProgress.setFill(Color.web("#808080"));
+        this.getChildren().add(this.loaderProgress);
 
-        this.loadingBar.setOnMousePressed(event -> {
+        this.loaderBar.setOnMousePressed(event -> {
             this.mousePressedX = event.getX();
             this.mousePressedY = event.getY();
         });
 
-        this.loadingBar.setOnMouseDragged(event -> {
+        this.loaderBar.setOnMouseDragged(event -> {
             this.draggedX = event.getX();
             this.draggedY = event.getY();
         });
@@ -83,33 +90,36 @@ public class LoadingBar extends Interface {
 
         updateLoader();
         handleResize();
-        progressLoader();
+        loaderSteps();
         dragging();
     }
 
-    private void dragging() {
-        if (this.draggedX != -1 && this.draggedY != -1) {
-            this.setTranslateX(this.draggedX + this.getTranslateX() - this.mousePressedX);
-            this.setTranslateY(this.draggedY + this.getTranslateY() - this.mousePressedY);
-
-            this.draggedX = -1;
-            this.draggedY = -1;
-        }
-    }
-
     private void updateLoader() {
-        if (this.totalLoaderProgress >= 0) {
-            this.loadingBar.setImage(ResourceManager.getInstance().getFxImage("sprites/scenes/loader/loader_bar_" + this.totalLoaderProgress + ".png"));
+        if (this.queueLoaderProgress > 0) {
+            var newWidth = this.loaderProgress.getWidth() + 3;
+
+            if (newWidth > 296) {
+                newWidth = 296;
+            }
+
+            this.loaderProgress.setWidth(newWidth);
+
+            this.queueLoaderProgress--;
+            this.totalLoaderProgress++;
+
+            System.out.println(this.queueLoaderProgress);
         }
     }
 
-    private void handleResize() {
-        var loadingBarCords = DimensionUtil.getCenterCords(this.loadingBar.getImage().getWidth(), this.loadingBar.getImage().getHeight());
-        this.loadingBar.setX(loadingBarCords.getX());
-        this.loadingBar.setY(DimensionUtil.roundEven(loadingBarCords.getY() + (loadingBarCords.getY() * 0.80)));
+
+    private void progressLoader(int newProgress) {
+        this.queueLoaderProgress += newProgress;
     }
 
-    private void progressLoader() {
+    private void loaderSteps() {
+        if (this.queueLoaderProgress > 0)
+            return;
+
         try {
             // Load basic client configuration
             if (this.loaderSteps.contains("load_client_config")) {
@@ -124,7 +134,7 @@ public class LoadingBar extends Interface {
                 if (this.component.getClientConfigTask().isDone()) {
                     if (this.component.getClientConfigTask().get()) {
                         this.loaderSteps.remove("load_client_config");
-                        this.totalLoaderProgress += 25;
+                        this.progressLoader(25);
                     } else {
                         this.component.setClientConfigTask(null);
                     }
@@ -144,7 +154,7 @@ public class LoadingBar extends Interface {
                 if (this.component.getExternalVariablesTask().isDone()) {
                     if (this.component.getExternalVariablesTask().get()) {
                         this.loaderSteps.remove("load_external_variables");
-                        this.totalLoaderProgress += 25;
+                        this.progressLoader(25);
                     } else {
                         this.component.setExternalVariablesTask(null);
                     }
@@ -164,7 +174,7 @@ public class LoadingBar extends Interface {
                 if (this.component.getExternalTextsTask().isDone()) {
                     if (this.component.getExternalTextsTask().get()) {
                         this.loaderSteps.remove("load_external_texts");
-                        this.totalLoaderProgress += 50;
+                        this.progressLoader(50);
                     } else {
                         this.component.setExternalTextsTask(null);
                     }
@@ -172,6 +182,25 @@ public class LoadingBar extends Interface {
             }
         } catch (Exception ex) {
             ex.printStackTrace();
+        }
+    }
+
+    private void handleResize() {
+        var loadingBarCords = DimensionUtil.getCenterCords(this.loaderBar.getImage().getWidth(), this.loaderBar.getImage().getHeight());
+        this.loaderBar.setX(loadingBarCords.getX());
+        this.loaderBar.setY(DimensionUtil.roundEven(loadingBarCords.getY() + (loadingBarCords.getY() * 0.80)));
+
+        this.loaderProgress.setX((int) this.loaderBar.getX() + 2);
+        this.loaderProgress.setY((int) this.loaderBar.getY() + 2);
+    }
+
+    private void dragging() {
+        if (this.draggedX != -1 && this.draggedY != -1) {
+            this.setTranslateX(this.draggedX + this.getTranslateX() - this.mousePressedX);
+            this.setTranslateY(this.draggedY + this.getTranslateY() - this.mousePressedY);
+
+            this.draggedX = -1;
+            this.draggedY = -1;
         }
     }
 }
