@@ -1,10 +1,9 @@
-package com.classichabbo.goldfish.client.interfaces.types;
+package com.classichabbo.goldfish.client.interfaces.types.misc;
 
 import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
 import com.classichabbo.goldfish.client.game.scheduler.SchedulerManager;
 import com.classichabbo.goldfish.client.interfaces.Interface;
-import com.classichabbo.goldfish.client.interfaces.InterfaceType;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
 import com.classichabbo.goldfish.client.visualisers.VisualiserType;
 import com.classichabbo.goldfish.client.visualisers.types.loader.LoaderComponent;
@@ -172,10 +171,5 @@ public class LoadingBar extends Interface {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-    }
-
-    @Override
-    public InterfaceType getType() {
-        return InterfaceType.LOADING_BAR;
     }
 }

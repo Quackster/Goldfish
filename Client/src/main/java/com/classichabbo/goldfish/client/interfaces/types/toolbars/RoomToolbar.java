@@ -1,22 +1,19 @@
-package com.classichabbo.goldfish.client.interfaces.types;
+package com.classichabbo.goldfish.client.interfaces.types.toolbars;
 
 import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.controls.ImageButton;
-import com.classichabbo.goldfish.client.controls.Label;
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
 import com.classichabbo.goldfish.client.interfaces.Interface;
-import com.classichabbo.goldfish.client.interfaces.InterfaceType;
+import com.classichabbo.goldfish.client.interfaces.types.widgets.Navigator;
+import com.classichabbo.goldfish.client.interfaces.types.alerts.Alert;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
-import javafx.scene.image.Image;
 
-import javafx.scene.Cursor;
+import com.classichabbo.goldfish.client.visualisers.Visualiser;
 import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
-import javafx.scene.paint.Color;
 
 public class RoomToolbar extends Interface {
     private ImageButton gamesButton;
@@ -89,7 +86,10 @@ public class RoomToolbar extends Interface {
     }
 
     @Override
-    public InterfaceType getType() {
-        return InterfaceType.ROOM_TOOLBAR;
+    public void visualiserChanged(Visualiser previousVisualiser, Visualiser currentVisualiser) {
+        if (previousVisualiser != null) {
+            // System.out.println("Room toolbar removed");
+            this.remove();
+        }
     }
 }

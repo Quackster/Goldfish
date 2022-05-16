@@ -1,9 +1,8 @@
-package com.classichabbo.goldfish.client.interfaces.types;
+package com.classichabbo.goldfish.client.interfaces.types.alerts;
 
 import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.controls.ButtonLarge;
 import com.classichabbo.goldfish.client.controls.Label;
-import com.classichabbo.goldfish.client.interfaces.InterfaceType;
 import com.classichabbo.goldfish.client.visualisers.Visualiser;
 
 import javafx.geometry.Insets;
@@ -55,10 +54,5 @@ public class Alert extends Dialog {
     @Override
     public void visualiserChanged(Visualiser previousVisualiser, Visualiser currentVisualiser) {
         super.toFront(); // Always bring to front when we move visualisers
-    }
-
-    @Override
-    public InterfaceType getType() {
-        return InterfaceType.ALERT;
     }
 }

@@ -49,6 +49,9 @@ public class PropertiesManager extends Values {
         List<String> doc = new BufferedReader(new InputStreamReader(resource)).lines().collect(Collectors.toList());
 
         for (var line : doc) {
+            if (line.startsWith("#"))
+                continue;
+
             String key = line.substring(0, line.indexOf("="));
             String value = line.substring(line.indexOf("=") + 1);
             this.values.put(key, value);

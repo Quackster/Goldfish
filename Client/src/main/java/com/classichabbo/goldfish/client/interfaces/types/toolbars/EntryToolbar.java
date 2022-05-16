@@ -1,12 +1,14 @@
-package com.classichabbo.goldfish.client.interfaces.types;
+package com.classichabbo.goldfish.client.interfaces.types.toolbars;
 
 import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.controls.ImageButton;
 import com.classichabbo.goldfish.client.controls.Label;
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
 import com.classichabbo.goldfish.client.interfaces.Interface;
-import com.classichabbo.goldfish.client.interfaces.InterfaceType;
+import com.classichabbo.goldfish.client.interfaces.types.widgets.Navigator;
+import com.classichabbo.goldfish.client.interfaces.types.alerts.Alert;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
+import com.classichabbo.goldfish.client.visualisers.Visualiser;
 import com.classichabbo.goldfish.client.visualisers.types.entry.EntryVisualiser;
 import javafx.scene.image.Image;
 
@@ -144,7 +146,10 @@ public class EntryToolbar extends Interface {
     }
 
     @Override
-    public InterfaceType getType() {
-        return InterfaceType.ENTRY_TOOLBAR;
+    public void visualiserChanged(Visualiser previousVisualiser, Visualiser currentVisualiser) {
+        if (previousVisualiser != null) {
+            // System.out.println("Entry toolbar removed");
+            this.remove();
+        }
     }
 }

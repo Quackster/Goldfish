@@ -24,7 +24,7 @@ public class ResourceManager {
     public Font volterBoldLarge;
 
     public Map<String, Image> fxImages;
-    public Map<String, Image> webImages;
+    public Map<String, BufferedImage> webImages;
     public Map<String, BufferedImage> awtImages;
 
     public ResourceManager() {
@@ -48,10 +48,10 @@ public class ResourceManager {
 
     public Image getWebImage(String httpUrl) {
         if (this.webImages.containsKey(httpUrl)) {
-            return this.webImages.get(httpUrl);
+            return SwingFXUtils.toFXImage(this.webImages.get(httpUrl), null);
         } else {
-            var fxImage = new Image(httpUrl, true);
-            this.webImages.put(httpUrl, fxImage);
+            var fxImage = new Image(httpUrl);
+            this.webImages.put(httpUrl, SwingFXUtils.fromFXImage(fxImage, null));
             return fxImage;
         }
     }

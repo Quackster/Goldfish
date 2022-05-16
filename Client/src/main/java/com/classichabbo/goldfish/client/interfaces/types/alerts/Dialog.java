@@ -1,9 +1,8 @@
-package com.classichabbo.goldfish.client.interfaces.types;
+package com.classichabbo.goldfish.client.interfaces.types.alerts;
 
 import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
 import com.classichabbo.goldfish.client.interfaces.Interface;
-import com.classichabbo.goldfish.client.interfaces.InterfaceType;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
 import com.classichabbo.goldfish.client.visualisers.Visualiser;
 
@@ -139,11 +138,6 @@ public class Dialog extends Interface {
     @Override
     public void visualiserChanged(Visualiser previousVisualiser, Visualiser currentVisualiser) {
 
-    }
-
-    @Override
-    public InterfaceType getType() {
-        return InterfaceType.DIALOG;
     }
 
     private void initBackground() {

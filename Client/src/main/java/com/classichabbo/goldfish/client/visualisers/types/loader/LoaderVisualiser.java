@@ -4,7 +4,7 @@ import com.classichabbo.goldfish.client.game.resources.ResourceManager;
 import com.classichabbo.goldfish.client.visualisers.Visualiser;
 import com.classichabbo.goldfish.client.visualisers.VisualiserType;
 import com.classichabbo.goldfish.client.Movie;
-import com.classichabbo.goldfish.client.interfaces.types.LoadingBar;
+import com.classichabbo.goldfish.client.interfaces.types.misc.LoadingBar;
 import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;

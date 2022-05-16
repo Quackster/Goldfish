@@ -1,12 +1,15 @@
-package com.classichabbo.goldfish.client.interfaces.types;
+package com.classichabbo.goldfish.client.interfaces.types.widgets;
 
 import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.controls.ButtonLarge;
 import com.classichabbo.goldfish.client.controls.Label;
-import com.classichabbo.goldfish.client.interfaces.InterfaceType;
+import com.classichabbo.goldfish.client.interfaces.types.alerts.Alert;
+import com.classichabbo.goldfish.client.interfaces.types.alerts.Dialog;
+import com.classichabbo.goldfish.client.interfaces.types.room.RoomTransition;
 import com.classichabbo.goldfish.client.visualisers.Visualiser;
 import com.classichabbo.goldfish.client.visualisers.VisualiserType;
 
+import com.classichabbo.goldfish.client.visualisers.types.entry.EntryVisualiser;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.layout.VBox;
@@ -34,7 +37,11 @@ public class Navigator extends Dialog {
             }
             else {
                 this.setHidden(true);
-                Movie.getInstance().showVisualiser(VisualiserType.ROOM);
+                if (Movie.getInstance().getCurrentVisualiser().getType() == VisualiserType.HOTEL_VIEW) {
+                    ((EntryVisualiser)Movie.getInstance().getCurrentVisualiser()).transitionTo(VisualiserType.ROOM);
+                } else {
+                    Movie.getInstance().showVisualiser(VisualiserType.ROOM);
+                }
             }
         });
 
@@ -46,7 +53,10 @@ public class Navigator extends Dialog {
                 Movie.getInstance().createObject(new Alert("You are already on the hotelview"));
             }
             else {
-                Movie.getInstance().showVisualiser(VisualiserType.HOTEL_VIEW);
+                if (Movie.getInstance().getCurrentVisualiser().getType() == VisualiserType.ROOM) {
+                    Movie.getInstance().createObject(new RoomTransition(VisualiserType.HOTEL_VIEW));
+                }
+                // Movie.getInstance().showVisualiser(VisualiserType.HOTEL_VIEW);
             }
         });
 
@@ -75,11 +85,6 @@ public class Navigator extends Dialog {
 
         // Always bring to front when we move visualisers
         super.toFront();
-    }
-
-    @Override
-    public InterfaceType getType() {
-        return InterfaceType.NAVIGATOR;
     }
 
     @Override

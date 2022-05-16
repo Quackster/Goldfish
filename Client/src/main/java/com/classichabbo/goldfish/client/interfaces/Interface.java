@@ -19,13 +19,12 @@ public abstract class Interface extends Pane implements GameUpdate {
     }
 
     public abstract void update();
-    public abstract InterfaceType getType();
 
     /**
      * Called when the visualiser changes.
      *
-     * @param oldVisualiser the previous visualiser, if NULL then the {@currentVisualiser} is the first visualiser this interface appears in
-     * @param newVisualiser the current visualiser
+     * @param previousVisualiser the previous visualiser, if NULL then the {@currentVisualiser} is the first visualiser this interface appears in
+     * @param currentVisualiser the current visualiser
      */
     public void visualiserChanged(Visualiser previousVisualiser, Visualiser currentVisualiser) { }
 

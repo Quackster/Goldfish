@@ -1,11 +1,9 @@
 package com.classichabbo.goldfish.client.visualisers.types.entry;
 
-import com.classichabbo.goldfish.client.interfaces.types.EntryToolbar;
-import com.classichabbo.goldfish.client.interfaces.types.LoadingBar;
-import com.classichabbo.goldfish.client.interfaces.types.Navigator;
+import com.classichabbo.goldfish.client.interfaces.types.toolbars.EntryToolbar;
+import com.classichabbo.goldfish.client.interfaces.types.misc.LoadingBar;
+import com.classichabbo.goldfish.client.interfaces.types.widgets.Navigator;
 import com.classichabbo.goldfish.client.visualisers.Component;
-import com.classichabbo.goldfish.client.visualisers.VisualiserType;
-import com.classichabbo.goldfish.client.game.values.types.PropertiesManager;
 import com.classichabbo.goldfish.client.scripts.Cloud;
 import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
@@ -60,7 +58,16 @@ public class EntryComponent implements Component {
             loadingBar.remove();
         }
 
-        Movie.getInstance().createObject(new EntryToolbar(this.entryVisualiser));
-        Movie.getInstance().createObject(new Navigator());
+        var entryToolbar = Movie.getInstance().getInterfaces().stream().filter(x -> x instanceof EntryToolbar).findFirst().orElse(null);
+
+        if (entryToolbar == null) {
+            Movie.getInstance().createObject(new EntryToolbar(this.entryVisualiser));
+        }
+
+        var navigator = Movie.getInstance().getInterfaces().stream().filter(x -> x instanceof Navigator).findFirst().orElse(null);
+
+        if (navigator == null) {
+            Movie.getInstance().createObject(new Navigator());
+        }
     }
 }

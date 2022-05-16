@@ -14,10 +14,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import com.classichabbo.goldfish.client.Movie;
-import com.classichabbo.goldfish.client.interfaces.InterfaceType;
-import com.classichabbo.goldfish.client.interfaces.types.EntryToolbar;
-import com.classichabbo.goldfish.client.interfaces.types.LoadingBar;
-import com.classichabbo.goldfish.client.interfaces.types.Navigator;
+import com.classichabbo.goldfish.client.interfaces.types.misc.LoadingBar;
 import com.classichabbo.goldfish.client.util.DateUtil;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
 
@@ -30,7 +27,6 @@ public class EntryVisualiser extends Visualiser {
     private Scene scene;
     private EntryComponent component;
 
-    private long timeSinceStart;
     private long timeNextCloud;
     private int cloudTurnPoint = 330;
 
@@ -45,7 +41,7 @@ public class EntryVisualiser extends Visualiser {
     private Rectangle topReveal;
     private Rectangle bottomReveal;
 
-    private static int MAX_VIEW_TIME = 1000;
+    private static int MAX_VIEW_TIME = 500;
     private long pViewOpenTime = 0;
     private long pViewCloseTime = 0;
 
@@ -54,15 +50,10 @@ public class EntryVisualiser extends Visualiser {
     public boolean queueOpenView = false;
     public boolean queueCloseView = false;
     private boolean queueAnimateSign = false;
-
-    public EntryVisualiser() {
-        this.timeSinceStart = (System.currentTimeMillis() / 1000L);
-    }
+    private VisualiserType transitionTo;
 
     @Override
     public void start() {
-        Movie.getInstance().getInterfaces().stream().filter(i -> i.getType() == InterfaceType.ROOM_TOOLBAR).findFirst().ifPresent(i -> i.remove());
-
         this.component = new EntryComponent(this);
 
         this.clouds = new ArrayList<>();
@@ -99,7 +90,7 @@ public class EntryVisualiser extends Visualiser {
         this.sun.setImage(new Image(PropertiesManager.getInstance().getString("hotel.view.image.sun")));
         this.sun.setX(DimensionUtil.getCenterCords(this.sun.getImage().getWidth(), this.sun.getImage().getHeight()).getX());
 
-        this.pViewOpenTime = System.currentTimeMillis() + MAX_VIEW_TIME;
+        this.pViewOpenTime = System.currentTimeMillis() + (MAX_VIEW_TIME * 2);
         this.bottomReveal.setY(Movie.getInstance().getPrimaryStage().getHeight() / 2);
 
         this.stretchBars();
@@ -152,6 +143,10 @@ public class EntryVisualiser extends Visualiser {
     public void update() {
         if (this.queueOpenView) {
             this.openView();
+        }
+
+        if (this.queueCloseView) {
+            this.closeView();
         }
 
         if (this.queueAnimateSign) {
@@ -264,8 +259,48 @@ public class EntryVisualiser extends Visualiser {
 
         if (tOffset <= 0) {
             this.queueOpenView = false;
-            this.viewTaskFinished();
+            this.openRevealTaskFinished();
         }
+    }
+
+    /**
+     * "openView" the reveal bars when the hotel view first loads
+     *
+     * source code ported from v14 Habbo client
+     */
+    public void closeView() {
+        if (!this.queueCloseView)
+            return;
+
+        this.topReveal.setVisible(true);
+        this.bottomReveal.setVisible(true);
+
+        // Magic when resizing window while reloading
+        this.stretchBars();
+
+        var tTimeLeft = ((MAX_VIEW_TIME - (System.currentTimeMillis() - this.pViewCloseTime)) / 1000);
+        var tmoveLeft = (int) (0 - Math.abs(this.topReveal.getY()));
+        var tOffset = 0;
+
+        if (tTimeLeft <= 0)
+            tOffset = Math.abs(tmoveLeft);
+        else
+            tOffset = (int) (Math.abs((tmoveLeft / tTimeLeft)) / GraphicsScheduler.MAX_FPS);
+
+        this.topReveal.setY(this.topReveal.getY() + tOffset);
+        this.bottomReveal.setY(this.bottomReveal.getY() - tOffset);
+
+        if (tOffset <= 0) {
+            this.queueCloseView = false;
+            this.closeRevealTaskFinished();;
+        }
+    }
+
+    public void transitionTo(VisualiserType visualiser) {
+        this.pViewCloseTime = System.currentTimeMillis() + (MAX_VIEW_TIME * 2);
+        this.transitionTo = visualiser;
+        this.queueCloseView = true;
+
     }
 
     /**
@@ -281,11 +316,20 @@ public class EntryVisualiser extends Visualiser {
     /**
      * When the reveal task is finished, set these to invisible
      */
-    private void viewTaskFinished() {
+    private void openRevealTaskFinished() {
         this.getComponent().loggedIn();
 
         this.topReveal.setVisible(false);
         this.bottomReveal.setVisible(false);
+    }
+
+    /**
+     * When the reveal task is finished, set these to invisible
+     */
+    private void closeRevealTaskFinished() {
+        Movie.getInstance().showVisualiser(this.transitionTo);
+        this.transitionTo = null;
+
     }
 
     /**
