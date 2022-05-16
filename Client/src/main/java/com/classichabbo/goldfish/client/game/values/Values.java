@@ -15,7 +15,7 @@ public class Values {
 
     public String getString(String s) {
         try {
-            return this.values.get(s);
+            return this.values.getOrDefault(s, s);
         } catch (Exception e) {
             return null;
         }
