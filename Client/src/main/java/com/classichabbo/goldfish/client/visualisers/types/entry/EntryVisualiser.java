@@ -317,7 +317,7 @@ public class EntryVisualiser extends Visualiser {
      * When the reveal task is finished, set these to invisible
      */
     private void openRevealTaskFinished() {
-        this.getComponent().loggedIn();
+        this.getComponent().initLoginProcess();
 
         this.topReveal.setVisible(false);
         this.bottomReveal.setVisible(false);

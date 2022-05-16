@@ -22,6 +22,7 @@ public class LoadingBar extends Interface {
     private int queueLoaderProgress;
 
     private ArrayList<String> loaderSteps;
+    private ArrayList<String> loaderStepsFinished;
 
     private final LoaderVisualiser loaderVisualiser;
     private LoaderComponent component;
@@ -45,11 +46,14 @@ public class LoadingBar extends Interface {
 
         this.queueLoaderProgress = 0;
         this.totalLoaderProgress = 0;
-        
+
+        this.loaderStepsFinished = new ArrayList<>();
         this.loaderSteps = new ArrayList<>();
+
         this.loaderSteps.add("load_client_config");
         this.loaderSteps.add("load_external_variables");
         this.loaderSteps.add("load_external_texts");
+        this.loaderSteps.add("connect_server");
 
         this.component = this.loaderVisualiser.getComponent();
 
@@ -61,12 +65,12 @@ public class LoadingBar extends Interface {
         this.loaderProgress.setFill(Color.web("#808080"));
         this.getChildren().add(this.loaderProgress);
 
-        this.loaderBar.setOnMousePressed(event -> {
+        this.setOnMousePressed(event -> {
             this.mousePressedX = event.getX();
             this.mousePressedY = event.getY();
         });
 
-        this.loaderBar.setOnMouseDragged(event -> {
+        this.setOnMouseDragged(event -> {
             this.draggedX = event.getX();
             this.draggedY = event.getY();
         });
@@ -81,13 +85,6 @@ public class LoadingBar extends Interface {
 
     @Override
     public void update() {
-        if (this.totalLoaderProgress >= 100) {
-            if (Movie.getInstance().getCurrentVisualiser() instanceof LoaderVisualiser) {
-                Movie.getInstance().showVisualiser(VisualiserType.HOTEL_VIEW);
-                return;
-            }
-        }
-
         updateLoader();
         handleResize();
         loaderSteps();
@@ -106,8 +103,6 @@ public class LoadingBar extends Interface {
 
             this.queueLoaderProgress--;
             this.totalLoaderProgress++;
-
-            System.out.println(this.queueLoaderProgress);
         }
     }
 
@@ -134,7 +129,8 @@ public class LoadingBar extends Interface {
                 if (this.component.getClientConfigTask().isDone()) {
                     if (this.component.getClientConfigTask().get()) {
                         this.loaderSteps.remove("load_client_config");
-                        this.progressLoader(25);
+                        this.loaderStepsFinished.add("load_client_config");
+                        this.progressLoader(20);
                     } else {
                         this.component.setClientConfigTask(null);
                     }
@@ -154,7 +150,8 @@ public class LoadingBar extends Interface {
                 if (this.component.getExternalVariablesTask().isDone()) {
                     if (this.component.getExternalVariablesTask().get()) {
                         this.loaderSteps.remove("load_external_variables");
-                        this.progressLoader(25);
+                        this.loaderStepsFinished.add("load_external_variables");
+                        this.progressLoader(20);
                     } else {
                         this.component.setExternalVariablesTask(null);
                     }
@@ -174,10 +171,21 @@ public class LoadingBar extends Interface {
                 if (this.component.getExternalTextsTask().isDone()) {
                     if (this.component.getExternalTextsTask().get()) {
                         this.loaderSteps.remove("load_external_texts");
-                        this.progressLoader(50);
+                        this.loaderStepsFinished.add("load_external_texts");
+                        this.progressLoader(20);
                     } else {
                         this.component.setExternalTextsTask(null);
                     }
+                }
+            }
+
+            // Connect server
+            if (this.loaderSteps.contains("connect_server")) {
+                if (this.loaderStepsFinished.contains("load_external_texts")) {
+                    this.loaderSteps.remove("connect_server");
+                    this.progressLoader(1000);
+
+                    Movie.getInstance().showVisualiser(VisualiserType.HOTEL_VIEW);
                 }
             }
         } catch (Exception ex) {
@@ -202,5 +210,9 @@ public class LoadingBar extends Interface {
             this.draggedX = -1;
             this.draggedY = -1;
         }
+    }
+
+    public int getTotalLoaderProgress() {
+        return totalLoaderProgress;
     }
 }
