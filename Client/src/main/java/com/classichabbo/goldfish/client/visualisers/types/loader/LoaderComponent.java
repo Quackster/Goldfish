@@ -9,6 +9,7 @@ import java.util.concurrent.Future;
 
 public class LoaderComponent implements Component {
     private int connectionAttempts = 0;
+    private long connectionTimer = 0;
 
     private Future<Boolean> clientConfigTask;
     private Future<Boolean> externalTextsTask;
@@ -58,11 +59,17 @@ public class LoaderComponent implements Component {
 
 
     public void connectServer() {
-        if (this.connectionAttempts > 5) {
+        if (this.connectionAttempts > PropertiesManager.getInstance().getInt("connection.max.attempts", 5)) {
+            return;
+        }
 
+        if (!(System.currentTimeMillis() > this.connectionTimer)) {
+            return;
         }
 
         this.connectionAttempts++;
+        this.connectionTimer = System.currentTimeMillis() + 1000; // Retry once every second for a max of 5 times
+
         var channelFuture = NettyClient.getInstance().createSocket();
 
         channelFuture.addListener(listener -> {
@@ -108,5 +115,9 @@ public class LoaderComponent implements Component {
 
     public void setConnectServerTask(Future<Boolean> connectServerTask) {
         this.connectServerTask = connectServerTask;
+    }
+
+    public int getConnectionAttempts() {
+        return connectionAttempts;
     }
 }

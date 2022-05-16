@@ -3,6 +3,8 @@ package com.classichabbo.goldfish.client.interfaces.types.misc;
 import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
 import com.classichabbo.goldfish.client.game.scheduler.SchedulerManager;
+import com.classichabbo.goldfish.client.game.values.types.PropertiesManager;
+import com.classichabbo.goldfish.client.game.values.types.TextsManager;
 import com.classichabbo.goldfish.client.interfaces.Interface;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
 import com.classichabbo.goldfish.client.visualisers.VisualiserType;
@@ -187,13 +189,8 @@ public class LoadingBar extends Interface {
             // Connect server
             if (this.loaderSteps.contains("connect_server")) {
                 if (this.loaderStepsFinished.contains("load_external_texts")) {
-                    if (!NettyClient.getInstance().isConnected() &&
-                        !NettyClient.getInstance().isConnecting()) {
-                        this.component.connectServer();
-                        return;
-                    }
-
-                    if (!NettyClient.getInstance().isConnecting()) {
+                    if (NettyClient.getInstance().isConnected() ||
+                            this.component.getConnectionAttempts() > PropertiesManager.getInstance().getInt("connection.max.attempts", 5)) {
                         this.loaderSteps.remove("connect_server");
                         this.loaderStepsFinished.add("connect_server");
 
@@ -201,9 +198,19 @@ public class LoadingBar extends Interface {
                             Movie.getInstance().showVisualiser(VisualiserType.HOTEL_VIEW);
                             this.progressLoader(30);
                         } else {
-                            System.out.println("Failed connecting");
+                            Movie.getInstance().createObject(new FatalError(
+                                    TextsManager.getInstance().getString("Alert_ConnectionNotReady"),
+                                    TextsManager.getInstance().getString("Alert_ConnectionDisconnected")
+                            ));
                             // Show error ??
                         }
+                        return;
+                    }
+
+                    if (!NettyClient.getInstance().isConnected() &&
+                            !NettyClient.getInstance().isConnecting()) {
+                        this.component.connectServer();
+                        return;
                     }
                 }
             }

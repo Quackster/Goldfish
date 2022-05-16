@@ -5,3 +5,4 @@ hotel.view.image.sun=https://cdn.classichabbo.com/krishna/assets/hotel_view/sun.
 hotel.view.left.color=rgb(117, 175, 203)
 hotel.view.right.color=rgb(139, 205, 233)
 hotel.view.cloud.turn.point=330
+connection.max.attempts=5
