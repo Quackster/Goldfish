@@ -1,5 +1,2 @@
 include 'Client'
 project(":Client").projectDir = file("Client")
-
-include 'Networking'
-project(":Networking").projectDir = file("Networking")

@@ -15,7 +15,9 @@ import java.util.ArrayList;
 public class LoadingBar extends Interface {
     private ImageView loadingBar;
 
+    private int totalLoaderProgress;
     private int loaderProgress;
+
     private ArrayList<String> loaderSteps;
 
     private final LoaderVisualiser loaderVisualiser;
@@ -43,7 +45,7 @@ public class LoadingBar extends Interface {
         this.loaderSteps.add("load_external_variables");
         this.loaderSteps.add("load_external_texts");
 
-        this.loaderProgress = 0;
+        this.totalLoaderProgress = 0;
         this.component = this.loaderVisualiser.getComponent();
 
         this.loadingBar = new ImageView();
@@ -72,7 +74,7 @@ public class LoadingBar extends Interface {
 
     @Override
     public void update() {
-        if (this.loaderProgress >= 100) {
+        if (this.totalLoaderProgress >= 100) {
             if (Movie.getInstance().getCurrentVisualiser() instanceof LoaderVisualiser) {
                 Movie.getInstance().showVisualiser(VisualiserType.HOTEL_VIEW);
                 return;
@@ -96,8 +98,8 @@ public class LoadingBar extends Interface {
     }
 
     private void updateLoader() {
-        if (this.loaderProgress >= 0) {
-            this.loadingBar.setImage(ResourceManager.getInstance().getFxImage("sprites/scenes/loader/loader_bar_" + this.loaderProgress + ".png"));
+        if (this.totalLoaderProgress >= 0) {
+            this.loadingBar.setImage(ResourceManager.getInstance().getFxImage("sprites/scenes/loader/loader_bar_" + this.totalLoaderProgress + ".png"));
         }
     }
 
@@ -122,7 +124,7 @@ public class LoadingBar extends Interface {
                 if (this.component.getClientConfigTask().isDone()) {
                     if (this.component.getClientConfigTask().get()) {
                         this.loaderSteps.remove("load_client_config");
-                        this.loaderProgress += 25;
+                        this.totalLoaderProgress += 25;
                     } else {
                         this.component.setClientConfigTask(null);
                     }
@@ -142,7 +144,7 @@ public class LoadingBar extends Interface {
                 if (this.component.getExternalVariablesTask().isDone()) {
                     if (this.component.getExternalVariablesTask().get()) {
                         this.loaderSteps.remove("load_external_variables");
-                        this.loaderProgress += 25;
+                        this.totalLoaderProgress += 25;
                     } else {
                         this.component.setExternalVariablesTask(null);
                     }
@@ -162,7 +164,7 @@ public class LoadingBar extends Interface {
                 if (this.component.getExternalTextsTask().isDone()) {
                     if (this.component.getExternalTextsTask().get()) {
                         this.loaderSteps.remove("load_external_texts");
-                        this.loaderProgress += 50;
+                        this.totalLoaderProgress += 50;
                     } else {
                         this.component.setExternalTextsTask(null);
                     }

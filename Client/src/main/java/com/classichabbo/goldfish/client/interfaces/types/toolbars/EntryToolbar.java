@@ -74,29 +74,29 @@ public class EntryToolbar extends Interface {
         clubDescLabel.setCursor(Cursor.HAND);
         clubDescLabel.setOnMouseClicked(e -> Movie.getInstance().createObject(new Alert("clubDescLabel clicked")));
 
-        var clubButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/entry_toolbar/club.png"));
+        var clubButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/interfaces/entry_toolbar/club.png"));
         clubButton.setLayoutX(245);
         clubButton.setOnMouseClicked(e -> Movie.getInstance().createObject(new Alert("clubButton clicked")));
         
-        this.chatButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/entry_toolbar/chat.png"));
+        this.chatButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/interfaces/entry_toolbar/chat.png"));
         chatButton.setOnMouseClicked(e -> Movie.getInstance().createObject(new Alert("chatButton clicked")));
         
-        this.friendsButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/entry_toolbar/friends.png"));
+        this.friendsButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/interfaces/entry_toolbar/friends.png"));
         friendsButton.setOnMouseClicked(e -> Movie.getInstance().createObject(new Alert("friendsButton clicked")));
         
-        this.navigatorButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/entry_toolbar/navigator.png"));
+        this.navigatorButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/interfaces/entry_toolbar/navigator.png"));
         navigatorButton.setOnMouseClicked(e -> Movie.getInstance().getInterfaces().stream().filter(x -> x instanceof Navigator).findFirst().ifPresent(navigator -> ((Navigator)navigator).toggleVisibility()));
         
-        this.eventsButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/entry_toolbar/events.png"));
+        this.eventsButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/interfaces/entry_toolbar/events.png"));
         eventsButton.setOnMouseClicked(e -> Movie.getInstance().createObject(new Alert("eventsButton clicked")));
         
-        this.catalogueButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/entry_toolbar/catalogue.png"));
+        this.catalogueButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/interfaces/entry_toolbar/catalogue.png"));
         catalogueButton.setOnMouseClicked(e -> Movie.getInstance().createObject(new Alert("catalogueButton clicked")));
         
-        this.gamesButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/entry_toolbar/games.png"));
+        this.gamesButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/interfaces/entry_toolbar/games.png"));
         gamesButton.setOnMouseClicked(e -> Movie.getInstance().createObject(new Alert("gamesButton clicked")));
         
-        this.helpButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/entry_toolbar/help.png"));
+        this.helpButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/interfaces/entry_toolbar/help.png"));
         helpButton.setOnMouseClicked(e -> Movie.getInstance().createObject(new Alert("helpButton clicked")));
         
         this.getChildren().addAll(userHead, userLabel, mottoLabel, updateIdLabel, clubTitleLabel, clubDescLabel);
