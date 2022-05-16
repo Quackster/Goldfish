@@ -1,14 +1,18 @@
 package com.classichabbo.goldfish.client.interfaces.types.toolbars;
 
 import com.classichabbo.goldfish.client.Movie;
+import com.classichabbo.goldfish.client.controls.ButtonLarge;
 import com.classichabbo.goldfish.client.controls.ImageButton;
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
 import com.classichabbo.goldfish.client.interfaces.Interface;
 import com.classichabbo.goldfish.client.interfaces.types.widgets.Navigator;
 import com.classichabbo.goldfish.client.interfaces.types.alerts.Alert;
+import com.classichabbo.goldfish.client.interfaces.types.room.RoomTransition;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
 
 import com.classichabbo.goldfish.client.visualisers.Visualiser;
+import com.classichabbo.goldfish.client.visualisers.VisualiserType;
+
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundPosition;
@@ -27,7 +31,18 @@ public class RoomToolbar extends Interface {
     private ImageButton handButton;
 
     @Override
-    public void start() {        
+    public void start() {  
+        var temp = new ButtonLarge("Go to hotelview");
+        temp.setLayoutX(15);
+        temp.setLayoutY(15);
+        temp.setOnMouseClicked(e -> {
+            if (Movie.getInstance().getCurrentVisualiser().getType() == VisualiserType.ROOM) {
+                Movie.getInstance().createObject(new RoomTransition(VisualiserType.HOTEL_VIEW));
+            }
+        });
+
+        this.getChildren().add(temp);
+        
         this.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/room_toolbar/background.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
         
         this.chatButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/interfaces/room_toolbar/chat.png"));
