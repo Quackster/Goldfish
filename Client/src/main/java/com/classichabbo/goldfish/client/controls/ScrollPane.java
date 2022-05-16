@@ -16,6 +16,7 @@ import javafx.scene.shape.Rectangle;
 
 public class ScrollPane extends HBox {
     private VBox content;
+    private Pane scrollBar;
     private ImageButton up;
     private Pane track;
     private ImageButton thumb;
@@ -28,15 +29,11 @@ public class ScrollPane extends HBox {
     private double draggedY;
 
     public ScrollPane(int width, int height) {
-        this.setPrefSize(width, height);
         this.draggedY = -1;
-        this.setClip(new Rectangle(width, height));
 
-        content = new VBox();
-        content.setPrefWidth(width - 15);
+        this.content = new VBox();
 
-        var scrollBar = new Pane();
-        scrollBar.setPrefSize(15, height);
+        this.scrollBar = new Pane();
         
         this.up = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/controls/scrollbar/up.png"));
         this.up.setOnMousePressed(e -> this.upPressed = true);
@@ -44,36 +41,47 @@ public class ScrollPane extends HBox {
         
         this.track = new Pane();
         this.track.setLayoutY(14);
-        this.track.setPrefSize(15, height - 28);
         this.track.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/controls/scrollbar/track.png"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
 
         this.thumb = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/controls/scrollbar/thumb.png"));
-
-        this.thumb.setOnMouseDragged(e -> {
-            this.draggedY = e.getY();
-        });
-        
+        this.thumb.setOnMouseDragged(e -> this.draggedY = e.getY());
+        this.thumb.setOnMouseReleased(e -> this.thumbPressed = false);
         this.thumb.setOnMousePressed(e -> {
             this.mousePressedY = e.getY();
             this.thumbPressed = true;
         });
 
-        this.thumb.setOnMouseReleased(e -> this.thumbPressed = false);
-
         this.track.getChildren().add(this.thumb);
 
         this.down = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/controls/scrollbar/down.png"));
-        this.down.setLayoutY(height - 14);
         this.down.setOnMousePressed(e -> this.downPressed = true);
         this.down.setOnMouseReleased(e -> this.downPressed = false);
 
-        scrollBar.getChildren().addAll(this.up, this.track, this.down);
+        this.scrollBar.getChildren().addAll(this.up, this.track, this.down);
 
-        this.getChildren().addAll(content, scrollBar);
+        this.resize(width, height);
+        this.getChildren().addAll(this.content, this.scrollBar);
     }
 
     public void addContent(Node... elements) {
         this.content.getChildren().addAll(elements);
+        this.thumb.setTranslateY(0);
+    }
+
+    public void clearContent() {
+        this.content.getChildren().clear();
+        this.thumb.setTranslateY(0);
+    }
+
+    public void resize(int width, int height) {
+        this.setPrefSize(width, height);
+        this.setClip(new Rectangle(width, height));
+
+        this.content.setPrefWidth(width - 15);
+        this.scrollBar.setPrefSize(15, height);
+        this.track.setPrefSize(15, height - 28);
+        this.down.setLayoutY(height - 14);
+        this.thumb.setTranslateY(0);
     }
 
     public void update() {
@@ -144,10 +152,23 @@ public class ScrollPane extends HBox {
             this.down.setImage(ResourceManager.getInstance().getFxImage("sprites/controls/scrollbar/down.png"));
         }
 
+        // Disable if not scrollable
+        if (this.content.getHeight() <= this.getPrefHeight()) {
+            this.up.setImage(ResourceManager.getInstance().getFxImage("sprites/controls/scrollbar/up_disabled.png"));
+            this.thumb.setImage(ResourceManager.getInstance().getFxImage("sprites/controls/scrollbar/thumb_disabled.png"));
+            this.down.setImage(ResourceManager.getInstance().getFxImage("sprites/controls/scrollbar/down_disabled.png"));
+            this.up.setCursor(Cursor.DEFAULT);
+            this.thumb.setCursor(Cursor.DEFAULT);
+            this.down.setCursor(Cursor.DEFAULT);
+            this.thumb.setTranslateY(0);
+        }
+        else {
+            this.thumb.setCursor(Cursor.HAND);
+        }
+
         // Scroll the VBox
         var bottomHeight = this.track.getHeight() - 15;
         var scrolledAmount = (this.thumb.getTranslateY() / bottomHeight);
-        System.out.println(this.content.getHeight());
         this.content.setTranslateY(-((this.content.getHeight() - this.getPrefHeight()) * scrolledAmount));
     }
 }

@@ -27,7 +27,7 @@ public class Navigator extends Dialog {
     Pane favouritesButton;
     Label title;
     Label recommendedTitle;
-    ScrollPane test;
+    ScrollPane roomsList;
 
     @Override
     public void start() {
@@ -121,15 +121,11 @@ public class Navigator extends Dialog {
         recommendedTitle.setLayoutY(85);
         recommendedTitle.setVisible(false);
 
-        test = new ScrollPane(330, 328);
-        test.setLayoutX(5);
-        test.setLayoutY(78);
+        roomsList = new ScrollPane(330, 328);
+        roomsList.setLayoutX(5);
+        roomsList.setLayoutY(78);
 
-        for (int i = 0; i < 150; i++) {
-            test.addContent(new Label("number " + i));
-        }
-
-        content.getChildren().addAll(publicButton, privateButton, searchButton, ownButton, favouritesButton, title, recommendedTitle, test);
+        content.getChildren().addAll(publicButton, privateButton, searchButton, ownButton, favouritesButton, title, recommendedTitle, roomsList);
 
         this.setHidden(false);
         this.setPadding(9, 10, 11, 10);
@@ -149,7 +145,7 @@ public class Navigator extends Dialog {
     @Override
     public void update() {
         super.update();
-        test.update();
+        roomsList.update();
     }
 
     @Override
