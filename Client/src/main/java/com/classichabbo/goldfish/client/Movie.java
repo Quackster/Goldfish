@@ -10,6 +10,7 @@ import com.classichabbo.goldfish.client.visualisers.VisualiserType;
 import com.classichabbo.goldfish.client.visualisers.types.entry.EntryVisualiser;
 import com.classichabbo.goldfish.client.visualisers.types.loader.LoaderVisualiser;
 import com.classichabbo.goldfish.client.visualisers.types.room.RoomVisualiser;
+import com.classichabbo.goldfish.networking.NettyClient;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -88,9 +89,12 @@ public class Movie extends Application {
     }
 
     @Override
-    public void stop(){
+    public void stop() {
         this.stopGameScheduler();
         this.stopInterfaceScheduler();
+
+        NettyClient.getInstance().dispose();
+        System.exit(0);
     }
 
     public void showVisualiser(VisualiserType type) {

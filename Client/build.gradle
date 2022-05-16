@@ -22,7 +22,8 @@ repositories {
 }
 
 dependencies {
-
+    // https://mvnrepository.com/artifact/io.netty/netty-all
+    implementation group: 'io.netty', name: 'netty-all', version: '4.1.33.Final'
 }
 
 //print sourceSets.main.resources.srcDirs
