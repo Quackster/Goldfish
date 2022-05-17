@@ -107,7 +107,7 @@ public class LoadingBar extends Interface {
             this.queueLoaderProgress--;
             this.totalLoaderProgress++;
 
-            System.out.println(this.queueLoaderProgress);
+            // System.out.println(this.queueLoaderProgress);
         }
     }
 
