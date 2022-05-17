@@ -15,6 +15,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 
 public class ScrollPane extends HBox {
+    // TODO - clicking on the track
     private VBox content;
     private Pane scrollBar;
     private ImageButton up;
@@ -70,6 +71,10 @@ public class ScrollPane extends HBox {
     public void clearContent() {
         this.content.getChildren().clear();
         this.thumb.setTranslateY(0);
+    }
+
+    public void setSpacing(int spacing) {
+        this.content.setSpacing(spacing);
     }
 
     public void setSize(int width, int height) {
@@ -168,6 +173,6 @@ public class ScrollPane extends HBox {
         // Scroll the VBox
         var bottomHeight = this.track.getHeight() - 15;
         var scrolledAmount = (this.thumb.getTranslateY() / bottomHeight);
-        this.content.setTranslateY(-((this.content.getHeight() - this.getPrefHeight()) * scrolledAmount));
+        this.content.setTranslateY(Math.round(-((this.content.getHeight() - this.getPrefHeight()) * scrolledAmount)));
     }
 }

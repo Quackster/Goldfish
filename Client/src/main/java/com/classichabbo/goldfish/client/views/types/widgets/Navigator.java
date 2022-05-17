@@ -1,5 +1,7 @@
 package com.classichabbo.goldfish.client.views.types.widgets;
 
+import java.util.ArrayList;
+
 import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.controls.Label;
 import com.classichabbo.goldfish.client.controls.ScrollPane;
@@ -22,11 +24,12 @@ public class Navigator extends Widget {
     Pane favouritesButton;
     Label title;
     Label recommendedTitle;
-    ScrollPane roomsList;
+    ScrollPane navList;
     Pane bottom;
     Label bottomTitle;
     Label bottomDescription;
 
+    ArrayList<NavItem> navItems;
     NavigatorPage setPage;
     boolean closeBottom;
 
@@ -119,8 +122,9 @@ public class Navigator extends Widget {
         this.recommendedTitle.setLayoutY(85);
         this.recommendedTitle.setVisible(false);
 
-        this.roomsList = new ScrollPane();
-        this.roomsList.setLayoutX(5);
+        this.navList = new ScrollPane();
+        this.navList.setSpacing(2);
+        this.navList.setLayoutX(5);
 
         this.bottom = new Pane();
         this.bottom.setPrefSize(340, 100);
@@ -146,7 +150,7 @@ public class Navigator extends Widget {
         closeBottom.setOnMouseClicked(e -> this.closeBottom = true);
 
         this.bottom.getChildren().addAll(bottomTitle, bottomDescription, closeBottom);
-        this.content.getChildren().addAll(publicButton, privateButton, this.searchButton, this.ownButton, this.favouritesButton, this.title, this.recommendedTitle, this.roomsList, this.bottom);
+        this.content.getChildren().addAll(publicButton, privateButton, this.searchButton, this.ownButton, this.favouritesButton, this.title, this.recommendedTitle, this.navList, this.bottom);
 
         this.setPage = NavigatorPage.PUBLIC;
         this.closeBottom = false;
@@ -156,6 +160,26 @@ public class Navigator extends Widget {
         this.setTitle(TextsManager.getInstance().getString("navigator"));
         this.setContent(this.content);
         this.setFixedLocation((int)Movie.getInstance().getPrimaryStage().getWidth() - 376, 20);
+
+        this.navItems = new ArrayList<Navigator.NavItem>();
+        this.navItems.add(new NavItem(1, "Welcome Lounge", false, 0, 40, "New? Lost? Get a warm welcome here!"));
+        this.navItems.add(new NavItem(1, "The Park", false, 0, 65, "Visit the park and the infamous Infobus"));
+        this.navItems.add(new NavItem(1, "Habbo Lido", false, 0, 120, "Splish, splash and have a bash in the famous Habbo pool!"));
+        this.navItems.add(new NavItem(1, "Rooftop Rumble", false, 0, 50, "Wabble Squabble your bum off in our cool rooftop hang out"));
+        this.navItems.add(new NavItem(1, "Entertainment", true, 0, 100, null));
+        this.navItems.add(new NavItem(1, "Restaurants and Cafes", true, 0, 100, null));
+        this.navItems.add(new NavItem(1, "Lounges and Clubs", true, 0, 100, null));
+        this.navItems.add(new NavItem(1, "Habbo Club", true, 0, 100, null));
+        this.navItems.add(new NavItem(1, "Outside Spaces", true, 0, 100, null));
+        this.navItems.add(new NavItem(1, "The Lobbies", true, 0, 100, null));
+        this.navItems.add(new NavItem(1, "The Hallways", true, 0, 100, null));
+        this.navItems.add(new NavItem(1, "Games", true, 0, 100, null));
+        this.navItems.add(new NavItem(1, "Games", true, 0, 100, null));
+        this.navItems.add(new NavItem(1, "Games", true, 0, 100, null));
+        this.navItems.add(new NavItem(1, "Games", true, 0, 100, null));
+        this.navItems.add(new NavItem(1, "Games", true, 0, 100, null));
+        this.navItems.add(new NavItem(1, "Games", true, 0, 100, null));
+        this.navItems.add(new NavItem(1, "Games", true, 0, 100, null));
 
         Movie.getInstance().getInterfaceScheduler().receiveUpdate(this);
     }
@@ -171,6 +195,31 @@ public class Navigator extends Widget {
     public void update() {
         super.update();
 
+        if (!this.navItems.isEmpty()) {
+            for (var navItem : navItems) {
+                var navListItem = new Pane();
+                navListItem.setMinHeight(16);
+                navListItem.setMaxWidth(311);
+
+                var nameLabel = new Label(navItem.name);
+                nameLabel.setLayoutX(17);
+                nameLabel.setLayoutY(2);
+
+                navListItem.getChildren().add(nameLabel);
+
+                if (navItem.isCategory) {
+                    navListItem.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/category_empty.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+                }
+                else {
+                    navListItem.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/room_empty.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+                }
+
+                this.navList.addContent(navListItem);
+            }
+
+            this.navItems.clear();
+        }
+
         if (this.setPage == NavigatorPage.PUBLIC) {
             this.content.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/background_public.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
             this.title.setText("Public Rooms"); // load from packet
@@ -181,8 +230,8 @@ public class Navigator extends Widget {
             this.ownButton.setVisible(false);
             this.favouritesButton.setVisible(false);
 
-            this.roomsList.setSize(330, 236);
-            this.roomsList.setLayoutY(76);
+            this.navList.setSize(330, 236);
+            this.navList.setLayoutY(76);
 
             this.bottomTitle.setText(TextsManager.getInstance().getString("nav_public_helptext_hd"));
             this.bottomDescription.setText(TextsManager.getInstance().getString("nav_public_helptext"));
@@ -202,8 +251,8 @@ public class Navigator extends Widget {
             this.ownButton.setVisible(true);
             this.favouritesButton.setVisible(true);
 
-            this.roomsList.setSize(330, 130);
-            this.roomsList.setLayoutY(182);
+            this.navList.setSize(330, 130);
+            this.navList.setLayoutY(182);
 
             this.bottomTitle.setText(TextsManager.getInstance().getString("nav_private_helptext_hd_main"));
             this.bottomDescription.setText(TextsManager.getInstance().getString("nav_private_helptext"));
@@ -219,8 +268,8 @@ public class Navigator extends Widget {
             this.title.setLayoutY(135);
             this.recommendedTitle.setVisible(false);
 
-            this.roomsList.setSize(330, 166);
-            this.roomsList.setLayoutY(146);
+            this.navList.setSize(330, 166);
+            this.navList.setLayoutY(146);
 
             this.bottomTitle.setText(TextsManager.getInstance().getString("nav_private_helptext_hd"));
             this.bottomDescription.setText(TextsManager.getInstance().getString("nav_search_helptext"));
@@ -236,8 +285,8 @@ public class Navigator extends Widget {
             this.title.setLayoutY(135);
             this.recommendedTitle.setVisible(false);
 
-            this.roomsList.setSize(330, 166);
-            this.roomsList.setLayoutY(146);
+            this.navList.setSize(330, 166);
+            this.navList.setLayoutY(146);
 
             this.bottomTitle.setText(TextsManager.getInstance().getString("nav_private_helptext_hd"));
             this.bottomDescription.setText(TextsManager.getInstance().getString("nav_ownrooms_helptext"));
@@ -253,8 +302,8 @@ public class Navigator extends Widget {
             this.title.setLayoutY(90);
             this.recommendedTitle.setVisible(false);
 
-            this.roomsList.setSize(330, 211);
-            this.roomsList.setLayoutY(101);
+            this.navList.setSize(330, 211);
+            this.navList.setLayoutY(101);
 
             this.bottomTitle.setText(TextsManager.getInstance().getString("nav_private_helptext_hd"));
             this.bottomDescription.setText(TextsManager.getInstance().getString("nav_favourites_helptext"));
@@ -265,14 +314,14 @@ public class Navigator extends Widget {
         }
 
         if (this.closeBottom) {
-            var newHeight = this.roomsList.getPrefHeight() + 96;
-            this.roomsList.setSize(330, (int)newHeight);
+            var newHeight = this.navList.getPrefHeight() + 96;
+            this.navList.setSize(330, (int)newHeight);
             this.bottom.setVisible(false);
 
             this.closeBottom = false;
         }
 
-        roomsList.update();
+        navList.update();
     }
 
     /*
@@ -298,5 +347,23 @@ public class Navigator extends Widget {
         SEARCH,
         OWN,
         FAVOURITES
+    }
+
+    private class NavItem {
+        int id;
+        String name;
+        Boolean isCategory;
+        int visitors;
+        int maxVisitors;
+        String description;
+
+        public NavItem(int id, String name, Boolean isCategory, int visitors, int maxVisitors, String description) {
+            this.id = id;
+            this.name = name;
+            this.isCategory = isCategory;
+            this.visitors = visitors;
+            this.maxVisitors = maxVisitors;
+            this.description = description;
+        }
     }
 }
