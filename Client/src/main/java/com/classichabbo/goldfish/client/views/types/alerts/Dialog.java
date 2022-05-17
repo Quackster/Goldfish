@@ -57,12 +57,17 @@ public class Dialog extends View {
     private double draggedX;
     private double draggedY;
 
+    private int fixedX;
+    private int fixedY;
+
     // TO-DO
     // - pick on bounds (clicking corner outside of background moves to front)
     // - font slightly off on smaller alerts (x is -1px)
 
     @Override
     public void start() {
+        this.fixedX = -1;
+        this.fixedY = -1;
         this.setOnMousePressed(e -> this.clicked = true);
         this.setVisible(false);
         this.initBackground();
@@ -87,12 +92,10 @@ public class Dialog extends View {
             var height = this.title != null ? contentHeight + 15 : contentHeight;
 
             setSize(width, height);
-            this.setLayoutX(Math.ceil((Movie.getInstance().getPrimaryStage().getWidth() - this.getWidth()) / 2));
-            this.setLayoutY(Math.ceil((Movie.getInstance().getPrimaryStage().getHeight() - this.getHeight()) / 2));
 
             var coords = DimensionUtil.getCenterCoords(width, height);
-            this.setLayoutX(coords.getX());
-            this.setLayoutY(coords.getY());
+            this.setLayoutX(this.fixedX == -1 ? coords.getX() : this.fixedX);
+            this.setLayoutY(this.fixedY == -1 ? coords.getY() : this.fixedY);
 
             if (this.title != null) {
                 this.title.setLayoutX(Math.round((width / 2) - (this.title.getWidth() / 2)) - 2);
@@ -347,5 +350,10 @@ public class Dialog extends View {
 
     protected void closeButtonClicked() {
         this.remove();
+    }
+
+    protected void setFixedLocation(int x, int y) {
+        this.fixedX = x;
+        this.fixedY = y;
     }
 }

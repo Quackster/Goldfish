@@ -28,7 +28,7 @@ public class ScrollPane extends HBox {
     private double mousePressedY;
     private double draggedY;
 
-    public ScrollPane(int width, int height) {
+    public ScrollPane() {
         this.draggedY = -1;
 
         this.content = new VBox();
@@ -59,7 +59,6 @@ public class ScrollPane extends HBox {
 
         this.scrollBar.getChildren().addAll(this.up, this.track, this.down);
 
-        this.resize(width, height);
         this.getChildren().addAll(this.content, this.scrollBar);
     }
 
@@ -73,7 +72,7 @@ public class ScrollPane extends HBox {
         this.thumb.setTranslateY(0);
     }
 
-    public void resize(int width, int height) {
+    public void setSize(int width, int height) {
         this.setPrefSize(width, height);
         this.setClip(new Rectangle(width, height));
 
