@@ -24,6 +24,8 @@ public class Navigator extends Widget {
     Label recommendedTitle;
     ScrollPane roomsList;
     Pane bottom;
+    Label bottomTitle;
+    Label bottomDescription;
 
     NavigatorPage setPage;
     boolean closeBottom;
@@ -43,6 +45,12 @@ public class Navigator extends Widget {
         publicButton.setLayoutX(1);
         publicButton.setLayoutY(1);
         publicButton.setOnMouseClicked(e -> this.setPage = NavigatorPage.PUBLIC);
+
+        var publicLabel = new Label(TextsManager.getInstance().getString("nav_publicRooms"), true);
+        publicLabel.setLayoutX(64);
+        publicLabel.setLayoutY(10);
+
+        publicButton.getChildren().add(publicLabel);
         
         var privateButton = new Pane();
         privateButton.setPrefSize(169, 56);
@@ -51,6 +59,12 @@ public class Navigator extends Widget {
         privateButton.setLayoutX(172);
         privateButton.setLayoutY(1);
         privateButton.setOnMouseClicked(e -> this.setPage = NavigatorPage.PRIVATE);
+
+        var privateLabel = new Label(TextsManager.getInstance().getString("nav_privateRooms"), true);
+        privateLabel.setLayoutX(63);
+        privateLabel.setLayoutY(10);
+        
+        privateButton.getChildren().add(privateLabel);
 
         this.searchButton = new Pane();
         this.searchButton.setPrefSize(113, 22);
@@ -61,6 +75,12 @@ public class Navigator extends Widget {
         this.searchButton.setLayoutY(58);
         this.searchButton.setOnMouseClicked(e -> this.setPage = NavigatorPage.SEARCH);
         
+        var searchLabel = new Label(TextsManager.getInstance().getString("nav_searchbutton"));
+        searchLabel.setLayoutX(23);
+        searchLabel.setLayoutY(4);
+
+        this.searchButton.getChildren().add(searchLabel);
+
         this.ownButton = new Pane();
         this.ownButton.setPrefSize(113, 22);
         this.ownButton.setCursor(Cursor.HAND);
@@ -69,6 +89,12 @@ public class Navigator extends Widget {
         this.ownButton.setLayoutX(115);
         this.ownButton.setLayoutY(58);
         this.ownButton.setOnMouseClicked(e -> this.setPage = NavigatorPage.OWN);
+        
+        var ownLabel = new Label(TextsManager.getInstance().getString("nav_rooms_own"));
+        ownLabel.setLayoutX(26);
+        ownLabel.setLayoutY(4);
+
+        this.ownButton.getChildren().add(ownLabel);
 
         this.favouritesButton = new Pane();
         this.favouritesButton.setPrefSize(112, 22);
@@ -78,6 +104,12 @@ public class Navigator extends Widget {
         this.favouritesButton.setLayoutX(229);
         this.favouritesButton.setLayoutY(58);
         this.favouritesButton.setOnMouseClicked(e -> this.setPage = NavigatorPage.FAVOURITES);
+        
+        var favouritesLabel = new Label(TextsManager.getInstance().getString("nav_rooms_favourite"));
+        favouritesLabel.setLayoutX(24);
+        favouritesLabel.setLayoutY(4);
+        
+        this.favouritesButton.getChildren().add(favouritesLabel);
 
         this.title = new Label("", true);
         this.title.setLayoutX(22);
@@ -94,7 +126,17 @@ public class Navigator extends Widget {
         this.bottom.setPrefSize(340, 100);
         this.bottom.setLayoutX(1);
         this.bottom.setLayoutY(312);
-        this.bottom.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/bottom_background.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        this.bottom.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/bottom_background_public.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+
+        this.bottomTitle = new Label(TextsManager.getInstance().getString("nav_public_helptext_hd"), true);
+        this.bottomTitle.setLayoutX(85);
+        this.bottomTitle.setLayoutY(12);
+
+        this.bottomDescription = new Label(TextsManager.getInstance().getString("nav_public_helptext"));
+        this.bottomDescription.setLayoutX(85);
+        this.bottomDescription.setLayoutY(24);
+        this.bottomDescription.setMaxWidth(230);
+        this.bottomDescription.setWrapText(true);
 
         var closeBottom = new Pane();
         closeBottom.setPrefSize(13, 13);
@@ -103,7 +145,7 @@ public class Navigator extends Widget {
         closeBottom.setLayoutY(13);
         closeBottom.setOnMouseClicked(e -> this.closeBottom = true);
 
-        this.bottom.getChildren().add(closeBottom);
+        this.bottom.getChildren().addAll(bottomTitle, bottomDescription, closeBottom);
         this.content.getChildren().addAll(publicButton, privateButton, this.searchButton, this.ownButton, this.favouritesButton, this.title, this.recommendedTitle, this.roomsList, this.bottom);
 
         this.setPage = NavigatorPage.PUBLIC;
@@ -142,6 +184,10 @@ public class Navigator extends Widget {
             this.roomsList.setSize(330, 236);
             this.roomsList.setLayoutY(76);
 
+            this.bottomTitle.setText(TextsManager.getInstance().getString("nav_public_helptext_hd"));
+            this.bottomDescription.setText(TextsManager.getInstance().getString("nav_public_helptext"));
+
+            this.bottom.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/bottom_background_public.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
             this.bottom.setVisible(true);
             this.setPage = null;
         }
@@ -159,6 +205,10 @@ public class Navigator extends Widget {
             this.roomsList.setSize(330, 130);
             this.roomsList.setLayoutY(182);
 
+            this.bottomTitle.setText(TextsManager.getInstance().getString("nav_private_helptext_hd_main"));
+            this.bottomDescription.setText(TextsManager.getInstance().getString("nav_private_helptext"));
+
+            this.bottom.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/bottom_background_private.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
             this.bottom.setVisible(true);
             this.setPage = null;
         }
@@ -172,6 +222,10 @@ public class Navigator extends Widget {
             this.roomsList.setSize(330, 166);
             this.roomsList.setLayoutY(146);
 
+            this.bottomTitle.setText(TextsManager.getInstance().getString("nav_private_helptext_hd"));
+            this.bottomDescription.setText(TextsManager.getInstance().getString("nav_search_helptext"));
+
+            this.bottom.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/bottom_background_search.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
             this.bottom.setVisible(true);
             this.setPage = null;
         }
@@ -185,6 +239,10 @@ public class Navigator extends Widget {
             this.roomsList.setSize(330, 166);
             this.roomsList.setLayoutY(146);
 
+            this.bottomTitle.setText(TextsManager.getInstance().getString("nav_private_helptext_hd"));
+            this.bottomDescription.setText(TextsManager.getInstance().getString("nav_ownrooms_helptext"));
+
+            this.bottom.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/bottom_background_own.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
             this.bottom.setVisible(true);
             this.setPage = null;
         }
@@ -198,6 +256,10 @@ public class Navigator extends Widget {
             this.roomsList.setSize(330, 211);
             this.roomsList.setLayoutY(101);
 
+            this.bottomTitle.setText(TextsManager.getInstance().getString("nav_private_helptext_hd"));
+            this.bottomDescription.setText(TextsManager.getInstance().getString("nav_favourites_helptext"));
+            
+            this.bottom.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/bottom_background_favourites.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
             this.bottom.setVisible(true);
             this.setPage = null;
         }
