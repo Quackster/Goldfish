@@ -59,12 +59,7 @@ public class Interface extends Pane implements GameUpdate {
 
     public void setHidden(boolean isHidden) {
         this.isHidden = isHidden;
-
-        if (this.isHidden) {
-            this.toBack();
-        } else {
-            this.toFront();
-        }
+        this.setVisible(isHidden);
     }
 
     public void toggleVisibility() {

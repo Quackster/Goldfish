@@ -1,4 +1,4 @@
-package com.classichabbo.goldfish.client.interfaces.types.misc;
+package com.classichabbo.goldfish.client.interfaces.types.error;
 
 import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.controls.Label;
@@ -9,7 +9,7 @@ import javafx.geometry.Pos;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
-public class FatalError extends Interface {
+public class ErrorWindow extends Interface {
     private boolean centerWindow;
 
     private Rectangle borderTop;
@@ -24,7 +24,7 @@ public class FatalError extends Interface {
     private String errorTitle;
     private String errorMessage;
 
-    public FatalError(String errorTitle, String errorMessage, boolean centerWindow) {
+    public ErrorWindow(String errorTitle, String errorMessage, boolean centerWindow) {
         this.errorTitle = errorTitle;
         this.errorMessage = errorMessage;
         this.centerWindow = centerWindow;

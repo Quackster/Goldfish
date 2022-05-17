@@ -7,27 +7,12 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 public class RoomTransition extends Interface {
-    @Override
-    public void start() {
-
-    }
-
-    @Override
-    public void stop() {
-
-    }
-
-    @Override
-    public void update() {
-
-    }
-    /*
-    private VisualiserType visualiserType;
+    private Runnable delegate;
     private Rectangle blackBackground;
     private long timer;
 
-    public RoomTransition(VisualiserType visualiserType) {
-        this.visualiserType = visualiserType;
+    public RoomTransition(Runnable delegate) {
+        this.delegate = delegate;
     }
 
     @Override
@@ -53,18 +38,10 @@ public class RoomTransition extends Interface {
         this.toFront();
 
         if (System.currentTimeMillis() > this.timer) {
-            if (this.visualiserType != null) {
-                Movie.getInstance().showVisualiser(this.visualiserType);
-                this.visualiserType = null;
+            if (this.delegate != null) {
+                this.delegate.run();
+                this.delegate = null;
             }
         }
     }
-
-    @Override
-    public void visualiserChanged(Visualiser previousVisualiser, Visualiser currentVisualiser) {
-       if (previousVisualiser != null)
-            this.remove();
-    }
-
-     */
 }

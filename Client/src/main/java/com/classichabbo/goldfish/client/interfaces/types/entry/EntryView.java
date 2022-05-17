@@ -6,7 +6,9 @@ import com.classichabbo.goldfish.client.game.scheduler.types.GraphicsScheduler;
 import com.classichabbo.goldfish.client.game.values.ValueType;
 import com.classichabbo.goldfish.client.game.values.types.PropertiesManager;
 import com.classichabbo.goldfish.client.interfaces.Interface;
-import com.classichabbo.goldfish.client.interfaces.types.misc.LoadingScreen;
+import com.classichabbo.goldfish.client.interfaces.types.loader.LoadingScreen;
+import com.classichabbo.goldfish.client.interfaces.types.room.RoomTransition;
+import com.classichabbo.goldfish.client.interfaces.types.room.RoomView;
 import com.classichabbo.goldfish.client.scripts.Cloud;
 import com.classichabbo.goldfish.client.util.DateUtil;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
@@ -45,6 +47,7 @@ public class EntryView extends Interface {
     public boolean queueOpenView = false;
     public boolean queueCloseView = false;
     private boolean queueAnimateSign = false;
+    private Runnable transitionTo;
 
     @Override
     public void start() {
@@ -113,11 +116,23 @@ public class EntryView extends Interface {
         //Movie.getInstance().createObject(new Alert("Give your room a name!"));
         //Movie.getInstance().createObject(new Alert("Your verification code is:\nQBqfv9cE"));
 
-        var loadingBar = Movie.getInstance().getInterfaces().stream().filter(x -> x instanceof LoadingScreen).findFirst().orElse(null);
+        if (Movie.getInstance().isInterfaceActive(LoadingScreen.class)) {
+            var loadingScreen = Movie.getInstance().getInterfaceByClass(LoadingScreen.class);
 
-        if (loadingBar != null) {
-            loadingBar.toFront();
+            if (loadingScreen != null)
+                loadingScreen.toFront();
         }
+
+        if (Movie.getInstance().isInterfaceActive(RoomTransition.class)) {
+            var roomTransition = Movie.getInstance().getInterfaceByClass(RoomTransition.class);
+
+            if (roomTransition != null) {
+                Movie.getInstance().removeObject(roomTransition);
+            }
+        }
+
+        // Always make this the backdrop
+        this.toBack();
 
         // Queue to receive
         Movie.getInstance().getGameScheduler().receiveUpdate(this);
@@ -287,15 +302,12 @@ public class EntryView extends Interface {
         }
     }
 
-    /*
-    public void transitionTo(VisualiserType visualiser) {
+    public void transitionTo(Runnable run) {
         this.pViewCloseTime = System.currentTimeMillis() + (MAX_VIEW_TIME * 2);
-        //this.transitionTo = visualiser;
+        this.transitionTo = run;
         this.queueCloseView = true;
 
     }
-
-     */
 
     /**
      * Stretch the reveal bars across the window
@@ -321,8 +333,8 @@ public class EntryView extends Interface {
      * When the reveal task is finished, set these to invisible
      */
     private void closeRevealTaskFinished() {
-        //Movie.getInstance().showVisualiser(this.transitionTo);
-        //this.transitionTo = null;
+        this.transitionTo.run();
+        this.transitionTo = null;
 
     }
 

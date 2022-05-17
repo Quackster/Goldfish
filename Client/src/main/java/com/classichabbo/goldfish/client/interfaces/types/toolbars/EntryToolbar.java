@@ -8,6 +8,8 @@ import com.classichabbo.goldfish.client.game.resources.ResourceManager;
 import com.classichabbo.goldfish.client.interfaces.Interface;
 import com.classichabbo.goldfish.client.interfaces.types.alerts.Alert;
 import com.classichabbo.goldfish.client.interfaces.types.entry.EntryView;
+import com.classichabbo.goldfish.client.interfaces.types.loader.LoadingScreen;
+import com.classichabbo.goldfish.client.interfaces.types.room.RoomView;
 import com.classichabbo.goldfish.client.interfaces.types.widgets.Navigator;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
 import javafx.scene.Cursor;
@@ -43,6 +45,18 @@ public class EntryToolbar extends Interface {
         temp.setLayoutX(400);
         temp.setLayoutY(15);
         temp.setOnMouseClicked(e -> {
+            if (Movie.getInstance().isInterfaceActive(EntryView.class)) {
+                var entryView = Movie.getInstance().getInterfaceByClass(EntryView.class);
+                var entryToolbar = Movie.getInstance().getInterfaceByClass(EntryToolbar.class);
+
+                entryView.transitionTo(() -> {
+                    Movie.getInstance().createObject(new RoomView());
+                    Movie.getInstance().removeObject(entryView);
+                    Movie.getInstance().removeObject(entryToolbar);
+                });
+
+                Movie.getInstance().hideWidgets();
+            }
             /*
             if (Movie.getInstance().getCurrentVisualiser().getType() == VisualiserType.HOTEL_VIEW) {
                 ((EntryVisualiser)Movie.getInstance().getCurrentVisualiser()).transitionTo(VisualiserType.ROOM);
@@ -99,7 +113,10 @@ public class EntryToolbar extends Interface {
         friendsButton.setOnMouseClicked(e -> Movie.getInstance().createObject(new Alert("friendsButton clicked")));
         
         this.navigatorButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/interfaces/entry_toolbar/navigator.png"));
-        navigatorButton.setOnMouseClicked(e -> Movie.getInstance().getInterfaces().stream().filter(x -> x instanceof Navigator).findFirst().ifPresent(x -> x.toggleVisibility()));
+        navigatorButton.setOnMouseClicked(e -> Movie.getInstance().getInterfaces().stream().filter(x -> x instanceof Navigator).findFirst().ifPresent(x -> {
+            x.toggleVisibility();
+            x.toFront();
+        }));
         
         this.eventsButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/interfaces/entry_toolbar/events.png"));
         eventsButton.setOnMouseClicked(e -> Movie.getInstance().createObject(new Alert("eventsButton clicked")));
@@ -115,6 +132,12 @@ public class EntryToolbar extends Interface {
         
         this.getChildren().addAll(userHead, userLabel, mottoLabel, updateIdLabel, clubTitleLabel, clubDescLabel);
         this.getChildren().addAll(clubButton, chatButton, friendsButton, navigatorButton, eventsButton, catalogueButton, gamesButton, helpButton);
+
+        // Make sure view orders are always fine and dandy and not over the top
+        if (Movie.getInstance().isInterfaceActive(EntryView.class)) {
+            var entryView = Movie.getInstance().getInterfaceByClass(EntryView.class);
+            this.setViewOrder(entryView.getViewOrder() - 1);
+        }
 
         Movie.getInstance().getGameScheduler().receiveUpdate(this);
     }

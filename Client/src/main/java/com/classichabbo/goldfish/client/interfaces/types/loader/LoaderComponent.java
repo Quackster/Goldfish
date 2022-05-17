@@ -1,4 +1,4 @@
-package com.classichabbo.goldfish.client.interfaces.types.misc;
+package com.classichabbo.goldfish.client.interfaces.types.loader;
 
 import com.classichabbo.goldfish.client.game.values.types.PropertiesManager;
 import com.classichabbo.goldfish.client.game.values.types.TextsManager;

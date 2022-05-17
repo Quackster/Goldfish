@@ -5,6 +5,8 @@ import com.classichabbo.goldfish.client.controls.ButtonLarge;
 import com.classichabbo.goldfish.client.controls.ImageButton;
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
 import com.classichabbo.goldfish.client.interfaces.Interface;
+import com.classichabbo.goldfish.client.interfaces.types.entry.EntryView;
+import com.classichabbo.goldfish.client.interfaces.types.room.RoomView;
 import com.classichabbo.goldfish.client.interfaces.types.widgets.Navigator;
 import com.classichabbo.goldfish.client.interfaces.types.alerts.Alert;
 import com.classichabbo.goldfish.client.interfaces.types.room.RoomTransition;
@@ -33,9 +35,22 @@ public class RoomToolbar extends Interface {
         temp.setLayoutX(15);
         temp.setLayoutY(15);
         temp.setOnMouseClicked(e -> {
-            /*if (Movie.getInstance().getCurrentVisualiser().getType() == VisualiserType.ROOM) {
+            if (Movie.getInstance().isInterfaceActive(RoomView.class)) {
+                var roomView = Movie.getInstance().getInterfaceByClass(RoomView.class);
+
+                Movie.getInstance().removeObject(roomView);
+                Movie.getInstance().removeObject(this);
+
+                Movie.getInstance().createObject(new RoomTransition(() -> {
+                    Movie.getInstance().createObject(new EntryView());
+                }));
+            }
+            /*
+            if (Movie.getInstance().getCurrentVisualiser().getType() == VisualiserType.ROOM) {
                 Movie.getInstance().createObject(new RoomTransition(VisualiserType.HOTEL_VIEW));
-            }*/
+            }
+
+             */
         });
 
         this.getChildren().add(temp);

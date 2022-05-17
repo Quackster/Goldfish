@@ -16,7 +16,7 @@ import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.Pane;
 
 
-public class Navigator extends Dialog {
+public class Navigator extends Widget {
     Pane searchButton;
     Pane ownButton;
     Pane favouritesButton;

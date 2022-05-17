@@ -1,4 +1,4 @@
-package com.classichabbo.goldfish.client.interfaces.types.misc;
+package com.classichabbo.goldfish.client.interfaces.types.loader;
 
 import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
@@ -7,10 +7,10 @@ import com.classichabbo.goldfish.client.game.values.types.PropertiesManager;
 import com.classichabbo.goldfish.client.game.values.types.TextsManager;
 import com.classichabbo.goldfish.client.interfaces.Interface;
 import com.classichabbo.goldfish.client.interfaces.types.entry.EntryView;
+import com.classichabbo.goldfish.client.interfaces.types.error.ErrorWindow;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
 import com.classichabbo.goldfish.networking.NettyClient;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
@@ -211,7 +211,7 @@ public class LoadingScreen extends Interface {
 
                             Movie.getInstance().createObject(new EntryView());
                         } else {
-                            Movie.getInstance().createObject(new FatalError(
+                            Movie.getInstance().createObject(new ErrorWindow(
                                     TextsManager.getInstance().getString("Alert_ConnectionNotReady"),
                                     TextsManager.getInstance().getString("Alert_ConnectionDisconnected"),
                                     true

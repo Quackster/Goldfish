@@ -4,7 +4,9 @@ import com.classichabbo.goldfish.client.game.resources.ResourceManager;
 import com.classichabbo.goldfish.client.game.scheduler.types.GraphicsScheduler;
 import com.classichabbo.goldfish.client.game.scheduler.types.InterfaceScheduler;
 import com.classichabbo.goldfish.client.interfaces.Interface;
-import com.classichabbo.goldfish.client.interfaces.types.misc.LoadingScreen;
+import com.classichabbo.goldfish.client.interfaces.types.entry.EntryView;
+import com.classichabbo.goldfish.client.interfaces.types.loader.LoadingScreen;
+import com.classichabbo.goldfish.client.interfaces.types.widgets.Widget;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
 import com.classichabbo.goldfish.networking.NettyClient;
 import com.classichabbo.goldfish.networking.wrappers.messages.Message;
@@ -20,10 +22,12 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 public class Movie extends Application {
     private static Movie instance;
@@ -108,54 +112,6 @@ public class Movie extends Application {
         System.exit(0);
     }
 
-    /*
-    public void showVisualiser(VisualiserType type) {
-        Platform.runLater(() -> {
-            var previousVisualiser = this.currentVisualiser;
-
-            if (previousVisualiser != null) {
-                previousVisualiser.stop();
-            }
-
-            var visualiser = this.visualisers.get(type);
-
-            if (visualiser != null) {
-                this.currentVisualiser = visualiser;
-                setupVisualiser(visualiser);
-                this.primaryStage.setScene(visualiser.getScene());
-
-                this.interfaces.forEach(control -> {
-                    if (!visualiser.getPane().getChildren().contains(control)) {
-                        visualiser.getPane().getChildren().add(control);
-                    }
-
-                    control.visualiserChanged(previousVisualiser, this.currentVisualiser);
-                });
-            }
-        });
-    }
-
-
-    /**
-     * Set up the visualiser we're about to show
-     *
-    private void setupVisualiser(Visualiser visualiser) {
-        visualiser.start();
-        visualiser.getComponent().init();
-        visualiser.update();
-
-        visualiser.getScene().setOnMouseClicked(x -> {
-            if (x.getButton() == MouseButton.SECONDARY) {
-                if (this.gameScheduler != null) {
-                    stopGameScheduler();
-                } else {
-                    startGameScheduler();
-                }
-            }
-        });
-    }    */
-
-
     /**
      * Method to initialise interface
      * @param control
@@ -163,7 +119,6 @@ public class Movie extends Application {
     private void setupInterface(Interface control) {
         control.start();
         control.update();
-        //control.visualiserChanged(null, this.currentVisualiser);
     }
 
     /**
@@ -177,29 +132,55 @@ public class Movie extends Application {
             if (!this.pane.getChildren().contains(control)) {
                 this.pane.getChildren().add(control);
             }
-
-            /*if (!this.currentVisualiser.getPane().getChildren().contains(control)) {
-                this.currentVisualiser.getPane().getChildren().add(control);
-            }*/
         });
     }
 
     public void removeObject(Interface control) {
         Platform.runLater(() -> {
-            /*this.visualisers.values().forEach(visualiser -> {
-                if (visualiser != null && visualiser.getPane() != null) {
-                    if (visualiser.getPane().getChildren().contains(control)) {
-                        visualiser.getPane().getChildren().remove(control);
-                    }
-                }
-            });*/
-
             if (this.pane.getChildren().contains(control)) {
                 this.pane.getChildren().remove(control);
             }
 
             control.stop();
             this.interfaces.remove(control);
+        });
+    }
+
+    public void removeAllObjects(Interface control) {
+        Platform.runLater(() -> {
+            if (this.pane.getChildren().contains(control)) {
+                this.pane.getChildren().remove(control);
+            }
+
+            control.stop();
+            this.interfaces.remove(control);
+        });
+    }
+
+    public boolean isInterfaceActive(Class<?> clazz) {
+        return this.interfaces.stream().anyMatch(x -> x.getClass() == clazz || x.getClass().isAssignableFrom(clazz));
+    }
+
+    public <T extends Interface> List<T> getInterfacesByClass(Class<T> interfaceClass) {
+        List<T> entities = new ArrayList<>();
+
+        for (Interface entity : this.interfaces) {
+            if (entity.getClass().isAssignableFrom(interfaceClass)) {
+                entities.add(interfaceClass.cast(entity));
+            }
+        }
+
+        return entities;
+    }
+
+    public <T extends Interface> T getInterfaceByClass(Class<T> interfaceClass) {
+        return this.getInterfacesByClass(interfaceClass).stream().findFirst().orElse(null);
+    }
+
+    // Hide widgets (navigator, catalogue etc), used for stuff such as room entry
+    public void hideWidgets() {
+        this.interfaces.stream().filter(x -> x instanceof Widget).forEach(x -> {
+            x.setHidden(true);
         });
     }
 
