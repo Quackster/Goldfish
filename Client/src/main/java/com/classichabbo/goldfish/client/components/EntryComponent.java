@@ -1,7 +1,8 @@
-package com.classichabbo.goldfish.client.interfaces.types.entry;
+package com.classichabbo.goldfish.client.components;
 
 import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.game.values.types.TextsManager;
+import com.classichabbo.goldfish.client.interfaces.types.entry.EntryView;
 import com.classichabbo.goldfish.client.interfaces.types.error.ErrorWindow;
 import com.classichabbo.goldfish.client.interfaces.types.loader.LoadingScreen;
 import com.classichabbo.goldfish.client.interfaces.types.toolbars.EntryToolbar;
@@ -62,7 +63,7 @@ public class EntryComponent {
             }
         }
 
-        this.entryView.addChild(new EntryToolbar(this.entryView));
+        Movie.getInstance().createObject(new EntryToolbar(this.entryView), this.entryView);
 
         var navigator = Movie.getInstance().getInterfaces().stream().filter(x -> x instanceof Navigator).findFirst().orElse(null);
 

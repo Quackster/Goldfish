@@ -8,7 +8,6 @@ import com.classichabbo.goldfish.client.game.resources.ResourceManager;
 import com.classichabbo.goldfish.client.interfaces.Interface;
 import com.classichabbo.goldfish.client.interfaces.types.alerts.Alert;
 import com.classichabbo.goldfish.client.interfaces.types.entry.EntryView;
-import com.classichabbo.goldfish.client.interfaces.types.loader.LoadingScreen;
 import com.classichabbo.goldfish.client.interfaces.types.room.RoomView;
 import com.classichabbo.goldfish.client.interfaces.types.widgets.Navigator;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
@@ -41,12 +40,15 @@ public class EntryToolbar extends Interface {
         this.scrollOffset = 0;
         this.finishedScroll = false;
 
+        this.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
+
         var temp = new ButtonLarge("Go to room UI");
         temp.setLayoutX(400);
         temp.setLayoutY(15);
         temp.setOnMouseClicked(e -> {
             if (Movie.getInstance().isInterfaceActive(EntryView.class)) {
                 var entryView = Movie.getInstance().getInterfaceByClass(EntryView.class);
+                Movie.getInstance().removeObject(this);
 
                 entryView.transitionTo(() -> {
                     Movie.getInstance().createObject(new RoomView());
@@ -64,8 +66,6 @@ public class EntryToolbar extends Interface {
         });
 
         this.getChildren().add(temp);
-
-        this.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
 
         var userHead = new ImageButton(new Image("https://cdn.classichabbo.com/habbo-imaging/avatarimage?figure=hd-180-1.hr-100-61.ch-210-66.lg-270-82.sh-290-80&size=b&head=1&direction=3&head_direction=3&gesture=std"));
         userHead.setLayoutX(Math.floor(65 / 2 - userHead.getImage().getWidth() / 2));
@@ -105,28 +105,28 @@ public class EntryToolbar extends Interface {
         clubButton.setOnMouseClicked(e -> Movie.getInstance().createObject(new Alert("clubButton clicked")));
         
         this.chatButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/interfaces/entry_toolbar/chat.png"));
-        chatButton.setOnMouseClicked(e -> Movie.getInstance().createObject(new Alert("chatButton clicked")));
+        this.chatButton.setOnMouseClicked(e -> Movie.getInstance().createObject(new Alert("chatButton clicked")));
         
         this.friendsButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/interfaces/entry_toolbar/friends.png"));
-        friendsButton.setOnMouseClicked(e -> Movie.getInstance().createObject(new Alert("friendsButton clicked")));
+        this.friendsButton.setOnMouseClicked(e -> Movie.getInstance().createObject(new Alert("friendsButton clicked")));
         
         this.navigatorButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/interfaces/entry_toolbar/navigator.png"));
-        navigatorButton.setOnMouseClicked(e -> Movie.getInstance().getInterfaces().stream().filter(x -> x instanceof Navigator).findFirst().ifPresent(x -> {
+        this.navigatorButton.setOnMouseClicked(e -> Movie.getInstance().getInterfaces().stream().filter(x -> x instanceof Navigator).findFirst().ifPresent(x -> {
             x.toggleVisibility();
             x.toFront();
         }));
         
         this.eventsButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/interfaces/entry_toolbar/events.png"));
-        eventsButton.setOnMouseClicked(e -> Movie.getInstance().createObject(new Alert("eventsButton clicked")));
+        this.eventsButton.setOnMouseClicked(e -> Movie.getInstance().createObject(new Alert("eventsButton clicked")));
         
         this.catalogueButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/interfaces/entry_toolbar/catalogue.png"));
-        catalogueButton.setOnMouseClicked(e -> Movie.getInstance().createObject(new Alert("catalogueButton clicked")));
+        this.catalogueButton.setOnMouseClicked(e -> Movie.getInstance().createObject(new Alert("catalogueButton clicked")));
         
         this.gamesButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/interfaces/entry_toolbar/games.png"));
-        gamesButton.setOnMouseClicked(e -> Movie.getInstance().createObject(new Alert("gamesButton clicked")));
+        this.gamesButton.setOnMouseClicked(e -> Movie.getInstance().createObject(new Alert("gamesButton clicked")));
         
         this.helpButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/interfaces/entry_toolbar/help.png"));
-        helpButton.setOnMouseClicked(e -> Movie.getInstance().createObject(new Alert("helpButton clicked")));
+        this.helpButton.setOnMouseClicked(e -> Movie.getInstance().createObject(new Alert("helpButton clicked")));
         
         this.getChildren().addAll(userHead, userLabel, mottoLabel, updateIdLabel, clubTitleLabel, clubDescLabel);
         this.getChildren().addAll(clubButton, chatButton, friendsButton, navigatorButton, eventsButton, catalogueButton, gamesButton, helpButton);
@@ -166,13 +166,14 @@ public class EntryToolbar extends Interface {
         this.setPrefSize(DimensionUtil.getProgramWidth(), 55);
 
         var pWidth = DimensionUtil.getProgramWidth();
-        helpButton.setLayoutX(pWidth - 45);
-        gamesButton.setLayoutX(pWidth - 81);
-        catalogueButton.setLayoutX(pWidth - 121);
-        eventsButton.setLayoutX(pWidth - 162);
-        navigatorButton.setLayoutX(pWidth - 207);
-        friendsButton.setLayoutX(pWidth - 244);
-        chatButton.setLayoutX(pWidth - 284);
+
+        this.helpButton.setLayoutX(pWidth - 45);
+        this.gamesButton.setLayoutX(pWidth - 81);
+        this.catalogueButton.setLayoutX(pWidth - 121);
+        this.eventsButton.setLayoutX(pWidth - 162);
+        this.navigatorButton.setLayoutX(pWidth - 207);
+        this.friendsButton.setLayoutX(pWidth - 244);
+        this.chatButton.setLayoutX(pWidth - 284);
     }
 
     /*

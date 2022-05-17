@@ -1,6 +1,7 @@
 package com.classichabbo.goldfish.client.interfaces.types.loader;
 
 import com.classichabbo.goldfish.client.Movie;
+import com.classichabbo.goldfish.client.components.LoaderComponent;
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
 import com.classichabbo.goldfish.client.game.scheduler.SchedulerManager;
 import com.classichabbo.goldfish.client.game.values.types.PropertiesManager;

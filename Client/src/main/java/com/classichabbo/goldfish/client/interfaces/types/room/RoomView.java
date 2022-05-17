@@ -2,20 +2,14 @@ package com.classichabbo.goldfish.client.interfaces.types.room;
 
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
 import com.classichabbo.goldfish.client.interfaces.Interface;
+import com.classichabbo.goldfish.client.components.RoomViewComponent;
 import com.classichabbo.goldfish.client.interfaces.types.toolbars.RoomToolbar;
 
-import javafx.beans.InvalidationListener;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.geometry.Insets;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
-import javafx.scene.paint.Color;
 
 public class RoomView extends Interface {
     private Pane room;
@@ -77,8 +71,8 @@ public class RoomView extends Interface {
         //Movie.getInstance().createObject(new Alert("Give your room a name!"));
 
         Movie.getInstance().getInterfaceScheduler().receiveUpdate(this);
-
-        this.addChild(new RoomToolbar());
+        Movie.getInstance().createObject(new RoomToolbar(), this);
+        //this.addChild(new RoomToolbar());
     }
 
     @Override

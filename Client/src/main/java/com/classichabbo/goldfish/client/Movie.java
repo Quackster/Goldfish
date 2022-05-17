@@ -113,38 +113,57 @@ public class Movie extends Application {
     }
 
     /**
-     * Method to initialise interface
-     * @param control
-     */
-    private void setupInterface(Interface control) {
-
-
-    }
-
-    /**
      * Create interface to appear on current scene
      */
     public void createObject(Interface control) {
-        Platform.runLater(() -> {
-            if (!this.pane.getChildren().contains(control)) {
-                this.pane.getChildren().add(control);
+        createObject(control, null);
+    }
 
+    /**
+     * Create interface to appear on current scene.
+     *
+     * If parent is supplied, then the interface is added to the parent rather than the main screen.
+     */
+    public void createObject(Interface control, Interface parent) {
+        Platform.runLater(() -> {
+            if (parent != null) {
+                if (!parent.getChildren().contains(control)) {
+                    parent.getChildren().add(control);
+                    control.setOwner(parent);
+                }
+
+            } else {
+                if (!this.pane.getChildren().contains(control)) {
+                    this.pane.getChildren().add(control);
+                }
             }
 
             control.start();
+            control.update();
+
             this.interfaces.add(control);
-
-
         });
     }
 
     public void removeObject(Interface control) {
         Platform.runLater(() -> {
-            if (this.pane.getChildren().contains(control)) {
-                this.pane.getChildren().remove(control);
+            if (control.getOwner() != null) {
+                var parent = control.getOwner();
+
+                if (parent.getChildren().contains(control)) {
+                    parent.getChildren().remove(control);
+                }
+
+                control.setOwner(null);
+                // System.out.println("removed child: " + control.getClass().getName());
+            } else {
+                if (this.pane.getChildren().contains(control)) {
+                    this.pane.getChildren().remove(control);
+                }
+
+                control.stop();
             }
 
-            control.stop();
             this.interfaces.remove(control);
         });
     }

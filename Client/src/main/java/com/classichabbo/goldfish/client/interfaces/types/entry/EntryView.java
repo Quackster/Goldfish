@@ -1,6 +1,7 @@
 package com.classichabbo.goldfish.client.interfaces.types.entry;
 
 import com.classichabbo.goldfish.client.Movie;
+import com.classichabbo.goldfish.client.components.EntryComponent;
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
 import com.classichabbo.goldfish.client.game.scheduler.types.GraphicsScheduler;
 import com.classichabbo.goldfish.client.game.values.ValueType;
@@ -8,7 +9,6 @@ import com.classichabbo.goldfish.client.game.values.types.PropertiesManager;
 import com.classichabbo.goldfish.client.interfaces.Interface;
 import com.classichabbo.goldfish.client.interfaces.types.loader.LoadingScreen;
 import com.classichabbo.goldfish.client.interfaces.types.room.RoomTransition;
-import com.classichabbo.goldfish.client.interfaces.types.room.RoomView;
 import com.classichabbo.goldfish.client.scripts.Cloud;
 import com.classichabbo.goldfish.client.util.DateUtil;
 import com.classichabbo.goldfish.client.util.DimensionUtil;

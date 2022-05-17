@@ -2,24 +2,32 @@ package com.classichabbo.goldfish.client.interfaces;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.stream.Collectors;
+import java.util.List;
 
 import com.classichabbo.goldfish.client.game.scheduler.GameUpdate;
 import com.classichabbo.goldfish.client.Movie;
+import com.classichabbo.goldfish.networking.wrappers.messages.MessageHandler;
 import javafx.application.Platform;
 
 import javafx.scene.layout.Pane;
 
 public class Interface extends Pane implements GameUpdate {
+    private Interface owner;
+    private List<Interface> children;
     private boolean isHidden;
+
+    public Interface() {
+        this.children = new ArrayList<>();
+    }
 
     public void start() { }
     public void stop() { }
     public void update() { }
-
     public void remove() {
         Movie.getInstance().removeObject(this);
     }
+
+    public MessageHandler getHandler() { return null; }
 
     @Override
     public void toFront() {
@@ -57,12 +65,6 @@ public class Interface extends Pane implements GameUpdate {
         });
     }
 
-    public void addChild(Interface obj) {
-        obj.start();
-        obj.update();
-
-        this.getChildren().add(obj);
-    }
 
     public void setHidden(boolean isHidden) {
         this.isHidden = isHidden;
@@ -75,5 +77,13 @@ public class Interface extends Pane implements GameUpdate {
 
     public boolean isHidden() {
         return isHidden;
+    }
+
+    public Interface getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Interface owner) {
+        this.owner = owner;
     }
 }
