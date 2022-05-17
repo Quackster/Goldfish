@@ -27,7 +27,9 @@ public class NetworkEncoder extends MessageToMessageEncoder<Command> {
             }
         }
 
+
         message.setBytes(1, Base64Encoding.encode(message.writerIndex() - 3, 2));
+        System.out.println("-> [" + command.getHeader() + "] " + message.toString(StringUtil.getCharset()));
         out.add(message);
     }
 }
