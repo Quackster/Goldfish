@@ -1,8 +1,8 @@
-package com.classichabbo.goldfish.client.interfaces.types.error;
+package com.classichabbo.goldfish.client.views.types.error;
 
 import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.controls.Label;
-import com.classichabbo.goldfish.client.interfaces.Interface;
+import com.classichabbo.goldfish.client.views.View;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -10,7 +10,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
-public class ErrorWindow extends Interface {
+public class ErrorWindow extends View {
     private boolean centerWindow;
     private Pane window;
 

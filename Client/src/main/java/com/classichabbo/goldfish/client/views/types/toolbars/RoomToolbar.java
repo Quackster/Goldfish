@@ -1,15 +1,15 @@
-package com.classichabbo.goldfish.client.interfaces.types.toolbars;
+package com.classichabbo.goldfish.client.views.types.toolbars;
 
 import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.controls.ButtonLarge;
 import com.classichabbo.goldfish.client.controls.ImageButton;
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
-import com.classichabbo.goldfish.client.interfaces.Interface;
-import com.classichabbo.goldfish.client.interfaces.types.entry.EntryView;
-import com.classichabbo.goldfish.client.interfaces.types.room.RoomView;
-import com.classichabbo.goldfish.client.interfaces.types.widgets.Navigator;
-import com.classichabbo.goldfish.client.interfaces.types.alerts.Alert;
-import com.classichabbo.goldfish.client.interfaces.types.room.RoomTransition;
+import com.classichabbo.goldfish.client.views.View;
+import com.classichabbo.goldfish.client.views.types.entry.EntryView;
+import com.classichabbo.goldfish.client.views.types.room.RoomView;
+import com.classichabbo.goldfish.client.views.types.widgets.Navigator;
+import com.classichabbo.goldfish.client.views.types.alerts.Alert;
+import com.classichabbo.goldfish.client.views.types.room.RoomTransition;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
 
 import javafx.scene.layout.Background;
@@ -18,7 +18,7 @@ import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 
-public class RoomToolbar extends Interface {
+public class RoomToolbar extends View {
     private ImageButton gamesButton;
     private ImageButton helpButton;
     private ImageButton catalogueButton;
@@ -64,7 +64,7 @@ public class RoomToolbar extends Interface {
         friendsButton.setOnMouseClicked(e -> Movie.getInstance().createObject(new Alert("friendsButton clicked")));
         
         this.navigatorButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/interfaces/room_toolbar/navigator.png"));
-        navigatorButton.setOnMouseClicked(e -> Movie.getInstance().getInterfaces().stream().filter(x -> x instanceof Navigator).findFirst().ifPresent(navigator -> {
+        navigatorButton.setOnMouseClicked(e -> Movie.getInstance().getViews().stream().filter(x -> x instanceof Navigator).findFirst().ifPresent(navigator -> {
             navigator.toggleVisibility();
             navigator.toFront();
         }));

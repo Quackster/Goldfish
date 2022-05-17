@@ -1,12 +1,12 @@
-package com.classichabbo.goldfish.client.interfaces.types.room;
+package com.classichabbo.goldfish.client.views.types.room;
 
 import com.classichabbo.goldfish.client.Movie;
-import com.classichabbo.goldfish.client.interfaces.Interface;
+import com.classichabbo.goldfish.client.views.View;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
-public class RoomTransition extends Interface {
+public class RoomTransition extends View {
     private Runnable delegate;
     private Rectangle blackBackground;
     private long timer;

@@ -1,15 +1,15 @@
-package com.classichabbo.goldfish.client.interfaces.types.toolbars;
+package com.classichabbo.goldfish.client.views.types.toolbars;
 
 import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.controls.ButtonLarge;
 import com.classichabbo.goldfish.client.controls.ImageButton;
 import com.classichabbo.goldfish.client.controls.Label;
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
-import com.classichabbo.goldfish.client.interfaces.Interface;
-import com.classichabbo.goldfish.client.interfaces.types.alerts.Alert;
-import com.classichabbo.goldfish.client.interfaces.types.entry.EntryView;
-import com.classichabbo.goldfish.client.interfaces.types.room.RoomView;
-import com.classichabbo.goldfish.client.interfaces.types.widgets.Navigator;
+import com.classichabbo.goldfish.client.views.View;
+import com.classichabbo.goldfish.client.views.types.alerts.Alert;
+import com.classichabbo.goldfish.client.views.types.entry.EntryView;
+import com.classichabbo.goldfish.client.views.types.room.RoomView;
+import com.classichabbo.goldfish.client.views.types.widgets.Navigator;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
 import javafx.scene.Cursor;
 import javafx.scene.image.Image;
@@ -17,7 +17,7 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.paint.Color;
 
-public class EntryToolbar extends Interface {
+public class EntryToolbar extends View {
     private final EntryView entryView;
 
     private ImageButton gamesButton;
@@ -111,7 +111,7 @@ public class EntryToolbar extends Interface {
         this.friendsButton.setOnMouseClicked(e -> Movie.getInstance().createObject(new Alert("friendsButton clicked")));
         
         this.navigatorButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/interfaces/entry_toolbar/navigator.png"));
-        this.navigatorButton.setOnMouseClicked(e -> Movie.getInstance().getInterfaces().stream().filter(x -> x instanceof Navigator).findFirst().ifPresent(x -> {
+        this.navigatorButton.setOnMouseClicked(e -> Movie.getInstance().getViews().stream().filter(x -> x instanceof Navigator).findFirst().ifPresent(x -> {
             x.toggleVisibility();
             x.toFront();
         }));

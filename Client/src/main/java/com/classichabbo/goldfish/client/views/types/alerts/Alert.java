@@ -1,4 +1,4 @@
-package com.classichabbo.goldfish.client.interfaces.types.alerts;
+package com.classichabbo.goldfish.client.views.types.alerts;
 
 import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.controls.ButtonLarge;

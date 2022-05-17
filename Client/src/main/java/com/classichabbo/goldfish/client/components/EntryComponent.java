@@ -1,12 +1,10 @@
 package com.classichabbo.goldfish.client.components;
 
 import com.classichabbo.goldfish.client.Movie;
-import com.classichabbo.goldfish.client.game.values.types.TextsManager;
-import com.classichabbo.goldfish.client.interfaces.types.entry.EntryView;
-import com.classichabbo.goldfish.client.interfaces.types.error.ErrorWindow;
-import com.classichabbo.goldfish.client.interfaces.types.loader.LoadingScreen;
-import com.classichabbo.goldfish.client.interfaces.types.toolbars.EntryToolbar;
-import com.classichabbo.goldfish.client.interfaces.types.widgets.Navigator;
+import com.classichabbo.goldfish.client.views.types.entry.EntryView;
+import com.classichabbo.goldfish.client.views.types.loader.LoadingScreen;
+import com.classichabbo.goldfish.client.views.types.toolbars.EntryToolbar;
+import com.classichabbo.goldfish.client.views.types.widgets.Navigator;
 import com.classichabbo.goldfish.client.scripts.Cloud;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
 
@@ -52,7 +50,7 @@ public class EntryComponent {
 
         // Remove loading bar (moved to here so it removes it before it starts animating)
         // (if this is wrong please don't hate me was just finalising EntryToolbar) :)
-        var loadingBar = Movie.getInstance().getInterfaces().stream().filter(x -> x instanceof LoadingScreen).findFirst().orElse(null);//ifPresent(loadingBar -> Movie.getInstance().removeObject(loadingBar));
+        var loadingBar = Movie.getInstance().getViews().stream().filter(x -> x instanceof LoadingScreen).findFirst().orElse(null);//ifPresent(loadingBar -> Movie.getInstance().removeObject(loadingBar));
 
         if (loadingBar != null) {
             if (((LoadingScreen) loadingBar).getTotalLoaderProgress() >= 100)
@@ -65,7 +63,7 @@ public class EntryComponent {
 
         Movie.getInstance().createObject(new EntryToolbar(this.entryView), this.entryView);
 
-        var navigator = Movie.getInstance().getInterfaces().stream().filter(x -> x instanceof Navigator).findFirst().orElse(null);
+        var navigator = Movie.getInstance().getViews().stream().filter(x -> x instanceof Navigator).findFirst().orElse(null);
 
         if (navigator == null) {
             Movie.getInstance().createObject(new Navigator());

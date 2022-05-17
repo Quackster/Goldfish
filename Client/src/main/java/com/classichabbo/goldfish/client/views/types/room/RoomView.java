@@ -1,9 +1,9 @@
-package com.classichabbo.goldfish.client.interfaces.types.room;
+package com.classichabbo.goldfish.client.views.types.room;
 
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
-import com.classichabbo.goldfish.client.interfaces.Interface;
+import com.classichabbo.goldfish.client.views.View;
 import com.classichabbo.goldfish.client.components.RoomViewComponent;
-import com.classichabbo.goldfish.client.interfaces.types.toolbars.RoomToolbar;
+import com.classichabbo.goldfish.client.views.types.toolbars.RoomToolbar;
 
 import javafx.beans.value.ObservableValue;
 import javafx.scene.image.ImageView;
@@ -11,7 +11,7 @@ import javafx.scene.layout.Pane;
 import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
 
-public class RoomView extends Interface {
+public class RoomView extends View {
     private Pane room;
     private RoomCamera roomCamera;
 

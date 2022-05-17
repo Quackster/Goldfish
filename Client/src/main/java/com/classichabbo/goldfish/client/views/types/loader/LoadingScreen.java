@@ -1,4 +1,4 @@
-package com.classichabbo.goldfish.client.interfaces.types.loader;
+package com.classichabbo.goldfish.client.views.types.loader;
 
 import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.components.LoaderComponent;
@@ -6,9 +6,9 @@ import com.classichabbo.goldfish.client.game.resources.ResourceManager;
 import com.classichabbo.goldfish.client.game.scheduler.SchedulerManager;
 import com.classichabbo.goldfish.client.game.values.types.PropertiesManager;
 import com.classichabbo.goldfish.client.game.values.types.TextsManager;
-import com.classichabbo.goldfish.client.interfaces.Interface;
-import com.classichabbo.goldfish.client.interfaces.types.entry.EntryView;
-import com.classichabbo.goldfish.client.interfaces.types.error.ErrorWindow;
+import com.classichabbo.goldfish.client.views.View;
+import com.classichabbo.goldfish.client.views.types.entry.EntryView;
+import com.classichabbo.goldfish.client.views.types.error.ErrorWindow;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
 import com.classichabbo.goldfish.networking.NettyClient;
 import javafx.scene.image.ImageView;
@@ -17,12 +17,12 @@ import javafx.scene.shape.Rectangle;
 
 import java.util.ArrayList;
 
-public class LoadingScreen extends Interface {
+public class LoadingScreen extends View {
     private ImageView loadingLogoImage;
     private ImageView loaderBarImage;
     private Rectangle loaderProgress;
 
-    private Interface loaderBar;
+    private View loaderBar;
 
     private int totalLoaderProgress;
     private int queueLoaderProgress;
@@ -49,7 +49,7 @@ public class LoadingScreen extends Interface {
         // message me if you have any questions :) - Parsnip
         this.setPickOnBounds(false);
 
-        this.loaderBar = new Interface();
+        this.loaderBar = new View();
         this.getChildren().add(this.loaderBar);
 
         this.queueLoaderProgress = 0;

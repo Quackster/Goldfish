@@ -2,7 +2,7 @@ package com.classichabbo.goldfish.networking.connections;
 
 import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.game.values.types.TextsManager;
-import com.classichabbo.goldfish.client.interfaces.types.error.ErrorWindow;
+import com.classichabbo.goldfish.client.views.types.error.ErrorWindow;
 import com.classichabbo.goldfish.networking.NettyClient;
 import com.classichabbo.goldfish.networking.wrappers.ClientChannel;
 import com.classichabbo.goldfish.networking.wrappers.Request;
@@ -41,6 +41,12 @@ public class ConnectionHandler extends SimpleChannelInboundHandler<Request> {
     @Override
     public void channelRead0(ChannelHandlerContext ctx, Request message) {
         System.out.println("[" + message.getHeaderId() + " / " + message.getHeader() + "] - " + message.getMessageBody());
+
+        Movie.getInstance().getListeners().forEach(x -> {
+            if (x.getHeader() == message.getHeaderId()) {
+                x.getMessage().received(ctx.channel(), message);
+            }
+        });
     }
 
     @Override

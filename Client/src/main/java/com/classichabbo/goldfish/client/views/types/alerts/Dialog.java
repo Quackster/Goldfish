@@ -1,8 +1,8 @@
-package com.classichabbo.goldfish.client.interfaces.types.alerts;
+package com.classichabbo.goldfish.client.views.types.alerts;
 
 import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
-import com.classichabbo.goldfish.client.interfaces.Interface;
+import com.classichabbo.goldfish.client.views.View;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
 
 import javafx.geometry.Insets;
@@ -21,7 +21,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
-public class Dialog extends Interface {
+public class Dialog extends View {
     private HBox top;
     private Pane topLeft;
     private Pane topCenter;

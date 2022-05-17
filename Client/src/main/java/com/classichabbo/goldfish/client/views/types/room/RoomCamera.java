@@ -1,4 +1,4 @@
-package com.classichabbo.goldfish.client.interfaces.types.room;
+package com.classichabbo.goldfish.client.views.types.room;
 
 import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.game.scheduler.types.InterfaceScheduler;

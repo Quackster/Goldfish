@@ -4,6 +4,5 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class MessageHandler {
-    public abstract void register();
-    public abstract void unregister();
+    public abstract void regMsgList(boolean tBool);
 }

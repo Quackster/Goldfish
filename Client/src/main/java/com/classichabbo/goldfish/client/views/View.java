@@ -1,4 +1,4 @@
-package com.classichabbo.goldfish.client.interfaces;
+package com.classichabbo.goldfish.client.views;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,12 +11,12 @@ import javafx.application.Platform;
 
 import javafx.scene.layout.Pane;
 
-public class Interface extends Pane implements GameUpdate {
-    private Interface owner;
-    private List<Interface> children;
+public class View extends Pane implements GameUpdate {
+    private View owner;
+    private List<View> children;
     private boolean isHidden;
 
-    public Interface() {
+    public View() {
         this.children = new ArrayList<>();
     }
 
@@ -34,7 +34,7 @@ public class Interface extends Pane implements GameUpdate {
         Platform.runLater(() -> {
             var viewOrderValues = new ArrayList<Double>();
 
-            for (var ui : Movie.getInstance().getInterfaces()) {
+            for (var ui : Movie.getInstance().getViews()) {
                 viewOrderValues.add(ui.getViewOrder());
 
                 for (var child : ui.getChildren()) {
@@ -52,7 +52,7 @@ public class Interface extends Pane implements GameUpdate {
         Platform.runLater(() -> {
             var viewOrderValues = new ArrayList<Double>();
 
-            for (var ui : Movie.getInstance().getInterfaces()) {
+            for (var ui : Movie.getInstance().getViews()) {
                 viewOrderValues.add(ui.getViewOrder());
 
                 for (var child : ui.getChildren()) {
@@ -79,11 +79,11 @@ public class Interface extends Pane implements GameUpdate {
         return isHidden;
     }
 
-    public Interface getOwner() {
+    public View getOwner() {
         return owner;
     }
 
-    public void setOwner(Interface owner) {
+    public void setOwner(View owner) {
         this.owner = owner;
     }
 }

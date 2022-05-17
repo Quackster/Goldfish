@@ -3,13 +3,15 @@ package com.classichabbo.goldfish.client;
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
 import com.classichabbo.goldfish.client.game.scheduler.types.GraphicsScheduler;
 import com.classichabbo.goldfish.client.game.scheduler.types.InterfaceScheduler;
-import com.classichabbo.goldfish.client.interfaces.Interface;
-import com.classichabbo.goldfish.client.interfaces.types.entry.EntryView;
-import com.classichabbo.goldfish.client.interfaces.types.loader.LoadingScreen;
-import com.classichabbo.goldfish.client.interfaces.types.widgets.Widget;
+import com.classichabbo.goldfish.client.views.GlobalView;
+import com.classichabbo.goldfish.client.views.View;
+import com.classichabbo.goldfish.client.views.types.loader.LoadingScreen;
+import com.classichabbo.goldfish.client.views.types.widgets.Widget;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
 import com.classichabbo.goldfish.networking.NettyClient;
-import com.classichabbo.goldfish.networking.wrappers.messages.Message;
+import com.classichabbo.goldfish.networking.wrappers.messages.MessageHandler;
+import com.classichabbo.goldfish.networking.wrappers.messages.MessageRegistered;
+import com.classichabbo.goldfish.networking.wrappers.messages.MessageRequest;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -23,11 +25,11 @@ import javafx.stage.Stage;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.stream.Collectors;
 
 public class Movie extends Application {
     private static Movie instance;
@@ -37,11 +39,11 @@ public class Movie extends Application {
     private InterfaceScheduler interfaceScheduler;
 
     //private final Map<VisualiserType, Visualiser> visualisers;
-    private final List<Interface> interfaces;
+    private final List<View> views;
 
     //private Visualiser currentVisualiser;
 
-    private Map<Integer, Message> incomingHandlers;
+    private List<MessageRegistered> listeners;
     private Map<String, Integer> outgoingHandlers;
 
     private Pane pane;
@@ -53,10 +55,10 @@ public class Movie extends Application {
         this.visualisers.put(VisualiserType.HOTEL_VIEW, new EntryVisualiser());
         this.visualisers.put(VisualiserType.ROOM, new RoomVisualiser());*/
 
-        this.incomingHandlers = new ConcurrentHashMap<>();
+        this.listeners = new CopyOnWriteArrayList<>();
         this.outgoingHandlers = new ConcurrentHashMap<>();
 
-        this.interfaces = new CopyOnWriteArrayList<>();
+        this.views = new CopyOnWriteArrayList<>();
     }
 
     public static void main(String[] args) {
@@ -97,6 +99,7 @@ public class Movie extends Application {
         primaryStage.setScene(this.mainScene);
         primaryStage.show();
 
+        this.createObject(new GlobalView());
         this.createObject(new LoadingScreen());
 
         //this.showVisualiser(VisualiserType.LOADER);
@@ -115,7 +118,7 @@ public class Movie extends Application {
     /**
      * Create interface to appear on current scene
      */
-    public void createObject(Interface control) {
+    public void createObject(View control) {
         createObject(control, null);
     }
 
@@ -124,58 +127,77 @@ public class Movie extends Application {
      *
      * If parent is supplied, then the interface is added to the parent rather than the main screen.
      */
-    public void createObject(Interface control, Interface parent) {
+    public void createObject(View view, View parent) {
         Platform.runLater(() -> {
             if (parent != null) {
-                if (!parent.getChildren().contains(control)) {
-                    parent.getChildren().add(control);
-                    control.setOwner(parent);
+                if (!parent.getChildren().contains(view)) {
+                    parent.getChildren().add(view);
+                    view.setOwner(parent);
                 }
 
             } else {
-                if (!this.pane.getChildren().contains(control)) {
-                    this.pane.getChildren().add(control);
+                if (!this.pane.getChildren().contains(view)) {
+                    this.pane.getChildren().add(view);
                 }
             }
 
-            control.start();
-            control.update();
+            view.start();
+            view.update();
 
-            this.interfaces.add(control);
+            if (view.getHandler() != null) {
+                view.getHandler().regMsgList(true);
+            }
+
+            this.views.add(view);
         });
     }
 
-    public void removeObject(Interface control) {
+    public void removeObject(View view) {
         Platform.runLater(() -> {
-            if (control.getOwner() != null) {
-                var parent = control.getOwner();
+            if (view.getOwner() != null) {
+                var parent = view.getOwner();
 
-                if (parent.getChildren().contains(control)) {
-                    parent.getChildren().remove(control);
+                if (parent.getChildren().contains(view)) {
+                    parent.getChildren().remove(view);
                 }
 
-                control.setOwner(null);
+                view.setOwner(null);
                 // System.out.println("removed child: " + control.getClass().getName());
             } else {
-                if (this.pane.getChildren().contains(control)) {
-                    this.pane.getChildren().remove(control);
+                if (this.pane.getChildren().contains(view)) {
+                    this.pane.getChildren().remove(view);
                 }
-
-                control.stop();
             }
 
-            this.interfaces.remove(control);
+            view.stop();
+
+            if (view.getHandler() != null) {
+                view.getHandler().regMsgList(false);
+            }
+
+            this.views.remove(view);
         });
+    }
+
+    public void registerListeners(MessageHandler messageHandler, HashMap<Integer, MessageRequest> listeners) {
+        for (var x : listeners.entrySet()) {
+            this.listeners.add(new MessageRegistered(messageHandler.getClass(), x.getKey(), x.getValue()));
+        }
+    }
+
+    public void unregisterListeners(MessageHandler messageHandler, HashMap<Integer, MessageRequest> listeners) {
+        listeners.forEach((key, value) -> this.listeners.removeIf(message ->
+                message.getHandlerClass() == messageHandler.getClass() && message.getHeader() == key));
     }
 
     public boolean isInterfaceActive(Class<?> clazz) {
-        return this.interfaces.stream().anyMatch(x -> x.getClass() == clazz || x.getClass().isAssignableFrom(clazz));
+        return this.views.stream().anyMatch(x -> x.getClass() == clazz || x.getClass().isAssignableFrom(clazz));
     }
 
-    public <T extends Interface> List<T> getInterfacesByClass(Class<T> interfaceClass) {
+    public <T extends View> List<T> getInterfacesByClass(Class<T> interfaceClass) {
         List<T> entities = new ArrayList<>();
 
-        for (Interface entity : this.interfaces) {
+        for (View entity : this.views) {
             if (entity.getClass().isAssignableFrom(interfaceClass)) {
                 entities.add(interfaceClass.cast(entity));
             }
@@ -184,13 +206,13 @@ public class Movie extends Application {
         return entities;
     }
 
-    public <T extends Interface> T getInterfaceByClass(Class<T> interfaceClass) {
+    public <T extends View> T getInterfaceByClass(Class<T> interfaceClass) {
         return this.getInterfacesByClass(interfaceClass).stream().findFirst().orElse(null);
     }
 
     // Hide widgets (navigator, catalogue etc), used for stuff such as room entry
     public void hideWidgets() {
-        this.interfaces.stream().filter(x -> x instanceof Widget).forEach(x -> {
+        this.views.stream().filter(x -> x instanceof Widget).forEach(x -> {
             if (!x.isHidden()) {
                 x.setHidden(true);
             }
@@ -243,8 +265,8 @@ public class Movie extends Application {
         return interfaceScheduler;
     }
 
-    public List<Interface> getInterfaces() {
-        return interfaces;
+    public List<View> getViews() {
+        return views;
     }
 
     public static Movie getInstance() {
@@ -257,5 +279,9 @@ public class Movie extends Application {
 
     public Scene getMainScene() {
         return mainScene;
+    }
+
+    public List<MessageRegistered> getListeners() {
+        return listeners;
     }
 }
