@@ -6,20 +6,22 @@ import com.classichabbo.goldfish.client.game.scheduler.SchedulerManager;
 import com.classichabbo.goldfish.client.game.values.types.PropertiesManager;
 import com.classichabbo.goldfish.client.game.values.types.TextsManager;
 import com.classichabbo.goldfish.client.interfaces.Interface;
+import com.classichabbo.goldfish.client.interfaces.types.entry.EntryView;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
-import com.classichabbo.goldfish.client.visualisers.VisualiserType;
-import com.classichabbo.goldfish.client.visualisers.types.loader.LoaderComponent;
-import com.classichabbo.goldfish.client.visualisers.types.loader.LoaderVisualiser;
 import com.classichabbo.goldfish.networking.NettyClient;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 import java.util.ArrayList;
 
-public class LoadingBar extends Interface {
-    private ImageView loaderBar;
+public class LoadingScreen extends Interface {
+    private ImageView loadingLogoImage;
+    private ImageView loaderBarImage;
     private Rectangle loaderProgress;
+
+    private Interface loaderBar;
 
     private int totalLoaderProgress;
     private int queueLoaderProgress;
@@ -27,7 +29,6 @@ public class LoadingBar extends Interface {
     private ArrayList<String> loaderSteps;
     private ArrayList<String> loaderStepsFinished;
 
-    private final LoaderVisualiser loaderVisualiser;
     private LoaderComponent component;
 
     private double draggedX;
@@ -36,8 +37,8 @@ public class LoadingBar extends Interface {
     private double mousePressedX;
     private double mousePressedY;
 
-    public LoadingBar(LoaderVisualiser loaderVisualiser) {
-        this.loaderVisualiser = loaderVisualiser;
+    public LoadingScreen() {
+        this.component = new LoaderComponent();
     }
 
     @Override
@@ -45,7 +46,9 @@ public class LoadingBar extends Interface {
         // This fixes the issue by making transparent areas also mouse-transparent, however I would suggest not adding a child
         // ImageView and instead setting the background image of this (as in LoadingBar / this.setBackground) - feel free to
         // message me if you have any questions :) - Parsnip
-        this.setPickOnBounds(false);
+
+        this.loaderBar = new Interface();
+        this.getChildren().add(this.loaderBar);
 
         this.queueLoaderProgress = 0;
         this.totalLoaderProgress = 0;
@@ -58,25 +61,33 @@ public class LoadingBar extends Interface {
         this.loaderSteps.add("load_external_texts");
         this.loaderSteps.add("connect_server");
 
-        this.component = this.loaderVisualiser.getComponent();
+        this.component = new LoaderComponent();
 
-        this.loaderBar = new ImageView();
-        this.loaderBar.setImage(ResourceManager.getInstance().getFxImage("sprites/scenes/loader/loader_bar_0.png"));
-        this.getChildren().add(this.loaderBar);
+        this.loadingLogoImage = new ImageView();
+        this.loadingLogoImage.setImage(ResourceManager.getInstance().getFxImage("sprites/scenes/loader/logo.png"));
+        this.getChildren().add(this.loadingLogoImage);
+
+        this.loaderBarImage = new ImageView();
+        this.loaderBarImage.setImage(ResourceManager.getInstance().getFxImage("sprites/scenes/loader/loader_bar_0.png"));
+        this.loaderBar.getChildren().add(this.loaderBarImage);
 
         this.loaderProgress = new Rectangle(0, 12);
         this.loaderProgress.setFill(Color.web("#808080"));
-        this.getChildren().add(this.loaderProgress);
+        this.loaderBar.getChildren().add(this.loaderProgress);
 
-        this.setOnMousePressed(event -> {
+        this.loaderBar.setOnMousePressed(event -> {
             this.mousePressedX = event.getX();
             this.mousePressedY = event.getY();
+            this.loaderBar.toFront();
         });
 
-        this.setOnMouseDragged(event -> {
+        this.loaderBar.setOnMouseDragged(event -> {
             this.draggedX = event.getX();
             this.draggedY = event.getY();
         });
+
+        this.setPickOnBounds(false);
+        this.loaderBar.setPickOnBounds(false);
 
         Movie.getInstance().getInterfaceScheduler().receiveUpdate(this);
     }
@@ -195,8 +206,10 @@ public class LoadingBar extends Interface {
                         this.loaderStepsFinished.add("connect_server");
 
                         if (NettyClient.getInstance().isConnected()) {
-                            Movie.getInstance().showVisualiser(VisualiserType.HOTEL_VIEW);
-                            this.progressLoader(30);
+                            this.loadingLogoImage.setVisible(false);
+                            this.progressLoader(40);
+
+                            Movie.getInstance().createObject(new EntryView());
                         } else {
                             Movie.getInstance().createObject(new FatalError(
                                     TextsManager.getInstance().getString("Alert_ConnectionNotReady"),
@@ -221,18 +234,22 @@ public class LoadingBar extends Interface {
     }
 
     private void handleResize() {
-        var loadingBarCords = DimensionUtil.getCenterCoords(this.loaderBar.getImage().getWidth(), this.loaderBar.getImage().getHeight());
-        this.loaderBar.setX(loadingBarCords.getX());
-        this.loaderBar.setY(DimensionUtil.roundEven(loadingBarCords.getY() + (loadingBarCords.getY() * 0.80)));
+        var loadingBarCords = DimensionUtil.getCenterCoords(this.loaderBarImage.getImage().getWidth(), this.loaderBarImage.getImage().getHeight());
+        this.loaderBarImage.setX(loadingBarCords.getX());
+        this.loaderBarImage.setY(DimensionUtil.roundEven(loadingBarCords.getY() + (loadingBarCords.getY() * 0.80)));
 
-        this.loaderProgress.setX((int) this.loaderBar.getX() + 2);
-        this.loaderProgress.setY((int) this.loaderBar.getY() + 2);
+        this.loaderProgress.setX((int) this.loaderBarImage.getX() + 2);
+        this.loaderProgress.setY((int) this.loaderBarImage.getY() + 2);
+
+        var loadingLogoCords = DimensionUtil.getCenterCoords(this.loadingLogoImage.getImage().getWidth(), this.loadingLogoImage.getImage().getHeight());
+        this.loadingLogoImage.setX(loadingLogoCords.getX());
+        this.loadingLogoImage.setY(DimensionUtil.roundEven(loadingLogoCords.getY() - (loadingLogoCords.getY() * 0.20)));
     }
 
     private void dragging() {
         if (this.draggedX != -1 && this.draggedY != -1) {
-            this.setTranslateX(this.draggedX + this.getTranslateX() - this.mousePressedX);
-            this.setTranslateY(this.draggedY + this.getTranslateY() - this.mousePressedY);
+            this.loaderBar.setTranslateX(this.draggedX + this.loaderBar.getTranslateX() - this.mousePressedX);
+            this.loaderBar.setTranslateY(this.draggedY + this.loaderBar.getTranslateY() - this.mousePressedY);
 
             this.draggedX = -1;
             this.draggedY = -1;

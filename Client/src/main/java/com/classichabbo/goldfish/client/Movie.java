@@ -4,12 +4,8 @@ import com.classichabbo.goldfish.client.game.resources.ResourceManager;
 import com.classichabbo.goldfish.client.game.scheduler.types.GraphicsScheduler;
 import com.classichabbo.goldfish.client.game.scheduler.types.InterfaceScheduler;
 import com.classichabbo.goldfish.client.interfaces.Interface;
+import com.classichabbo.goldfish.client.interfaces.types.misc.LoadingScreen;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
-import com.classichabbo.goldfish.client.visualisers.Visualiser;
-import com.classichabbo.goldfish.client.visualisers.VisualiserType;
-import com.classichabbo.goldfish.client.visualisers.types.entry.EntryVisualiser;
-import com.classichabbo.goldfish.client.visualisers.types.loader.LoaderVisualiser;
-import com.classichabbo.goldfish.client.visualisers.types.room.RoomVisualiser;
 import com.classichabbo.goldfish.networking.NettyClient;
 import com.classichabbo.goldfish.networking.wrappers.messages.Message;
 import javafx.application.Application;
@@ -20,14 +16,14 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
-import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.awt.*;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Movie extends Application {
     private static Movie instance;
@@ -36,19 +32,22 @@ public class Movie extends Application {
     private GraphicsScheduler gameScheduler;
     private InterfaceScheduler interfaceScheduler;
 
-    private final Map<VisualiserType, Visualiser> visualisers;
+    //private final Map<VisualiserType, Visualiser> visualisers;
     private final List<Interface> interfaces;
 
-    private Visualiser currentVisualiser;
+    //private Visualiser currentVisualiser;
 
     private Map<Integer, Message> incomingHandlers;
     private Map<String, Integer> outgoingHandlers;
 
+    private Pane pane;
+    private Scene mainScene;
+
     public Movie() {
-        this.visualisers = new ConcurrentHashMap<>();
+        /*this.visualisers = new ConcurrentHashMap<>();
         this.visualisers.put(VisualiserType.LOADER, new LoaderVisualiser());
         this.visualisers.put(VisualiserType.HOTEL_VIEW, new EntryVisualiser());
-        this.visualisers.put(VisualiserType.ROOM, new RoomVisualiser());
+        this.visualisers.put(VisualiserType.ROOM, new RoomVisualiser());*/
 
         this.incomingHandlers = new ConcurrentHashMap<>();
         this.outgoingHandlers = new ConcurrentHashMap<>();
@@ -86,13 +85,17 @@ public class Movie extends Application {
         var WIDTH = (int) DimensionUtil.roundEven(width * 0.5);
         var HEIGHT = (int) DimensionUtil.roundEven(height * 0.5);
 
-        Pane pane = new Pane();
-        Scene mainScene = new Scene(pane, WIDTH, HEIGHT, Color.BLACK);
+        this.pane = new Pane();
+        this.pane.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
 
-        primaryStage.setScene(mainScene);
+        this.mainScene = new Scene(this.pane, WIDTH, HEIGHT, Color.BLACK);
+
+        primaryStage.setScene(this.mainScene);
         primaryStage.show();
 
-        this.showVisualiser(VisualiserType.LOADER);
+        this.createObject(new LoadingScreen());
+
+        //this.showVisualiser(VisualiserType.LOADER);
         // this.showVisualiser(VisualiserType.ROOM);
     }
 
@@ -105,6 +108,7 @@ public class Movie extends Application {
         System.exit(0);
     }
 
+    /*
     public void showVisualiser(VisualiserType type) {
         Platform.runLater(() -> {
             var previousVisualiser = this.currentVisualiser;
@@ -131,9 +135,10 @@ public class Movie extends Application {
         });
     }
 
+
     /**
      * Set up the visualiser we're about to show
-     */
+     *
     private void setupVisualiser(Visualiser visualiser) {
         visualiser.start();
         visualiser.getComponent().init();
@@ -148,7 +153,8 @@ public class Movie extends Application {
                 }
             }
         });
-    }
+    }    */
+
 
     /**
      * Method to initialise interface
@@ -157,15 +163,7 @@ public class Movie extends Application {
     private void setupInterface(Interface control) {
         control.start();
         control.update();
-        control.visualiserChanged(null, this.currentVisualiser);
-    }
-
-    /**
-     * Create new scene management
-     */
-    public Scene createScene(Pane pane) {
-        pane.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
-        return new Scene(pane, DimensionUtil.getProgramWidth(), DimensionUtil.getProgramHeight(), Color.BLACK);
+        //control.visualiserChanged(null, this.currentVisualiser);
     }
 
     /**
@@ -176,25 +174,29 @@ public class Movie extends Application {
             this.setupInterface(control);
             this.interfaces.add(control);
 
-            if (!this.currentVisualiser.getPane().getChildren().contains(control)) {
-                this.currentVisualiser.getPane().getChildren().add(control);
+            if (!this.pane.getChildren().contains(control)) {
+                this.pane.getChildren().add(control);
             }
+
+            /*if (!this.currentVisualiser.getPane().getChildren().contains(control)) {
+                this.currentVisualiser.getPane().getChildren().add(control);
+            }*/
         });
     }
 
     public void removeObject(Interface control) {
         Platform.runLater(() -> {
-            this.visualisers.values().forEach(visualiser -> {
+            /*this.visualisers.values().forEach(visualiser -> {
                 if (visualiser != null && visualiser.getPane() != null) {
                     if (visualiser.getPane().getChildren().contains(control)) {
                         visualiser.getPane().getChildren().remove(control);
                     }
                 }
-            });
+            });*/
 
-            //if (this.currentVisualiser.getPane().getChildren().contains(control)) {
-            //    this.currentVisualiser.getPane().getChildren().remove(control);
-            //}
+            if (this.pane.getChildren().contains(control)) {
+                this.pane.getChildren().remove(control);
+            }
 
             control.stop();
             this.interfaces.remove(control);
@@ -247,19 +249,11 @@ public class Movie extends Application {
         return interfaceScheduler;
     }
 
-    public Map<VisualiserType, Visualiser> getVisualisers() {
-        return visualisers;
-    }
-
     public List<Interface> getInterfaces() {
         return interfaces;
     }
 
     public static Movie getInstance() {
         return instance;
-    }
-
-    public Visualiser getCurrentVisualiser() {
-        return currentVisualiser;
     }
 }

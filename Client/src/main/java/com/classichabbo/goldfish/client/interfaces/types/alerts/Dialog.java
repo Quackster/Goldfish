@@ -4,7 +4,6 @@ import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
 import com.classichabbo.goldfish.client.interfaces.Interface;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
-import com.classichabbo.goldfish.client.visualisers.Visualiser;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -49,7 +48,6 @@ public class Dialog extends Interface {
     private int paddingTop;
     private int paddingBottom;
 
-    private boolean isHidden;
     private boolean isSized;
 
     private double mousePressedX;
@@ -110,13 +108,13 @@ public class Dialog extends Interface {
 
             this.isSized = true;
 
-            if (!this.isHidden) {
+            if (!this.isHidden()) {
                 this.setVisible(true);
             }
         }
 
         if (this.isSized) {
-            this.setVisible(!this.isHidden);
+            this.setVisible(!this.isHidden());
         }
 
         // Click bring-to-front handler
@@ -135,10 +133,13 @@ public class Dialog extends Interface {
         }
     }
 
+    /*
     @Override
     public void visualiserChanged(Visualiser previousVisualiser, Visualiser currentVisualiser) {
 
     }
+
+     */
 
     private void initBackground() {
         VBox background = new VBox();
@@ -346,23 +347,5 @@ public class Dialog extends Interface {
 
     protected void closeButtonClicked() {
         this.remove();
-    }
-
-    public void toggleVisibility() {
-        this.setHidden(!this.isHidden);
-    }
-
-    public void setHidden(boolean isHidden) {
-        this.isHidden = isHidden;
-
-        if (this.isHidden) {
-            this.toBack();
-        } else {
-            this.toFront();
-        }
-    }
-
-    public boolean isHidden() {
-        return this.isHidden;
     }
 }

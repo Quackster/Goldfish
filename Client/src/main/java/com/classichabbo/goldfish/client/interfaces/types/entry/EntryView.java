@@ -1,30 +1,25 @@
-package com.classichabbo.goldfish.client.visualisers.types.entry;
+package com.classichabbo.goldfish.client.interfaces.types.entry;
 
-import com.classichabbo.goldfish.client.game.resources.ResourceManager;
-import com.classichabbo.goldfish.client.game.values.ValueType;
-import com.classichabbo.goldfish.client.visualisers.Visualiser;
-import com.classichabbo.goldfish.client.visualisers.VisualiserType;
-import com.classichabbo.goldfish.client.game.scheduler.types.GraphicsScheduler;
-import com.classichabbo.goldfish.client.game.values.types.PropertiesManager;
-import com.classichabbo.goldfish.client.scripts.Cloud;
-import javafx.scene.Scene;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import com.classichabbo.goldfish.client.Movie;
-import com.classichabbo.goldfish.client.interfaces.types.misc.LoadingBar;
+import com.classichabbo.goldfish.client.game.resources.ResourceManager;
+import com.classichabbo.goldfish.client.game.scheduler.types.GraphicsScheduler;
+import com.classichabbo.goldfish.client.game.values.ValueType;
+import com.classichabbo.goldfish.client.game.values.types.PropertiesManager;
+import com.classichabbo.goldfish.client.interfaces.Interface;
+import com.classichabbo.goldfish.client.interfaces.types.misc.LoadingScreen;
+import com.classichabbo.goldfish.client.scripts.Cloud;
 import com.classichabbo.goldfish.client.util.DateUtil;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class EntryVisualiser extends Visualiser {
-    private Pane pane;
-    private Scene scene;
+public class EntryView extends Interface {
     private EntryComponent component;
 
     private long timeNextCloud;
@@ -50,17 +45,13 @@ public class EntryVisualiser extends Visualiser {
     public boolean queueOpenView = false;
     public boolean queueCloseView = false;
     private boolean queueAnimateSign = false;
-    private VisualiserType transitionTo;
 
     @Override
     public void start() {
-        this.component = new EntryComponent(this);
-
         this.clouds = new ArrayList<>();
         this.cloudTurnPoint = PropertiesManager.getInstance().getInt("hotel.view.cloud.turn.point", 330);
 
-        this.pane = new Pane();
-        this.scene = Movie.getInstance().createScene(this.pane);
+        this.component = new EntryComponent(this);
 
         this.topReveal = new Rectangle(1,1);
         this.topReveal.setFill(Color.BLACK);
@@ -95,14 +86,14 @@ public class EntryVisualiser extends Visualiser {
 
         this.stretchBars();
 
-        this.pane.getChildren().add(this.sun);
-        this.pane.getChildren().add(this.stretchLeft);
-        this.pane.getChildren().add(this.stretchRight);
-        this.pane.getChildren().add(this.topRight);
-        this.pane.getChildren().add(this.bottomRight);
-        this.pane.getChildren().add(this.bottomLeft);
-        this.pane.getChildren().add(this.bottomReveal);
-        this.pane.getChildren().add(this.topReveal);
+        this.getChildren().add(this.sun);
+        this.getChildren().add(this.stretchLeft);
+        this.getChildren().add(this.stretchRight);
+        this.getChildren().add(this.topRight);
+        this.getChildren().add(this.bottomRight);
+        this.getChildren().add(this.bottomLeft);
+        this.getChildren().add(this.bottomReveal);
+        this.getChildren().add(this.topReveal);
 
         this.stretchLeft.setViewOrder(7000);
         this.stretchRight.setViewOrder(7000);
@@ -122,7 +113,7 @@ public class EntryVisualiser extends Visualiser {
         //Movie.getInstance().createObject(new Alert("Give your room a name!"));
         //Movie.getInstance().createObject(new Alert("Your verification code is:\nQBqfv9cE"));
 
-        var loadingBar = Movie.getInstance().getInterfaces().stream().filter(x -> x instanceof LoadingBar).findFirst().orElse(null);
+        var loadingBar = Movie.getInstance().getInterfaces().stream().filter(x -> x instanceof LoadingScreen).findFirst().orElse(null);
 
         if (loadingBar != null) {
             loadingBar.toFront();
@@ -188,7 +179,7 @@ public class EntryVisualiser extends Visualiser {
             cloud.update();
 
             if (cloud.isFinished()) {
-                this.pane.getChildren().remove(cloud);
+                this.getChildren().remove(cloud);
             }
         }
 
@@ -199,7 +190,7 @@ public class EntryVisualiser extends Visualiser {
             int initX = 0;
             int initY = ThreadLocalRandom.current().nextInt(0, (int) (DimensionUtil.getProgramHeight()*0.66));
 
-            this.component.addCloud("left", initX, initY);
+            //this.component.addCloud("left", initX, initY);
             this.timeNextCloud = DateUtil.getCurrentTimeSeconds() + ThreadLocalRandom.current().nextInt(1, 10);
         }
     }
@@ -296,12 +287,15 @@ public class EntryVisualiser extends Visualiser {
         }
     }
 
+    /*
     public void transitionTo(VisualiserType visualiser) {
         this.pViewCloseTime = System.currentTimeMillis() + (MAX_VIEW_TIME * 2);
-        this.transitionTo = visualiser;
+        //this.transitionTo = visualiser;
         this.queueCloseView = true;
 
     }
+
+     */
 
     /**
      * Stretch the reveal bars across the window
@@ -327,8 +321,8 @@ public class EntryVisualiser extends Visualiser {
      * When the reveal task is finished, set these to invisible
      */
     private void closeRevealTaskFinished() {
-        Movie.getInstance().showVisualiser(this.transitionTo);
-        this.transitionTo = null;
+        //Movie.getInstance().showVisualiser(this.transitionTo);
+        //this.transitionTo = null;
 
     }
 
@@ -346,23 +340,7 @@ public class EntryVisualiser extends Visualiser {
         return clouds;
     }
 
-    @Override
     public EntryComponent getComponent() {
         return component;
-    }
-
-    @Override
-    public Pane getPane() {
-        return pane;
-    }
-
-    @Override
-    public Scene getScene() {
-        return scene;
-    }
-
-    @Override
-    public VisualiserType getType() {
-        return VisualiserType.HOTEL_VIEW;
     }
 }

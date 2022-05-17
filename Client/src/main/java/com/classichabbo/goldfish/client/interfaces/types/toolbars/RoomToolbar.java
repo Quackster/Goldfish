@@ -10,9 +10,6 @@ import com.classichabbo.goldfish.client.interfaces.types.alerts.Alert;
 import com.classichabbo.goldfish.client.interfaces.types.room.RoomTransition;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
 
-import com.classichabbo.goldfish.client.visualisers.Visualiser;
-import com.classichabbo.goldfish.client.visualisers.VisualiserType;
-
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundPosition;
@@ -36,9 +33,9 @@ public class RoomToolbar extends Interface {
         temp.setLayoutX(15);
         temp.setLayoutY(15);
         temp.setOnMouseClicked(e -> {
-            if (Movie.getInstance().getCurrentVisualiser().getType() == VisualiserType.ROOM) {
+            /*if (Movie.getInstance().getCurrentVisualiser().getType() == VisualiserType.ROOM) {
                 Movie.getInstance().createObject(new RoomTransition(VisualiserType.HOTEL_VIEW));
-            }
+            }*/
         });
 
         this.getChildren().add(temp);
@@ -100,6 +97,7 @@ public class RoomToolbar extends Interface {
         chatButton.setLayoutX(pWidth - 333);
     }
 
+    /*
     @Override
     public void visualiserChanged(Visualiser previousVisualiser, Visualiser currentVisualiser) {
         if (previousVisualiser != null) {
@@ -107,4 +105,6 @@ public class RoomToolbar extends Interface {
             this.remove();
         }
     }
+
+     */
 }

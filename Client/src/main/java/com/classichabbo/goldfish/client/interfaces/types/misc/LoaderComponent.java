@@ -1,13 +1,13 @@
-package com.classichabbo.goldfish.client.visualisers.types.loader;
+package com.classichabbo.goldfish.client.interfaces.types.misc;
 
-import com.classichabbo.goldfish.client.visualisers.Component;
 import com.classichabbo.goldfish.client.game.values.types.PropertiesManager;
 import com.classichabbo.goldfish.client.game.values.types.TextsManager;
 import com.classichabbo.goldfish.networking.NettyClient;
 
+import java.awt.*;
 import java.util.concurrent.Future;
 
-public class LoaderComponent implements Component {
+public class LoaderComponent extends Component {
     private long connectionTimer = 0;
 
     private Future<Boolean> clientConfigTask;
@@ -16,11 +16,6 @@ public class LoaderComponent implements Component {
     private Future<Boolean> connectServerTask;
 
     public LoaderComponent() {
-
-    }
-
-    @Override
-    public void init() {
         this.clientConfigTask = null;
         this.externalTextsTask = null;
         this.externalVariablesTask = null;

@@ -6,19 +6,14 @@ import com.classichabbo.goldfish.client.controls.ScrollPane;
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
 import com.classichabbo.goldfish.client.game.values.types.TextsManager;
 import com.classichabbo.goldfish.client.interfaces.types.alerts.Dialog;
-import com.classichabbo.goldfish.client.visualisers.Visualiser;
 
-import javafx.geometry.Insets;
 import javafx.scene.Cursor;
 import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 
 
 public class Navigator extends Dialog {
@@ -148,6 +143,7 @@ public class Navigator extends Dialog {
         roomsList.update();
     }
 
+    /*
     @Override
     public void visualiserChanged(Visualiser previousVisualiser, Visualiser currentVisualiser) {
         // We want to make this known, so don't make it hidden when moving visualisers
@@ -156,6 +152,8 @@ public class Navigator extends Dialog {
         // Always bring to front when we move visualisers
         super.toFront();
     }
+
+     */
 
     @Override
     protected void closeButtonClicked() {

@@ -3,7 +3,6 @@ package com.classichabbo.goldfish.client.interfaces.types.alerts;
 import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.controls.ButtonLarge;
 import com.classichabbo.goldfish.client.controls.Label;
-import com.classichabbo.goldfish.client.visualisers.Visualiser;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -51,8 +50,11 @@ public class Alert extends Dialog {
         Movie.getInstance().getInterfaceScheduler().removeUpdate(this);
     }
 
+    /*
     @Override
     public void visualiserChanged(Visualiser previousVisualiser, Visualiser currentVisualiser) {
         super.toFront(); // Always bring to front when we move visualisers
     }
+
+     */
 }

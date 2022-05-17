@@ -15,7 +15,7 @@ public class Label extends javafx.scene.control.Label {
     }
 
     public Label(String text, String color) {
-        this(text, false, "#000000");
+        this(text, false, color);
     }
 
     public Label(String text, boolean isBold, String color) {

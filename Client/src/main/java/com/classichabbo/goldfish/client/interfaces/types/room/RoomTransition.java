@@ -2,19 +2,26 @@ package com.classichabbo.goldfish.client.interfaces.types.room;
 
 import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.interfaces.Interface;
-import com.classichabbo.goldfish.client.interfaces.types.alerts.Dialog;
-import com.classichabbo.goldfish.client.interfaces.types.widgets.Navigator;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
-import com.classichabbo.goldfish.client.visualisers.Visualiser;
-import com.classichabbo.goldfish.client.visualisers.VisualiserType;
-import javafx.scene.Scene;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
-import java.util.Collections;
-import java.util.stream.Collectors;
-
 public class RoomTransition extends Interface {
+    @Override
+    public void start() {
+
+    }
+
+    @Override
+    public void stop() {
+
+    }
+
+    @Override
+    public void update() {
+
+    }
+    /*
     private VisualiserType visualiserType;
     private Rectangle blackBackground;
     private long timer;
@@ -58,4 +65,6 @@ public class RoomTransition extends Interface {
        if (previousVisualiser != null)
             this.remove();
     }
+
+     */
 }

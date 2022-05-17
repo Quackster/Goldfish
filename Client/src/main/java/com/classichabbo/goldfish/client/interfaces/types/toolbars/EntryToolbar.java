@@ -6,21 +6,19 @@ import com.classichabbo.goldfish.client.controls.ImageButton;
 import com.classichabbo.goldfish.client.controls.Label;
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
 import com.classichabbo.goldfish.client.interfaces.Interface;
-import com.classichabbo.goldfish.client.interfaces.types.widgets.Navigator;
 import com.classichabbo.goldfish.client.interfaces.types.alerts.Alert;
+import com.classichabbo.goldfish.client.interfaces.types.entry.EntryView;
+import com.classichabbo.goldfish.client.interfaces.types.widgets.Navigator;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
-import com.classichabbo.goldfish.client.visualisers.Visualiser;
-import com.classichabbo.goldfish.client.visualisers.VisualiserType;
-import com.classichabbo.goldfish.client.visualisers.types.entry.EntryVisualiser;
-import javafx.scene.image.Image;
-
 import javafx.scene.Cursor;
+import javafx.scene.image.Image;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.paint.Color;
 
 public class EntryToolbar extends Interface {
-    private final EntryVisualiser entryVisualiser;
+    private final EntryView entryView;
+
     private ImageButton gamesButton;
     private ImageButton helpButton;
     private ImageButton catalogueButton;
@@ -32,8 +30,8 @@ public class EntryToolbar extends Interface {
     private int scrollOffset;
     private boolean finishedScroll;
 
-    public EntryToolbar(EntryVisualiser entryVisualiser) {
-        this.entryVisualiser = entryVisualiser;
+    public EntryToolbar(EntryView entryView) {
+        this.entryView = entryView;
     }
 
     @Override
@@ -45,11 +43,12 @@ public class EntryToolbar extends Interface {
         temp.setLayoutX(400);
         temp.setLayoutY(15);
         temp.setOnMouseClicked(e -> {
+            /*
             if (Movie.getInstance().getCurrentVisualiser().getType() == VisualiserType.HOTEL_VIEW) {
                 ((EntryVisualiser)Movie.getInstance().getCurrentVisualiser()).transitionTo(VisualiserType.ROOM);
             } else {
                 Movie.getInstance().showVisualiser(VisualiserType.ROOM);
-            }
+            }*/
         });
 
         this.getChildren().add(temp);
@@ -100,7 +99,7 @@ public class EntryToolbar extends Interface {
         friendsButton.setOnMouseClicked(e -> Movie.getInstance().createObject(new Alert("friendsButton clicked")));
         
         this.navigatorButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/interfaces/entry_toolbar/navigator.png"));
-        navigatorButton.setOnMouseClicked(e -> Movie.getInstance().getInterfaces().stream().filter(x -> x instanceof Navigator).findFirst().ifPresent(navigator -> ((Navigator)navigator).toggleVisibility()));
+        navigatorButton.setOnMouseClicked(e -> Movie.getInstance().getInterfaces().stream().filter(x -> x instanceof Navigator).findFirst().ifPresent(x -> x.toggleVisibility()));
         
         this.eventsButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/interfaces/entry_toolbar/events.png"));
         eventsButton.setOnMouseClicked(e -> Movie.getInstance().createObject(new Alert("eventsButton clicked")));
@@ -117,12 +116,12 @@ public class EntryToolbar extends Interface {
         this.getChildren().addAll(userHead, userLabel, mottoLabel, updateIdLabel, clubTitleLabel, clubDescLabel);
         this.getChildren().addAll(clubButton, chatButton, friendsButton, navigatorButton, eventsButton, catalogueButton, gamesButton, helpButton);
 
-        Movie.getInstance().getInterfaceScheduler().receiveUpdate(this);
+        Movie.getInstance().getGameScheduler().receiveUpdate(this);
     }
 
     @Override
     public void stop() {
-        Movie.getInstance().getInterfaceScheduler().removeUpdate(this);
+        Movie.getInstance().getGameScheduler().removeUpdate(this);
     }
 
     @Override
@@ -160,6 +159,7 @@ public class EntryToolbar extends Interface {
         chatButton.setLayoutX(pWidth - 284);
     }
 
+    /*
     @Override
     public void visualiserChanged(Visualiser previousVisualiser, Visualiser currentVisualiser) {
         if (previousVisualiser != null) {
@@ -167,4 +167,6 @@ public class EntryToolbar extends Interface {
             this.remove();
         }
     }
+
+     */
 }
