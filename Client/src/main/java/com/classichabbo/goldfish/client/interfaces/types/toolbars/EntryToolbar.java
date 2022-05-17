@@ -1,6 +1,7 @@
 package com.classichabbo.goldfish.client.interfaces.types.toolbars;
 
 import com.classichabbo.goldfish.client.Movie;
+import com.classichabbo.goldfish.client.controls.ButtonLarge;
 import com.classichabbo.goldfish.client.controls.ImageButton;
 import com.classichabbo.goldfish.client.controls.Label;
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
@@ -9,6 +10,7 @@ import com.classichabbo.goldfish.client.interfaces.types.widgets.Navigator;
 import com.classichabbo.goldfish.client.interfaces.types.alerts.Alert;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
 import com.classichabbo.goldfish.client.visualisers.Visualiser;
+import com.classichabbo.goldfish.client.visualisers.VisualiserType;
 import com.classichabbo.goldfish.client.visualisers.types.entry.EntryVisualiser;
 import javafx.scene.image.Image;
 
@@ -39,6 +41,19 @@ public class EntryToolbar extends Interface {
         this.scrollOffset = 0;
         this.finishedScroll = false;
 
+        var temp = new ButtonLarge("Go to room UI");
+        temp.setLayoutX(400);
+        temp.setLayoutY(15);
+        temp.setOnMouseClicked(e -> {
+            if (Movie.getInstance().getCurrentVisualiser().getType() == VisualiserType.HOTEL_VIEW) {
+                ((EntryVisualiser)Movie.getInstance().getCurrentVisualiser()).transitionTo(VisualiserType.ROOM);
+            } else {
+                Movie.getInstance().showVisualiser(VisualiserType.ROOM);
+            }
+        });
+
+        this.getChildren().add(temp);
+
         this.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
 
         var userHead = new ImageButton(new Image("https://cdn.classichabbo.com/habbo-imaging/avatarimage?figure=hd-180-1.hr-100-61.ch-210-66.lg-270-82.sh-290-80&size=b&head=1&direction=3&head_direction=3&gesture=std"));
@@ -56,7 +71,7 @@ public class EntryToolbar extends Interface {
         var mottoLabel = new Label("This certainly is a test", "#FFFFFF");
         mottoLabel.setLayoutX(53);
         mottoLabel.setLayoutY(20);
-
+        
         var updateIdLabel = new Label("Update My Habbo Id >>", "#FFFFFF");
         updateIdLabel.setLayoutX(53);
         updateIdLabel.setLayoutY(32);
