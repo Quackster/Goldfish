@@ -88,7 +88,7 @@ public class EntryVisualiser extends Visualiser {
 
         this.sun = new ImageView();
         this.sun.setImage(new Image(PropertiesManager.getInstance().getString("hotel.view.image.sun")));
-        this.sun.setX(DimensionUtil.getCenterCords(this.sun.getImage().getWidth(), this.sun.getImage().getHeight()).getX());
+        this.sun.setX(DimensionUtil.getCenterCoords(this.sun.getImage().getWidth(), this.sun.getImage().getHeight()).getX());
 
         this.pViewOpenTime = System.currentTimeMillis() + (MAX_VIEW_TIME * 2);
         this.bottomReveal.setY(Movie.getInstance().getPrimaryStage().getHeight() / 2);
@@ -159,7 +159,7 @@ public class EntryVisualiser extends Visualiser {
         var mainHeight = DimensionUtil.getProgramHeight();
 
         // Center da sun
-        this.sun.setX(DimensionUtil.getCenterCords(this.sun.getImage().getWidth(), this.sun.getImage().getHeight()).getX());
+        this.sun.setX(DimensionUtil.getCenterCoords(this.sun.getImage().getWidth(), this.sun.getImage().getHeight()).getX());
         this.sun.setY(0);
 
         // Stretch the background - START

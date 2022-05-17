@@ -3,11 +3,14 @@ package com.classichabbo.goldfish.client.interfaces.types.misc;
 import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
 import com.classichabbo.goldfish.client.game.scheduler.SchedulerManager;
+import com.classichabbo.goldfish.client.game.values.types.PropertiesManager;
+import com.classichabbo.goldfish.client.game.values.types.TextsManager;
 import com.classichabbo.goldfish.client.interfaces.Interface;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
 import com.classichabbo.goldfish.client.visualisers.VisualiserType;
 import com.classichabbo.goldfish.client.visualisers.types.loader.LoaderComponent;
 import com.classichabbo.goldfish.client.visualisers.types.loader.LoaderVisualiser;
+import com.classichabbo.goldfish.networking.NettyClient;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -22,6 +25,7 @@ public class LoadingBar extends Interface {
     private int queueLoaderProgress;
 
     private ArrayList<String> loaderSteps;
+    private ArrayList<String> loaderStepsFinished;
 
     private final LoaderVisualiser loaderVisualiser;
     private LoaderComponent component;
@@ -45,11 +49,14 @@ public class LoadingBar extends Interface {
 
         this.queueLoaderProgress = 0;
         this.totalLoaderProgress = 0;
-        
+
+        this.loaderStepsFinished = new ArrayList<>();
         this.loaderSteps = new ArrayList<>();
+
         this.loaderSteps.add("load_client_config");
         this.loaderSteps.add("load_external_variables");
         this.loaderSteps.add("load_external_texts");
+        this.loaderSteps.add("connect_server");
 
         this.component = this.loaderVisualiser.getComponent();
 
@@ -61,12 +68,12 @@ public class LoadingBar extends Interface {
         this.loaderProgress.setFill(Color.web("#808080"));
         this.getChildren().add(this.loaderProgress);
 
-        this.loaderBar.setOnMousePressed(event -> {
+        this.setOnMousePressed(event -> {
             this.mousePressedX = event.getX();
             this.mousePressedY = event.getY();
         });
 
-        this.loaderBar.setOnMouseDragged(event -> {
+        this.setOnMouseDragged(event -> {
             this.draggedX = event.getX();
             this.draggedY = event.getY();
         });
@@ -81,13 +88,6 @@ public class LoadingBar extends Interface {
 
     @Override
     public void update() {
-        if (this.totalLoaderProgress >= 100) {
-            if (Movie.getInstance().getCurrentVisualiser() instanceof LoaderVisualiser) {
-                Movie.getInstance().showVisualiser(VisualiserType.HOTEL_VIEW);
-                return;
-            }
-        }
-
         updateLoader();
         handleResize();
         loaderSteps();
@@ -106,8 +106,6 @@ public class LoadingBar extends Interface {
 
             this.queueLoaderProgress--;
             this.totalLoaderProgress++;
-
-            // System.out.println(this.queueLoaderProgress);
         }
     }
 
@@ -134,7 +132,8 @@ public class LoadingBar extends Interface {
                 if (this.component.getClientConfigTask().isDone()) {
                     if (this.component.getClientConfigTask().get()) {
                         this.loaderSteps.remove("load_client_config");
-                        this.progressLoader(25);
+                        this.loaderStepsFinished.add("load_client_config");
+                        this.progressLoader(20);
                     } else {
                         this.component.setClientConfigTask(null);
                     }
@@ -143,40 +142,76 @@ public class LoadingBar extends Interface {
 
             // Load external variables
             if (this.loaderSteps.contains("load_external_variables")) {
-                if (this.component.getExternalVariablesTask() == null) {
-                    this.component.setExternalVariablesTask(
-                            SchedulerManager.getInstance().getCachedPool().submit(() -> this.component.loadExternalVariables())
-                    );
+                if (this.loaderStepsFinished.contains("load_client_config")) {
+                    if (this.component.getExternalVariablesTask() == null) {
+                        this.component.setExternalVariablesTask(
+                                SchedulerManager.getInstance().getCachedPool().submit(() -> this.component.loadExternalVariables())
+                        );
 
-                    return;
-                }
+                        return;
+                    }
 
-                if (this.component.getExternalVariablesTask().isDone()) {
-                    if (this.component.getExternalVariablesTask().get()) {
-                        this.loaderSteps.remove("load_external_variables");
-                        this.progressLoader(25);
-                    } else {
-                        this.component.setExternalVariablesTask(null);
+                    if (this.component.getExternalVariablesTask().isDone()) {
+                        if (this.component.getExternalVariablesTask().get()) {
+                            this.loaderSteps.remove("load_external_variables");
+                            this.loaderStepsFinished.add("load_external_variables");
+                            this.progressLoader(20);
+                        } else {
+                            this.component.setExternalVariablesTask(null);
+                        }
                     }
                 }
             }
 
             // Load external variables
             if (this.loaderSteps.contains("load_external_texts")) {
-                if (this.component.getExternalTextsTask() == null) {
-                    this.component.setExternalTextsTask(
-                            SchedulerManager.getInstance().getCachedPool().submit(() -> this.component.loadExternalTexts())
-                    );
+                if (this.loaderStepsFinished.contains("load_external_variables")) {
+                    if (this.component.getExternalTextsTask() == null) {
+                        this.component.setExternalTextsTask(
+                                SchedulerManager.getInstance().getCachedPool().submit(() -> this.component.loadExternalTexts())
+                        );
 
-                    return;
+                        return;
+                    }
+
+                    if (this.component.getExternalTextsTask().isDone()) {
+                        if (this.component.getExternalTextsTask().get()) {
+                            this.loaderSteps.remove("load_external_texts");
+                            this.loaderStepsFinished.add("load_external_texts");
+                            this.progressLoader(20);
+                        } else {
+                            this.component.setExternalTextsTask(null);
+                        }
+                    }
                 }
+            }
 
-                if (this.component.getExternalTextsTask().isDone()) {
-                    if (this.component.getExternalTextsTask().get()) {
-                        this.loaderSteps.remove("load_external_texts");
-                        this.progressLoader(50);
-                    } else {
-                        this.component.setExternalTextsTask(null);
+            // Connect server
+            if (this.loaderSteps.contains("connect_server")) {
+                if (this.loaderStepsFinished.contains("load_external_texts")) {
+                    if (NettyClient.getInstance().isConnected() ||
+                            NettyClient.getInstance().getConnectionAttempts().get() >= PropertiesManager.getInstance().getInt("connection.max.attempts", 5)) {
+                        this.loaderSteps.remove("connect_server");
+                        this.loaderStepsFinished.add("connect_server");
+
+                        if (NettyClient.getInstance().isConnected()) {
+                            Movie.getInstance().showVisualiser(VisualiserType.HOTEL_VIEW);
+                            this.progressLoader(30);
+                        } else {
+                            Movie.getInstance().createObject(new FatalError(
+                                    TextsManager.getInstance().getString("Alert_ConnectionNotReady"),
+                                    TextsManager.getInstance().getString("Alert_ConnectionDisconnected"),
+                                    true
+                            ));
+                            // Show error ??
+                        }
+                        return;
+                    }
+
+                    if (!NettyClient.getInstance().isConnected() &&
+                            !NettyClient.getInstance().isConnecting()) {
+                        this.component.connectServer();
+                        return;
                     }
                 }
             }
@@ -186,7 +221,7 @@ public class LoadingBar extends Interface {
     }
 
     private void handleResize() {
-        var loadingBarCords = DimensionUtil.getCenterCords(this.loaderBar.getImage().getWidth(), this.loaderBar.getImage().getHeight());
+        var loadingBarCords = DimensionUtil.getCenterCoords(this.loaderBar.getImage().getWidth(), this.loaderBar.getImage().getHeight());
         this.loaderBar.setX(loadingBarCords.getX());
         this.loaderBar.setY(DimensionUtil.roundEven(loadingBarCords.getY() + (loadingBarCords.getY() * 0.80)));
 
@@ -202,5 +237,9 @@ public class LoadingBar extends Interface {
             this.draggedX = -1;
             this.draggedY = -1;
         }
+    }
+
+    public int getTotalLoaderProgress() {
+        return totalLoaderProgress;
     }
 }

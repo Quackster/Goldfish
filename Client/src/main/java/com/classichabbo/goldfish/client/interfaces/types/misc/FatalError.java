@@ -10,6 +10,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 public class FatalError extends Interface {
+    private boolean centerWindow;
+
     private Rectangle borderTop;
     private Rectangle borderBottom;
     private Rectangle borderLeft;
@@ -22,9 +24,10 @@ public class FatalError extends Interface {
     private String errorTitle;
     private String errorMessage;
 
-    public FatalError(String errorTitle, String errorMessage) {
+    public FatalError(String errorTitle, String errorMessage, boolean centerWindow) {
         this.errorTitle = errorTitle;
         this.errorMessage = errorMessage;
+        this.centerWindow = centerWindow;
     }
 
     @Override
@@ -49,7 +52,7 @@ public class FatalError extends Interface {
 
         this.mainWindow = new Rectangle(338, 138);
         this.mainWindow.setFill(Color.WHITE);
-        this.mainWindow.setOpacity(.5);
+        this.mainWindow.setOpacity(0.75f);
         this.getChildren().add(this.mainWindow);
 
         this.errorTitleLabel = new Label(this.errorTitle, true);
@@ -71,17 +74,24 @@ public class FatalError extends Interface {
         this.mainWindow.setX((int) this.borderTop.getX() + 1);
         this.mainWindow.setY((int) this.borderTop.getY() + 1);
 
-        Movie.getInstance().getInterfaceScheduler().receiveUpdate(this);
+        if (this.centerWindow) {
+            Movie.getInstance().getInterfaceScheduler().receiveUpdate(this);
+        } else {
+            this.setTranslateX(10);
+            this.setTranslateY(10);
+        }
     }
 
     @Override
     public void stop() {
-        Movie.getInstance().getInterfaceScheduler().removeUpdate(this);
+        if (this.centerWindow) {
+            Movie.getInstance().getInterfaceScheduler().removeUpdate(this);
+        }
     }
 
     @Override
     public void update() {
-        var centerCoords = DimensionUtil.getCenterCords(this.getWidth(), this.getHeight());
+        var centerCoords = DimensionUtil.getCenterCoords(this.getWidth(), this.getHeight());
         this.setTranslateX(centerCoords.getX());
         this.setTranslateY(centerCoords.getY());
     }

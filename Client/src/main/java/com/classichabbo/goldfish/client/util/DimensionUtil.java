@@ -7,7 +7,7 @@ import javafx.scene.image.ImageView;
 // LocV = Y
 // LocH = X
 public class DimensionUtil {
-    public static Point2D getCenterCords(double width, double height) {
+    public static Point2D getCenterCoords(double width, double height) {
         return getCenterCords((int)width, (int)height);
     }
 

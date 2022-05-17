@@ -8,7 +8,6 @@ import com.classichabbo.goldfish.networking.NettyClient;
 import java.util.concurrent.Future;
 
 public class LoaderComponent implements Component {
-    private int connectionAttempts = 0;
     private long connectionTimer = 0;
 
     private Future<Boolean> clientConfigTask;
@@ -59,7 +58,7 @@ public class LoaderComponent implements Component {
 
 
     public void connectServer() {
-        if (this.connectionAttempts > PropertiesManager.getInstance().getInt("connection.max.attempts", 5)) {
+        if (NettyClient.getInstance().getConnectionAttempts().get() >= PropertiesManager.getInstance().getInt("connection.max.attempts", 5)) {
             return;
         }
 
@@ -67,8 +66,8 @@ public class LoaderComponent implements Component {
             return;
         }
 
-        this.connectionAttempts++;
-        this.connectionTimer = System.currentTimeMillis() + 1000; // Retry once every second for a max of 5 times
+        NettyClient.getInstance().getConnectionAttempts().incrementAndGet();
+        this.connectionTimer = System.currentTimeMillis() + 5000; // Retry once every second for a max of 5 times
 
         var channelFuture = NettyClient.getInstance().createSocket();
 
@@ -115,9 +114,5 @@ public class LoaderComponent implements Component {
 
     public void setConnectServerTask(Future<Boolean> connectServerTask) {
         this.connectServerTask = connectServerTask;
-    }
-
-    public int getConnectionAttempts() {
-        return connectionAttempts;
     }
 }

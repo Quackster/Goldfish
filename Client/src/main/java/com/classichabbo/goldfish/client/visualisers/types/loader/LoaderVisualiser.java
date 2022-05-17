@@ -52,7 +52,7 @@ public class LoaderVisualiser extends Visualiser {
     }
 
     private void handleResize() {
-        var loadingLogoCords = DimensionUtil.getCenterCords(this.loadingLogo.getImage().getWidth(), this.loadingLogo.getImage().getHeight());
+        var loadingLogoCords = DimensionUtil.getCenterCoords(this.loadingLogo.getImage().getWidth(), this.loadingLogo.getImage().getHeight());
         this.loadingLogo.setX(loadingLogoCords.getX());
         this.loadingLogo.setY(DimensionUtil.roundEven(loadingLogoCords.getY() - (loadingLogoCords.getY() * 0.20)));
     }

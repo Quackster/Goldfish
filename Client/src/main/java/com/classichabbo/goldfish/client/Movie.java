@@ -11,6 +11,7 @@ import com.classichabbo.goldfish.client.visualisers.types.entry.EntryVisualiser;
 import com.classichabbo.goldfish.client.visualisers.types.loader.LoaderVisualiser;
 import com.classichabbo.goldfish.client.visualisers.types.room.RoomVisualiser;
 import com.classichabbo.goldfish.networking.NettyClient;
+import com.classichabbo.goldfish.networking.wrappers.messages.Message;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -37,13 +38,20 @@ public class Movie extends Application {
 
     private final Map<VisualiserType, Visualiser> visualisers;
     private final List<Interface> interfaces;
+
     private Visualiser currentVisualiser;
+
+    private Map<Integer, Message> incomingHandlers;
+    private Map<String, Integer> outgoingHandlers;
 
     public Movie() {
         this.visualisers = new ConcurrentHashMap<>();
         this.visualisers.put(VisualiserType.LOADER, new LoaderVisualiser());
         this.visualisers.put(VisualiserType.HOTEL_VIEW, new EntryVisualiser());
         this.visualisers.put(VisualiserType.ROOM, new RoomVisualiser());
+
+        this.incomingHandlers = new ConcurrentHashMap<>();
+        this.outgoingHandlers = new ConcurrentHashMap<>();
 
         this.interfaces = new CopyOnWriteArrayList<>();
     }

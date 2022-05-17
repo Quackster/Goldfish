@@ -41,7 +41,7 @@ public class RoomVisualiser extends Visualiser {
         this.loadingBar = new ImageView();
         this.loadingBar.setImage(ResourceManager.getInstance().getFxImage("sprites/scenes/room/room_test.png"));
 
-        var centerPos = DimensionUtil.getCenterCords(this.loadingBar.getImage().getWidth(), this.loadingBar.getImage().getHeight());
+        var centerPos = DimensionUtil.getCenterCoords(this.loadingBar.getImage().getWidth(), this.loadingBar.getImage().getHeight());
         this.loadingBar.setX(centerPos.getX());
         this.loadingBar.setY(centerPos.getY());
 

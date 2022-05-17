@@ -92,7 +92,7 @@ public class Dialog extends Interface {
             this.setLayoutX(Math.ceil((Movie.getInstance().getPrimaryStage().getWidth() - this.getWidth()) / 2));
             this.setLayoutY(Math.ceil((Movie.getInstance().getPrimaryStage().getHeight() - this.getHeight()) / 2));
 
-            var coords = DimensionUtil.getCenterCords(width, height);
+            var coords = DimensionUtil.getCenterCoords(width, height);
             this.setLayoutX(coords.getX());
             this.setLayoutY(coords.getY());
 

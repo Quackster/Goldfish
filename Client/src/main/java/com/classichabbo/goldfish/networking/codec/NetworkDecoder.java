@@ -1,16 +1,11 @@
 package com.classichabbo.goldfish.networking.codec;
 
-import com.classichabbo.goldfish.networking.encoding.Base64Encoding;
-import com.classichabbo.goldfish.networking.streams.NettyRequest;
+import com.classichabbo.goldfish.networking.wrappers.Request;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 
 import java.io.UnsupportedEncodingException;
-import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
-import java.util.Base64;
 import java.util.List;
 
 public class NetworkDecoder extends ByteToMessageDecoder {
@@ -29,6 +24,6 @@ public class NetworkDecoder extends ByteToMessageDecoder {
             content.writeByte(character);
         }
 
-        out.add(new NettyRequest(content));
+        out.add(new Request(content));
     }
 }

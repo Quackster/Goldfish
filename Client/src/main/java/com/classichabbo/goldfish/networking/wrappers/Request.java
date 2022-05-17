@@ -1,4 +1,4 @@
-package com.classichabbo.goldfish.networking.streams;
+package com.classichabbo.goldfish.networking.wrappers;
 
 import com.classichabbo.goldfish.networking.encoding.Base64Encoding;
 import com.classichabbo.goldfish.networking.util.MalformedPacketException;
@@ -7,12 +7,12 @@ import io.netty.buffer.ByteBuf;
 
 import java.nio.charset.Charset;
 
-public class NettyRequest {
+public class Request {
     private final ByteBuf buffer;
     private final String header;
     private final int headerId;
 
-    public NettyRequest(ByteBuf buffer) {
+    public Request(ByteBuf buffer) {
         this.buffer = buffer;
         this.header = new String(new byte[] { buffer.readByte(), buffer.readByte() });;
         this.headerId = Base64Encoding.decode(this.header.getBytes());

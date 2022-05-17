@@ -14,8 +14,11 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.GlobalEventExecutor;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class NettyClient {
     private static NettyClient instance;
+    private AtomicInteger connectionAttempts;
 
     private DefaultChannelGroup channels;
     private Bootstrap bootstrap;
@@ -26,6 +29,7 @@ public class NettyClient {
 
     public NettyClient() {
         this.channels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
+        this.connectionAttempts = new AtomicInteger(0);
     }
 
     /**
@@ -57,8 +61,6 @@ public class NettyClient {
     }
 
     public void dispose() {
-
-
         try {
             this.workerGroup.shutdownGracefully().sync();
         } catch (Exception ex) {
@@ -88,5 +90,9 @@ public class NettyClient {
 
     public void setConnecting(boolean connecting) {
         isConnecting = connecting;
+    }
+
+    public AtomicInteger getConnectionAttempts() {
+        return connectionAttempts;
     }
 }
