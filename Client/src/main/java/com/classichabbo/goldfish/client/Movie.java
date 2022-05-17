@@ -117,8 +117,8 @@ public class Movie extends Application {
      * @param control
      */
     private void setupInterface(Interface control) {
-        control.start();
-        control.update();
+
+
     }
 
     /**
@@ -126,12 +126,15 @@ public class Movie extends Application {
      */
     public void createObject(Interface control) {
         Platform.runLater(() -> {
-            this.setupInterface(control);
-            this.interfaces.add(control);
-
             if (!this.pane.getChildren().contains(control)) {
                 this.pane.getChildren().add(control);
+
             }
+
+            control.start();
+            this.interfaces.add(control);
+
+
         });
     }
 

@@ -27,11 +27,12 @@ public class ErrorWindow extends Interface {
     private String errorTitle;
     private String errorMessage;
 
-    private double mousePressedX;
-    private double mousePressedY;
+    // Always set these as -1 initially
+    private double draggedX = -1;
+    private double draggedY = -1;
 
-    private double draggedX;
-    private double draggedY;
+    private double mousePressedX = -1;
+    private double mousePressedY = -1;
 
     public ErrorWindow(String errorTitle, String errorMessage, boolean centerWindow) {
         this.errorTitle = errorTitle;

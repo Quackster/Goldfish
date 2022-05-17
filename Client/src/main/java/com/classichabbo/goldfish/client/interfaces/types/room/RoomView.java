@@ -7,25 +7,33 @@ import com.classichabbo.goldfish.client.interfaces.types.toolbars.RoomToolbar;
 import javafx.beans.InvalidationListener;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.geometry.Insets;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
+import javafx.scene.paint.Color;
 
 public class RoomView extends Interface {
     private Pane room;
-
-    private double draggedX;
-    private double draggedY;
-
-    private double mousePressedX;
-    private double mousePressedY;
-
     private RoomCamera roomCamera;
 
     private ImageView roomLayout;
     private RoomViewComponent component;
-    private InvalidationListener resizeListener;
+
+    // Always set these as -1 initially
+    private double draggedX = -1;
+    private double draggedY = -1;
+
+    private double mousePressedX = -1;
+    private double mousePressedY = -1;
+
+    public Pane getPane() {
+        return room;
+    }
 
     private static void changed(ObservableValue<? extends Number> obs, Number oldVal, Number newVal) {
         System.out.println("testing 123");
@@ -36,18 +44,10 @@ public class RoomView extends Interface {
         this.component = new RoomViewComponent();
         this.room = new Pane();
 
-
-
-
-        this.room.setPrefWidth(DimensionUtil.getProgramWidth());
-        this.room.setPrefHeight(DimensionUtil.getProgramHeight());
+        //this.setBackground(new Background(new BackgroundFill(Color.PINK, CornerRadii.EMPTY, Insets.EMPTY)));
 
         this.roomLayout = new ImageView();
         this.roomLayout.setImage(ResourceManager.getInstance().getFxImage("sprites/scenes/room/room_test.png"));
-
-        var centerPos = DimensionUtil.getCenterCoords(this.roomLayout.getImage().getWidth(), this.roomLayout.getImage().getHeight());
-        this.roomLayout.setX(centerPos.getX());
-        this.roomLayout.setY(centerPos.getY());
 
         this.room.setOnMousePressed(event -> {
             this.mousePressedX = event.getX();
@@ -62,7 +62,11 @@ public class RoomView extends Interface {
         this.room.getChildren().add(this.roomLayout);
         this.getChildren().add(this.room);
 
-        this.roomCamera = new RoomCamera();
+        var centerPos = DimensionUtil.getCenterCoords(this.roomLayout.getImage().getWidth(), this.roomLayout.getImage().getHeight());
+        this.roomCamera = new RoomCamera((int) centerPos.getX(), (int) centerPos.getY());
+
+        this.room.setTranslateX(this.roomCamera.getX());
+        this.room.setTranslateY(this.roomCamera.getY());
 
         Movie.getInstance().getPane().heightProperty().addListener(this.roomCamera);
         Movie.getInstance().getPane().widthProperty().addListener(this.roomCamera);
@@ -80,13 +84,30 @@ public class RoomView extends Interface {
     @Override
     public void stop() {
         Movie.getInstance().getInterfaceScheduler().removeUpdate(this);
+
+        Movie.getInstance().getPane().heightProperty().removeListener(this.roomCamera);
+        Movie.getInstance().getPane().widthProperty().removeListener(this.roomCamera);
     }
 
     @Override
     public void update() {
+        this.dragging();
+        this.roomCamera.update();
+
+        this.room.setTranslateX(this.roomCamera.getX());
+        this.room.setTranslateY(this.roomCamera.getY());
+    }
+
+    private void dragging() {
+        if (this.roomCamera.isScrolling()) {
+            this.draggedX = -1;
+            this.draggedY = -1;
+            return;
+        }
+
         if (this.draggedX != -1 && this.draggedY != -1) {
-            this.room.setTranslateX(this.draggedX + this.room.getTranslateX() - this.mousePressedX);
-            this.room.setTranslateY(this.draggedY + this.room.getTranslateY() - this.mousePressedY);
+            this.roomCamera.setX((int) (this.draggedX + this.room.getTranslateX() - this.mousePressedX));
+            this.roomCamera.setY((int) (this.draggedY + this.room.getTranslateY() - this.mousePressedY));
 
             this.draggedX = -1;
             this.draggedY = -1;
