@@ -57,6 +57,13 @@ public class Interface extends Pane implements GameUpdate {
         });
     }
 
+    public void addChild(Interface obj) {
+        obj.start();
+        obj.update();
+
+        this.getChildren().add(obj);
+    }
+
     public void setHidden(boolean isHidden) {
         this.isHidden = isHidden;
         this.setVisible(isHidden);

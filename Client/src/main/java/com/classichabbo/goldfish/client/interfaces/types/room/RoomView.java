@@ -64,7 +64,8 @@ public class RoomView extends Interface {
         //Movie.getInstance().createObject(new Alert("Give your room a name!"));
 
         Movie.getInstance().getInterfaceScheduler().receiveUpdate(this);
-        Movie.getInstance().createObject(new RoomToolbar());
+
+        this.addChild(new RoomToolbar());
     }
 
     @Override

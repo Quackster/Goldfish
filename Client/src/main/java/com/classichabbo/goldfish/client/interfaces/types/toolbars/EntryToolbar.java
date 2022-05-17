@@ -47,12 +47,10 @@ public class EntryToolbar extends Interface {
         temp.setOnMouseClicked(e -> {
             if (Movie.getInstance().isInterfaceActive(EntryView.class)) {
                 var entryView = Movie.getInstance().getInterfaceByClass(EntryView.class);
-                var entryToolbar = Movie.getInstance().getInterfaceByClass(EntryToolbar.class);
 
                 entryView.transitionTo(() -> {
                     Movie.getInstance().createObject(new RoomView());
                     Movie.getInstance().removeObject(entryView);
-                    Movie.getInstance().removeObject(entryToolbar);
                 });
 
                 Movie.getInstance().hideWidgets();
@@ -132,12 +130,7 @@ public class EntryToolbar extends Interface {
         
         this.getChildren().addAll(userHead, userLabel, mottoLabel, updateIdLabel, clubTitleLabel, clubDescLabel);
         this.getChildren().addAll(clubButton, chatButton, friendsButton, navigatorButton, eventsButton, catalogueButton, gamesButton, helpButton);
-
-        // Make sure view orders are always fine and dandy and not over the top
-        if (Movie.getInstance().isInterfaceActive(EntryView.class)) {
-            var entryView = Movie.getInstance().getInterfaceByClass(EntryView.class);
-            this.setViewOrder(entryView.getViewOrder() - 1);
-        }
+        this.toFront();
 
         Movie.getInstance().getGameScheduler().receiveUpdate(this);
     }

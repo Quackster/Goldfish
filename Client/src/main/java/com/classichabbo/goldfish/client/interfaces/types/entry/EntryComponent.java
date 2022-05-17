@@ -45,7 +45,6 @@ public class EntryComponent {
     }
 
     public void initLoginProcess() {
-        System.out.println("init login");
         // Movie.getInstance().createObject(new Alert("Project Havana - Habbo Hotel v31 emulation\n\nRelease: r31_20090312_0433_13751_b40895fb610dbe96dc7b9d6477eeeb4\n\nContributors:\n - ThuGie, Copyright, Raptosaur, Hoshiko, TOMYSSHADOW, Elijah\n   Romauld, Glaceon, Nillus, Holo Team, Meth0d, office.boy, bbadzz\n\n   Big thanks to Sefhriloff & Ascii for assisting with SnowStorm.\n\nMade by Quackster from RaGEZONE"));
 
         // Remove loading bar (moved to here so it removes it before it starts animating)
@@ -61,11 +60,7 @@ public class EntryComponent {
             }
         }
 
-        var entryToolbar = Movie.getInstance().getInterfaces().stream().filter(x -> x instanceof EntryToolbar).findFirst().orElse(null);
-
-        if (entryToolbar == null) {
-            Movie.getInstance().createObject(new EntryToolbar(this.entryView));
-        }
+        this.entryView.addChild(new EntryToolbar(this.entryView));
 
         var navigator = Movie.getInstance().getInterfaces().stream().filter(x -> x instanceof Navigator).findFirst().orElse(null);
 
@@ -73,6 +68,7 @@ public class EntryComponent {
             Movie.getInstance().createObject(new Navigator());
         } else {
             navigator.toFront();
+            navigator.setHidden(false);
         }
 
     }

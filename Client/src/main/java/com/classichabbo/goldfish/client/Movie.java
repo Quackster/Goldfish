@@ -146,17 +146,6 @@ public class Movie extends Application {
         });
     }
 
-    public void removeAllObjects(Interface control) {
-        Platform.runLater(() -> {
-            if (this.pane.getChildren().contains(control)) {
-                this.pane.getChildren().remove(control);
-            }
-
-            control.stop();
-            this.interfaces.remove(control);
-        });
-    }
-
     public boolean isInterfaceActive(Class<?> clazz) {
         return this.interfaces.stream().anyMatch(x -> x.getClass() == clazz || x.getClass().isAssignableFrom(clazz));
     }
@@ -180,7 +169,9 @@ public class Movie extends Application {
     // Hide widgets (navigator, catalogue etc), used for stuff such as room entry
     public void hideWidgets() {
         this.interfaces.stream().filter(x -> x instanceof Widget).forEach(x -> {
-            x.setHidden(true);
+            if (!x.isHidden()) {
+                x.setHidden(true);
+            }
         });
     }
 
