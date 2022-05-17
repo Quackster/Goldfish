@@ -1,6 +1,8 @@
 package com.classichabbo.goldfish.client.interfaces.types.entry;
 
 import com.classichabbo.goldfish.client.Movie;
+import com.classichabbo.goldfish.client.game.values.types.TextsManager;
+import com.classichabbo.goldfish.client.interfaces.types.error.ErrorWindow;
 import com.classichabbo.goldfish.client.interfaces.types.loader.LoadingScreen;
 import com.classichabbo.goldfish.client.interfaces.types.toolbars.EntryToolbar;
 import com.classichabbo.goldfish.client.interfaces.types.widgets.Navigator;

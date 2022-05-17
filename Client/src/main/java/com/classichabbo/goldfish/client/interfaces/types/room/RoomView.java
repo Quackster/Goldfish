@@ -5,6 +5,8 @@ import com.classichabbo.goldfish.client.interfaces.Interface;
 import com.classichabbo.goldfish.client.interfaces.types.toolbars.RoomToolbar;
 
 import javafx.beans.InvalidationListener;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import com.classichabbo.goldfish.client.Movie;
@@ -19,14 +21,26 @@ public class RoomView extends Interface {
     private double mousePressedX;
     private double mousePressedY;
 
+    private RoomCamera roomCamera;
+
     private ImageView roomLayout;
     private RoomViewComponent component;
     private InvalidationListener resizeListener;
+
+    private static void changed(ObservableValue<? extends Number> obs, Number oldVal, Number newVal) {
+        System.out.println("testing 123");
+    }
 
     @Override
     public void start() {
         this.component = new RoomViewComponent();
         this.room = new Pane();
+
+
+
+
+        this.room.setPrefWidth(DimensionUtil.getProgramWidth());
+        this.room.setPrefHeight(DimensionUtil.getProgramHeight());
 
         this.roomLayout = new ImageView();
         this.roomLayout.setImage(ResourceManager.getInstance().getFxImage("sprites/scenes/room/room_test.png"));
@@ -35,12 +49,12 @@ public class RoomView extends Interface {
         this.roomLayout.setX(centerPos.getX());
         this.roomLayout.setY(centerPos.getY());
 
-        this.roomLayout.setOnMousePressed(event -> {
+        this.room.setOnMousePressed(event -> {
             this.mousePressedX = event.getX();
             this.mousePressedY = event.getY();
         });
 
-        this.roomLayout.setOnMouseDragged(event -> {
+        this.room.setOnMouseDragged(event -> {
             this.draggedX = event.getX();
             this.draggedY = event.getY();
         });
@@ -48,15 +62,10 @@ public class RoomView extends Interface {
         this.room.getChildren().add(this.roomLayout);
         this.getChildren().add(this.room);
 
-        /*
-        this.room.widthProperty().addListener((obs, oldVal, newVal) -> {
-            System.out.println("testing 123");
-        });
+        this.roomCamera = new RoomCamera();
 
-        this.room.heightProperty().addListener((obs, oldVal, newVal) -> {
-            System.out.println("testing 456");
-        });
-         */
+        Movie.getInstance().getPane().heightProperty().addListener(this.roomCamera);
+        Movie.getInstance().getPane().widthProperty().addListener(this.roomCamera);
 
         // Add loader bar to the interfaces, make it transition from loading to hotel view easily
         //Movie.getInstance().createObject(new Alert("Users online: 20\nDaily player peak count: 23\nList of users online:\n\nMyetz (Flash), Deku (Flash), Cup-A-Jo (Executable), Rods (Executable),\nRybak (Flash), tracemitch (Flash),\nfaas10 (Executable), kosov (Flash), fishterry (Flash), Freeroam (Flash), Kurt12 (Flash)\nAward (Flash), thom (Flash), Parsnip (Executable), zidro (Executable), Mario (Executable)\n\n"));
@@ -76,8 +85,8 @@ public class RoomView extends Interface {
     @Override
     public void update() {
         if (this.draggedX != -1 && this.draggedY != -1) {
-            this.setTranslateX(this.draggedX + this.getTranslateX() - this.mousePressedX);
-            this.setTranslateY(this.draggedY + this.getTranslateY() - this.mousePressedY);
+            this.room.setTranslateX(this.draggedX + this.room.getTranslateX() - this.mousePressedX);
+            this.room.setTranslateY(this.draggedY + this.room.getTranslateY() - this.mousePressedY);
 
             this.draggedX = -1;
             this.draggedY = -1;

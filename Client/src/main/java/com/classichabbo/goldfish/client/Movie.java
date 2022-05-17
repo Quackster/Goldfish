@@ -228,4 +228,12 @@ public class Movie extends Application {
     public static Movie getInstance() {
         return instance;
     }
+
+    public Pane getPane() {
+        return pane;
+    }
+
+    public Scene getMainScene() {
+        return mainScene;
+    }
 }

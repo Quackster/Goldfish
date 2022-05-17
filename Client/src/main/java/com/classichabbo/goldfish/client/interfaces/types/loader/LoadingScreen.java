@@ -46,6 +46,7 @@ public class LoadingScreen extends Interface {
         // This fixes the issue by making transparent areas also mouse-transparent, however I would suggest not adding a child
         // ImageView and instead setting the background image of this (as in LoadingBar / this.setBackground) - feel free to
         // message me if you have any questions :) - Parsnip
+        this.setPickOnBounds(false);
 
         this.loaderBar = new Interface();
         this.getChildren().add(this.loaderBar);
@@ -86,7 +87,6 @@ public class LoadingScreen extends Interface {
             this.draggedY = event.getY();
         });
 
-        this.setPickOnBounds(false);
         this.loaderBar.setPickOnBounds(false);
 
         Movie.getInstance().getInterfaceScheduler().receiveUpdate(this);
