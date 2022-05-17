@@ -24,6 +24,10 @@ repositories {
 dependencies {
     // https://mvnrepository.com/artifact/io.netty/netty-all
     implementation group: 'io.netty', name: 'netty-all', version: '4.1.33.Final'
+
+    // https://mvnrepository.com/artifact/commons-codec/commons-codec
+    implementation group: 'commons-codec', name: 'commons-codec', version: '1.15'
+
 }
 
 //print sourceSets.main.resources.srcDirs

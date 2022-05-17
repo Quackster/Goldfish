@@ -3,6 +3,7 @@ package com.classichabbo.goldfish.client;
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
 import com.classichabbo.goldfish.client.game.scheduler.types.GraphicsScheduler;
 import com.classichabbo.goldfish.client.game.scheduler.types.InterfaceScheduler;
+import com.classichabbo.goldfish.client.handlers.GlobalHandler;
 import com.classichabbo.goldfish.client.views.GlobalView;
 import com.classichabbo.goldfish.client.views.View;
 import com.classichabbo.goldfish.client.views.types.loader.LoadingScreen;
@@ -10,7 +11,8 @@ import com.classichabbo.goldfish.client.views.types.widgets.Widget;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
 import com.classichabbo.goldfish.networking.NettyClient;
 import com.classichabbo.goldfish.networking.wrappers.messages.MessageHandler;
-import com.classichabbo.goldfish.networking.wrappers.messages.MessageRegistered;
+import com.classichabbo.goldfish.networking.wrappers.messages.types.MessageCommand;
+import com.classichabbo.goldfish.networking.wrappers.messages.types.MessageListener;
 import com.classichabbo.goldfish.networking.wrappers.messages.MessageRequest;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -43,8 +45,8 @@ public class Movie extends Application {
 
     //private Visualiser currentVisualiser;
 
-    private List<MessageRegistered> listeners;
-    private Map<String, Integer> outgoingHandlers;
+    private List<MessageListener> listeners;
+    private List<MessageCommand> commands;
 
     private Pane pane;
     private Scene mainScene;
@@ -56,8 +58,7 @@ public class Movie extends Application {
         this.visualisers.put(VisualiserType.ROOM, new RoomVisualiser());*/
 
         this.listeners = new CopyOnWriteArrayList<>();
-        this.outgoingHandlers = new ConcurrentHashMap<>();
-
+        this.commands = new CopyOnWriteArrayList<>();
         this.views = new CopyOnWriteArrayList<>();
     }
 
@@ -181,13 +182,25 @@ public class Movie extends Application {
 
     public void registerListeners(MessageHandler messageHandler, HashMap<Integer, MessageRequest> listeners) {
         for (var x : listeners.entrySet()) {
-            this.listeners.add(new MessageRegistered(messageHandler.getClass(), x.getKey(), x.getValue()));
+            this.listeners.add(new MessageListener(messageHandler.getClass(), x.getKey(), x.getValue()));
         }
     }
 
     public void unregisterListeners(MessageHandler messageHandler, HashMap<Integer, MessageRequest> listeners) {
         listeners.forEach((key, value) -> this.listeners.removeIf(message ->
                 message.getHandlerClass() == messageHandler.getClass() && message.getHeader() == key));
+    }
+
+
+    public void registerCommands(MessageHandler messageHandler, HashMap<String, Integer> listeners) {
+        for (var x : listeners.entrySet()) {
+            this.commands.add(new MessageCommand(messageHandler.getClass(), x.getValue(), x.getKey()));
+        }
+    }
+
+    public void unregisterCommands(MessageHandler messageHandler, HashMap<String, Integer> commands) {
+        commands.forEach((key, value) -> this.commands.removeIf(message ->
+                message.getHandlerClass() == messageHandler.getClass() && message.getHeader() == value));
     }
 
     public boolean isInterfaceActive(Class<?> clazz) {
@@ -281,7 +294,11 @@ public class Movie extends Application {
         return mainScene;
     }
 
-    public List<MessageRegistered> getListeners() {
+    public List<MessageListener> getListeners() {
         return listeners;
+    }
+
+    public List<MessageCommand> getCommands() {
+        return commands;
     }
 }

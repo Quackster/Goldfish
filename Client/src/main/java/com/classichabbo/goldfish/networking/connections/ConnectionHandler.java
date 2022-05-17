@@ -19,7 +19,7 @@ public class ConnectionHandler extends SimpleChannelInboundHandler<Request> {
 
     @Override
     public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
-        this.channel = new ClientChannel(ctx.channel());
+
     }
 
     @Override
@@ -40,11 +40,12 @@ public class ConnectionHandler extends SimpleChannelInboundHandler<Request> {
 
     @Override
     public void channelRead0(ChannelHandlerContext ctx, Request message) {
+        this.channel = new ClientChannel(ctx.channel());
         System.out.println("[" + message.getHeaderId() + " / " + message.getHeader() + "] - " + message.getMessageBody());
 
         Movie.getInstance().getListeners().forEach(x -> {
             if (x.getHeader() == message.getHeaderId()) {
-                x.getMessage().received(ctx.channel(), message);
+                x.getMessage().received(this.channel, message);
             }
         });
     }
