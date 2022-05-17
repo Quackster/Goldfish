@@ -178,6 +178,14 @@ public class Movie extends Application {
 
             this.views.remove(view);
         });
+
+        // Remove any possibly orphaned children
+        this.views.forEach(x -> {
+            if (x.getOwner() == view) {
+                // System.out.println("Removed orphan");
+                removeObject(x);
+            }
+        });
     }
 
     public void registerListeners(MessageHandler messageHandler, HashMap<Integer, MessageRequest> listeners) {
