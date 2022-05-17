@@ -1,23 +1,23 @@
 package com.classichabbo.goldfish.client.interfaces.types.room;
 
 import com.classichabbo.goldfish.client.Movie;
-import com.classichabbo.goldfish.client.game.scheduler.types.GraphicsScheduler;
 import com.classichabbo.goldfish.client.game.scheduler.types.InterfaceScheduler;
-import com.classichabbo.goldfish.client.interfaces.Interface;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
-import io.netty.handler.ssl.SslCloseCompletionEvent;
-import javafx.beans.InvalidationListener;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.geometry.Point2D;
 
 public class RoomCamera implements ChangeListener<Number> {
-    private static final int MAX_VIEW_TIME = 1000;
+    private static final int MAX_CAMERA_PAN_TIME = 1000;
+
     private int x;
     private int y;
 
+    private int panTargetX;
+    private int panTargetY;
+
     private boolean scrollingY;
     private boolean scrollingX;
+
     private long timePanX;
     private long timePanY;
 
@@ -28,22 +28,19 @@ public class RoomCamera implements ChangeListener<Number> {
 
     public void update() {
         if (this.scrollingX || this.scrollingY) {
-            var roomView = Movie.getInstance().getInterfaceByClass(RoomView.class);
-            var coords = DimensionUtil.getCenterCoords(roomView.getPane().getWidth(), roomView.getPane().getHeight());
-
             if (this.scrollingX) {
-                moveX(coords);
+                moveX();
             }
 
             if (this.scrollingY) {
-                moveY(coords);
+                moveY();
             }
         }
     }
 
-    private void moveX(Point2D coords) {
-        var tTimeLeft = ((MAX_VIEW_TIME - (System.currentTimeMillis() - (this.timePanX + MAX_VIEW_TIME))) / 1000);
-        var tmoveLeft = Math.abs(this.x - coords.getX());
+    private void moveX() {
+        var tTimeLeft = ((MAX_CAMERA_PAN_TIME - (System.currentTimeMillis() - (this.timePanX + MAX_CAMERA_PAN_TIME))) / 1000);
+        var tmoveLeft = Math.abs(this.x - this.panTargetX);
         var tOffset = 0;
 
         if (tTimeLeft <= 0)
@@ -51,7 +48,7 @@ public class RoomCamera implements ChangeListener<Number> {
         else
             tOffset = (int) (Math.abs((tmoveLeft / tTimeLeft)) / InterfaceScheduler.MAX_FPS);
 
-        if (this.x < coords.getX()) {
+        if (this.x < this.panTargetX) {
             this.x += tOffset;
         } else {
             this.x -= tOffset;
@@ -62,9 +59,9 @@ public class RoomCamera implements ChangeListener<Number> {
         }
     }
 
-    private void moveY(Point2D coords) {
-        var tTimeLeft = ((MAX_VIEW_TIME - (System.currentTimeMillis() - (this.timePanY + MAX_VIEW_TIME))) / 1000);
-        var tmoveLeft = Math.abs(this.y - coords.getY());
+    private void moveY() {
+        var tTimeLeft = ((MAX_CAMERA_PAN_TIME - (System.currentTimeMillis() - (this.timePanY + MAX_CAMERA_PAN_TIME))) / 1000);
+        var tmoveLeft = Math.abs(this.y - this.panTargetY);
         var tOffset = 0;
 
         if (tTimeLeft <= 0)
@@ -72,7 +69,7 @@ public class RoomCamera implements ChangeListener<Number> {
         else
             tOffset = (int) (Math.abs((tmoveLeft / tTimeLeft)) / InterfaceScheduler.MAX_FPS);
 
-        if (this.y < coords.getY()) {
+        if (this.y < this.panTargetY) {
             this.y += tOffset;
         } else {
             this.y -= tOffset;
@@ -85,13 +82,11 @@ public class RoomCamera implements ChangeListener<Number> {
 
     /**
      * Handler for when window resizing.
+     *
+     * Pan the room camera back to the start when the window is resized.
      */
     @Override
     public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-        if (this.scrollingX || this.scrollingY) {
-            return;
-        }
-
         if (Movie.getInstance().isInterfaceActive(RoomView.class)) {
             var roomView = Movie.getInstance().getInterfaceByClass(RoomView.class);
 
@@ -100,19 +95,21 @@ public class RoomCamera implements ChangeListener<Number> {
             }
 
             var coords = DimensionUtil.getCenterCoords(roomView.getPane().getWidth(), roomView.getPane().getHeight());
+            this.panCameraTo((int) coords.getX(), (int) coords.getY());
+        }
+    }
 
-            if (this.x != coords.getX()) {
-                this.scrollingX = true;
-                this.timePanX = System.currentTimeMillis();
-            }
+    private void panCameraTo(int x, int y) {
+        if (this.x != x) {
+            this.panTargetX = x;
+            this.scrollingX = true;
+            this.timePanX = System.currentTimeMillis();
+        }
 
-            if (this.y != coords.getY()) {
-                this.scrollingY = true;
-                this.timePanY = System.currentTimeMillis();
-            }
-
-            //this.x = (int) coords.getX();
-            //this.y = (int) coords.getY();
+        if (this.y != x) {
+            this.panTargetY = y;
+            this.scrollingY = true;
+            this.timePanY = System.currentTimeMillis();
         }
     }
 
