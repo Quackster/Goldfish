@@ -3,6 +3,7 @@ package com.classichabbo.goldfish.client.views.types.widgets;
 import java.util.ArrayList;
 
 import com.classichabbo.goldfish.client.Movie;
+import com.classichabbo.goldfish.client.views.controls.ButtonLarge;
 import com.classichabbo.goldfish.client.views.controls.Label;
 import com.classichabbo.goldfish.client.views.controls.ScrollPane;
 import com.classichabbo.goldfish.client.views.types.alerts.Alert;
@@ -15,6 +16,7 @@ import com.classichabbo.goldfish.client.util.DimensionUtil;
 
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BackgroundImage;
@@ -38,8 +40,13 @@ public class Navigator extends Widget {
     private Label recommendedTitle;
     private Label recommendedRefresh;
     private VBox recommendedList;
+
     private Label bottomTitle;
     private Label bottomDescription;
+    private ImageView bottomRoomImg;
+    private Pane bottomSecondaryButton;
+    private ButtonLarge bottomGoButton;
+
     private ScrollPane navList;
 
     private ArrayList<NavItem> navItems;
@@ -196,6 +203,19 @@ public class Navigator extends Widget {
         closeBottom.setOnMouseClicked(e -> this.closeBottom = true);
         this.bottom.getChildren().add(closeBottom);
 
+        this.bottomRoomImg = new ImageView();
+        this.bottomRoomImg.setLayoutX(16);
+        this.bottomRoomImg.setLayoutY(15);
+        this.bottomRoomImg.setVisible(false);
+        this.bottom.getChildren().add(bottomRoomImg);
+
+        this.bottomGoButton = new ButtonLarge(TextsManager.getInstance().getString("nav_gobutton"));
+        this.bottomGoButton.setLayoutX(280);
+        this.bottomGoButton.setLayoutY(71);
+        this.bottomGoButton.setCursor(Cursor.HAND);
+        this.bottomGoButton.setVisible(false);
+        this.bottom.getChildren().add(bottomGoButton);
+        
         this.currentPage = NavigatorPage.PUBLIC;
         this.closeBottom = false;
 
@@ -405,6 +425,20 @@ public class Navigator extends Widget {
             var nameButton = new Pane();
             nameButton.setPrefSize(251, 16);
             nameButton.setCursor(Cursor.HAND);
+            nameButton.setOnMouseClicked(e -> {
+                this.bottom.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/bottom_background_room.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+                
+                this.bottomTitle.setText(navItem.name + "\n" + "(" + navItem.visitors + "/" + navItem.maxVisitors + ") " + TextsManager.getInstance().getString("room_owner") + " " + navItem.owner);
+                this.bottomDescription.setText(navItem.description);
+
+                this.bottomRoomImg.setImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/door.png"));
+                this.bottomRoomImg.setVisible(true);
+                
+                this.bottomGoButton.setOnMouseClicked(e1 -> openRoom(navItem.id));
+                this.bottomGoButton.setVisible(true);
+
+                this.bottom.setVisible(true);
+            });
 
             var goButton = new Pane();
             goButton.setPrefSize(58, 16);
@@ -481,8 +515,6 @@ public class Navigator extends Widget {
     }
 
     private void openRoom(int roomId) {
-        Movie.getInstance().createObject(new Alert("roomId " + roomId));
-
         if (Movie.getInstance().isInterfaceActive(EntryView.class)) {
             var entryView = Movie.getInstance().getInterfaceByClass(EntryView.class);
             Movie.getInstance().removeObject(this);
