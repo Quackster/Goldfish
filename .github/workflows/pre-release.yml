@@ -27,7 +27,7 @@ jobs:
           arguments: fatJar
       - name: Rename files
         run: cp Client/build/libs/Client-all.jar Goldfish.jar
-      - uses: "marvinpinto/action-automatic-releases@${{ matrix.os }}"
+      - uses: "marvinpinto/action-automatic-releases@"${{ matrix.os }}
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           automatic_release_tag: "${{ matrix.os }}"
