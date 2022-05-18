@@ -29,7 +29,7 @@ jobs:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           automatic_release_tag: "latest-linux"
           prerelease: true
-          title: "Development Build"
+          title: "Development Build - Linux"
           files: |
             Goldfish.jar
   pre-release-windows:
@@ -45,9 +45,9 @@ jobs:
           distribution: 'zulu' # See 'Supported distributions' for available options
           java-version: '11'
       - name: Build command with Gradle
-        run: ./gradlew build
+        run: gradlew.bat build
       - name: Build jar with Gradle
-        run: ./gradlew fatJar
+        run: gradlew.bat fatJar
       - name: Rename files
         run: cp ../Client/build/libs/Client-all.jar Goldfish.jar
       - uses: "marvinpinto/action-automatic-releases@latest"
@@ -55,6 +55,6 @@ jobs:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           automatic_release_tag: "latest-win"
           prerelease: true
-          title: "Development Build"
+          title: "Development Build - Windows"
           files: |
             Goldfish.jar
