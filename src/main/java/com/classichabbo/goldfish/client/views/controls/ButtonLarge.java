@@ -2,13 +2,19 @@ package com.classichabbo.goldfish.client.views.controls;
 
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
 
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.*;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundSize;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 
 public class ButtonLarge extends HBox {
+    private Label center;
+
     public ButtonLarge(String text) {
         var leftBackground = new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/controls/button_large/left.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT));
         var centerBackground = new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/controls/button_large/center.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT));
@@ -21,34 +27,32 @@ public class ButtonLarge extends HBox {
         left.setPrefSize(5, 23);
         left.setBackground(leftBackground);
 
-        var center = new Label(text, true);
-        center.setBackground(centerBackground);
-        center.setPadding(new Insets(6, 4, 6, 6));
+        this.center = new Label(text, true);
+        this.center.setBackground(centerBackground);
+        this.center.setPadding(new Insets(6, 4, 6, 6));
 
         var right = new Pane();
         right.setPrefSize(6, 23);
         right.setBackground(rightBackground);
 
-        this.getChildren().addAll(left, center, right);
+        this.getChildren().addAll(left, this.center, right);
         this.setCursor(Cursor.HAND);
         this.setPickOnBounds(false);
 
-        this.setOnMousePressed(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                left.setBackground(leftPressedBackground);
-                center.setBackground(centerPressedBackground);
-                right.setBackground(rightPressedBackground);
-            }
+        this.setOnMousePressed(e -> {
+            left.setBackground(leftPressedBackground);
+            this.center.setBackground(centerPressedBackground);
+            right.setBackground(rightPressedBackground);
         });
 
-        this.setOnMouseReleased(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                left.setBackground(leftBackground);
-                center.setBackground(centerBackground);
-                right.setBackground(rightBackground);
-            }
+        this.setOnMouseReleased(e -> {
+            left.setBackground(leftBackground);
+            this.center.setBackground(centerBackground);
+            right.setBackground(rightBackground);
         });
+    }
+
+    public void setText(String text) {
+        this.center.setText(text);
     }
 }
