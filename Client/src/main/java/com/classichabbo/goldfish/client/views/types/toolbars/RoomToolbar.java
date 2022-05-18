@@ -30,7 +30,7 @@ public class RoomToolbar extends View {
     private ImageButton handButton;
 
     @Override
-    public void start() {  
+    public void start() {
         var temp = new ButtonLarge("Go to hotelview");
         temp.setLayoutX(15);
         temp.setLayoutY(15);

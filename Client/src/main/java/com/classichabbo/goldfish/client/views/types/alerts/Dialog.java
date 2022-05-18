@@ -5,6 +5,7 @@ import com.classichabbo.goldfish.client.game.resources.ResourceManager;
 import com.classichabbo.goldfish.client.views.View;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
 
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
@@ -43,6 +44,8 @@ public class Dialog extends View {
     private Pane closeButton;
     private Pane content;
 
+    private Runnable callAfterFinish;
+
     private int paddingLeft;
     private int paddingRight;
     private int paddingTop;
@@ -57,19 +60,14 @@ public class Dialog extends View {
     private double draggedX;
     private double draggedY;
 
-    private int fixedX;
-    private int fixedY;
-
     // TO-DO
     // - pick on bounds (clicking corner outside of background moves to front)
     // - font slightly off on smaller alerts (x is -1px)
 
     @Override
     public void start() {
-        this.fixedX = -1;
-        this.fixedY = -1;
-        this.setOnMousePressed(e -> this.clicked = true);
         this.setVisible(false);
+        this.setOnMousePressed(e -> this.clicked = true);
         this.initBackground();
     }
 
@@ -78,47 +76,10 @@ public class Dialog extends View {
         this.clicked = false;
         this.isSized = true;
     }
-    
+
     @Override
     public void update() {
-        if (!this.isSized && this.content.getWidth() > 0) {
-            this.content.setLayoutX(this.paddingLeft);
-            this.content.setLayoutY(this.paddingTop + (this.title != null ? 20 : 0));
-
-            var contentWidth = this.content != null ? (this.content.getWidth() + this.paddingLeft + this.paddingRight) : 0;
-            var contentHeight = this.content != null ? (this.content.getHeight() + this.paddingTop + this.paddingBottom) : 0;
-
-            var width = this.title != null ? Math.max(this.title.getWidth(), contentWidth) : contentWidth;
-            var height = this.title != null ? contentHeight + 15 : contentHeight;
-
-            setSize(width, height);
-
-            var coords = DimensionUtil.getCenterCoords(width, height);
-            this.setLayoutX(this.fixedX == -1 ? coords.getX() : this.fixedX);
-            this.setLayoutY(this.fixedY == -1 ? coords.getY() : this.fixedY);
-
-            if (this.title != null) {
-                this.title.setLayoutX(Math.round((width / 2) - (this.title.getWidth() / 2)) - 2);
-                this.dragArea.setPrefSize(width, 31);
-                this.closeButton.setLayoutX(width - 25);
-            }
-
-            if (this.innerBackground != null) {
-                this.innerBackground.setLayoutX(paddingLeft);
-                this.innerBackground.setLayoutY(paddingTop + (title != null ? 20 : 0));
-                setInnerSize(this.content.getWidth(), this.content.getHeight());
-            }
-
-            this.isSized = true;
-
-            if (!this.isHidden()) {
-                this.setVisible(true);
-            }
-        }
-
-        if (this.isSized) {
-            this.setVisible(!this.isHidden());
-        }
+        this.adjustSize();
 
         // Click bring-to-front handler
         if (this.clicked) {
@@ -133,6 +94,48 @@ public class Dialog extends View {
 
             this.draggedX = -1;
             this.draggedY = -1;
+        }
+    }
+
+    private void adjustSize() {
+        if (!this.isSized && this.content.getWidth() > 0) {
+            this.content.setLayoutX(this.paddingLeft);
+            this.content.setLayoutY(this.paddingTop + (this.title != null ? 20 : 0));
+
+            var contentWidth = this.content != null ? (this.content.getWidth() + this.paddingLeft + this.paddingRight) : 0;
+            var contentHeight = this.content != null ? (this.content.getHeight() + this.paddingTop + this.paddingBottom) : 0;
+
+            var dialogWidth = this.title != null ? Math.max(this.title.getWidth(), contentWidth) : contentWidth;
+            var dialogHeight = this.title != null ? contentHeight + 15 : contentHeight;
+
+            this.setSize(dialogWidth, dialogHeight);
+
+            var coords = DimensionUtil.getCenterCoords(dialogWidth, dialogHeight);
+            this.setLayoutX(coords.getX());
+            this.setLayoutY(coords.getY());
+
+            if (this.title != null) {
+                this.title.setLayoutX(Math.round((dialogWidth / 2) - (this.title.getWidth() / 2)) - 2);
+                this.dragArea.setPrefSize(dialogWidth, 31);
+                this.closeButton.setLayoutX(dialogWidth - 25);
+            }
+
+            if (this.innerBackground != null) {
+                this.innerBackground.setLayoutX(paddingLeft);
+                this.innerBackground.setLayoutY(paddingTop + (title != null ? 20 : 0));
+                setInnerSize(this.content.getWidth(), this.content.getHeight());
+            }
+
+            if (this.callAfterFinish != null) {
+                this.callAfterFinish.run();
+                this.callAfterFinish = null;
+            }
+
+            // Alert was finished sizing, now show it!
+            this.setVisible(true);
+
+            // Alert was finished sizing, don't size again!
+            this.isSized = true;
         }
     }
 
@@ -274,7 +277,7 @@ public class Dialog extends View {
         // 29 is the width of the 'borders' not including the shadow
         width -= 29;
         height -= 29;
-        
+
         this.topCenter.setPrefWidth(width - (this.title != null ? 8 : 0));
         this.centerLeft.setPrefHeight(height);
         this.centerCenter.setPrefSize(width, height);
@@ -352,8 +355,7 @@ public class Dialog extends View {
         this.remove();
     }
 
-    protected void setFixedLocation(int x, int y) {
-        this.fixedX = x;
-        this.fixedY = y;
+    public void setCallAfterFinish(Runnable callAfterFinish) {
+        this.callAfterFinish = callAfterFinish;
     }
 }

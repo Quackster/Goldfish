@@ -4,6 +4,7 @@ import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.controls.ButtonLarge;
 import com.classichabbo.goldfish.client.controls.Label;
 
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.layout.VBox;
@@ -20,7 +21,6 @@ public class Alert extends Dialog {
         super.start();
 
         var content = new VBox();
-        
         var text = new Label(this.text);
         text.setAlignment(Pos.CENTER);
         text.setWrapText(true);
@@ -34,11 +34,14 @@ public class Alert extends Dialog {
         ok.setOnMouseClicked(e -> this.remove());
 
         content.getChildren().addAll(text, ok);
-        
+
         this.setPadding(9, 10, 11, 10);
         this.setTitle("Notice!");
         this.setContent(content);
         this.initInnerBackground();
+        this.setCallAfterFinish(() -> {
+            System.out.println("alert finished");
+        });
 
         Movie.getInstance().getInterfaceScheduler().receiveUpdate(this);
     }

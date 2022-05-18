@@ -8,6 +8,8 @@ import com.classichabbo.goldfish.client.controls.ScrollPane;
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
 import com.classichabbo.goldfish.client.game.values.types.TextsManager;
 
+import com.classichabbo.goldfish.client.util.DimensionUtil;
+import javafx.application.Platform;
 import javafx.scene.Cursor;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundImage;
@@ -155,11 +157,15 @@ public class Navigator extends Widget {
         this.setPage = NavigatorPage.PUBLIC;
         this.closeBottom = false;
 
-        this.setHidden(false);
         this.setPadding(9, 10, 11, 10);
         this.setTitle(TextsManager.getInstance().getString("navigator"));
         this.setContent(this.content);
-        this.setFixedLocation((int)Movie.getInstance().getPrimaryStage().getWidth() - 376, 20);
+
+        // getWidth() and getHeight() no longer zero when wrapping around this shit - when the navigator finished sizing itself
+        // make it appear to the side first and foremost :^)
+        this.setCallAfterFinish(() -> {
+            this.setLayoutX(DimensionUtil.roundEven((DimensionUtil.getProgramWidth() - this.getWidth()) * 0.95));
+        });
 
         this.navItems = new ArrayList<Navigator.NavItem>();
         this.navItems.add(new NavItem(1, "Welcome Lounge", false, 0, 40, "New? Lost? Get a warm welcome here!"));
@@ -321,7 +327,7 @@ public class Navigator extends Widget {
             this.closeBottom = false;
         }
 
-        navList.update();
+        this.navList.update();
     }
 
     /*
