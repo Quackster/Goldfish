@@ -1,9 +1,9 @@
 package com.classichabbo.goldfish.client.views.types.toolbars;
 
 import com.classichabbo.goldfish.client.Movie;
-import com.classichabbo.goldfish.client.controls.ButtonLarge;
-import com.classichabbo.goldfish.client.controls.ImageButton;
-import com.classichabbo.goldfish.client.controls.Label;
+import com.classichabbo.goldfish.client.views.controls.ButtonLarge;
+import com.classichabbo.goldfish.client.views.controls.ImageButton;
+import com.classichabbo.goldfish.client.views.controls.Label;
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
 import com.classichabbo.goldfish.client.views.View;
 import com.classichabbo.goldfish.client.views.types.alerts.Alert;

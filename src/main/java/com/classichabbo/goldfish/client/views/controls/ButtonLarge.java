@@ -1,4 +1,4 @@
-package com.classichabbo.goldfish.client.controls;
+package com.classichabbo.goldfish.client.views.controls;
 
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
 

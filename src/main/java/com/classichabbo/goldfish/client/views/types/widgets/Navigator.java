@@ -3,8 +3,8 @@ package com.classichabbo.goldfish.client.views.types.widgets;
 import java.util.ArrayList;
 
 import com.classichabbo.goldfish.client.Movie;
-import com.classichabbo.goldfish.client.controls.Label;
-import com.classichabbo.goldfish.client.controls.ScrollPane;
+import com.classichabbo.goldfish.client.views.controls.Label;
+import com.classichabbo.goldfish.client.views.controls.ScrollPane;
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
 import com.classichabbo.goldfish.client.game.values.types.TextsManager;
 

@@ -1,10 +1,9 @@
 package com.classichabbo.goldfish.client.views.types.alerts;
 
 import com.classichabbo.goldfish.client.Movie;
-import com.classichabbo.goldfish.client.controls.ButtonLarge;
-import com.classichabbo.goldfish.client.controls.Label;
+import com.classichabbo.goldfish.client.views.controls.ButtonLarge;
+import com.classichabbo.goldfish.client.views.controls.Label;
 
-import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.layout.VBox;

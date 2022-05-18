@@ -1,9 +1,7 @@
-package com.classichabbo.goldfish.client.controls;
+package com.classichabbo.goldfish.client.views.controls;
 
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
 import javafx.scene.paint.Color;
-
-import java.util.regex.Pattern;
 
 public class Label extends javafx.scene.control.Label {
     public Label(String text) {

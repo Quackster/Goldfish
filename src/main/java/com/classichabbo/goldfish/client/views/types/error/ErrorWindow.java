@@ -1,7 +1,7 @@
 package com.classichabbo.goldfish.client.views.types.error;
 
 import com.classichabbo.goldfish.client.Movie;
-import com.classichabbo.goldfish.client.controls.Label;
+import com.classichabbo.goldfish.client.views.controls.Label;
 import com.classichabbo.goldfish.client.views.View;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
 import javafx.geometry.Insets;
