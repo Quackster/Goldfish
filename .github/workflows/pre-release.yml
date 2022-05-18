@@ -3,6 +3,7 @@ name: Create Pre-Release
   push:
     branches:
       - build
+      - master
 jobs:
   pre-release-linux:
     permissions: write-all
