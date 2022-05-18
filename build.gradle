@@ -14,10 +14,12 @@ targetCompatibility = "1.11"
 mainClassName = 'com.classichabbo.goldfish.client.Goldfish'
 
 repositories {
+    /*
     flatDir {
         dirs 'libs'
     }
-
+    */
+    
     mavenCentral()
 }
 

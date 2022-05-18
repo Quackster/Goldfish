@@ -28,7 +28,7 @@ jobs:
         with:
           arguments: --scan --no-daemon fatJar
       - name: Rename files
-        run: cp build/libs/Client-all.jar Goldfish.jar
+        run: cp build/libs/Client-all.jar Goldfish-${{ matrix.os }}.jar
       - uses: 'marvinpinto/action-automatic-releases@latest'
         with:
           repo_token: '${{ secrets.GITHUB_TOKEN }}'
@@ -36,4 +36,4 @@ jobs:
           prerelease: true
           title: 'Development Build - ${{ matrix.os }}'
           files: |
-            Goldfish.jar
+            Goldfish-${{ matrix.os }}.jar
