@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.views.controls.Label;
 import com.classichabbo.goldfish.client.views.controls.ScrollPane;
+import com.classichabbo.goldfish.client.views.types.alerts.Alert;
+import com.classichabbo.goldfish.client.views.types.entry.EntryView;
+import com.classichabbo.goldfish.client.views.types.room.RoomView;
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
 import com.classichabbo.goldfish.client.game.values.types.TextsManager;
 
@@ -13,12 +16,14 @@ import com.classichabbo.goldfish.client.util.DimensionUtil;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 
 
 public class Navigator extends Widget {
@@ -205,31 +210,6 @@ public class Navigator extends Widget {
             this.setLayoutY(20);
         });
 
-        this.navItems = new ArrayList<NavItem>();
-        this.navItems.add(new NavItem(1, "Welcome Lounge", false, 0, 40, "New? Lost? Get a warm welcome here!"));
-        this.navItems.add(new NavItem(1, "The Park", false, 0, 65, "Visit the park and the infamous Infobus"));
-        this.navItems.add(new NavItem(1, "Habbo Lido", false, 0, 120, "Splish, splash and have a bash in the famous Habbo pool!"));
-        this.navItems.add(new NavItem(1, "Rooftop Rumble", false, 0, 50, "Wobble Squabble your bum off in our cool rooftop hang out"));
-        this.navItems.add(new NavItem(1, "Entertainment", true, 0, 100, null));
-        this.navItems.add(new NavItem(1, "Restaurants and Cafes", true, 0, 100, null));
-        this.navItems.add(new NavItem(1, "Lounges and Clubs", true, 0, 100, null));
-        this.navItems.add(new NavItem(1, "Habbo Club", true, 0, 100, null));
-        this.navItems.add(new NavItem(1, "Outside Spaces", true, 0, 100, null));
-        this.navItems.add(new NavItem(1, "The Lobbies", true, 0, 100, null));
-        this.navItems.add(new NavItem(1, "The Hallways", true, 0, 100, null));
-        this.navItems.add(new NavItem(1, "Games", true, 0, 100, null));
-        this.navItems.add(new NavItem(1, "Games", true, 0, 100, null));
-        this.navItems.add(new NavItem(1, "Games", true, 0, 100, null));
-        this.navItems.add(new NavItem(1, "Games", true, 0, 100, null));
-        this.navItems.add(new NavItem(1, "Games", true, 0, 100, null));
-        this.navItems.add(new NavItem(1, "Games", true, 0, 100, null));
-        this.navItems.add(new NavItem(1, "Games", true, 0, 100, null));
-
-        this.recommendedItems = new ArrayList<NavItem>();
-        this.recommendedItems.add(new NavItem(1, "Hall", false, 0, 40, "New? Lost? Get a warm welcome here!"));
-        this.recommendedItems.add(new NavItem(1, "Tresor", false, 0, 65, "Visit the park and the infamous Infobus"));
-        this.recommendedItems.add(new NavItem(1, "Box ( Habbo.nl - 2007 )", false, 0, 120, "Splish, splash and have a bash in the famous Habbo pool!"));
-
         Movie.getInstance().getInterfaceScheduler().receiveUpdate(this);
     }
 
@@ -243,57 +223,9 @@ public class Navigator extends Widget {
     public void update() {
         super.update();
 
-        if (!this.navItems.isEmpty()) {
-            this.navList.clearContent();
-
-            for (var navItem : navItems) {
-                var navListItem = new Pane();
-                navListItem.setMinHeight(16);
-                navListItem.setMaxWidth(311);
-
-                var nameLabel = new Label(navItem.name);
-                nameLabel.setLayoutX(17);
-                nameLabel.setLayoutY(2);
-
-                navListItem.getChildren().add(nameLabel);
-
-                if (navItem.isCategory) {
-                    navListItem.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/category_empty.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
-                }
-                else {
-                    navListItem.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/room_empty.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
-                }
-
-                this.navList.addContent(navListItem);
-            }
-
-            this.navItems.clear();
-        }
-
-        if (!this.recommendedItems.isEmpty()) {
-            this.recommendedList.getChildren().clear();
-
-            for (var recommendedItem : recommendedItems) {
-                var navListItem = new Pane();
-                navListItem.setMinHeight(16);
-                navListItem.setMaxWidth(311);
-
-                var nameLabel = new Label(recommendedItem.name);
-                nameLabel.setLayoutX(17);
-                nameLabel.setLayoutY(2);
-
-                navListItem.getChildren().add(nameLabel);
-                navListItem.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/room_empty.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
-
-                this.recommendedList.getChildren().add(navListItem);
-            }
-
-            this.recommendedItems.clear();
-        }
-
         if (this.currentPage == NavigatorPage.PUBLIC) {
             this.content.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/background_public.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
-            this.title.setText("Public Rooms"); // load from packet
+            this.getCategory(1); // TODO - where does the root category for public rooms come from?
             this.title.setLayoutY(64);
             this.hideFull.setLayoutY(64);
             this.hideFull.setVisible(true);
@@ -318,7 +250,8 @@ public class Navigator extends Widget {
         
         if (this.currentPage == NavigatorPage.PRIVATE) {
             this.content.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/background_private.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
-            this.title.setText("Guest Rooms"); // load from packet
+            this.getCategory(2); // TODO - same as above
+            this.getRecommendedItems();
             this.title.setLayoutY(165);
             this.hideFull.setLayoutY(165);
             this.hideFull.setVisible(true);
@@ -343,6 +276,7 @@ public class Navigator extends Widget {
 
         if (this.currentPage == NavigatorPage.SEARCH) {
             this.content.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/background_search.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+            this.getSearch(null);
             this.title.setText(TextsManager.getInstance().getString("nav_src_hd"));
             this.title.setLayoutY(135);
             this.hideFull.setVisible(false);
@@ -363,6 +297,7 @@ public class Navigator extends Widget {
 
         if (this.currentPage == NavigatorPage.OWN) {
             this.content.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/background_own.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+            this.getOwn();
             this.title.setText(TextsManager.getInstance().getString("nav_own_hd"));
             this.title.setLayoutY(135);
             this.hideFull.setVisible(false);
@@ -383,6 +318,7 @@ public class Navigator extends Widget {
 
         if (this.currentPage == NavigatorPage.FAVOURITES) {
             this.content.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/background_favourites.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+            this.getFavourites();
             this.title.setText(TextsManager.getInstance().getString("nav_fav_hd"));
             this.title.setLayoutY(90);
             this.hideFull.setVisible(false);
@@ -409,7 +345,155 @@ public class Navigator extends Widget {
             this.closeBottom = false;
         }
 
+        if (this.navItems != null) {
+            this.navList.clearContent();
+
+            for (var navItem : navItems) {
+                this.navList.addContent(generateNavListItem(navItem));
+            }
+
+            this.navItems = null;
+        }
+
+        if (this.recommendedItems != null) {
+            this.recommendedList.getChildren().clear();
+
+            for (var recommendedItem : recommendedItems) {
+                this.recommendedList.getChildren().add(generateNavListItem(recommendedItem));
+            }
+
+            this.recommendedItems = null;
+        }
+
         this.navList.update();
+    }
+
+    private Pane generateNavListItem(NavItem navItem) {
+        var navListItem = new Pane();
+        navListItem.setMinHeight(16);
+        navListItem.setMaxWidth(311);
+
+        var nameLabel = new Label(navItem.name);
+        nameLabel.setLayoutX(17);
+        nameLabel.setLayoutY(2);
+
+        navListItem.getChildren().add(nameLabel);
+
+        if (navItem.isCategory) {
+            var openLabel = new Label(TextsManager.getInstance().getString("nav_openbutton"));
+            openLabel.setLayoutX(233);
+            openLabel.setLayoutY(2);
+            openLabel.setAlignment(Pos.TOP_RIGHT);
+            openLabel.setMinWidth(48);
+            openLabel.setUnderline(true);
+
+            var openButton = new Pane();
+            openButton.setPrefSize(311, 16);
+            openButton.setCursor(Cursor.HAND);
+
+            navListItem.getChildren().addAll(openLabel, openButton);
+            navListItem.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/category_empty.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        }
+        else {
+            var goLabel = new Label(TextsManager.getInstance().getString("nav_gobutton"));
+            goLabel.setLayoutX(271);
+            goLabel.setLayoutY(2);
+            goLabel.setAlignment(Pos.TOP_RIGHT);
+            goLabel.setMinWidth(24);
+            goLabel.setUnderline(true);
+
+            var nameButton = new Pane();
+            nameButton.setPrefSize(251, 16);
+            nameButton.setCursor(Cursor.HAND);
+
+            var goButton = new Pane();
+            goButton.setPrefSize(58, 16);
+            goButton.setLayoutX(253);
+            goButton.setCursor(Cursor.HAND);
+            goButton.setOnMouseClicked(e -> openRoom(navItem.id));
+
+            navListItem.getChildren().addAll(goLabel, nameButton, goButton);
+            navListItem.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/room_empty.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        }
+
+        return navListItem;
+    }
+
+    private void getRecommendedItems () {
+        this.recommendedItems = new ArrayList<NavItem>();
+
+        this.recommendedItems.add(new NavItem(1, false, "Hall", "New? Lost? Get a warm welcome here!", "C-3", 0, 40));
+        this.recommendedItems.add(new NavItem(1, false, "Tresor", "Visit the park and the infamous Infobus", "zidro", 0, 65));
+        this.recommendedItems.add(new NavItem(1, false, "Box ( Habbo.nl - 2007 )", "Splish, splash and have a bash in the famous Habbo pool!", "Miquel", 0, 120));
+    }
+
+    private void getCategory(int categoryId) {
+        this.navItems = new ArrayList<NavItem>();
+
+        if (categoryId == 1) {
+            this.title.setText("Public Rooms");
+            this.navItems.add(new NavItem(1, true, "Welcome Lounge", "New? Lost? Get a warm welcome here!", "", 0, 40));
+            this.navItems.add(new NavItem(1, true, "The Park", "Visit the park and the infamous Infobus", "", 0, 65));
+            this.navItems.add(new NavItem(1, true, "Habbo Lido", "Splish, splash and have a bash in the famous Habbo pool!", "", 0, 120));
+            this.navItems.add(new NavItem(1, true, "Rooftop Rumble", "Wobble Squabble your bum off in our cool rooftop hang out", "", 0, 50));
+            this.navItems.add(new NavItem(1, "Entertainment", 0, 100));
+            this.navItems.add(new NavItem(1, "Restaurants and Cafes", 0, 100));
+            this.navItems.add(new NavItem(1, "Lounges and Clubs", 0, 100));
+            this.navItems.add(new NavItem(1, "Habbo Club", 0, 100));
+            this.navItems.add(new NavItem(1, "Outside Spaces", 0, 100));
+            this.navItems.add(new NavItem(1, "The Lobbies", 0, 100));
+            this.navItems.add(new NavItem(1, "The Hallways", 0, 100));
+            this.navItems.add(new NavItem(1, "Games", 0, 100));
+        }
+
+        if (categoryId == 2) {
+            this.title.setText("Guest Rooms");
+            this.navItems.add(new NavItem(1, "Flower Power Puzzle", 0, 100));
+            this.navItems.add(new NavItem(1, "Gaming & Race Rooms", 0, 100));
+            this.navItems.add(new NavItem(1, "Restaurant, Bar & Night Club Rooms", 0, 100));
+            this.navItems.add(new NavItem(1, "Trade Floor", 0, 100));
+            this.navItems.add(new NavItem(1, "Chill, Chat & Discussion Rooms", 0, 100));
+            this.navItems.add(new NavItem(1, "Hair Salons & Modelling Rooms", 0, 100));
+            this.navItems.add(new NavItem(1, "Maze & Theme Park Rooms", 0, 100));
+            this.navItems.add(new NavItem(1, "Help Centre Rooms", 0, 100));
+            this.navItems.add(new NavItem(1, "Miscellaneous", 0, 100));
+        }
+    }
+
+    private void getSearch(String criteria) {
+        this.navItems = new ArrayList<NavItem>();
+    }
+
+    private void getOwn() {        
+        this.navItems = new ArrayList<NavItem>();
+
+        this.navItems.add(new NavItem(1, false, "Parsnip's Casino", "Large bets welcomed, games 13/21/poker", "Parsnip", 0, 15));
+        this.navItems.add(new NavItem(1, false, "Parsnip's Hub", "Sit and chat or go through the teles to see some of my favourite rooms", "Parsnip", 0, 25));
+        this.navItems.add(new NavItem(1, false, "Parsnip's Room", "If I'm sat here alone, I'm probably afk", "Parsnip", 0, 10));
+        this.navItems.add(new NavItem(1, false, "Siract's Trophy Room", "Tribute to Siract - will be sorely missed!", "Parsnip",  0, 10));
+        this.navItems.add(new NavItem(1, false, "Pea's Dutch Lounge", "Dutch themed lounge for Pea", "Parsnip", 0, 15));
+        this.navItems.add(new NavItem(1, false, "Parsnip's Hallway", "", "Parsnip", 0, 25));
+        this.navItems.add(new NavItem(1, false, "Animal Nitrate", "", "Parsnip",  0, 25));
+    }
+
+    private void getFavourites() {
+        this.navItems = new ArrayList<NavItem>();
+    }
+
+    private void openRoom(int roomId) {
+        Movie.getInstance().createObject(new Alert("roomId " + roomId));
+
+        if (Movie.getInstance().isInterfaceActive(EntryView.class)) {
+            var entryView = Movie.getInstance().getInterfaceByClass(EntryView.class);
+            Movie.getInstance().removeObject(this);
+
+            entryView.transitionTo(() -> {
+                Movie.getInstance().createObject(new RoomView());
+                Movie.getInstance().removeObject(entryView);
+            });
+
+            Movie.getInstance().hideWidgets();
+        }
     }
 
     /*
@@ -441,17 +525,31 @@ public class Navigator extends Widget {
         int id;
         String name;
         Boolean isCategory;
+        Boolean isPublic;
         int visitors;
         int maxVisitors;
+        String owner;
         String description;
+        String img;
 
-        public NavItem(int id, String name, Boolean isCategory, int visitors, int maxVisitors, String description) {
+        public NavItem(int id, String name, int visitors, int maxVisitors) {
             this.id = id;
             this.name = name;
-            this.isCategory = isCategory;
+            this.isCategory = true;
             this.visitors = visitors;
             this.maxVisitors = maxVisitors;
+        }
+
+        public NavItem(int id, Boolean isPublic, String name, String description, String ownerImg, int visitors, int maxVisitors) {
+            this.id = id;
+            this.isPublic = isPublic;
+            this.name = name;
+            this.isCategory = false;
+            this.visitors = visitors;
+            this.maxVisitors = maxVisitors;
+            this.owner = isPublic ? null : ownerImg;
             this.description = description;
+            this.img = !isPublic ? null : ownerImg;
         }
     }
 }
