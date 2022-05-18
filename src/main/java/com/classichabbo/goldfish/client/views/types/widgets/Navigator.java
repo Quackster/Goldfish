@@ -24,6 +24,7 @@ import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 
 
 public class Navigator extends Widget {
@@ -46,17 +47,13 @@ public class Navigator extends Widget {
     private Label recommendedRefresh;
     private VBox recommendedList;
     
-    private Pane bottom;
-    private Label bottomTitle;
-    private Label bottomDescription;
-
-    private Pane bottomRoom;
-    private ImageView bottomRoomImg;
-    private Label bottomRoomTitle;
-    private Label bottomRoomSubtitle;
-    private Label bottomRoomDescription;
-    private Button bottomRoomButton;
-    private ButtonLarge bottomRoomGoButton;
+    private Pane info;
+    private ImageView infoImg;
+    private Label infoTitle;
+    private Label infoSubtitle;
+    private Label infoDescription;
+    private Button infoLeftButton;
+    private ButtonLarge infoGoButton;
 
     private ScrollPane navList;
 
@@ -214,82 +211,54 @@ public class Navigator extends Widget {
         this.navList.setLayoutX(5);
         this.content.getChildren().add(this.navList);
 
-        this.bottom = new Pane();
-        this.bottom.setPrefSize(340, 100);
-        this.bottom.setLayoutX(1);
-        this.bottom.setLayoutY(312);
-        this.bottom.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/bottom_background_public.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
-        this.content.getChildren().add(this.bottom);
+        this.info = new Pane();
+        this.info.setPrefSize(340, 100);
+        this.info.setLayoutX(1);
+        this.info.setLayoutY(312);
+        this.info.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/info_background.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        this.content.getChildren().add(this.info);
 
-        this.bottomTitle = new Label(TextsManager.getInstance().getString("nav_public_helptext_hd"), true);
-        this.bottomTitle.setLayoutX(85);
-        this.bottomTitle.setLayoutY(12);
-        this.bottom.getChildren().add(this.bottomTitle);
+        this.infoImg = new ImageView();
+        this.info.getChildren().add(this.infoImg);
 
-        this.bottomDescription = new Label(TextsManager.getInstance().getString("nav_public_helptext"));
-        this.bottomDescription.setLayoutX(85);
-        this.bottomDescription.setLayoutY(24);
-        this.bottomDescription.setMaxWidth(230);
-        this.bottomDescription.setWrapText(true);
-        this.bottomDescription.setLineSpacing(-2);
-        this.bottom.getChildren().add(this.bottomDescription);
+        this.infoTitle = new Label(TextsManager.getInstance().getString("nav_public_helptext_hd"), true);
+        this.infoTitle.setLayoutX(85);
+        this.infoTitle.setLayoutY(12);
+        this.info.getChildren().add(this.infoTitle);
 
-        var closeBottom = new Pane();
-        closeBottom.setPrefSize(13, 13);
-        closeBottom.setCursor(Cursor.HAND);
-        closeBottom.setLayoutX(323);
-        closeBottom.setLayoutY(13);
-        closeBottom.setOnMouseClicked(e -> this.closeBottom = true);
-        this.bottom.getChildren().add(closeBottom);
+        this.infoSubtitle = new Label("", true);
+        this.infoSubtitle.setLayoutX(85);
+        this.infoSubtitle.setLayoutY(22);
+        this.info.getChildren().add(this.infoSubtitle);
 
-        this.bottomRoom = new Pane();
-        this.bottomRoom.setPrefSize(340, 100);
-        this.bottomRoom.setLayoutX(1);
-        this.bottomRoom.setLayoutY(312);
-        this.bottomRoom.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/bottom_background_room.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
-        this.bottomRoom.setVisible(false);
-        this.content.getChildren().add(this.bottomRoom);
+        this.infoDescription = new Label(TextsManager.getInstance().getString("nav_public_helptext"));
+        this.infoDescription.setLayoutX(85);
+        this.infoDescription.setLayoutY(24);
+        this.infoDescription.setMaxWidth(230);
+        this.infoDescription.setWrapText(true);
+        this.infoDescription.setLineSpacing(-2);
+        this.info.getChildren().add(this.infoDescription);
 
-        var closeBottomRoom = new Pane();
-        closeBottomRoom.setPrefSize(13, 13);
-        closeBottomRoom.setCursor(Cursor.HAND);
-        closeBottomRoom.setLayoutX(323);
-        closeBottomRoom.setLayoutY(13);
-        closeBottomRoom.setOnMouseClicked(e -> this.closeBottom = true);
-        this.bottomRoom.getChildren().add(closeBottomRoom);
+        this.infoLeftButton = new Button("");
+        this.infoLeftButton.setLayoutX(114);
+        this.infoLeftButton.setLayoutY(74);
+        this.infoLeftButton.setVisible(false);
+        this.info.getChildren().add(this.infoLeftButton);
 
-        this.bottomRoomTitle = new Label("", true);
-        this.bottomRoomTitle.setLayoutX(85);
-        this.bottomRoomTitle.setLayoutY(12);
-        this.bottomRoom.getChildren().add(this.bottomRoomTitle);
+        this.infoGoButton = new ButtonLarge(TextsManager.getInstance().getString("nav_gobutton"));
+        this.infoGoButton.setLayoutX(280);
+        this.infoGoButton.setLayoutY(71);
+        this.infoGoButton.setCursor(Cursor.HAND);
+        this.infoGoButton.setVisible(false);
+        this.info.getChildren().add(this.infoGoButton);
 
-        this.bottomRoomSubtitle = new Label("", true);
-        this.bottomRoomSubtitle.setLayoutX(85);
-        this.bottomRoomSubtitle.setLayoutY(22);
-        this.bottomRoom.getChildren().add(this.bottomRoomSubtitle);
-
-        this.bottomRoomDescription = new Label("");
-        this.bottomRoomDescription.setLayoutX(85);
-        this.bottomRoomDescription.setMaxWidth(230);
-        this.bottomRoomDescription.setWrapText(true);
-        this.bottomRoomDescription.setLineSpacing(-2);
-        this.bottomRoom.getChildren().add(this.bottomRoomDescription);
-
-        this.bottomRoomImg = new ImageView();
-        this.bottomRoomImg.setLayoutX(16);
-        this.bottomRoomImg.setLayoutY(15);
-        this.bottomRoom.getChildren().add(this.bottomRoomImg);
-
-        this.bottomRoomButton = new Button("");
-        this.bottomRoomButton.setLayoutX(114);
-        this.bottomRoomButton.setLayoutY(74);
-        this.bottomRoom.getChildren().add(this.bottomRoomButton);
-
-        this.bottomRoomGoButton = new ButtonLarge(TextsManager.getInstance().getString("nav_gobutton"));
-        this.bottomRoomGoButton.setLayoutX(280);
-        this.bottomRoomGoButton.setLayoutY(71);
-        this.bottomRoomGoButton.setCursor(Cursor.HAND);
-        this.bottomRoom.getChildren().add(this.bottomRoomGoButton);
+        var infoClose = new Pane();
+        infoClose.setPrefSize(13, 13);
+        infoClose.setCursor(Cursor.HAND);
+        infoClose.setLayoutX(323);
+        infoClose.setLayoutY(13);
+        infoClose.setOnMouseClicked(e -> this.closeBottom = true);
+        this.info.getChildren().add(infoClose);
         
         this.setPage = NavigatorPage.PUBLIC;
         this.closeBottom = false;
@@ -332,9 +301,9 @@ public class Navigator extends Widget {
             this.navList.setSize(330, 232);
             this.navList.setLayoutY(80);
 
-            this.bottom.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/bottom_background_public.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
-            this.bottomTitle.setText(TextsManager.getInstance().getString("nav_public_helptext_hd"));
-            this.bottomDescription.setText(TextsManager.getInstance().getString("nav_public_helptext"));
+            this.infoTitle.setText(TextsManager.getInstance().getString("nav_public_helptext_hd"));
+            this.infoDescription.setText(TextsManager.getInstance().getString("nav_public_helptext"));
+            this.infoImg.setImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/info_public.png"));
         }
         else if (this.setPage != null) {
             this.searchButton.setVisible(true);
@@ -357,9 +326,9 @@ public class Navigator extends Widget {
             this.navList.setSize(330, 126);
             this.navList.setLayoutY(186);
 
-            this.bottom.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/bottom_background_private.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
-            this.bottomTitle.setText(TextsManager.getInstance().getString("nav_private_helptext_hd_main"));
-            this.bottomDescription.setText(TextsManager.getInstance().getString("nav_private_helptext"));
+            this.infoTitle.setText(TextsManager.getInstance().getString("nav_private_helptext_hd_main"));
+            this.infoDescription.setText(TextsManager.getInstance().getString("nav_private_helptext"));
+            this.infoImg.setImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/info_private.png"));
         }
         else if (this.setPage != null) {
             this.recommendedTitle.setVisible(false);
@@ -381,9 +350,9 @@ public class Navigator extends Widget {
             this.navList.setSize(330, 162);
             this.navList.setLayoutY(150);
 
-            this.bottom.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/bottom_background_search.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
-            this.bottomTitle.setText(TextsManager.getInstance().getString("nav_private_helptext_hd"));
-            this.bottomDescription.setText(TextsManager.getInstance().getString("nav_search_helptext"));
+            this.infoTitle.setText(TextsManager.getInstance().getString("nav_private_helptext_hd"));
+            this.infoDescription.setText(TextsManager.getInstance().getString("nav_search_helptext"));
+            this.infoImg.setImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/info_search.png"));
         }
         else if (this.setPage != null) {
             this.search.setVisible(false);
@@ -400,9 +369,9 @@ public class Navigator extends Widget {
             this.navList.setSize(330, 162);
             this.navList.setLayoutY(150);
 
-            this.bottom.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/bottom_background_own.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
-            this.bottomTitle.setText(TextsManager.getInstance().getString("nav_private_helptext_hd"));
-            this.bottomDescription.setText(TextsManager.getInstance().getString("nav_ownrooms_helptext"));
+            this.infoTitle.setText(TextsManager.getInstance().getString("nav_private_helptext_hd"));
+            this.infoDescription.setText(TextsManager.getInstance().getString("nav_ownrooms_helptext"));
+            this.infoImg.setImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/info_own.png"));
         }
 
         if (this.setPage == NavigatorPage.FAVOURITES) {
@@ -415,63 +384,73 @@ public class Navigator extends Widget {
             this.navList.setSize(330, 207);
             this.navList.setLayoutY(105);
 
-            this.bottom.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/bottom_background_favourites.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
-            this.bottomTitle.setText(TextsManager.getInstance().getString("nav_private_helptext_hd"));
-            this.bottomDescription.setText(TextsManager.getInstance().getString("nav_favourites_helptext"));
+            this.infoTitle.setText(TextsManager.getInstance().getString("nav_private_helptext_hd"));
+            this.infoDescription.setText(TextsManager.getInstance().getString("nav_favourites_helptext"));
+            this.infoImg.setImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/info_favourites.png"));
         }
 
         if (this.setPage != null) {
-            this.bottomRoom.setVisible(false);
-            this.bottom.setVisible(true);
+            this.info.setVisible(true);
+            this.infoImg.setTranslateX(0);
+            this.infoImg.setTranslateY(0);
+            this.infoSubtitle.setText("");
+            this.infoDescription.setTranslateY(0);
+            this.infoLeftButton.setVisible(false);
+            this.infoGoButton.setVisible(false);
             this.currentPage = this.setPage;
             this.setPage = null;
         }
 
         if (this.showNavItem != null) {
             if (this.showNavItem.isPublic) {
-                this.bottomRoomTitle.setText(this.showNavItem.name + " (" + this.showNavItem.visitors + "/" + this.showNavItem.maxVisitors + ")");
-                this.bottomRoomSubtitle.setText("");
-                this.bottomRoomDescription.setLayoutY(24);
-                // TODO get public room preview image
-                this.bottomRoomImg.setImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/public_placeholder.png"));
+                this.infoImg.setTranslateX(16);
+                this.infoImg.setTranslateY(15);
+                this.infoImg.setImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/public_placeholder.png")); // TODO get this
+                this.infoTitle.setText(this.showNavItem.name + " (" + this.showNavItem.visitors + "/" + this.showNavItem.maxVisitors + ")");
+                this.infoSubtitle.setText("");
+                this.infoDescription.setTranslateY(0);
             }
             else {
-                this.bottomRoomTitle.setText(this.showNavItem.name);
-                this.bottomRoomSubtitle.setText("(" + this.showNavItem.visitors + "/" + this.showNavItem.maxVisitors + ") " + TextsManager.getInstance().getString("room_owner") + " " + this.showNavItem.owner);
-                this.bottomRoomDescription.setLayoutY(34);
-                this.bottomRoomImg.setImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/door.png"));
+                this.infoImg.setTranslateX(0);
+                this.infoImg.setTranslateY(0);
+                this.infoImg.setImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/info_door_" + getBackgroundByDoor(this.showNavItem) + ".png"));
+                this.infoTitle.setText(this.showNavItem.name);
+                this.infoSubtitle.setText("(" + this.showNavItem.visitors + "/" + this.showNavItem.maxVisitors + ") " + TextsManager.getInstance().getString("room_owner") + " " + this.showNavItem.owner);
+                this.infoDescription.setTranslateY(10);
             }
 
-            this.bottomRoomDescription.setText(this.showNavItem.description);
+            this.infoDescription.setText(this.showNavItem.description);
+
+            var id = this.showNavItem.id;
 
             if (this.currentPage == NavigatorPage.OWN) {
-                this.bottomRoomButton.setText(TextsManager.getInstance().getString("nav_modify"));
-                this.bottomRoomButton.setTranslateX(0);
+                this.infoLeftButton.setText(TextsManager.getInstance().getString("nav_modify"));
+                this.infoLeftButton.setTranslateX(0);
                 // TODO this will be handled in UI
             }
             else if (this.currentPage == NavigatorPage.FAVOURITES) {
-                this.bottomRoomButton.setText(TextsManager.getInstance().getString("nav_removefavourites"));
-                this.bottomRoomButton.setOnMouseClicked(e1 -> this.removeFromFavourites(this.showNavItem.id));
-                this.bottomRoomButton.setTranslateX(-30);
+                this.infoLeftButton.setText(TextsManager.getInstance().getString("nav_removefavourites"));
+                this.infoLeftButton.setOnMouseClicked(e1 -> this.removeFromFavourites(id));
+                this.infoLeftButton.setTranslateX(-30);
             }
             else {
-                this.bottomRoomButton.setText(TextsManager.getInstance().getString("nav_addtofavourites"));
-                this.bottomRoomButton.setOnMouseClicked(e1 -> this.addToFavourites(this.showNavItem.id));
-                this.bottomRoomButton.setTranslateX(0);
+                this.infoLeftButton.setText(TextsManager.getInstance().getString("nav_addtofavourites"));
+                this.infoLeftButton.setOnMouseClicked(e1 -> this.addToFavourites(id));
+                this.infoLeftButton.setTranslateX(0);
             }
 
-            this.bottomRoomGoButton.setOnMouseClicked(e1 -> openRoom(this.showNavItem.id));
+            this.infoGoButton.setOnMouseClicked(e1 -> openRoom(id));
+            this.infoLeftButton.setVisible(true);
+            this.infoGoButton.setVisible(true);
+            this.info.setVisible(true);
 
-            this.bottom.setVisible(false);
-            this.bottomRoom.setVisible(true);
             this.showNavItem = null;
         }
 
         if (this.closeBottom) {
             var newHeight = this.navList.getPrefHeight() + 96;
             this.navList.setSize(330, (int)newHeight);
-            this.bottom.setVisible(false);
-            this.bottomRoom.setVisible(false);
+            this.info.setVisible(false);
 
             this.closeBottom = false;
         }
@@ -499,53 +478,85 @@ public class Navigator extends Widget {
         this.navList.update();
     }
 
+    private String getBackgroundByDoor(NavItem navItem) {
+        if (navItem.door == null || navItem.door == Door.OPEN) {
+            return "open";
+        } else if (navItem.door == Door.DOORBELL) {
+            return "doorbell";
+        } else if (navItem.door == Door.PASSWORD) {
+            return "password";
+        }
+
+        return "";
+    }
+
     private Pane generateNavListItem(NavItem navItem) {
         var navListItem = new Pane();
         navListItem.setMinHeight(16);
         navListItem.setMaxWidth(311);
 
-        var nameLabel = new Label(navItem.name);
-        nameLabel.setLayoutX(17);
-        nameLabel.setLayoutY(2);
+        var percentageFull = (1.0 / navItem.maxVisitors) * navItem.visitors;
+        var background = "";
 
-        navListItem.getChildren().add(nameLabel);
+        if (percentageFull == 0) {
+            background = "0";
+        } else if (percentageFull < 0.34) {
+            background = "lt_34";
+        } else if (percentageFull < 0.76) {
+            background = "lt_76";
+        } else if (percentageFull < 1) {
+            background = "lt_100";
+        } else if (percentageFull == 1) {
+            background = "100";
+        }
 
         if (navItem.isCategory) {
+            var nameLabel = new Label(navItem.name);
+            nameLabel.setLayoutX(17);
+            nameLabel.setLayoutY(2);
+            nameLabel.setTextFill(percentageFull == 1 ? Color.web("#D47979") : Color.BLACK); // TODO does this actually change color? Can't find screenshots
+
             var openLabel = new Label(TextsManager.getInstance().getString("nav_openbutton"));
             openLabel.setLayoutX(233);
             openLabel.setLayoutY(2);
             openLabel.setAlignment(Pos.TOP_RIGHT);
             openLabel.setMinWidth(48);
             openLabel.setUnderline(true);
+            openLabel.setTextFill(percentageFull == 1 ? Color.web("#D47979") : Color.BLACK);
 
-            var openButton = new Pane();
-            openButton.setPrefSize(311, 16);
-            openButton.setCursor(Cursor.HAND);
-
-            navListItem.getChildren().addAll(openLabel, openButton);
-            navListItem.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/category_empty.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+            navListItem.getChildren().addAll(nameLabel, openLabel);
+            navListItem.setCursor(Cursor.HAND);
+            navListItem.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/category_" + background +".png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
         }
         else {
-            var goLabel = new Label(TextsManager.getInstance().getString("nav_gobutton"));
-            goLabel.setLayoutX(271);
-            goLabel.setLayoutY(2);
-            goLabel.setAlignment(Pos.TOP_RIGHT);
-            goLabel.setMinWidth(24);
-            goLabel.setUnderline(true);
-
             var nameButton = new Pane();
             nameButton.setPrefSize(251, 16);
             nameButton.setCursor(Cursor.HAND);
             nameButton.setOnMouseClicked(e -> this.showNavItem = navItem);
+            nameButton.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/room_" + getBackgroundByDoor(navItem) + ".png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+            
+            var nameLabel = new Label(navItem.name);
+            nameLabel.setLayoutX(17);
+            nameLabel.setLayoutY(2);
+            nameButton.getChildren().add(nameLabel);
 
             var goButton = new Pane();
             goButton.setPrefSize(58, 16);
             goButton.setLayoutX(253);
             goButton.setCursor(Cursor.HAND);
             goButton.setOnMouseClicked(e -> openRoom(navItem.id));
+            goButton.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/go_" + background + ".png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
 
-            navListItem.getChildren().addAll(goLabel, nameButton, goButton);
-            navListItem.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/room_empty.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+            var goLabel = new Label(TextsManager.getInstance().getString(percentageFull == 1 ? "nav_fullbutton" : "nav_gobutton"));
+            goLabel.setLayoutX(18);
+            goLabel.setLayoutY(2);
+            goLabel.setAlignment(Pos.TOP_RIGHT);
+            goLabel.setMinWidth(24);
+            goLabel.setUnderline(true);
+            goLabel.setTextFill(percentageFull == 1 ? Color.web("#D47979") : Color.BLACK);
+            goButton.getChildren().add(goLabel);
+
+            navListItem.getChildren().addAll(nameButton, goButton);
         }
 
         return navListItem;
@@ -554,9 +565,9 @@ public class Navigator extends Widget {
     private void getRecommendedItems () {
         this.recommendedItems = new ArrayList<NavItem>();
 
-        this.recommendedItems.add(new NavItem(1, false, "Hall", "New? Lost? Get a warm welcome here!", "C-3", 0, 40));
-        this.recommendedItems.add(new NavItem(1, false, "Tresor", "Visit the park and the infamous Infobus", "zidro", 0, 65));
-        this.recommendedItems.add(new NavItem(1, false, "Box ( Habbo.nl - 2007 )", "Splish, splash and have a bash in the famous Habbo pool!", "Miquel", 0, 120));
+        this.recommendedItems.add(new NavItem(1, "Hall", "New? Lost? Get a warm welcome here!", "C-3", 0, 40, Door.OPEN));
+        this.recommendedItems.add(new NavItem(1, "Tresor", "Visit the park and the infamous Infobus", "zidro", 0, 65, Door.DOORBELL));
+        this.recommendedItems.add(new NavItem(1, "Box ( Habbo.nl - 2007 )", "Splish, splash and have a bash in the famous Habbo pool!", "Miquel", 0, 120, Door.PASSWORD));
     }
 
     private void getCategory(int categoryId) {
@@ -564,16 +575,16 @@ public class Navigator extends Widget {
 
         if (categoryId == 1) {
             this.title.setText("Public Rooms");
-            this.navItems.add(new NavItem(1, true, "Welcome Lounge", "New? Lost? Get a warm welcome here!", "", 0, 40));
-            this.navItems.add(new NavItem(1, true, "The Park", "Visit the park and the infamous Infobus", "", 0, 65));
-            this.navItems.add(new NavItem(1, true, "Habbo Lido", "Splish, splash and have a bash in the famous Habbo pool!", "", 0, 120));
-            this.navItems.add(new NavItem(1, true, "Rooftop Rumble", "Wobble Squabble your bum off in our cool rooftop hang out", "", 0, 50));
+            this.navItems.add(new NavItem(1, "Welcome Lounge", "New? Lost? Get a warm welcome here!", "", 1, 40));
+            this.navItems.add(new NavItem(1, "The Park", "Visit the park and the infamous Infobus", "", 40, 65));
+            this.navItems.add(new NavItem(1, "Habbo Lido", "Splish, splash and have a bash in the famous Habbo pool!", "", 115, 120));
+            this.navItems.add(new NavItem(1, "Rooftop Rumble", "Wobble Squabble your bum off in our cool rooftop hang out", "", 50, 50));
             this.navItems.add(new NavItem(1, "Entertainment", 0, 100));
-            this.navItems.add(new NavItem(1, "Restaurants and Cafes", 0, 100));
-            this.navItems.add(new NavItem(1, "Lounges and Clubs", 0, 100));
-            this.navItems.add(new NavItem(1, "Habbo Club", 0, 100));
-            this.navItems.add(new NavItem(1, "Outside Spaces", 0, 100));
-            this.navItems.add(new NavItem(1, "The Lobbies", 0, 100));
+            this.navItems.add(new NavItem(1, "Restaurants and Cafes", 1, 100));
+            this.navItems.add(new NavItem(1, "Lounges and Clubs", 40, 100));
+            this.navItems.add(new NavItem(1, "Habbo Club", 77, 100));
+            this.navItems.add(new NavItem(1, "Outside Spaces", 98, 100));
+            this.navItems.add(new NavItem(1, "The Lobbies", 100, 100));
             this.navItems.add(new NavItem(1, "The Hallways", 0, 100));
             this.navItems.add(new NavItem(1, "Games", 0, 100));
         }
@@ -594,31 +605,36 @@ public class Navigator extends Widget {
 
     private void getSearch(String criteria) {
         this.navItems = new ArrayList<NavItem>();
-
-        if (navItems.isEmpty() && criteria != null) {
-            this.searchNoResults.setVisible(true);
+        if (criteria != null) {
+            // do search here
+            System.out.println("Search for '" + criteria + "'");
+            if (navItems.isEmpty()) {
+                this.searchNoResults.setVisible(true);
+            }
         }
     }
 
     private void getOwn() {        
         this.navItems = new ArrayList<NavItem>();
 
-        this.navItems.add(new NavItem(1, false, "Parsnip's Casino", "Large bets welcomed, games 13/21/poker", "Parsnip", 0, 15));
-        this.navItems.add(new NavItem(1, false, "Parsnip's Hub", "Sit and chat or go through the teles to see some of my favourite rooms", "Parsnip", 0, 25));
-        this.navItems.add(new NavItem(1, false, "Parsnip's Room", "If I'm sat here alone, I'm probably afk", "Parsnip", 0, 10));
-        this.navItems.add(new NavItem(1, false, "Siract's Trophy Room", "Tribute to Siract - will be sorely missed!", "Parsnip",  0, 10));
-        this.navItems.add(new NavItem(1, false, "Pea's Dutch Lounge", "Dutch themed lounge for Pea", "Parsnip", 0, 15));
-        this.navItems.add(new NavItem(1, false, "Parsnip's Hallway", "", "Parsnip", 0, 25));
-        this.navItems.add(new NavItem(1, false, "Animal Nitrate", "", "Parsnip",  0, 25));
+        this.navItems.add(new NavItem(1, "Parsnip's Casino", "Large bets welcomed, games 13/21/poker", "Parsnip", 0, 15, Door.OPEN));
+        this.navItems.add(new NavItem(1, "Parsnip's Hub", "Sit and chat or go through the teles to see some of my favourite rooms", "Parsnip", 0, 25, Door.OPEN));
+        this.navItems.add(new NavItem(1, "Parsnip's Room", "If I'm sat here alone, I'm probably afk", "Parsnip", 0, 10, Door.OPEN));
+        this.navItems.add(new NavItem(1, "Siract's Trophy Room", "Tribute to Siract - will be sorely missed!", "Parsnip",  0, 10, Door.OPEN));
+        this.navItems.add(new NavItem(1, "Pea's Dutch Lounge", "Dutch themed lounge for Pea", "Parsnip", 0, 15, Door.OPEN));
+        this.navItems.add(new NavItem(1, "Parsnip's Hallway", "", "Parsnip", 0, 25, Door.OPEN));
+        this.navItems.add(new NavItem(1, "Animal Nitrate", "", "Parsnip",  0, 25, Door.OPEN));
     }
 
     private void getFavourites() {
         this.navItems = new ArrayList<NavItem>();
 
-        this.navItems.add(new NavItem(1, false, "Parsnip's Casino", "Large bets welcomed, games 13/21/poker", "Parsnip", 0, 15));
+        this.navItems.add(new NavItem(1, "Parsnip's Casino", "Large bets welcomed, games 13/21/poker", "Parsnip", 0, 15, Door.OPEN));
     }
 
     private void openRoom(int roomId) {
+        System.out.println("Go to " + roomId);
+
         if (Movie.getInstance().isInterfaceActive(EntryView.class)) {
             var entryView = Movie.getInstance().getInterfaceByClass(EntryView.class);
             Movie.getInstance().removeObject(this);
@@ -665,6 +681,12 @@ public class Navigator extends Widget {
         FAVOURITES
     }
 
+    private enum Door {
+        OPEN,
+        DOORBELL,
+        PASSWORD
+    }
+
     private class NavItem {
         int id;
         String name;
@@ -675,6 +697,7 @@ public class Navigator extends Widget {
         String owner;
         String description;
         String img;
+        Door door;
 
         public NavItem(int id, String name, int visitors, int maxVisitors) {
             this.id = id;
@@ -684,16 +707,27 @@ public class Navigator extends Widget {
             this.maxVisitors = maxVisitors;
         }
 
-        public NavItem(int id, Boolean isPublic, String name, String description, String ownerImg, int visitors, int maxVisitors) {
+        public NavItem(int id, String name, String description, String img, int visitors, int maxVisitors) {
             this.id = id;
-            this.isPublic = isPublic;
+            this.isPublic = true;
             this.name = name;
             this.isCategory = false;
             this.visitors = visitors;
             this.maxVisitors = maxVisitors;
-            this.owner = isPublic ? null : ownerImg;
             this.description = description;
-            this.img = !isPublic ? null : ownerImg;
+            this.img = img;
+        }
+
+        public NavItem(int id, String name, String description, String owner, int visitors, int maxVisitors, Door door) {
+            this.id = id;
+            this.isPublic = false;
+            this.name = name;
+            this.isCategory = false;
+            this.visitors = visitors;
+            this.maxVisitors = maxVisitors;
+            this.owner = owner;
+            this.description = description;
+            this.door = door;
         }
     }
 }
