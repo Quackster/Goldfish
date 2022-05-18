@@ -24,9 +24,7 @@ jobs:
           distribution: 'zulu'
           java-version: '11'
       - name: Setup and execute Gradle 'farJar' task
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: farJar
+        uses: ./gradlew fatJar
       - name: Rename files
         run: cp build/libs/Client-all.jar Goldfish.jar
       - uses: 'marvinpinto/action-automatic-releases@latest'
