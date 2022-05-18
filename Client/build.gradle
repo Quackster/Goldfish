@@ -11,7 +11,7 @@ javafx {
 sourceCompatibility = "1.11"
 targetCompatibility = "1.11"
 
-mainClassName = 'org.alexdev.krishna.Krishna'
+mainClassName = 'com.classichabbo.goldfish.client.Goldfish'
 
 repositories {
     flatDir {

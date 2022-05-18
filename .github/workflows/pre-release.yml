@@ -23,7 +23,7 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew fatJar
       - name: Rename files
-        run: cp Client/build/libs/Client-all.jar Krishna.jar
+        run: cp Client/build/libs/Client-all.jar Goldfish.jar
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
@@ -31,4 +31,4 @@ jobs:
           prerelease: true
           title: "Development Build"
           files: |
-            Krishna.jar
+            Goldfish.jar
