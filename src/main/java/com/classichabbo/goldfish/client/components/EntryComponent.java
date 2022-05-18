@@ -1,12 +1,16 @@
 package com.classichabbo.goldfish.client.components;
 
 import com.classichabbo.goldfish.client.Movie;
+import com.classichabbo.goldfish.client.game.values.types.TextsManager;
 import com.classichabbo.goldfish.client.views.types.entry.EntryView;
+import com.classichabbo.goldfish.client.views.types.error.ErrorWindow;
 import com.classichabbo.goldfish.client.views.types.loader.LoadingScreen;
 import com.classichabbo.goldfish.client.views.types.toolbars.EntryToolbar;
 import com.classichabbo.goldfish.client.views.types.widgets.Navigator;
 import com.classichabbo.goldfish.client.scripts.Cloud;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
+import com.classichabbo.goldfish.networking.NettyClient;
+import javafx.application.Platform;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -45,24 +49,7 @@ public class EntryComponent {
         this.entryView.getChildren().add(cloud);
     }
 
-    public void initLoginProcess() {
-        // Movie.getInstance().createObject(new Alert("Project Havana - Habbo Hotel v31 emulation\n\nRelease: r31_20090312_0433_13751_b40895fb610dbe96dc7b9d6477eeeb4\n\nContributors:\n - ThuGie, Copyright, Raptosaur, Hoshiko, TOMYSSHADOW, Elijah\n   Romauld, Glaceon, Nillus, Holo Team, Meth0d, office.boy, bbadzz\n\n   Big thanks to Sefhriloff & Ascii for assisting with SnowStorm.\n\nMade by Quackster from RaGEZONE"));
-
-        // Remove loading bar (moved to here so it removes it before it starts animating)
-        // (if this is wrong please don't hate me was just finalising EntryToolbar) :)
-        var loadingBar = Movie.getInstance().getViews().stream().filter(x -> x instanceof LoadingScreen).findFirst().orElse(null);//ifPresent(loadingBar -> Movie.getInstance().removeObject(loadingBar));
-
-        if (loadingBar != null) {
-            if (((LoadingScreen) loadingBar).getTotalLoaderProgress() >= 100)
-                loadingBar.remove();
-            else {
-                tryLogin();
-                return;
-            }
-        }
-
-        Movie.getInstance().createObject(new EntryToolbar(this.entryView), this.entryView);
-
+    public void entryViewResume() {
         var navigator = Movie.getInstance().getViews().stream().filter(x -> x instanceof Navigator).findFirst().orElse(null);
 
         if (navigator == null) {
@@ -72,9 +59,30 @@ public class EntryComponent {
             navigator.setHidden(false);
         }
 
-    }
+        Movie.getInstance().createObject(new EntryToolbar(entryView), entryView);
+        // Movie.getInstance().createObject(new Alert("Project Havana - Habbo Hotel v31 emulation\n\nRelease: r31_20090312_0433_13751_b40895fb610dbe96dc7b9d6477eeeb4\n\nContributors:\n - ThuGie, Copyright, Raptosaur, Hoshiko, TOMYSSHADOW, Elijah\n   Romauld, Glaceon, Nillus, Holo Team, Meth0d, office.boy, bbadzz\n\n   Big thanks to Sefhriloff & Ascii for assisting with SnowStorm.\n\nMade by Quackster from RaGEZONE"));
 
-    private void tryLogin() {
+        // Remove loading bar (moved to here so it removes it before it starts animating)
+        // (if this is wrong please don't hate me was just finalising EntryToolbar) :)
 
+        /*Platform.runLater(() -> {
+            var loader = Movie.getInstance().getInterfaceByClass(LoadingScreen.class);
+
+            if (loader != null) {
+                System.out.println("loader removal");
+                Movie.getInstance().removeObject(loader);
+            }
+
+            Movie.getInstance().createObject(new EntryToolbar(this.entryView), this.entryView);
+
+            var navigator = Movie.getInstance().getViews().stream().filter(x -> x instanceof Navigator).findFirst().orElse(null);
+
+            if (navigator == null) {
+                Movie.getInstance().createObject(new Navigator());
+            } else {
+                navigator.toFront();
+                navigator.setHidden(false);
+            }
+        });*/
     }
 }

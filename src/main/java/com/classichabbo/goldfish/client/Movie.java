@@ -146,8 +146,9 @@ public class Movie extends Application {
                 view.getHandler().regMsgList(true);
             }
 
-            this.views.add(view);
         });
+
+        this.views.add(view);
     }
 
     public void removeObject(View view) {
@@ -193,7 +194,7 @@ public class Movie extends Application {
 
     public void unregisterListeners(MessageHandler messageHandler, HashMap<Integer, MessageRequest> listeners) {
         listeners.forEach((key, value) -> this.listeners.removeIf(message ->
-                message.getHandlerClass() == messageHandler.getClass() && message.getHeader() == key));
+                message.getHandlerClass() == messageHandler.getClass() && message.getHeader() == key.intValue()));
     }
 
 
@@ -205,7 +206,7 @@ public class Movie extends Application {
 
     public void unregisterCommands(MessageHandler messageHandler, HashMap<String, Integer> commands) {
         commands.forEach((key, value) -> this.commands.removeIf(message ->
-                message.getHandlerClass() == messageHandler.getClass() && message.getHeader() == value));
+                message.getHandlerClass() == messageHandler.getClass() && message.getHeader() == value.intValue()));
     }
 
     public boolean isInterfaceActive(Class<?> clazz) {

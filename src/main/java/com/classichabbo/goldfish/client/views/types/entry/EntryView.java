@@ -5,7 +5,7 @@ import com.classichabbo.goldfish.client.components.EntryComponent;
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
 import com.classichabbo.goldfish.client.game.scheduler.types.GraphicsScheduler;
 import com.classichabbo.goldfish.client.game.values.ValueType;
-import com.classichabbo.goldfish.client.game.values.types.PropertiesManager;
+import com.classichabbo.goldfish.client.game.values.types.VariablesManager;
 import com.classichabbo.goldfish.client.views.View;
 import com.classichabbo.goldfish.client.views.types.loader.LoadingScreen;
 import com.classichabbo.goldfish.client.views.types.room.RoomTransition;
@@ -52,7 +52,7 @@ public class EntryView extends View {
     @Override
     public void start() {
         this.clouds = new ArrayList<>();
-        this.cloudTurnPoint = PropertiesManager.getInstance().getInt("hotel.view.cloud.turn.point", 330);
+        this.cloudTurnPoint = VariablesManager.getInstance().getInt("hotel.view.cloud.turn.point", 330);
 
         this.component = new EntryComponent(this);
 
@@ -63,25 +63,25 @@ public class EntryView extends View {
         this.bottomReveal.setFill(Color.BLACK);
 
         this.topRight = new ImageView();
-        this.topRight.setImage(ResourceManager.getInstance().getWebImage(PropertiesManager.getInstance().getString("hotel.view.image.top.right", "")));
+        this.topRight.setImage(ResourceManager.getInstance().getWebImage(VariablesManager.getInstance().getString("hotel.view.image.top.right", "")));
         this.topRight.setY(this.topRight.getImage().getHeight() * -1);
 
         this.bottomLeft = new ImageView();
-        this.bottomLeft.setImage(ResourceManager.getInstance().getWebImage(PropertiesManager.getInstance().getString("hotel.view.image.bottom.left", "")));
+        this.bottomLeft.setImage(ResourceManager.getInstance().getWebImage(VariablesManager.getInstance().getString("hotel.view.image.bottom.left", "")));
 
         this.bottomRight = new ImageView();
-        this.bottomRight.setImage(ResourceManager.getInstance().getWebImage(PropertiesManager.getInstance().getString("hotel.view.image.bottom.right", "")));
+        this.bottomRight.setImage(ResourceManager.getInstance().getWebImage(VariablesManager.getInstance().getString("hotel.view.image.bottom.right", "")));
 
         this.stretchLeft = new Rectangle(1,1);//= new ImageView();
-        this.stretchLeft.setFill((Color) PropertiesManager.getInstance().getType("hotel.view.left.color", ValueType.COLOR_RGB, Color.rgb(117, 175, 203)));
+        this.stretchLeft.setFill((Color) VariablesManager.getInstance().getType("hotel.view.left.color", ValueType.COLOR_RGB, Color.rgb(117, 175, 203)));
         //this.stretchLeft.setImage(new Image(new File("resources/scenes/hotel_view/stretch_left.png").toURI().toString()));
 
         this.stretchRight = new Rectangle(1,1);
-        this.stretchRight.setFill((Color) PropertiesManager.getInstance().getType("hotel.view.right.color", ValueType.COLOR_RGB, Color.rgb(139, 205, 233)));
+        this.stretchRight.setFill((Color) VariablesManager.getInstance().getType("hotel.view.right.color", ValueType.COLOR_RGB, Color.rgb(139, 205, 233)));
         //this.stretchRight.setImage(new Image(new File("resources/scenes/hotel_view/stretch_right.png").toURI().toString()));
 
         this.sun = new ImageView();
-        this.sun.setImage(new Image(PropertiesManager.getInstance().getString("hotel.view.image.sun")));
+        this.sun.setImage(new Image(VariablesManager.getInstance().getString("hotel.view.image.sun")));
         this.sun.setX(DimensionUtil.getCenterCoords(this.sun.getImage().getWidth(), this.sun.getImage().getHeight()).getX());
 
         this.pViewOpenTime = System.currentTimeMillis() + (MAX_VIEW_TIME * 2);
@@ -323,10 +323,9 @@ public class EntryView extends View {
      * When the reveal task is finished, set these to invisible
      */
     private void openRevealTaskFinished() {
-        this.getComponent().initLoginProcess();
-
         this.topReveal.setVisible(false);
         this.bottomReveal.setVisible(false);
+        this.getComponent().entryViewResume();
     }
 
     /**

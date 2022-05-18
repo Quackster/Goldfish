@@ -3,7 +3,10 @@ package com.classichabbo.goldfish.client.game.values.types;
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
 import com.classichabbo.goldfish.client.game.values.Values;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
@@ -25,23 +28,6 @@ public class PropertiesManager extends Values {
         System.out.println(this.values);
 
         System.out.println(values.size() + " configuration keys loaded");
-        this.setFinished(true);
-    }
-
-    public void loadVariables() throws IOException {
-        this.setFinished(false);
-
-        if (this.values == null || this.values.isEmpty()) {
-            return;
-        }
-
-        //System.out.println("Loading external variables...");
-
-        InputStream resource = new URL(this.values.get("external.variables")).openStream();
-        readLines(resource);
-        resource.close();
-
-        System.out.println(values.size() + " external variables loaded");
         this.setFinished(true);
     }
 

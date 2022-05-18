@@ -1,19 +1,23 @@
 package com.classichabbo.goldfish.client.components;
 
+import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.game.values.types.PropertiesManager;
+import com.classichabbo.goldfish.client.game.values.types.VariablesManager;
 import com.classichabbo.goldfish.client.game.values.types.TextsManager;
+import com.classichabbo.goldfish.client.views.types.entry.EntryView;
+import com.classichabbo.goldfish.client.views.types.loader.LoadingScreen;
 import com.classichabbo.goldfish.networking.NettyClient;
+import javafx.application.Platform;
 
 import java.awt.*;
-import java.util.concurrent.Future;
 
 public class LoaderComponent extends Component {
     private long connectionTimer = 0;
 
-    private Future<Boolean> clientConfigTask;
-    private Future<Boolean> externalTextsTask;
-    private Future<Boolean> externalVariablesTask;
-    private Future<Boolean> connectServerTask;
+    private Thread clientConfigTask;
+    private Thread externalTextsTask;
+    private Thread externalVariablesTask;
+    private Thread connectServerTask;
 
     public LoaderComponent() {
         this.clientConfigTask = null;
@@ -21,6 +25,9 @@ public class LoaderComponent extends Component {
         this.externalVariablesTask = null;
     }
 
+    /**
+     * Load client config task
+     */
     public boolean loadClientConfig() {
         try {
             PropertiesManager.getInstance().loadConfig();
@@ -31,16 +38,22 @@ public class LoaderComponent extends Component {
         return PropertiesManager.getInstance().isFinished();
     }
 
+    /**
+     * Load external variables task
+     */
     public boolean loadExternalVariables() {
         try {
-            PropertiesManager.getInstance().loadVariables();
+            VariablesManager.getInstance().loadVariables();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
 
-        return PropertiesManager.getInstance().isFinished();
+        return VariablesManager.getInstance().isFinished();
     }
 
+    /**
+     * Load external texts task
+     */
     public boolean loadExternalTexts() {
         try {
             TextsManager.getInstance().loadTexts();
@@ -51,9 +64,11 @@ public class LoaderComponent extends Component {
         return TextsManager.getInstance().isFinished();
     }
 
-
+    /**
+     * Connect server task
+     */
     public void connectServer() {
-        if (NettyClient.getInstance().getConnectionAttempts().get() >= PropertiesManager.getInstance().getInt("connection.max.attempts", 5)) {
+        if (NettyClient.getInstance().getConnectionAttempts().get() >= VariablesManager.getInstance().getInt("connection.max.attempts", 5)) {
             return;
         }
 
@@ -79,35 +94,49 @@ public class LoaderComponent extends Component {
         });
     }
 
-    public Future<Boolean> getClientConfigTask() {
+    public void showEntryView() {
+        Platform.runLater(() -> {
+            var loader = Movie.getInstance().getInterfaceByClass(LoadingScreen.class);
+
+            if (loader != null) {
+                loader.getLoadingLogoImage().setVisible(false);
+                Movie.getInstance().createObject(new EntryView());
+                loader.getLoaderBar().toFront();
+            }
+        });
+    }
+
+
+
+    public Thread getClientConfigTask() {
         return clientConfigTask;
     }
 
-    public void setClientConfigTask(Future<Boolean> clientConfigTask) {
+    public void setClientConfigTask(Thread clientConfigTask) {
         this.clientConfigTask = clientConfigTask;
     }
 
-    public Future<Boolean> getExternalVariablesTask() {
+    public Thread getExternalVariablesTask() {
         return externalVariablesTask;
     }
 
-    public void setExternalVariablesTask(Future<Boolean> externalVariablesTask) {
+    public void setExternalVariablesTask(Thread externalVariablesTask) {
         this.externalVariablesTask = externalVariablesTask;
     }
 
-    public Future<Boolean> getExternalTextsTask() {
+    public Thread getExternalTextsTask() {
         return externalTextsTask;
     }
 
-    public void setExternalTextsTask(Future<Boolean> externalTextsTask) {
+    public void setExternalTextsTask(Thread externalTextsTask) {
         this.externalTextsTask = externalTextsTask;
     }
 
-    public Future<Boolean> getConnectServerTask() {
+    public Thread getConnectServerTask() {
         return connectServerTask;
     }
 
-    public void setConnectServerTask(Future<Boolean> connectServerTask) {
+    public void setConnectServerTask(Thread connectServerTask) {
         this.connectServerTask = connectServerTask;
     }
 }
