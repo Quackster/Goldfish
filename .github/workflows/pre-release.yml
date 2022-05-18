@@ -22,7 +22,9 @@ jobs:
         with:
           distribution: 'zulu' # See 'Supported distributions' for available options
           java-version: '11'
-      - name: Build command with Gradle
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+      - name: Execute Gradle build
         run: ./gradlew build
       - name: Build jar with Gradle
         run: ./gradlew fatJar
