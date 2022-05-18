@@ -101,6 +101,8 @@ public class ErrorWindow extends View {
             this.window.setTranslateY(10);
         }
 
+        this.toFront();
+        
         Movie.getInstance().getInterfaceScheduler().receiveUpdate(this);
     }
 
