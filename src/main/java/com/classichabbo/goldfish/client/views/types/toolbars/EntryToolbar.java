@@ -42,31 +42,6 @@ public class EntryToolbar extends View {
 
         this.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
 
-        var temp = new ButtonLarge("Go to room UI");
-        temp.setLayoutX(400);
-        temp.setLayoutY(15);
-        temp.setOnMouseClicked(e -> {
-            if (Movie.getInstance().isInterfaceActive(EntryView.class)) {
-                var entryView = Movie.getInstance().getInterfaceByClass(EntryView.class);
-                Movie.getInstance().removeObject(this);
-
-                entryView.transitionTo(() -> {
-                    Movie.getInstance().createObject(new RoomView());
-                    Movie.getInstance().removeObject(entryView);
-                });
-
-                Movie.getInstance().hideWidgets();
-            }
-            /*
-            if (Movie.getInstance().getCurrentVisualiser().getType() == VisualiserType.HOTEL_VIEW) {
-                ((EntryVisualiser)Movie.getInstance().getCurrentVisualiser()).transitionTo(VisualiserType.ROOM);
-            } else {
-                Movie.getInstance().showVisualiser(VisualiserType.ROOM);
-            }*/
-        });
-
-        this.getChildren().add(temp);
-
         var userHead = new ImageButton(new Image("https://cdn.classichabbo.com/habbo-imaging/avatarimage?figure=hd-180-1.hr-100-61.ch-210-66.lg-270-82.sh-290-80&size=b&head=1&direction=3&head_direction=3&gesture=std"));
         userHead.setLayoutX(Math.floor(65 / 2 - userHead.getImage().getWidth() / 2));
         userHead.setLayoutY(Math.round(55 / 2 - userHead.getImage().getHeight() / 2));
