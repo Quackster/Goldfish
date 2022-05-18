@@ -20,6 +20,8 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '11'
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
       - name: "./gradlew build"
         uses: gradle/gradle-build-action@v2
         with:
