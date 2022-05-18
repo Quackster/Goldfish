@@ -17,23 +17,21 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v2
         with:
-          distribution: 'zulu' # See 'Supported distributions' for available options
           java-version: '11'
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
       - name: Execute Gradle build
-        run: ./gradlew build
-      - name: Build jar with Gradle
-        run: ./gradlew fatJar
+        with:
+          arguments: fatJar
       - name: Rename files
         run: cp Client/build/libs/Client-all.jar Goldfish.jar
-      - uses: "marvinpinto/action-automatic-releases@latest"
+      - uses: "marvinpinto/action-automatic-releases@${{ matrix.os }}"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "latest-${{ matrix.os }}"
+          automatic_release_tag: "${{ matrix.os }}"
           prerelease: true
           title: "Development Build - ${{ matrix.os }}"
           files: |
