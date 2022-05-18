@@ -25,10 +25,10 @@ jobs:
           arguments: farJar
       - name: Rename files
         run: cp Client/build/libs/Client-all.jar Goldfish.jar
-      - uses: 'marvinpinto/action-automatic-releases@tag-${{ matrix.os }}'
+      - uses: 'marvinpinto/action-automatic-releases@latest${{ matrix.os }}'
         with:
           repo_token: '${{ secrets.GITHUB_TOKEN }}'
-          automatic_release_tag: '${{ matrix.os }}'
+          automatic_release_tag: ${{ matrix.os }}
           prerelease: true
           title: 'Development Build - ${{ matrix.os }}'
           files: |
