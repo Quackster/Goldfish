@@ -68,7 +68,7 @@ public class View extends Pane implements GameUpdate {
 
     public void setHidden(boolean isHidden) {
         this.isHidden = isHidden;
-        this.setVisible(isHidden);
+        this.setVisible(!isHidden); // isVisible is the inverse of isHidden, so use ! to flip it
     }
 
     public void toggleVisibility() {

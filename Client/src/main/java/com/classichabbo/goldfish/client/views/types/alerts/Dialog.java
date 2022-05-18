@@ -73,6 +73,7 @@ public class Dialog extends View {
 
     @Override
     public void stop() {
+        System.out.println("Called");
         this.clicked = false;
         this.isSized = true;
     }
@@ -132,7 +133,7 @@ public class Dialog extends View {
             }
 
             // Alert was finished sizing, now show it!
-            this.setVisible(true);
+            this.setHidden(false);
 
             // Alert was finished sizing, don't size again!
             this.isSized = true;
