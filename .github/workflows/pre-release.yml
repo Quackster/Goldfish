@@ -13,14 +13,14 @@ jobs:
     runs-on: "ubuntu-latest"
 
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up JDK 11
-        uses: actions/setup-java@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
         with:
-          java-version: 11
-          distribution: 'adopt'
-          cache: gradle
-      - name: Build with Gradle
+          distribution: 'zulu' # See 'Supported distributions' for available options
+          java-version: '11'
+      - name: Build command with Gradle
+        run: ./gradlew build
+      - name: Build jar with Gradle
         run: ./gradlew fatJar
       - name: Rename files
         run: cp Client/build/libs/Client-all.jar Goldfish.jar
