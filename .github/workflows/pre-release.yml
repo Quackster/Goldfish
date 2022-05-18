@@ -18,10 +18,10 @@ jobs:
         with:
           distribution: 'zulu' # See 'Supported distributions' for available options
           java-version: '11'
-      - name: Build command with Gradle
-        run: gradlew.bat build
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
       - name: Build jar with Gradle
-        run: gradlew.bat fatJar
+        run: ./gradlew fatJar
       - name: Rename files
         run: cp Client/build/libs/Client-all.jar Goldfish.jar
       - uses: "marvinpinto/action-automatic-releases@latest"
