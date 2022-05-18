@@ -6,7 +6,7 @@ on:
       - "master"
 
 jobs:
-  pre-release:
+  pre-release-linux:
     permissions: write-all
     
     name: "Pre Release - Linux"
@@ -32,9 +32,7 @@ jobs:
           title: "Development Build"
           files: |
             Goldfish.jar
-            
-jobs:
-  pre-release:
+  pre-release-windows:
     permissions: write-all
     
     name: "Pre Release - Windows"
