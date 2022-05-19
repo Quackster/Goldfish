@@ -85,12 +85,21 @@ public class GlobalHandler extends MessageHandler {
         conn.send("SSO_TICKET", ssoTicket);
     }
 
+    private static void authenticationOK(Connection conn, Request request) {
+        var loader = Movie.getInstance().getInterfaceByClass(LoadingScreen.class);
+
+        if (loader != null) {
+            loader.progressLoader(20);
+        }
+    }
+
     @Override
     public void regMsgList(boolean tBool) {
         var listeners = new HashMap<Integer, MessageRequest>();
         listeners.put(0, GlobalHandler::handleHello);
         listeners.put(1, GlobalHandler::handleServerKey);
         listeners.put(277, GlobalHandler::handleCryptoParameters);
+        listeners.put(3, GlobalHandler::authenticationOK);
 
         var commands = new HashMap<String, Integer>();
         commands.put("INIT_CRYPTO", 206);
