@@ -208,7 +208,7 @@ public class EntryView extends View {
             int initX = 0;
             int initY = ThreadLocalRandom.current().nextInt(0, (int) (DimensionUtil.getProgramHeight()*0.66));
 
-            //this.component.addCloud("left", initX, initY);
+            this.component.addCloud("left", initX, initY);
             this.timeNextCloud = DateUtil.getCurrentTimeSeconds() + ThreadLocalRandom.current().nextInt(1, 10);
         }
     }
