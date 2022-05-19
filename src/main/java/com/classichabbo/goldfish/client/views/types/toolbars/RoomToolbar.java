@@ -42,6 +42,10 @@ public class RoomToolbar extends View {
                 Movie.getInstance().removeObject(this);
 
                 Movie.getInstance().createObject(new RoomTransition(() -> {
+                    var entryView = new EntryView();
+                    entryView.setRunAfterOpening(() -> entryView.getComponent().entryViewResume());
+                    Movie.getInstance().createObject(entryView);
+
                     Movie.getInstance().createObject(new EntryView());
                 }));
             }

@@ -17,13 +17,12 @@ public class NetworkDecoder extends ByteToMessageDecoder {
         while (buffer.readableBytes() > 0) {
             var character = buffer.readByte();
 
-            if (character <= 1) {
+            if (character == 1) {
+                out.add(new Request(content));
                break;
             }
 
             content.writeByte(character);
         }
-
-        out.add(new Request(content));
     }
 }

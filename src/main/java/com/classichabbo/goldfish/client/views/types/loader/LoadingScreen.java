@@ -3,14 +3,14 @@ package com.classichabbo.goldfish.client.views.types.loader;
 import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.components.LoaderComponent;
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
-import com.classichabbo.goldfish.client.game.scheduler.SchedulerManager;
 import com.classichabbo.goldfish.client.game.values.types.PropertiesManager;
 import com.classichabbo.goldfish.client.game.values.types.VariablesManager;
 import com.classichabbo.goldfish.client.game.values.types.TextsManager;
 import com.classichabbo.goldfish.client.views.View;
+import com.classichabbo.goldfish.client.views.types.entry.EntryView;
 import com.classichabbo.goldfish.client.views.types.error.ErrorWindow;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
-import com.classichabbo.goldfish.networking.NettyClient;
+import com.classichabbo.goldfish.networking.Client;
 import javafx.application.Platform;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
@@ -108,11 +108,14 @@ public class LoadingScreen extends View {
     }
 
     private void updateLoader() {
+        boolean finishedLoading = false;
+
         if (this.queueLoaderProgress > 0) {
             var newWidth = this.loaderProgress.getWidth() + 3;
 
             if (newWidth > 296) {
                 newWidth = 296;
+                finishedLoading = true;
             }
 
             this.loaderProgress.setWidth(newWidth);
@@ -121,6 +124,17 @@ public class LoadingScreen extends View {
             this.totalLoaderProgress++;
         }
 
+        if (finishedLoading) {
+            var entryView = Movie.getInstance().getInterfaceByClass(EntryView.class);
+
+            if (entryView != null) {
+                Platform.runLater(() -> {
+                    entryView.getComponent().tryLogin();
+                });
+
+                Movie.getInstance().removeObject(this);
+            }
+        }
         /*
         if (this.totalLoaderProgress == 50) {
             this.loadingLogoImage.setVisible(false);
@@ -163,7 +177,7 @@ public class LoadingScreen extends View {
                     if (PropertiesManager.getInstance().getValues() != null && PropertiesManager.getInstance().getValues().size() > 0) {
                         this.loaderSteps.remove("load_client_config");
                         this.loaderStepsFinished.add("load_client_config");
-                        this.progressLoader(20);
+                        this.progressLoader(10);
                     } else {
                         this.component.setClientConfigTask(null);
                     }
@@ -186,7 +200,7 @@ public class LoadingScreen extends View {
                         if (VariablesManager.getInstance().getValues() != null && VariablesManager.getInstance().getValues().size() > 0) {
                             this.loaderSteps.remove("load_external_variables");
                             this.loaderStepsFinished.add("load_external_variables");
-                            this.progressLoader(20);
+                            this.progressLoader(10);
                         } else {
                             this.component.setExternalVariablesTask(null);
                         }
@@ -210,7 +224,7 @@ public class LoadingScreen extends View {
                         if (TextsManager.getInstance().getValues() != null && TextsManager.getInstance().getValues().size() > 0) {
                             this.loaderSteps.remove("load_external_texts");
                             this.loaderStepsFinished.add("load_external_texts");
-                            this.progressLoader(20);
+                            this.progressLoader(10);
                             // this.component.showEntryView();
                         } else {
                             this.component.setExternalTextsTask(null);
@@ -222,12 +236,12 @@ public class LoadingScreen extends View {
             // Connect server
             if (this.loaderSteps.contains("connect_server")) {
                 if (this.loaderStepsFinished.contains("load_external_texts")) {
-                    if (NettyClient.getInstance().isConnected() ||
-                            NettyClient.getInstance().getConnectionAttempts().get() >= VariablesManager.getInstance().getInt("connection.max.attempts", 5)) {
+                    if (Client.getInstance().isConnected() ||
+                            Client.getInstance().getConnectionAttempts().get() >= VariablesManager.getInstance().getInt("connection.max.attempts", 5)) {
                         this.loaderSteps.remove("connect_server");
                         this.loaderStepsFinished.add("connect_server");
 
-                        if (NettyClient.getInstance().isConnected()) {
+                        if (Client.getInstance().isConnected()) {
                             this.progressLoader(10);
                         } else {
                             Movie.getInstance().createObject(new ErrorWindow(
@@ -240,8 +254,8 @@ public class LoadingScreen extends View {
                         return;
                     }
 
-                    if (!NettyClient.getInstance().isConnected() &&
-                            !NettyClient.getInstance().isConnecting()) {
+                    if (!Client.getInstance().isConnected() &&
+                            !Client.getInstance().isConnecting()) {
                         this.component.connectServer();
                         return;
                     }

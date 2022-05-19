@@ -3,28 +3,28 @@ package com.classichabbo.goldfish.networking.connections;
 import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.game.values.types.TextsManager;
 import com.classichabbo.goldfish.client.views.types.error.ErrorWindow;
-import com.classichabbo.goldfish.networking.NettyClient;
-import com.classichabbo.goldfish.networking.wrappers.ClientChannel;
+import com.classichabbo.goldfish.networking.Client;
+import com.classichabbo.goldfish.networking.wrappers.Connection;
 import com.classichabbo.goldfish.networking.wrappers.Request;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
 public class ConnectionHandler extends SimpleChannelInboundHandler<Request> {
-    private NettyClient client;
-    private ClientChannel channel;
+    private Client client;
+    private Connection channel;
 
-    public ConnectionHandler(NettyClient server) {
+    public ConnectionHandler(Client server) {
         this.client = server;
     }
 
     @Override
     public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
-
+        this.channel = new Connection(ctx.channel());
     }
 
     @Override
     public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
-        if (!NettyClient.getInstance().isConnected()) {
+        if (!Client.getInstance().isConnected()) {
             return;
         }
 
@@ -40,7 +40,7 @@ public class ConnectionHandler extends SimpleChannelInboundHandler<Request> {
 
     @Override
     public void channelRead0(ChannelHandlerContext ctx, Request message) {
-        this.channel = new ClientChannel(ctx.channel());
+        this.channel = new Connection(ctx.channel());
         System.out.println("[" + message.getHeaderId() + " / " + message.getHeader() + "] - " + message.getMessageBody());
 
         Movie.getInstance().getListeners().forEach(x -> {
@@ -57,5 +57,9 @@ public class ConnectionHandler extends SimpleChannelInboundHandler<Request> {
         // if (!(cause instanceof IOException)) {
         //    cause.printStackTrace();
         // }
+    }
+
+    public Connection getConnection() {
+        return channel;
     }
 }

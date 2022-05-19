@@ -8,7 +8,7 @@ import com.classichabbo.goldfish.client.views.View;
 import com.classichabbo.goldfish.client.views.types.loader.LoadingScreen;
 import com.classichabbo.goldfish.client.views.types.widgets.Widget;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
-import com.classichabbo.goldfish.networking.NettyClient;
+import com.classichabbo.goldfish.networking.Client;
 import com.classichabbo.goldfish.networking.wrappers.messages.MessageHandler;
 import com.classichabbo.goldfish.networking.wrappers.messages.types.MessageCommand;
 import com.classichabbo.goldfish.networking.wrappers.messages.types.MessageListener;
@@ -109,7 +109,7 @@ public class Movie extends Application {
         this.stopGameScheduler();
         this.stopInterfaceScheduler();
 
-        NettyClient.getInstance().dispose();
+        Client.getInstance().dispose();
         System.exit(0);
     }
 

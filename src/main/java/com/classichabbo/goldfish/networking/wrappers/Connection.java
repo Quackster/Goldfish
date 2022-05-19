@@ -5,10 +5,10 @@ import com.classichabbo.goldfish.networking.util.StringUtil;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.Channel;
 
-public class ClientChannel {
+public class Connection {
     private final Channel channel;
 
-    public ClientChannel(Channel channel) {
+    public Connection(Channel channel) {
         this.channel = channel;
     }
 
@@ -25,5 +25,9 @@ public class ClientChannel {
 
         var header = messageCommand.getHeader();
         this.channel.writeAndFlush(new Command(header, data));
+    }
+
+    public void close() {
+        channel.close();
     }
 }
