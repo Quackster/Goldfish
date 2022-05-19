@@ -2,6 +2,7 @@ package com.classichabbo.goldfish.client.game.values.types;
 
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
 import com.classichabbo.goldfish.client.game.values.Values;
+import javafx.scene.image.ImageView;
 
 import java.io.*;
 import java.net.URL;
@@ -26,6 +27,16 @@ public class VariablesManager extends Values {
         InputStream resource = new URL(PropertiesManager.getInstance().getString("external.variables")).openStream();
         readLines(resource);
         resource.close();
+
+        ImageView tmpImages = null;
+        tmpImages = new ImageView();
+        tmpImages.setImage(ResourceManager.getInstance().getWebImage(getString("hotel.view.image.top.right", "")));
+
+        tmpImages = new ImageView();
+        tmpImages.setImage(ResourceManager.getInstance().getWebImage(getString("hotel.view.image.bottom.left", "")));
+
+        tmpImages = new ImageView();
+        tmpImages.setImage(ResourceManager.getInstance().getWebImage(getString("hotel.view.image.bottom.right", "")));
 
         System.out.println(values.size() + " external variables loaded");
         this.setFinished(true);
