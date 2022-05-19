@@ -2,6 +2,7 @@ package com.classichabbo.goldfish.client.views.controls;
 
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
 
+import javafx.geometry.Insets;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.layout.Background;
@@ -75,6 +76,10 @@ public class ScrollPane extends HBox {
 
     public void setSpacing(int spacing) {
         this.content.setSpacing(spacing);
+    }
+
+    public void setPadding(int top, int bottom) {
+        this.content.setPadding(new Insets(top, 0, bottom, 0));
     }
 
     public void setSize(int width, int height) {

@@ -5,7 +5,7 @@ import com.classichabbo.goldfish.client.game.values.types.VariablesManager;
 import com.classichabbo.goldfish.client.views.types.entry.EntryView;
 import com.classichabbo.goldfish.client.views.types.loader.LoadingScreen;
 import com.classichabbo.goldfish.client.views.types.toolbars.EntryToolbar;
-import com.classichabbo.goldfish.client.views.types.widgets.Navigator;
+import com.classichabbo.goldfish.client.views.types.widgets.navigator.Navigator;
 import com.classichabbo.goldfish.networking.util.NetworkUtil;
 import com.classichabbo.goldfish.networking.wrappers.ClientChannel;
 import com.classichabbo.goldfish.networking.wrappers.Request;
