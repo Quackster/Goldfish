@@ -5,7 +5,7 @@ import com.classichabbo.goldfish.client.game.scheduler.types.GraphicsScheduler;
 import com.classichabbo.goldfish.client.game.scheduler.types.InterfaceScheduler;
 import com.classichabbo.goldfish.client.views.GlobalView;
 import com.classichabbo.goldfish.client.views.View;
-import com.classichabbo.goldfish.client.views.types.loader.LoadingScreen;
+import com.classichabbo.goldfish.client.views.types.loader.LoadingView;
 import com.classichabbo.goldfish.client.views.types.widgets.Widget;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
 import com.classichabbo.goldfish.networking.Client;
@@ -98,7 +98,7 @@ public class Movie extends Application {
         primaryStage.show();
 
         this.createObject(new GlobalView());
-        this.createObject(new LoadingScreen());
+        this.createObject(new LoadingView());
 
         //this.showVisualiser(VisualiserType.LOADER);
         // this.showVisualiser(VisualiserType.ROOM);
@@ -220,7 +220,7 @@ public class Movie extends Application {
                 message.getHandlerClass() == messageHandler.getClass() && message.getHeader() == value.intValue()));
     }
 
-    public boolean isInterfaceActive(Class<?> clazz) {
+    public boolean isViewActive(Class<?> clazz) {
         return this.views.stream().anyMatch(x -> x.getClass() == clazz || x.getClass().isAssignableFrom(clazz));
     }
 
@@ -236,7 +236,7 @@ public class Movie extends Application {
         return entities;
     }
 
-    public <T extends View> T getInterfaceByClass(Class<T> interfaceClass) {
+    public <T extends View> T getViewByClass(Class<T> interfaceClass) {
         return this.getInterfacesByClass(interfaceClass).stream().findFirst().orElse(null);
     }
 

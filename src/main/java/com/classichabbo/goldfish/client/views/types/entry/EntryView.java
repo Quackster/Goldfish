@@ -7,13 +7,11 @@ import com.classichabbo.goldfish.client.game.scheduler.types.GraphicsScheduler;
 import com.classichabbo.goldfish.client.game.values.ValueType;
 import com.classichabbo.goldfish.client.game.values.types.VariablesManager;
 import com.classichabbo.goldfish.client.views.View;
-import com.classichabbo.goldfish.client.views.controls.ButtonLarge;
-import com.classichabbo.goldfish.client.views.types.loader.LoadingScreen;
+import com.classichabbo.goldfish.client.views.types.loader.LoadingView;
 import com.classichabbo.goldfish.client.views.types.room.RoomTransition;
 import com.classichabbo.goldfish.client.scripts.Cloud;
 import com.classichabbo.goldfish.client.util.DateUtil;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
-import com.classichabbo.goldfish.client.views.types.room.RoomView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
@@ -121,15 +119,15 @@ public class EntryView extends View {
         //Movie.getInstance().createObject(new Alert("Give your room a name!"));
         //Movie.getInstance().createObject(new Alert("Your verification code is:\nQBqfv9cE"));
 
-        if (Movie.getInstance().isInterfaceActive(LoadingScreen.class)) {
-            var loadingScreen = Movie.getInstance().getInterfaceByClass(LoadingScreen.class);
+        if (Movie.getInstance().isViewActive(LoadingView.class)) {
+            var loadingScreen = Movie.getInstance().getViewByClass(LoadingView.class);
 
             if (loadingScreen != null)
                 loadingScreen.toFront();
         }
 
-        if (Movie.getInstance().isInterfaceActive(RoomTransition.class)) {
-            var roomTransition = Movie.getInstance().getInterfaceByClass(RoomTransition.class);
+        if (Movie.getInstance().isViewActive(RoomTransition.class)) {
+            var roomTransition = Movie.getInstance().getViewByClass(RoomTransition.class);
 
             if (roomTransition != null) {
                 Movie.getInstance().removeObject(roomTransition);

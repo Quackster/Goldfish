@@ -1,15 +1,12 @@
 package com.classichabbo.goldfish.client.views.types.toolbars;
 
 import com.classichabbo.goldfish.client.Movie;
-import com.classichabbo.goldfish.client.views.controls.ButtonLarge;
 import com.classichabbo.goldfish.client.views.controls.ImageButton;
 import com.classichabbo.goldfish.client.views.controls.Label;
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
 import com.classichabbo.goldfish.client.views.View;
 import com.classichabbo.goldfish.client.views.types.alerts.Alert;
-import com.classichabbo.goldfish.client.views.types.entry.EntryView;
-import com.classichabbo.goldfish.client.views.types.room.RoomView;
-import com.classichabbo.goldfish.client.views.types.widgets.navigator.Navigator;
+import com.classichabbo.goldfish.client.views.types.widgets.navigator.NavigatorView;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
 import javafx.scene.Cursor;
 import javafx.scene.image.Image;
@@ -18,8 +15,6 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.paint.Color;
 
 public class EntryToolbar extends View {
-    private final EntryView entryView;
-
     private ImageButton gamesButton;
     private ImageButton helpButton;
     private ImageButton catalogueButton;
@@ -30,10 +25,6 @@ public class EntryToolbar extends View {
 
     private int scrollOffset;
     private boolean finishedScroll;
-
-    public EntryToolbar(EntryView entryView) {
-        this.entryView = entryView;
-    }
 
     @Override
     public void start() {
@@ -47,10 +38,11 @@ public class EntryToolbar extends View {
         userHead.setLayoutY(Math.round(55 / 2 - userHead.getImage().getHeight() / 2));
         userHead.setCursor(Cursor.HAND);
         userHead.setOnMouseClicked(e -> Movie.getInstance().createObject(new Alert("userHead clicked")));
-        
-        var userLabel = new Label("Testing", "#FFFFFF");
+
         // in Shockwave this is actually offset 2px to the left of the below two labels, but if you want it
         // in line with the others, set X back to 53 :)
+
+        var userLabel = new Label("Testing", "#FFFFFF");
         userLabel.setLayoutX(51);
         userLabel.setLayoutY(8);
 
@@ -86,7 +78,7 @@ public class EntryToolbar extends View {
         this.friendsButton.setOnMouseClicked(e -> Movie.getInstance().createObject(new Alert("friendsButton clicked")));
         
         this.navigatorButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/interfaces/entry_toolbar/navigator.png"));
-        this.navigatorButton.setOnMouseClicked(e -> Movie.getInstance().getViews().stream().filter(x -> x instanceof Navigator).findFirst().ifPresent(x -> {
+        this.navigatorButton.setOnMouseClicked(e -> Movie.getInstance().getViews().stream().filter(x -> x instanceof NavigatorView).findFirst().ifPresent(x -> {
             x.toggleVisibility();
             x.toFront();
         }));

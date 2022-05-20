@@ -4,7 +4,7 @@ import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.game.values.types.PropertiesManager;
 import com.classichabbo.goldfish.client.game.values.types.TextsManager;
 import com.classichabbo.goldfish.client.views.types.error.ErrorWindow;
-import com.classichabbo.goldfish.client.views.types.loader.LoadingScreen;
+import com.classichabbo.goldfish.client.views.types.loader.LoadingView;
 import com.classichabbo.goldfish.networking.Client;
 import com.classichabbo.goldfish.networking.util.NetworkUtil;
 import com.classichabbo.goldfish.networking.wrappers.Connection;
@@ -20,7 +20,7 @@ public class GlobalHandler extends MessageHandler {
     private static void handleHello(Connection conn, Request request) {
         conn.send("INIT_CRYPTO", 0);
 
-        var loader = Movie.getInstance().getInterfaceByClass(LoadingScreen.class);
+        var loader = Movie.getInstance().getViewByClass(LoadingView.class);
 
         if (loader != null) {
             loader.progressLoader(5);
@@ -31,7 +31,7 @@ public class GlobalHandler extends MessageHandler {
     private static void handleCryptoParameters(Connection conn, Request request) {
         conn.send("GENERATE_KEY", "0");
 
-        var loader = Movie.getInstance().getInterfaceByClass(LoadingScreen.class);
+        var loader = Movie.getInstance().getViewByClass(LoadingView.class);
 
         if (loader != null) {
             loader.progressLoader(10);
@@ -43,13 +43,11 @@ public class GlobalHandler extends MessageHandler {
         conn.send("UNIQUEID", NetworkUtil.getUniqueIdentifier());
         conn.send("GET_SESSION_PARAMETERS");
 
-        var loader = Movie.getInstance().getInterfaceByClass(LoadingScreen.class);
+        var loader = Movie.getInstance().getViewByClass(LoadingView.class);
 
         if (loader != null) {
             loader.progressLoader(20);
         }
-
-        //entryView.getComponent().initLoginProcess();
     }
 
     public void beginLoginSequence() {
@@ -86,7 +84,7 @@ public class GlobalHandler extends MessageHandler {
     }
 
     private static void authenticationOK(Connection conn, Request request) {
-        var loader = Movie.getInstance().getInterfaceByClass(LoadingScreen.class);
+        var loader = Movie.getInstance().getViewByClass(LoadingView.class);
 
         if (loader != null) {
             loader.progressLoader(20);

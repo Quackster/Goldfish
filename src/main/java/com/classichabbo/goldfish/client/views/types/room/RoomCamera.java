@@ -87,8 +87,8 @@ public class RoomCamera implements ChangeListener<Number> {
      */
     @Override
     public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-        if (Movie.getInstance().isInterfaceActive(RoomView.class)) {
-            var roomView = Movie.getInstance().getInterfaceByClass(RoomView.class);
+        if (Movie.getInstance().isViewActive(RoomView.class)) {
+            var roomView = Movie.getInstance().getViewByClass(RoomView.class);
 
             if (roomView == null) {
                 return;

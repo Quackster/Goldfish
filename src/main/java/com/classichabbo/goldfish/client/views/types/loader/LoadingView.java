@@ -18,7 +18,7 @@ import javafx.scene.shape.Rectangle;
 
 import java.util.ArrayList;
 
-public class LoadingScreen extends View {
+public class LoadingView extends View {
     private ImageView loadingLogoImage;
     private ImageView loaderBarImage;
     private Rectangle loaderProgress;
@@ -39,7 +39,7 @@ public class LoadingScreen extends View {
     private double mousePressedX;
     private double mousePressedY;
 
-    public LoadingScreen() {
+    public LoadingView() {
         this.component = new LoaderComponent();
     }
 
@@ -125,7 +125,7 @@ public class LoadingScreen extends View {
         }
 
         if (finishedLoading) {
-            var entryView = Movie.getInstance().getInterfaceByClass(EntryView.class);
+            var entryView = Movie.getInstance().getViewByClass(EntryView.class);
 
             if (entryView != null) {
                 Platform.runLater(() -> {

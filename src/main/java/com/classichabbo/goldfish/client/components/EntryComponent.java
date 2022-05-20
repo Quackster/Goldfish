@@ -3,7 +3,7 @@ package com.classichabbo.goldfish.client.components;
 import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.views.types.entry.EntryView;
 import com.classichabbo.goldfish.client.views.types.toolbars.EntryToolbar;
-import com.classichabbo.goldfish.client.views.types.widgets.navigator.Navigator;
+import com.classichabbo.goldfish.client.views.types.widgets.navigator.NavigatorView;
 import com.classichabbo.goldfish.client.scripts.Cloud;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
 
@@ -46,29 +46,25 @@ public class EntryComponent {
     }
 
     public void tryLogin() {
-        var navigator = Movie.getInstance().getViews().stream().filter(x -> x instanceof Navigator).findFirst().orElse(null);
+        var navigator = Movie.getInstance().getViews().stream().filter(x -> x instanceof NavigatorView).findFirst().orElse(null);
 
         if (navigator == null) {
-            Movie.getInstance().createObject(new Navigator());
+            Movie.getInstance().createObject(new NavigatorView());
         } else {
             navigator.toFront();
             navigator.setHidden(false);
         }
 
-        Movie.getInstance().createObject(new EntryToolbar(entryView), entryView);
+        Movie.getInstance().createObject(new EntryToolbar(), this.entryView);
     }
 
     public void entryViewResume() {
-        var navigator = Movie.getInstance().getViews().stream().filter(x -> x instanceof Navigator).findFirst().orElse(null);
+        var navigator = Movie.getInstance().getViews().stream().filter(x -> x instanceof NavigatorView).findFirst().orElse(null);
 
-        if (navigator == null) {
-            Movie.getInstance().createObject(new Navigator());
-        } else {
-            navigator.toFront();
-            navigator.setHidden(false);
+        if (navigator != null) {
+            Movie.getInstance().createObject(new EntryToolbar(), this.entryView);
         }
 
-        Movie.getInstance().createObject(new EntryToolbar(entryView), entryView);
         // Movie.getInstance().createObject(new Alert("Project Havana - Habbo Hotel v31 emulation\n\nRelease: r31_20090312_0433_13751_b40895fb610dbe96dc7b9d6477eeeb4\n\nContributors:\n - ThuGie, Copyright, Raptosaur, Hoshiko, TOMYSSHADOW, Elijah\n   Romauld, Glaceon, Nillus, Holo Team, Meth0d, office.boy, bbadzz\n\n   Big thanks to Sefhriloff & Ascii for assisting with SnowStorm.\n\nMade by Quackster from RaGEZONE"));
 
         // Remove loading bar (moved to here so it removes it before it starts animating)

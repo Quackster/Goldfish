@@ -27,10 +27,9 @@ import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 
 
-public class Navigator extends Widget {
+public class NavigatorView extends Widget {
     private Pane content;
     
     private Pane searchButton;
@@ -753,8 +752,8 @@ public class Navigator extends Widget {
         System.out.println("Go to " + roomId);
 
         Platform.runLater(() -> {
-            if (Movie.getInstance().isInterfaceActive(EntryView.class)) {
-                var entryView = Movie.getInstance().getInterfaceByClass(EntryView.class);
+            if (Movie.getInstance().isViewActive(EntryView.class)) {
+                var entryView = Movie.getInstance().getViewByClass(EntryView.class);
 
                 entryView.transitionTo(() -> {
                     Movie.getInstance().createObject(new RoomView());
@@ -768,8 +767,8 @@ public class Navigator extends Widget {
 
     private void goToHotelview() {
         Platform.runLater(() -> {
-            if (Movie.getInstance().isInterfaceActive(RoomView.class)) {
-                var roomView = Movie.getInstance().getInterfaceByClass(RoomView.class);
+            if (Movie.getInstance().isViewActive(RoomView.class)) {
+                var roomView = Movie.getInstance().getViewByClass(RoomView.class);
                 Movie.getInstance().removeObject(roomView);
 
                 Movie.getInstance().createObject(new RoomTransition(() -> {

@@ -6,7 +6,7 @@ import com.classichabbo.goldfish.client.game.values.types.VariablesManager;
 import com.classichabbo.goldfish.client.game.values.types.TextsManager;
 import com.classichabbo.goldfish.client.views.GlobalView;
 import com.classichabbo.goldfish.client.views.types.entry.EntryView;
-import com.classichabbo.goldfish.client.views.types.loader.LoadingScreen;
+import com.classichabbo.goldfish.client.views.types.loader.LoadingView;
 import com.classichabbo.goldfish.networking.Client;
 import javafx.application.Platform;
 
@@ -97,8 +97,8 @@ public class LoaderComponent extends Component {
 
     public void showHotel() {
         Platform.runLater(() -> {
-            var global = Movie.getInstance().getInterfaceByClass(GlobalView.class);
-            var loader = Movie.getInstance().getInterfaceByClass(LoadingScreen.class);
+            var global = Movie.getInstance().getViewByClass(GlobalView.class);
+            var loader = Movie.getInstance().getViewByClass(LoadingView.class);
 
             if (loader != null) {
                 loader.getLoadingLogoImage().setVisible(false);

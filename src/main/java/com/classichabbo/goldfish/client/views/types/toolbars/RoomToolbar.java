@@ -11,7 +11,7 @@ import com.classichabbo.goldfish.client.views.types.alerts.Alert;
 import com.classichabbo.goldfish.client.views.types.room.RoomTransition;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
 
-import com.classichabbo.goldfish.client.views.types.widgets.navigator.Navigator;
+import com.classichabbo.goldfish.client.views.types.widgets.navigator.NavigatorView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundPosition;
@@ -35,8 +35,8 @@ public class RoomToolbar extends View {
         temp.setLayoutX(15);
         temp.setLayoutY(15);
         temp.setOnMouseClicked(e -> {
-            if (Movie.getInstance().isInterfaceActive(RoomView.class)) {
-                var roomView = Movie.getInstance().getInterfaceByClass(RoomView.class);
+            if (Movie.getInstance().isViewActive(RoomView.class)) {
+                var roomView = Movie.getInstance().getViewByClass(RoomView.class);
 
                 Movie.getInstance().removeObject(roomView);
                 Movie.getInstance().removeObject(this);
@@ -66,7 +66,7 @@ public class RoomToolbar extends View {
         friendsButton.setOnMouseClicked(e -> Movie.getInstance().createObject(new Alert("friendsButton clicked")));
         
         this.navigatorButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/interfaces/room_toolbar/navigator.png"));
-        navigatorButton.setOnMouseClicked(e -> Movie.getInstance().getViews().stream().filter(x -> x instanceof Navigator).findFirst().ifPresent(navigator -> {
+        navigatorButton.setOnMouseClicked(e -> Movie.getInstance().getViews().stream().filter(x -> x instanceof NavigatorView).findFirst().ifPresent(navigator -> {
             navigator.toggleVisibility();
             navigator.toFront();
         }));
