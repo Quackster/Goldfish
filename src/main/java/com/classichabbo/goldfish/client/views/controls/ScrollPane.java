@@ -24,6 +24,7 @@ public class ScrollPane extends HBox {
     private ImageButton thumb;
     private ImageButton down;
 
+    private int height;
     private boolean upPressed;
     private boolean thumbPressed;
     private boolean downPressed;
@@ -83,6 +84,7 @@ public class ScrollPane extends HBox {
     }
 
     public void setSize(int width, int height) {
+        this.height = height;
         this.setPrefSize(width, height);
         this.setClip(new Rectangle(width, height));
 
@@ -90,6 +92,18 @@ public class ScrollPane extends HBox {
         this.scrollBar.setPrefSize(15, height);
         this.track.setPrefSize(15, height - 28);
         this.down.setLayoutY(height - 14);
+        this.thumb.setTranslateY(0);
+    }
+
+    public void setHeightReduction(int height) {
+        var newHeight = this.height - height;
+        this.setPrefSize(this.getPrefWidth(), newHeight);
+        this.setClip(new Rectangle(this.getPrefWidth(), newHeight));
+
+        this.content.setPrefWidth(this.getPrefWidth() - 15);
+        this.scrollBar.setPrefSize(15, height);
+        this.track.setPrefSize(15, newHeight - 28);
+        this.down.setLayoutY(newHeight - 14);
         this.thumb.setTranslateY(0);
     }
 

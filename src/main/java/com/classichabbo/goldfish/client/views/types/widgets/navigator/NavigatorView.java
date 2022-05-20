@@ -1,6 +1,7 @@
 package com.classichabbo.goldfish.client.views.types.widgets.navigator;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
@@ -17,9 +18,11 @@ import com.classichabbo.goldfish.client.views.types.room.RoomView;
 import com.classichabbo.goldfish.client.views.types.widgets.Widget;
 
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundPosition;
@@ -27,7 +30,6 @@ import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-
 
 public class NavigatorView extends Widget {
     private Pane content;
@@ -44,8 +46,6 @@ public class NavigatorView extends Widget {
 
     private Pane backTop;
     private Label backTopLabel;
-    private Pane backBottom;
-    private Label backBottomLabel;
 
     private Label title;
     private Label hideFull;
@@ -69,6 +69,7 @@ public class NavigatorView extends Widget {
 
     private boolean inRoom;
     private NavigatorPage currentPage;
+    private Category currentCategory;
     private Runnable pendingAction;
 
     @Override
@@ -78,14 +79,13 @@ public class NavigatorView extends Widget {
         // TODO Avery - I'm not sure where you get these from
         this.publicCategoryId = 1;
         this.privateCategoryId = 2;
-
+        this.inRoom = false;
+        
         this.init();
         this.setPadding(9, 11, 10, 10);
         this.setTitle(TextsManager.getInstance().getString("navigator"));
         this.setContent(this.content);
         this.setLocation();
-
-        this.inRoom = Movie.getInstance().getViews().stream().filter(x -> x instanceof RoomView).findAny().isPresent();
         this.setPage(NavigatorPage.PUBLIC);
 
         Movie.getInstance().getInterfaceScheduler().receiveUpdate(this);
@@ -104,6 +104,13 @@ public class NavigatorView extends Widget {
         if (this.pendingAction != null) {
             this.pendingAction.run();
             this.pendingAction = null;
+        }
+
+        var inRoom = Movie.getInstance().getViewByClass(RoomView.class) != null;
+
+        if (this.inRoom != inRoom) {
+            this.inRoom = inRoom;
+            this.updateBackButtons();
         }
 
         this.navigatorList.update();
@@ -226,20 +233,6 @@ public class NavigatorView extends Widget {
         this.backTopLabel.setLayoutX(39);
         this.backTop.getChildren().add(backTopLabel);
 
-        this.backBottom = new Pane();
-        this.backBottom.setPrefSize(340, 22);
-        this.backBottom.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/back_bottom.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
-        this.backBottom.setLayoutX(1);
-        this.backBottom.setVisible(false);
-        this.backBottom.setPickOnBounds(false);
-        this.backBottom.setCursor(Cursor.HAND);
-        this.content.getChildren().add(backBottom);
-
-        this.backBottomLabel = new Label("", true, "#336666");
-        this.backBottomLabel.setLayoutX(39);
-        this.backBottomLabel.setLayoutY(3);
-        this.backBottom.getChildren().add(backBottomLabel);
-
         this.title = new Label("", true);
         this.title.setLayoutX(22);
         this.content.getChildren().add(this.title);
@@ -337,52 +330,25 @@ public class NavigatorView extends Widget {
     }
 
     private void setPage(NavigatorPage page) {
-        if (this.inRoom) {
-            this.backTopLabel.setText(TextsManager.getInstance().getString("nav_hotelview"));
-            this.setOnMouseClicked(e -> this.goToHotelview());
-        }
-
-        var showBackTop = this.inRoom || false;
-        var showBackBottom = this.inRoom && false; // TODO Parsnip - replace false with inSubcategory flag of some sort
-
         if (page == NavigatorPage.PUBLIC) {
             this.currentPage = NavigatorPage.PUBLIC;
             this.content.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/background_public.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
-            this.title.setLayoutY(showBackTop ? (showBackBottom ? 98 : 80) : 62);
-            this.hideFull.setLayoutY(showBackTop ? (showBackBottom ? 98 : 80) : 62);
+            this.title.setLayoutY(62);
+            this.hideFull.setLayoutY(62);
             this.hideFull.setVisible(true);
             
             this.searchButton.setVisible(false);
             this.ownButton.setVisible(false);
             this.favouritesButton.setVisible(false);
 
-            this.navigatorList.setSize(330, showBackTop ? (showBackBottom ? 196 : 214) : 232);
-            this.navigatorList.setLayoutY(showBackTop ? (showBackBottom ? 116 : 98) : 80);
+            this.navigatorList.setSize(330, 232);
+            this.navigatorList.setLayoutY(80);
 
             this.infoTitle.setText(TextsManager.getInstance().getString("nav_public_helptext_hd"));
             this.infoDescription.setText(TextsManager.getInstance().getString("nav_public_helptext"));
             this.infoImg.setImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/info_public.png"));
             this.infoLeftButton.setText(TextsManager.getInstance().getString("nav_addtofavourites"));
             this.infoLeftButton.setTranslateX(0);
-
-            if (showBackTop) {
-                this.backTop.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/back_top_public.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
-                this.backTop.setPrefHeight(22);
-                this.backTop.setLayoutY(58);
-                this.backTopLabel.setLayoutY(3);
-                this.backTop.setVisible(true);
-            }
-            else {
-                this.backTop.setVisible(false);
-            }
-
-            if (showBackBottom) {
-                this.backBottom.setLayoutY(76);
-                this.backBottom.setVisible(true);
-            }
-            else {
-                this.backBottom.setVisible(false);
-            }
 
             this.showCategory(this.publicCategoryId);
         }
@@ -395,19 +361,16 @@ public class NavigatorView extends Widget {
         if (page == NavigatorPage.PRIVATE) {
             this.currentPage = NavigatorPage.PRIVATE;
             this.content.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/background_private.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
-            this.title.setLayoutY(showBackTop ? 188 : 163);
-            this.hideFull.setLayoutY(showBackTop ? 188 : 163);
+            this.title.setLayoutY(163);
+            this.hideFull.setLayoutY(163);
             this.hideFull.setVisible(true);
             
-            this.recommendedTitle.setTranslateY(showBackTop ? 25 : 0);
             this.recommendedTitle.setVisible(true);
-            this.recommendedRefresh.setTranslateY(showBackTop ? 25 : 0);
             this.recommendedRefresh.setVisible(true);
-            this.recommendedList.setTranslateY(showBackTop ? 25 : 0);
             this.recommendedList.setVisible(true);
 
-            this.navigatorList.setSize(330, showBackTop ? 101 : 126);
-            this.navigatorList.setLayoutY(showBackTop ? 205 : 180);
+            this.navigatorList.setSize(330, 126);
+            this.navigatorList.setLayoutY(180);
             this.navigatorList.setPadding(1, 1);
 
             this.infoTitle.setText(TextsManager.getInstance().getString("nav_private_helptext_hd_main"));
@@ -415,25 +378,6 @@ public class NavigatorView extends Widget {
             this.infoImg.setImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/info_private.png"));
             this.infoLeftButton.setText(TextsManager.getInstance().getString("nav_addtofavourites"));
             this.infoLeftButton.setTranslateX(0);
-
-            if (showBackTop) {
-                this.backTop.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/back_top_private.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
-                this.backTop.setPrefHeight(27);
-                this.backTop.setLayoutY(76);
-                this.backTopLabel.setLayoutY(8);
-                this.backTop.setVisible(true);
-            }
-            else {
-                this.backTop.setVisible(false);
-            }
-
-            if (showBackBottom) {
-                this.backBottom.setLayoutY(99);
-                this.backBottom.setVisible(true);
-            }
-            else {
-                this.backBottom.setVisible(false);
-            }
 
             this.showCategory(this.privateCategoryId);
             this.showRecommendedRooms();
@@ -466,9 +410,7 @@ public class NavigatorView extends Widget {
             this.infoLeftButton.setText(TextsManager.getInstance().getString("nav_addtofavourites"));
             this.infoLeftButton.setTranslateX(0);
 
-            this.backTop.setVisible(false);
-            this.backBottom.setVisible(false);
-
+            this.updateBackButtons();
             this.navigatorList.clearContent();
         }
         else {
@@ -492,9 +434,7 @@ public class NavigatorView extends Widget {
             this.infoLeftButton.setText(TextsManager.getInstance().getString("nav_modify"));
             this.infoLeftButton.setTranslateX(0);
 
-            this.backTop.setVisible(false);
-            this.backBottom.setVisible(false);
-
+            this.updateBackButtons();
             this.showOwnRooms();
         }
 
@@ -514,9 +454,7 @@ public class NavigatorView extends Widget {
             this.infoLeftButton.setText(TextsManager.getInstance().getString("nav_removefavourites"));
             this.infoLeftButton.setTranslateX(-30);
 
-            this.backTop.setVisible(false);
-            this.backBottom.setVisible(false);
-
+            this.updateBackButtons();
             this.showFavouriteRooms();
         }
 
@@ -527,6 +465,26 @@ public class NavigatorView extends Widget {
         this.infoDescription.setTranslateY(0);
         this.infoLeftButton.setVisible(false);
         this.infoGoButton.setVisible(false);
+    }
+
+    private void backTopShow(String text, EventHandler<MouseEvent> event) {
+        if (this.currentPage == NavigatorPage.PUBLIC) {
+            this.backTop.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/back_top_public.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+            this.backTop.setPrefHeight(22);
+            this.backTop.setLayoutY(58);
+            this.backTopLabel.setLayoutY(3);
+            this.backTop.setVisible(true);
+        }
+        if (this.currentPage == NavigatorPage.PRIVATE) {
+            this.backTop.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/back_top_private.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+            this.backTop.setPrefHeight(27);
+            this.backTop.setLayoutY(76);
+            this.backTopLabel.setLayoutY(8);
+        }
+
+        this.backTopLabel.setText(text);
+        this.backTop.setOnMouseClicked(event);
+        this.backTop.setVisible(true);
     }
 
     private void infoShowRoom(Room room) {
@@ -572,18 +530,98 @@ public class NavigatorView extends Widget {
 
     private void showCategory(int categoryId) {
         this.navigatorList.clearContent();
+        
+        this.currentCategory = this.getCategory(categoryId);
+        this.updateBackButtons();
+        this.title.setText(this.currentCategory.name);
 
-        var category = this.getCategory(categoryId);
-
-        this.title.setText(category.name);
-
-        for (var room : category.rooms) {
+        for (var room : this.currentCategory.rooms) {
             this.addRoom(room, false);
         }
         
-        for (var childCategory : category.categories) {
+        for (var childCategory : this.currentCategory.categories) {
             this.addCategory(childCategory);
         }
+    }
+
+    private void updateBackButtons() {
+        this.content.getChildren().removeIf(NavigatorBackButton.class::isInstance);
+
+        if (this.currentPage == NavigatorPage.SEARCH 
+            || this.currentPage == NavigatorPage.OWN
+            || this.currentPage == NavigatorPage.FAVOURITES) {
+            this.resetBackButtonTranslations();
+            return;
+        }
+
+        var index = 0;
+
+        if (this.inRoom) {
+            this.backTopShow(TextsManager.getInstance().getString("nav_hotelview"), e -> this.pendingAction = () -> this.goToHotelview());
+            index++;
+        }
+
+        var backCategories = new ArrayList<Category>();
+        var currentCategory = this.currentCategory;
+        while (currentCategory.parentCategory != null) {
+            backCategories.add(currentCategory);
+            currentCategory = currentCategory.parentCategory;
+        }
+
+        var startY = this.currentPage == NavigatorPage.PUBLIC ? 40 : 63;
+        Collections.reverse(backCategories);
+
+        for (var category : backCategories) {
+            if (index == 0) {
+                this.backTopShow(category.parentCategory.name, e -> this.pendingAction = () -> this.showCategory(category.parentCategory.categoryId));
+            }
+            else {
+                content.getChildren().add(new NavigatorBackButton(category.parentCategory.name, startY, index, e -> this.pendingAction = () -> this.showCategory(category.parentCategory.categoryId)));
+            }
+            index++;
+        }
+
+        if (this.currentPage == NavigatorPage.PUBLIC) {
+            this.title.setTranslateY(18 * index);
+            this.hideFull.setTranslateY(18 * index);
+
+            this.navigatorList.setHeightReduction(18 * index);
+            this.navigatorList.setTranslateY(18 * index);
+        }
+
+        if (this.currentPage == NavigatorPage.PRIVATE) {
+            this.title.setTranslateY((25 + (18 * (index - 1))) - (!backCategories.isEmpty() ? 80 : 0));
+            this.hideFull.setTranslateY((25 + (18 * (index - 1))) - (!backCategories.isEmpty() ? 80 : 0));
+            
+            this.recommendedTitle.setTranslateY(25);
+            this.recommendedRefresh.setTranslateY(25);
+            this.recommendedList.setTranslateY(25);
+
+            this.navigatorList.setHeightReduction((25 + (18 * (index - 1))) - (!backCategories.isEmpty() ? 80 : 0));
+            this.navigatorList.setTranslateY((25 + (18 * (index - 1))) - (!backCategories.isEmpty() ? 80 : 0));
+        }
+
+        if (backCategories.isEmpty() && !this.inRoom) {
+            this.resetBackButtonTranslations();
+        }
+
+        this.recommendedTitle.setVisible(backCategories.isEmpty() && this.currentPage == NavigatorPage.PRIVATE);
+        this.recommendedRefresh.setVisible(backCategories.isEmpty() && this.currentPage == NavigatorPage.PRIVATE);
+        this.recommendedList.setVisible(backCategories.isEmpty() && this.currentPage == NavigatorPage.PRIVATE);
+    }
+
+    private void resetBackButtonTranslations() {
+        this.title.setTranslateY(0);
+        this.hideFull.setTranslateY(0);
+        
+        this.recommendedTitle.setTranslateY(0);
+        this.recommendedRefresh.setTranslateY(0);
+        this.recommendedList.setTranslateY(0);
+
+        this.navigatorList.setHeightReduction(0);
+        this.navigatorList.setTranslateY(0);
+
+        this.backTop.setVisible(false);
     }
 
     private void showRecommendedRooms() {
@@ -646,7 +684,7 @@ public class NavigatorView extends Widget {
 
     private void addCategory(Category category) {
         var navigatorItem = new NavigatorItem(category);
-        navigatorItem.setOnMouseClicked(e -> {}); // TODO Parsnip - open categories
+        navigatorItem.setOnMouseClicked(e -> this.pendingAction = () -> this.showCategory(category.categoryId)); // TODO Parsnip - open categories
 
         this.navigatorList.addContent(navigatorItem);
     }
@@ -687,20 +725,45 @@ public class NavigatorView extends Widget {
 
         if (categoryId == 2) {
             category = new Category(2, "Guest Rooms");
-            category.addCategory(new Category(3, "Flower Power Puzzle", 0, 100));
-            category.addCategory(new Category(3, "Gaming & Race Rooms", 0, 100));
-            category.addCategory(new Category(3, "Restaurant, Bar & Night Club Rooms", 0, 100));
-            category.addCategory(new Category(3, "Trade Floor", 0, 100));
-            category.addCategory(new Category(3, "Chill, Chat & Discussion Rooms", 0, 100));
-            category.addCategory(new Category(3, "Hair Salons & Modelling Rooms", 0, 100));
-            category.addCategory(new Category(3, "Maze & Theme Park Rooms", 0, 100));
-            category.addCategory(new Category(3, "Help Centre Rooms", 0, 100));
-            category.addCategory(new Category(3, "Miscellaneous", 0, 100));
+            category.addCategory(new Category(4, "Flower Power Puzzle", 0, 100));
+            category.addCategory(new Category(4, "Gaming & Race Rooms", 0, 100));
+            category.addCategory(new Category(4, "Restaurant, Bar & Night Club Rooms", 0, 100));
+            category.addCategory(new Category(4, "Trade Floor", 0, 100));
+            category.addCategory(new Category(4, "Chill, Chat & Discussion Rooms", 0, 100));
+            category.addCategory(new Category(4, "Hair Salons & Modelling Rooms", 0, 100));
+            category.addCategory(new Category(4, "Maze & Theme Park Rooms", 0, 100));
+            category.addCategory(new Category(4, "Help Centre Rooms", 0, 100));
+            category.addCategory(new Category(4, "Miscellaneous", 0, 100));
         }
 
         if (categoryId == 3) {
-            category = new Category(1, "Subcategory");
+            category = new Category(3, "Entertainent", this.getCategory(1));
+            category.addCategory(new Category(7, "Secret Subcategory", 0, 100));
+        }
+
+        if (categoryId == 4) {
+            category = new Category(4, "Trade Floor", this.getCategory(2));
+            category.addCategory(new Category(5, "Secret Subcategory", 0, 100));
+        }
+
+        if (categoryId == 5) {
+            category = new Category(5, "Secret Subcategory", this.getCategory(4));
+            category.addCategory(new Category(6, "Secret Sub-Subcategory", 0, 100));
+        }
+
+        if (categoryId == 6) {
+            category = new Category(6, "Secret Sub-Subcategory", this.getCategory(5));
             category.addRoom(new Room(1, "Parsnip's Casino", "Parsnip", "Large bets welcomed, games 13/21/poker", 0, 15, Doorbell.OPEN));
+        }
+
+        if (categoryId == 7) {
+            category = new Category(7, "Secret Subcategory", this.getCategory(3));
+            category.addCategory(new Category(8, "Secret Sub-Subcategory", 0, 100));
+        }
+
+        if (categoryId == 8) {
+            category = new Category(8, "Secret Sub-Subcategory", this.getCategory(7));
+            category.addRoom(new Room(1, "Theatredome", "Perform your latest master piece, or simply catch the latest gossip.", "", 1, 100));
         }
 
         return category;
