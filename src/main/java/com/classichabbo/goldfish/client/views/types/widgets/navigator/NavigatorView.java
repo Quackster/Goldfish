@@ -519,7 +519,7 @@ public class NavigatorView extends Widget {
             this.infoLeftButton.setOnMouseClicked(e1 -> this.pendingAction = () -> this.addToFavourites(room.roomId));
         }
 
-        this.infoGoButton.setOnMouseClicked(e1 -> this.pendingAction = () -> this.goToRoom(room.roomId));
+        this.infoGoButton.setOnMouseClicked(e1 -> this.pendingAction = () -> Movie.getInstance().goToRoom(room.roomId));
         this.infoLeftButton.setVisible(true);
         this.infoGoButton.setVisible(true);
         this.info.setVisible(true);
@@ -560,11 +560,7 @@ public class NavigatorView extends Widget {
 
         if (this.inRoom) {
             this.backTopShow(TextsManager.getInstance().getString("nav_hotelview"), e -> this.pendingAction = () -> {
-                var roomToolbar = Movie.getInstance().getViewByClass(RoomToolbar.class);
-
-                if (roomToolbar != null) {
-                    roomToolbar.goToHotelView();
-                }
+                Movie.getInstance().goToHotelView();
             });
             index++;
         }
@@ -582,8 +578,7 @@ public class NavigatorView extends Widget {
         for (var category : backCategories) {
             if (index == 0) {
                 this.backTopShow(category.parentCategory.name, e -> this.pendingAction = () -> this.showCategory(category.parentCategory.categoryId));
-            }
-            else {
+            } else {
                 content.getChildren().add(new NavigatorBackButton(category.parentCategory.name, startY, index, e -> this.pendingAction = () -> this.showCategory(category.parentCategory.categoryId)));
             }
             index++;
@@ -680,12 +675,11 @@ public class NavigatorView extends Widget {
     private void addRoom(Room room, Boolean recommended) {
         var navigatorItem = new NavigatorItem(room);
         navigatorItem.setNameButtonOnMouseClicked(e -> this.pendingAction = () -> this.infoShowRoom(room));
-        navigatorItem.setGoButtonOnMouseClicked(e -> this.pendingAction = () -> this.goToRoom(room.roomId));
+        navigatorItem.setGoButtonOnMouseClicked(e -> this.pendingAction = () -> Movie.getInstance().goToRoom(room.roomId));
 
         if (recommended) {
             this.recommendedList.getChildren().add(navigatorItem);
-        }
-        else {
+        } else {
             this.navigatorList.addContent(navigatorItem);
         }
     }
@@ -817,36 +811,6 @@ public class NavigatorView extends Widget {
         favouriteRooms.add(new Room(1, "Parsnip's Casino", "Parsnip", "Large bets welcomed, games 13/21/poker", 0, 15, Doorbell.OPEN));
         
         return favouriteRooms;
-    }
-
-    private void goToRoom(int roomId) {
-        System.out.println("Go to " + roomId);
-
-        Platform.runLater(() -> {
-            if (Movie.getInstance().isViewActive(EntryView.class)) {
-                var entryView = Movie.getInstance().getViewByClass(EntryView.class);
-
-                entryView.transitionTo(() -> {
-                    Movie.getInstance().createObject(new RoomView());
-                    Movie.getInstance().removeObject(entryView);
-                });
-
-                Movie.getInstance().hideWidgets();
-            }
-        });
-    }
-
-    private void goToHotelview() {
-        Platform.runLater(() -> {
-            if (Movie.getInstance().isViewActive(RoomView.class)) {
-                var roomView = Movie.getInstance().getViewByClass(RoomView.class);
-                Movie.getInstance().removeObject(roomView);
-
-                Movie.getInstance().createObject(new RoomTransition(() -> {
-                    Movie.getInstance().createObject(new EntryView());
-                }));
-            }
-        });
     }
 
     private void addToFavourites(int roomId) { 

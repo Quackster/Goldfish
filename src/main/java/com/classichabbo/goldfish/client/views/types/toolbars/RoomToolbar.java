@@ -35,13 +35,7 @@ public class RoomToolbar extends View {
         temp.setLayoutX(15);
         temp.setLayoutY(15);
         temp.setOnMouseClicked(e -> {
-            this.goToHotelView();
-            /*
-            if (Movie.getInstance().getCurrentVisualiser().getType() == VisualiserType.ROOM) {
-                Movie.getInstance().createObject(new RoomTransition(VisualiserType.HOTEL_VIEW));
-            }
-
-             */
+            Movie.getInstance().goToHotelView();
         });
 
         this.getChildren().add(temp);
@@ -81,24 +75,6 @@ public class RoomToolbar extends View {
         this.getChildren().addAll(chatButton, friendsButton, navigatorButton, eventsButton, catalogueButton, handButton, gamesButton, helpButton, volumeButton);
 
         Movie.getInstance().getInterfaceScheduler().receiveUpdate(this);
-    }
-
-    /**
-     * Todo: move back to navigator
-     */
-    public void goToHotelView() {
-        if (Movie.getInstance().isViewActive(RoomView.class)) {
-            var roomView = Movie.getInstance().getViewByClass(RoomView.class);
-
-            Movie.getInstance().removeObject(roomView);
-            Movie.getInstance().removeObject(this);
-
-            Movie.getInstance().createObject(new RoomTransition(() -> {
-                var entryView = new EntryView();
-                entryView.setRunAfterOpening(() -> entryView.getComponent().entryViewResume());
-                Movie.getInstance().createObject(entryView);
-            }));
-        }
     }
 
     @Override

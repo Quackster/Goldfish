@@ -5,7 +5,11 @@ import com.classichabbo.goldfish.client.game.scheduler.types.GraphicsScheduler;
 import com.classichabbo.goldfish.client.game.scheduler.types.InterfaceScheduler;
 import com.classichabbo.goldfish.client.views.GlobalView;
 import com.classichabbo.goldfish.client.views.View;
+import com.classichabbo.goldfish.client.views.types.entry.EntryView;
 import com.classichabbo.goldfish.client.views.types.loader.LoadingView;
+import com.classichabbo.goldfish.client.views.types.room.RoomTransition;
+import com.classichabbo.goldfish.client.views.types.room.RoomView;
+import com.classichabbo.goldfish.client.views.types.toolbars.RoomToolbar;
 import com.classichabbo.goldfish.client.views.types.widgets.Widget;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
 import com.classichabbo.goldfish.networking.Client;
@@ -152,6 +156,9 @@ public class Movie extends Application {
         // this.printViews();
     }
 
+    /**
+     * Remove an object, if view is a child of an object, it will be removed from the parent.
+     */
     public void removeObject(View view) {
         Platform.runLater(() -> {
             if (view.getOwner() != null) {
@@ -197,34 +204,50 @@ public class Movie extends Application {
         System.out.println("------------");
     }
 
+    /**
+     * Register listener handler for views.
+     */
     public void registerListeners(MessageHandler messageHandler, HashMap<Integer, MessageRequest> listeners) {
         for (var x : listeners.entrySet()) {
             this.listeners.add(new MessageListener(messageHandler.getClass(), x.getKey(), x.getValue()));
         }
     }
 
+    /**
+     * Unregister listener handler for views.
+     */
     public void unregisterListeners(MessageHandler messageHandler, HashMap<Integer, MessageRequest> listeners) {
         listeners.forEach((key, value) -> this.listeners.removeIf(message ->
                 message.getHandlerClass() == messageHandler.getClass() && message.getHeader() == key.intValue()));
     }
 
-
+    /**
+     * Register command handler for views.
+     */
     public void registerCommands(MessageHandler messageHandler, HashMap<String, Integer> listeners) {
         for (var x : listeners.entrySet()) {
             this.commands.add(new MessageCommand(messageHandler.getClass(), x.getValue(), x.getKey()));
         }
     }
-
+    /**
+     * Unegister command handler for views.
+     */
     public void unregisterCommands(MessageHandler messageHandler, HashMap<String, Integer> commands) {
         commands.forEach((key, value) -> this.commands.removeIf(message ->
                 message.getHandlerClass() == messageHandler.getClass() && message.getHeader() == value.intValue()));
     }
 
+    /**
+     * Gets whether the view is active.
+     */
     public boolean isViewActive(Class<?> clazz) {
         return this.views.stream().anyMatch(x -> x.getClass() == clazz || x.getClass().isAssignableFrom(clazz));
     }
 
-    public <T extends View> List<T> getInterfacesByClass(Class<T> interfaceClass) {
+    /**
+     * Gets list of views by class.
+     */
+    public <T extends View> List<T> getViewsByClass(Class<T> interfaceClass) {
         List<T> entities = new ArrayList<>();
 
         for (View entity : this.views) {
@@ -236,15 +259,66 @@ public class Movie extends Application {
         return entities;
     }
 
+    /**
+     * Gets view by class
+     */
     public <T extends View> T getViewByClass(Class<T> interfaceClass) {
-        return this.getInterfacesByClass(interfaceClass).stream().findFirst().orElse(null);
+        return this.getViewsByClass(interfaceClass).stream().findFirst().orElse(null);
     }
 
-    // Hide widgets (navigator, catalogue etc), used for stuff such as room entry
+    /**
+     * Hide widgets (navigator, catalogue etc), used for stuff such as room entry
+     */
     public void hideWidgets() {
         this.views.stream().filter(x -> x instanceof Widget).forEach(x -> {
             if (!x.isHidden()) {
                 x.setHidden(true);
+            }
+        });
+    }
+
+    /**
+     * Tell client to leave the room and go to hotel view
+     */
+    public void goToHotelView() {
+        if (!Movie.getInstance().isViewActive(RoomView.class)) {
+            return;
+        }
+
+        Platform.runLater(() -> {
+            var roomToolbar = Movie.getInstance().getViewByClass(RoomToolbar.class);
+
+            if (roomToolbar != null) {
+                Movie.getInstance().removeObject(roomToolbar);
+            }
+
+            var roomView = Movie.getInstance().getViewByClass(RoomView.class);
+
+            if (roomView != null) {
+                Movie.getInstance().removeObject(roomView);
+                Movie.getInstance().createObject(new RoomTransition(() -> {
+                    var entryView = new EntryView();
+                    entryView.setRunAfterOpening(() -> entryView.getComponent().entryViewResume());
+                    Movie.getInstance().createObject(entryView);
+                }));
+            }
+        });
+    }
+
+    /**
+     * Go to room handler
+     */
+    public void goToRoom(int roomId) {
+        Platform.runLater(() -> {
+            if (Movie.getInstance().isViewActive(EntryView.class)) {
+                var entryView = Movie.getInstance().getViewByClass(EntryView.class);
+
+                entryView.transitionTo(() -> {
+                    Movie.getInstance().createObject(new RoomView());
+                    Movie.getInstance().removeObject(entryView);
+                });
+
+                Movie.getInstance().hideWidgets();
             }
         });
     }
