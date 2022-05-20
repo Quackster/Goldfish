@@ -7,6 +7,7 @@ public class Category {
     public String name;
     private int visitors;
     private int maxVisitors;
+    public Category parentCategory;
     public ArrayList<Room> rooms;
     public ArrayList<Category> categories;
 
@@ -27,6 +28,26 @@ public class Category {
         this.name = name;
         this.visitors = visitors;
         this.maxVisitors = maxVisitors;
+        this.rooms = new ArrayList<Room>();
+        this.categories = new ArrayList<Category>();
+    }
+
+    public Category(int categoryId, String name, Category parentCategory) {
+        this.categoryId = categoryId;
+        this.name = name;
+        this.visitors = -1;
+        this.maxVisitors = -1;
+        this.parentCategory = parentCategory;
+        this.rooms = new ArrayList<Room>();
+        this.categories = new ArrayList<Category>();
+    }
+
+    public Category(int categoryId, String name, Category parentCategory, int visitors, int maxVisitors) {
+        this.categoryId = categoryId;
+        this.name = name;
+        this.visitors = visitors;
+        this.maxVisitors = maxVisitors;
+        this.parentCategory = parentCategory;
         this.rooms = new ArrayList<Room>();
         this.categories = new ArrayList<Category>();
     }

@@ -14,7 +14,7 @@
 /*.jar
 figuredata.xml
 run.bat
-
+auth_ticket
 /tools/db/schema.sql
 
 config.ini
