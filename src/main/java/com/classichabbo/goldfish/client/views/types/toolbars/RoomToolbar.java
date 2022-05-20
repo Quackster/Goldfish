@@ -7,11 +7,11 @@ import com.classichabbo.goldfish.client.game.resources.ResourceManager;
 import com.classichabbo.goldfish.client.views.View;
 import com.classichabbo.goldfish.client.views.types.entry.EntryView;
 import com.classichabbo.goldfish.client.views.types.room.RoomView;
-import com.classichabbo.goldfish.client.views.types.widgets.Navigator;
 import com.classichabbo.goldfish.client.views.types.alerts.Alert;
 import com.classichabbo.goldfish.client.views.types.room.RoomTransition;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
 
+import com.classichabbo.goldfish.client.views.types.widgets.navigator.Navigator;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundPosition;
