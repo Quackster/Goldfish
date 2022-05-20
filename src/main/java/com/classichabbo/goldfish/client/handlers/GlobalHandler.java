@@ -54,12 +54,7 @@ public class GlobalHandler extends MessageHandler {
         var conn = Client.getConnection();
 
         if (conn == null) {
-            Movie.getInstance().createObject(new ErrorWindow(
-                    TextsManager.getInstance().getString("Alert_ConnectionFailure"),
-                    TextsManager.getInstance().getString("Alert_ConnectionDisconnected"),
-                    false
-            ));
-
+            Movie.getInstance().createObject(new ErrorWindow());
             return;
         }
 
@@ -84,11 +79,13 @@ public class GlobalHandler extends MessageHandler {
     }
 
     private static void authenticationOK(Connection conn, Request request) {
-        var loader = Movie.getInstance().getViewByClass(LoadingView.class);
+        conn.send("GET_INFO");
+
+        /*var loader = Movie.getInstance().getViewByClass(LoadingView.class);
 
         if (loader != null) {
-            loader.progressLoader(20);
-        }
+            //loader.progressLoader(20);
+        }*/
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.classichabbo.goldfish.client.views.types.error;
 
 import com.classichabbo.goldfish.client.Movie;
+import com.classichabbo.goldfish.client.game.values.types.TextsManager;
 import com.classichabbo.goldfish.client.views.controls.Label;
 import com.classichabbo.goldfish.client.views.View;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
@@ -33,6 +34,13 @@ public class ErrorWindow extends View {
 
     private double mousePressedX = -1;
     private double mousePressedY = -1;
+
+    public ErrorWindow() {
+        this.errorTitle = TextsManager.getInstance().getString("Alert_ConnectionFailure");
+        this.errorMessage = TextsManager.getInstance().getString("Alert_ConnectionDisconnected");
+        this.centerWindow = false;
+
+    }
 
     public ErrorWindow(String errorTitle, String errorMessage, boolean centerWindow) {
         this.errorTitle = errorTitle;

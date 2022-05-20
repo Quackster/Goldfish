@@ -1,13 +1,17 @@
 package com.classichabbo.goldfish.client.views.types.toolbars;
 
 import com.classichabbo.goldfish.client.Movie;
+import com.classichabbo.goldfish.client.game.entities.user.UserObject;
+import com.classichabbo.goldfish.client.game.values.types.TextsManager;
 import com.classichabbo.goldfish.client.views.controls.ImageButton;
 import com.classichabbo.goldfish.client.views.controls.Label;
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
 import com.classichabbo.goldfish.client.views.View;
 import com.classichabbo.goldfish.client.views.types.alerts.Alert;
+import com.classichabbo.goldfish.client.views.types.error.ErrorWindow;
 import com.classichabbo.goldfish.client.views.types.widgets.navigator.NavigatorView;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
+import com.classichabbo.goldfish.networking.Client;
 import javafx.scene.Cursor;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Background;
@@ -31,9 +35,16 @@ public class EntryToolbar extends View {
         this.scrollOffset = 0;
         this.finishedScroll = false;
 
+        var userObj = Client.getConnection().attr(UserObject.ATTRIBUTE_KEY).get();
+
+        if (userObj == null) {
+            Movie.getInstance().createObject(new ErrorWindow());
+            return;
+        }
+
         this.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
 
-        var userHead = new ImageButton(new Image("https://cdn.classichabbo.com/habbo-imaging/avatarimage?figure=hd-180-1.hr-100-61.ch-210-66.lg-270-82.sh-290-80&size=b&head=1&direction=3&head_direction=3&gesture=std"));
+        var userHead = new ImageButton(new Image("https://cdn.classichabbo.com/habbo-imaging/avatarimage?figure=" + userObj.getFigure() + "&size=b&head=1&direction=3&head_direction=3&gesture=std"));
         userHead.setLayoutX(Math.floor(65 / 2 - userHead.getImage().getWidth() / 2));
         userHead.setLayoutY(Math.round(55 / 2 - userHead.getImage().getHeight() / 2));
         userHead.setCursor(Cursor.HAND);
@@ -42,11 +53,11 @@ public class EntryToolbar extends View {
         // in Shockwave this is actually offset 2px to the left of the below two labels, but if you want it
         // in line with the others, set X back to 53 :)
 
-        var userLabel = new Label("Testing", "#FFFFFF");
+        var userLabel = new Label(userObj.getUsername(), "#FFFFFF");
         userLabel.setLayoutX(51);
         userLabel.setLayoutY(8);
 
-        var mottoLabel = new Label("This certainly is a test", "#FFFFFF");
+        var mottoLabel = new Label(userObj.getMotto(), "#FFFFFF");
         mottoLabel.setLayoutX(53);
         mottoLabel.setLayoutY(20);
         

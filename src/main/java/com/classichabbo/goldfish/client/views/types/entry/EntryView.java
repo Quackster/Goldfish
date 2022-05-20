@@ -6,6 +6,7 @@ import com.classichabbo.goldfish.client.game.resources.ResourceManager;
 import com.classichabbo.goldfish.client.game.scheduler.types.GraphicsScheduler;
 import com.classichabbo.goldfish.client.game.values.ValueType;
 import com.classichabbo.goldfish.client.game.values.types.VariablesManager;
+import com.classichabbo.goldfish.client.handlers.EntryHandler;
 import com.classichabbo.goldfish.client.views.View;
 import com.classichabbo.goldfish.client.views.types.loader.LoadingView;
 import com.classichabbo.goldfish.client.views.types.room.RoomTransition;
@@ -22,7 +23,8 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class EntryView extends View {
-    private EntryComponent component;
+    private final EntryHandler handler;
+    private final EntryComponent component;
 
     private long timeNextCloud;
     private int cloudTurnPoint = 330;
@@ -53,6 +55,7 @@ public class EntryView extends View {
     public EntryView() {
         this.clouds = new ArrayList<>();
         this.component = new EntryComponent(this);
+        this.handler = new EntryHandler(this);
     }
 
     @Override
@@ -354,6 +357,11 @@ public class EntryView extends View {
      */
     public EntryComponent getComponent() {
         return component;
+    }
+
+    @Override
+    public EntryHandler getHandler() {
+        return handler;
     }
 
     /**

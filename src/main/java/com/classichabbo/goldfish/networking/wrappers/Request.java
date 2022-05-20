@@ -18,7 +18,7 @@ public class Request {
         this.headerId = Base64Encoding.decode(this.header.getBytes());
     }
 
-    public String readClientString() throws MalformedPacketException {
+    public String readClientString() {
         try {
             byte[] data = remainingBytes();
 
@@ -37,7 +37,7 @@ public class Request {
             return readData;
 
         } catch (Exception ex) {
-            throw new MalformedPacketException("The packet sent to the server was malformed.");
+            return null;
         }
     }
 

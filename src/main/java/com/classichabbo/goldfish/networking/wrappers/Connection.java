@@ -4,8 +4,12 @@ import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.networking.util.StringUtil;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.Channel;
+import io.netty.util.Attribute;
+import io.netty.util.AttributeKey;
+import io.netty.util.AttributeMap;
+import io.netty.util.DefaultAttributeMap;
 
-public class Connection {
+public class Connection extends DefaultAttributeMap {
     private final Channel channel;
 
     public Connection(Channel channel) {
