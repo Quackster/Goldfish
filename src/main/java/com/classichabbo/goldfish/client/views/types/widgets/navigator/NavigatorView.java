@@ -15,6 +15,7 @@ import com.classichabbo.goldfish.client.views.controls.TextField;
 import com.classichabbo.goldfish.client.views.types.entry.EntryView;
 import com.classichabbo.goldfish.client.views.types.room.RoomTransition;
 import com.classichabbo.goldfish.client.views.types.room.RoomView;
+import com.classichabbo.goldfish.client.views.types.toolbars.RoomToolbar;
 import com.classichabbo.goldfish.client.views.types.widgets.Widget;
 
 import javafx.application.Platform;
@@ -94,6 +95,7 @@ public class NavigatorView extends Widget {
     @Override
     public void stop() {
         super.update();
+
         Movie.getInstance().getInterfaceScheduler().removeUpdate(this);
     }
 
@@ -557,7 +559,13 @@ public class NavigatorView extends Widget {
         var index = 0;
 
         if (this.inRoom) {
-            this.backTopShow(TextsManager.getInstance().getString("nav_hotelview"), e -> this.pendingAction = () -> this.goToHotelview());
+            this.backTopShow(TextsManager.getInstance().getString("nav_hotelview"), e -> this.pendingAction = () -> {
+                var roomToolbar = Movie.getInstance().getViewByClass(RoomToolbar.class);
+
+                if (roomToolbar != null) {
+                    roomToolbar.goToHotelView();
+                }
+            });
             index++;
         }
 
