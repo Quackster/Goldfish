@@ -78,14 +78,13 @@ public class Navigator extends Widget {
         // TODO Avery - I'm not sure where you get these from
         this.publicCategoryId = 1;
         this.privateCategoryId = 2;
-
+        this.inRoom = false;
+        
         this.init();
         this.setPadding(9, 11, 10, 10);
         this.setTitle(TextsManager.getInstance().getString("navigator"));
         this.setContent(this.content);
         this.setLocation();
-
-        this.inRoom = Movie.getInstance().getViews().stream().filter(x -> x instanceof RoomView).findAny().isPresent();
         this.setPage(NavigatorPage.PUBLIC);
 
         Movie.getInstance().getInterfaceScheduler().receiveUpdate(this);
@@ -456,10 +455,6 @@ public class Navigator extends Widget {
             this.showFavouriteRooms();
         }
 
-        if (this.inRoom) {
-            this.backTopShow(TextsManager.getInstance().getString("nav_hotelview"), e -> this.pendingAction = () -> this.goToHotelview());
-        }
-
         this.info.setVisible(true);
         this.infoImg.setTranslateX(0);
         this.infoImg.setTranslateY(0);
@@ -565,6 +560,23 @@ public class Navigator extends Widget {
         this.content.getChildren().removeIf(NavigatorBackButton.class::isInstance);
         
         this.currentCategory = this.getCategory(categoryId);
+        this.updateBackButtons();
+        this.title.setText(this.currentCategory.name);
+
+        for (var room : this.currentCategory.rooms) {
+            this.addRoom(room, false);
+        }
+        
+        for (var childCategory : this.currentCategory.categories) {
+            this.addCategory(childCategory);
+        }
+    }
+
+    private void updateBackButtons() {
+        if (this.inRoom) {
+            this.backTopShow(TextsManager.getInstance().getString("nav_hotelview"), e -> this.pendingAction = () -> this.goToHotelview());
+            this.updateBackButtons();
+        }
 
         var backCategories = new ArrayList<Category>();
         var currentCategory = this.currentCategory;
@@ -595,16 +607,6 @@ public class Navigator extends Widget {
 
         if (backCategories.isEmpty() && !this.inRoom) {
             this.backTopHide();
-        }
-
-        this.title.setText(this.currentCategory.name);
-
-        for (var room : this.currentCategory.rooms) {
-            this.addRoom(room, false);
-        }
-        
-        for (var childCategory : this.currentCategory.categories) {
-            this.addCategory(childCategory);
         }
     }
 
@@ -683,6 +685,11 @@ public class Navigator extends Widget {
         }
 
         return "";
+    }
+
+    public void updateInRoom(Boolean inRoom) {
+        this.inRoom = inRoom;
+        this.updateBackButtons();
     }
 
     // TODO Avery - all the below methods are your entry points to do whatever with :)
