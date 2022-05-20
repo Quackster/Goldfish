@@ -106,8 +106,8 @@ public class Navigator extends Widget {
             this.pendingAction = null;
         }
 
-        var inRoom = Movie.getInstance().getViews().stream().filter(x -> x instanceof RoomView).findAny().isPresent();
-        
+        var inRoom = Movie.getInstance().getInterfaceByClass(RoomView.class) != null;
+
         if (this.inRoom != inRoom) {
             this.inRoom = inRoom;
             this.updateBackButtons();
