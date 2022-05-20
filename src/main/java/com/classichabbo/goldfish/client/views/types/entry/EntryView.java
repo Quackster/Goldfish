@@ -48,13 +48,16 @@ public class EntryView extends View {
     public boolean queueCloseView = false;
     private boolean queueAnimateSign = false;
     private Runnable transitionTo;
+    private Runnable runAfterOpening;
+
+    public EntryView() {
+        this.clouds = new ArrayList<>();
+        this.component = new EntryComponent(this);
+    }
 
     @Override
     public void start() {
-        this.clouds = new ArrayList<>();
         this.cloudTurnPoint = VariablesManager.getInstance().getInt("hotel.view.cloud.turn.point", 330);
-
-        this.component = new EntryComponent(this);
 
         this.topReveal = new Rectangle(1,1);
         this.topReveal.setFill(Color.BLACK);
@@ -205,7 +208,7 @@ public class EntryView extends View {
             int initX = 0;
             int initY = ThreadLocalRandom.current().nextInt(0, (int) (DimensionUtil.getProgramHeight()*0.66));
 
-            //this.component.addCloud("left", initX, initY);
+            this.component.addCloud("left", initX, initY);
             this.timeNextCloud = DateUtil.getCurrentTimeSeconds() + ThreadLocalRandom.current().nextInt(1, 10);
         }
     }
@@ -265,7 +268,11 @@ public class EntryView extends View {
 
         if (tOffset <= 0) {
             this.queueOpenView = false;
-            this.openRevealTaskFinished();
+            this.topReveal.setVisible(false);
+            this.bottomReveal.setVisible(false);
+
+            if (this.runAfterOpening != null)
+                this.runAfterOpening.run();
         }
     }
 
@@ -322,15 +329,6 @@ public class EntryView extends View {
     /**
      * When the reveal task is finished, set these to invisible
      */
-    private void openRevealTaskFinished() {
-        this.topReveal.setVisible(false);
-        this.bottomReveal.setVisible(false);
-        this.getComponent().entryViewResume();
-    }
-
-    /**
-     * When the reveal task is finished, set these to invisible
-     */
     private void closeRevealTaskFinished() {
         this.transitionTo.run();
         this.transitionTo = null;
@@ -351,7 +349,18 @@ public class EntryView extends View {
         return clouds;
     }
 
+    /**
+     * Entry component
+     */
     public EntryComponent getComponent() {
         return component;
+    }
+
+    /**
+     * Sets the callback after the entry has finished opening
+     * @param runAfterOpening
+     */
+    public void setRunAfterOpening(Runnable runAfterOpening) {
+        this.runAfterOpening = runAfterOpening;
     }
 }

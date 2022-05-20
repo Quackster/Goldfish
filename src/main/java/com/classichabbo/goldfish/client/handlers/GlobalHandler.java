@@ -1,33 +1,34 @@
 package com.classichabbo.goldfish.client.handlers;
 
 import com.classichabbo.goldfish.client.Movie;
-import com.classichabbo.goldfish.client.game.values.types.VariablesManager;
-import com.classichabbo.goldfish.client.views.types.entry.EntryView;
+import com.classichabbo.goldfish.client.game.values.types.PropertiesManager;
+import com.classichabbo.goldfish.client.game.values.types.TextsManager;
+import com.classichabbo.goldfish.client.views.types.error.ErrorWindow;
 import com.classichabbo.goldfish.client.views.types.loader.LoadingScreen;
-import com.classichabbo.goldfish.client.views.types.toolbars.EntryToolbar;
-import com.classichabbo.goldfish.client.views.types.widgets.navigator.Navigator;
 import com.classichabbo.goldfish.networking.util.NetworkUtil;
-import com.classichabbo.goldfish.networking.wrappers.ClientChannel;
+import com.classichabbo.goldfish.networking.wrappers.Connection;
 import com.classichabbo.goldfish.networking.wrappers.Request;
 import com.classichabbo.goldfish.networking.wrappers.messages.MessageRequest;
 import com.classichabbo.goldfish.networking.wrappers.messages.MessageHandler;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 
 public class GlobalHandler extends MessageHandler {
-    private static void handleHello(ClientChannel channel, Request request) {
-        channel.send("INIT_CRYPTO", 0);
+    private static void handleHello(Connection conn, Request request) {
+        conn.send("INIT_CRYPTO", 0);
 
         var loader = Movie.getInstance().getInterfaceByClass(LoadingScreen.class);
 
         if (loader != null) {
             loader.progressLoader(5);
-            loader.getComponent().showEntryView();
+            loader.getComponent().showHotel();
         }
     }
 
-    private static void handleCryptoParameters(ClientChannel channel, Request request) {
-        channel.send("GENERATE_KEY", "0");
+    private static void handleCryptoParameters(Connection conn, Request request) {
+        conn.send("GENERATE_KEY", "0");
 
         var loader = Movie.getInstance().getInterfaceByClass(LoadingScreen.class);
 
@@ -36,10 +37,10 @@ public class GlobalHandler extends MessageHandler {
         }
     }
 
-    private static void handleServerKey(ClientChannel channel, Request request) {
-        channel.send("VERSIONCHECK", "Goldfish1", VariablesManager.getInstance().getString("external.variables"));
-        channel.send("UNIQUEID", NetworkUtil.getUniqueIdentifier());
-        channel.send("GET_SESSION_PARAMETERS");
+    private static void handleServerKey(Connection conn, Request request) {
+        conn.send("VERSIONCHECK", "Goldfish1", PropertiesManager.getInstance().getString("external.variables"));
+        conn.send("UNIQUEID", NetworkUtil.getUniqueIdentifier());
+        conn.send("GET_SESSION_PARAMETERS");
 
         var loader = Movie.getInstance().getInterfaceByClass(LoadingScreen.class);
 
@@ -47,15 +48,48 @@ public class GlobalHandler extends MessageHandler {
             loader.progressLoader(20);
         }
 
-        var entryView = Movie.getInstance().getInterfaceByClass(EntryView.class);
-
-        if (entryView != null) {
-            if (loader != null) {
-                Movie.getInstance().removeObject(loader);
-            }
-        }
         //entryView.getComponent().initLoginProcess();
+    }
 
+    public void beginLoginSequence() {
+        var conn = Client.getConnection();
+
+        if (conn == null) {
+            Movie.getInstance().createObject(new ErrorWindow(
+                    TextsManager.getInstance().getString("Alert_ConnectionFailure"),
+                    TextsManager.getInstance().getString("Alert_ConnectionDisconnected"),
+                    false
+            ));
+
+            return;
+        }
+
+        String ssoTicket = null;
+
+        try {
+            ssoTicket = Files.readString(Path.of("auth_ticket"));
+
+            if (ssoTicket.length() > 255) {
+                ssoTicket = ssoTicket.substring(0, 255);
+            }
+        } catch (Exception ex) {
+
+        }
+
+        if (ssoTicket == null) {
+            conn.close();
+            return;
+        }
+
+        conn.send("SSO_TICKET", ssoTicket);
+    }
+
+    private static void authenticationOK(Connection conn, Request request) {
+        var loader = Movie.getInstance().getInterfaceByClass(LoadingScreen.class);
+
+        if (loader != null) {
+            loader.progressLoader(20);
+        }
     }
 
     @Override
@@ -64,6 +98,7 @@ public class GlobalHandler extends MessageHandler {
         listeners.put(0, GlobalHandler::handleHello);
         listeners.put(1, GlobalHandler::handleServerKey);
         listeners.put(277, GlobalHandler::handleCryptoParameters);
+        listeners.put(3, GlobalHandler::authenticationOK);
 
         var commands = new HashMap<String, Integer>();
         commands.put("INIT_CRYPTO", 206);
@@ -71,6 +106,7 @@ public class GlobalHandler extends MessageHandler {
         commands.put("VERSIONCHECK", 1170);
         commands.put("UNIQUEID", 813);
         commands.put("GET_SESSION_PARAMETERS", 1817);
+        commands.put("SSO_TICKET", 415);
 
         if (tBool) {
             Movie.getInstance().registerListeners(this, listeners);

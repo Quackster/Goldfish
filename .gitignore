@@ -35,3 +35,4 @@ error.web.log
 Havana-Server/src/main/java/META-INF/MANIFEST.MF
 Havana-Web/src/main/java/META-INF/MANIFEST.MF
 Matteo-Server/src/main/java/META-INF/MANIFEST.MF
+auth_ticket

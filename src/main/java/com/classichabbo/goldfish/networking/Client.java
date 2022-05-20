@@ -1,7 +1,7 @@
 package com.classichabbo.goldfish.networking;
 
 import com.classichabbo.goldfish.client.game.values.types.PropertiesManager;
-import com.classichabbo.goldfish.client.game.values.types.VariablesManager;
+import com.classichabbo.goldfish.networking.wrappers.Connection;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
@@ -13,8 +13,8 @@ import io.netty.util.concurrent.GlobalEventExecutor;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class NettyClient {
-    private static NettyClient instance;
+public class Client {
+    private static Client instance;
     private AtomicInteger connectionAttempts;
 
     private DefaultChannelGroup channels;
@@ -23,8 +23,9 @@ public class NettyClient {
 
     private boolean isConnected;
     private boolean isConnecting;
+    private NettyChannelInitializer nettyChannelInitializer;
 
-    public NettyClient() {
+    public Client() {
         this.channels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
         this.connectionAttempts = new AtomicInteger(0);
     }
@@ -40,11 +41,13 @@ public class NettyClient {
         try {
             this.bootstrap = new Bootstrap();
             this.workerGroup = new NioEventLoopGroup();
+            this.nettyChannelInitializer = new NettyChannelInitializer(this);
+
             this.bootstrap
                     .group(this.workerGroup)
                     .option(ChannelOption.SO_KEEPALIVE, true)
                     .channel(NioSocketChannel.class)
-                    .handler(new NettyChannelInitializer(this));
+                    .handler(this.nettyChannelInitializer);
 
             return this.bootstrap.connect(
                     PropertiesManager.getInstance().getString("connection.info.host"),
@@ -65,13 +68,18 @@ public class NettyClient {
         }
     }
 
-    public static NettyClient getInstance() {
+    public static Client getInstance() {
         if (instance == null) {
-            instance = new NettyClient();
+            instance = new Client();
         }
 
         return instance;
     }
+
+    public static Connection getConnection() {
+        return instance.nettyChannelInitializer.getConnectionHandler().getConnection();
+    }
+
 
     public boolean isConnected() {
         return isConnected;

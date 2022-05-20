@@ -7,7 +7,7 @@ import com.classichabbo.goldfish.client.game.resources.ResourceManager;
 import com.classichabbo.goldfish.client.views.View;
 import com.classichabbo.goldfish.client.views.types.entry.EntryView;
 import com.classichabbo.goldfish.client.views.types.room.RoomView;
-import com.classichabbo.goldfish.client.views.types.widgets.navigator.Navigator;
+import com.classichabbo.goldfish.client.views.types.widgets.Navigator;
 import com.classichabbo.goldfish.client.views.types.alerts.Alert;
 import com.classichabbo.goldfish.client.views.types.room.RoomTransition;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
@@ -30,7 +30,35 @@ public class RoomToolbar extends View {
     private ImageButton handButton;
 
     @Override
-    public void start() {       
+    public void start() {
+        var temp = new ButtonLarge("Go to hotelview");
+        temp.setLayoutX(15);
+        temp.setLayoutY(15);
+        temp.setOnMouseClicked(e -> {
+            if (Movie.getInstance().isInterfaceActive(RoomView.class)) {
+                var roomView = Movie.getInstance().getInterfaceByClass(RoomView.class);
+
+                Movie.getInstance().removeObject(roomView);
+                Movie.getInstance().removeObject(this);
+
+                Movie.getInstance().createObject(new RoomTransition(() -> {
+                    var entryView = new EntryView();
+                    entryView.setRunAfterOpening(() -> entryView.getComponent().entryViewResume());
+                    Movie.getInstance().createObject(entryView);
+
+                    Movie.getInstance().createObject(new EntryView());
+                }));
+            }
+            /*
+            if (Movie.getInstance().getCurrentVisualiser().getType() == VisualiserType.ROOM) {
+                Movie.getInstance().createObject(new RoomTransition(VisualiserType.HOTEL_VIEW));
+            }
+
+             */
+        });
+
+        this.getChildren().add(temp);
+        
         this.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/room_toolbar/background.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
         
         this.chatButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/interfaces/room_toolbar/chat.png"));
@@ -40,23 +68,10 @@ public class RoomToolbar extends View {
         friendsButton.setOnMouseClicked(e -> Movie.getInstance().createObject(new Alert("friendsButton clicked")));
         
         this.navigatorButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/interfaces/room_toolbar/navigator.png"));
-        // not sure if this is the correct change but if not just put it back to below
-        // below didn't work because navigator was not present
-        // didn't want to bother you to ask for a fix so just put this in for now
-        navigatorButton.setOnMouseClicked(e -> {
-            var navigator = Movie.getInstance().getViews().stream().filter(x -> x instanceof Navigator).findFirst().orElse(null);
-
-            if (navigator == null) {
-                Movie.getInstance().createObject(new Navigator());
-            } else {
-                navigator.toFront();
-                navigator.toggleVisibility();
-            }
-        });
-        /*navigatorButton.setOnMouseClicked(e -> Movie.getInstance().getViews().stream().filter(x -> x instanceof Navigator).findFirst().ifPresent(navigator -> {
+        navigatorButton.setOnMouseClicked(e -> Movie.getInstance().getViews().stream().filter(x -> x instanceof Navigator).findFirst().ifPresent(navigator -> {
             navigator.toggleVisibility();
             navigator.toFront();
-        }));*/
+        }));
         
         this.eventsButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/interfaces/room_toolbar/events.png"));
         eventsButton.setOnMouseClicked(e -> Movie.getInstance().createObject(new Alert("eventsButton clicked")));

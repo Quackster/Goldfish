@@ -4,9 +4,10 @@ import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.game.values.types.PropertiesManager;
 import com.classichabbo.goldfish.client.game.values.types.VariablesManager;
 import com.classichabbo.goldfish.client.game.values.types.TextsManager;
+import com.classichabbo.goldfish.client.views.GlobalView;
 import com.classichabbo.goldfish.client.views.types.entry.EntryView;
 import com.classichabbo.goldfish.client.views.types.loader.LoadingScreen;
-import com.classichabbo.goldfish.networking.NettyClient;
+import com.classichabbo.goldfish.networking.Client;
 import javafx.application.Platform;
 
 import java.awt.*;
@@ -68,7 +69,7 @@ public class LoaderComponent extends Component {
      * Connect server task
      */
     public void connectServer() {
-        if (NettyClient.getInstance().getConnectionAttempts().get() >= VariablesManager.getInstance().getInt("connection.max.attempts", 5)) {
+        if (Client.getInstance().getConnectionAttempts().get() >= VariablesManager.getInstance().getInt("connection.max.attempts", 5)) {
             return;
         }
 
@@ -76,32 +77,41 @@ public class LoaderComponent extends Component {
             return;
         }
 
-        NettyClient.getInstance().getConnectionAttempts().incrementAndGet();
+        Client.getInstance().getConnectionAttempts().incrementAndGet();
         this.connectionTimer = System.currentTimeMillis() + 5000; // Retry once every second for a max of 5 times
 
-        var channelFuture = NettyClient.getInstance().createSocket();
+        var channelFuture = Client.getInstance().createSocket();
 
         channelFuture.addListener(listener -> {
-            NettyClient.getInstance().setConnecting(false);
+            Client.getInstance().setConnecting(false);
 
             if (listener.isSuccess()) {
                 System.out.println("Successful connection...");
-                NettyClient.getInstance().setConnected(true);
+                Client.getInstance().setConnected(true);
             } else {
                 System.out.println("Connection failure...");
-                NettyClient.getInstance().setConnected(false);
+                Client.getInstance().setConnected(false);
             }
         });
     }
 
-    public void showEntryView() {
+    public void showHotel() {
         Platform.runLater(() -> {
+            var global = Movie.getInstance().getInterfaceByClass(GlobalView.class);
             var loader = Movie.getInstance().getInterfaceByClass(LoadingScreen.class);
 
             if (loader != null) {
                 loader.getLoadingLogoImage().setVisible(false);
-                Movie.getInstance().createObject(new EntryView());
                 loader.getLoaderBar().toFront();
+
+                var entryView = new EntryView();
+
+                entryView.setRunAfterOpening(() -> {
+                    loader.progressLoader(15);
+                    global.getHandler().beginLoginSequence();
+                });
+
+                Movie.getInstance().createObject(entryView);
             }
         });
     }

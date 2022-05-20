@@ -1,16 +1,11 @@
 package com.classichabbo.goldfish.client.components;
 
 import com.classichabbo.goldfish.client.Movie;
-import com.classichabbo.goldfish.client.game.values.types.TextsManager;
 import com.classichabbo.goldfish.client.views.types.entry.EntryView;
-import com.classichabbo.goldfish.client.views.types.error.ErrorWindow;
-import com.classichabbo.goldfish.client.views.types.loader.LoadingScreen;
 import com.classichabbo.goldfish.client.views.types.toolbars.EntryToolbar;
 import com.classichabbo.goldfish.client.views.types.widgets.navigator.Navigator;
 import com.classichabbo.goldfish.client.scripts.Cloud;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
-import com.classichabbo.goldfish.networking.NettyClient;
-import javafx.application.Platform;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -19,6 +14,7 @@ public class EntryComponent {
 
     public EntryComponent(EntryView entryView) {
         this.entryView = entryView;
+        this.entryView.getClouds().clear();
 
         // Kickstart some clouds after turn point :^)
         for (int i = 0; i < ThreadLocalRandom.current().nextInt(2, 5) + 1; i++) {
@@ -47,6 +43,19 @@ public class EntryComponent {
 
         this.entryView.getClouds().add(cloud);
         this.entryView.getChildren().add(cloud);
+    }
+
+    public void tryLogin() {
+        var navigator = Movie.getInstance().getViews().stream().filter(x -> x instanceof Navigator).findFirst().orElse(null);
+
+        if (navigator == null) {
+            Movie.getInstance().createObject(new Navigator());
+        } else {
+            navigator.toFront();
+            navigator.setHidden(false);
+        }
+
+        Movie.getInstance().createObject(new EntryToolbar(entryView), entryView);
     }
 
     public void entryViewResume() {
