@@ -18,7 +18,7 @@ public class NavigatorBackButton extends Pane {
         this.setPrefSize(340, 22);
         this.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/back_bottom.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
         this.setLayoutX(1);
-        this.setLayoutY(startY + (18 * index));
+        this.setLayoutY(startY + (18 * (index + 1)));
         this.setPickOnBounds(false);
         this.setCursor(Cursor.HAND);
         this.setOnMouseClicked(event);

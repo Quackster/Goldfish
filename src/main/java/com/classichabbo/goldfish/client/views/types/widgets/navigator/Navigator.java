@@ -106,6 +106,13 @@ public class Navigator extends Widget {
             this.pendingAction = null;
         }
 
+        var inRoom = Movie.getInstance().getViews().stream().filter(x -> x instanceof RoomView).findAny().isPresent();
+        
+        if (this.inRoom != inRoom) {
+            this.inRoom = inRoom;
+            this.updateBackButtons();
+        }
+
         this.navigatorList.update();
     }
 
@@ -323,8 +330,6 @@ public class Navigator extends Widget {
     }
 
     private void setPage(NavigatorPage page) {
-        this.content.getChildren().removeIf(NavigatorBackButton.class::isInstance);
-
         if (page == NavigatorPage.PUBLIC) {
             this.currentPage = NavigatorPage.PUBLIC;
             this.content.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/background_public.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
@@ -405,8 +410,7 @@ public class Navigator extends Widget {
             this.infoLeftButton.setText(TextsManager.getInstance().getString("nav_addtofavourites"));
             this.infoLeftButton.setTranslateX(0);
 
-            this.backTop.setVisible(false);
-
+            this.updateBackButtons();
             this.navigatorList.clearContent();
         }
         else {
@@ -430,8 +434,7 @@ public class Navigator extends Widget {
             this.infoLeftButton.setText(TextsManager.getInstance().getString("nav_modify"));
             this.infoLeftButton.setTranslateX(0);
 
-            this.backTop.setVisible(false);
-
+            this.updateBackButtons();
             this.showOwnRooms();
         }
 
@@ -451,8 +454,7 @@ public class Navigator extends Widget {
             this.infoLeftButton.setText(TextsManager.getInstance().getString("nav_removefavourites"));
             this.infoLeftButton.setTranslateX(-30);
 
-            this.backTop.setVisible(false);
-
+            this.updateBackButtons();
             this.showFavouriteRooms();
         }
 
@@ -472,47 +474,17 @@ public class Navigator extends Widget {
             this.backTop.setLayoutY(58);
             this.backTopLabel.setLayoutY(3);
             this.backTop.setVisible(true);
-
-            this.title.setTranslateY(18);
-            this.hideFull.setTranslateY(18);
-
-            this.navigatorList.setHeightReduction(18);
-            this.navigatorList.setTranslateY(18);
         }
         if (this.currentPage == NavigatorPage.PRIVATE) {
             this.backTop.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/back_top_private.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
             this.backTop.setPrefHeight(27);
             this.backTop.setLayoutY(76);
             this.backTopLabel.setLayoutY(8);
-
-            this.title.setTranslateY(25);
-            this.hideFull.setTranslateY(25);
-            
-            this.recommendedTitle.setTranslateY(25);
-            this.recommendedRefresh.setTranslateY(25);
-            this.recommendedList.setTranslateY(25);
-
-            this.navigatorList.setHeightReduction(25);
-            this.navigatorList.setTranslateY(25);
         }
 
         this.backTopLabel.setText(text);
         this.backTop.setOnMouseClicked(event);
         this.backTop.setVisible(true);
-    }
-
-    private void backTopHide() {
-        this.title.setTranslateY(0);
-        this.hideFull.setTranslateY(0);
-        
-        this.recommendedTitle.setTranslateY(0);
-        this.recommendedRefresh.setTranslateY(0);
-        this.recommendedList.setTranslateY(0);
-
-        this.navigatorList.setHeightReduction(0);
-        this.navigatorList.setTranslateY(0);
-
-        this.backTop.setVisible(false);
     }
 
     private void infoShowRoom(Room room) {
@@ -558,7 +530,6 @@ public class Navigator extends Widget {
 
     private void showCategory(int categoryId) {
         this.navigatorList.clearContent();
-        this.content.getChildren().removeIf(NavigatorBackButton.class::isInstance);
         
         this.currentCategory = this.getCategory(categoryId);
         this.updateBackButtons();
@@ -574,9 +545,20 @@ public class Navigator extends Widget {
     }
 
     private void updateBackButtons() {
+        this.content.getChildren().removeIf(NavigatorBackButton.class::isInstance);
+
+        if (this.currentPage == NavigatorPage.SEARCH 
+            || this.currentPage == NavigatorPage.OWN
+            || this.currentPage == NavigatorPage.FAVOURITES) {
+            this.resetBackButtonTranslations();
+            return;
+        }
+
+        var index = 0;
+
         if (this.inRoom) {
             this.backTopShow(TextsManager.getInstance().getString("nav_hotelview"), e -> this.pendingAction = () -> this.goToHotelview());
-            this.updateBackButtons();
+            index++;
         }
 
         var backCategories = new ArrayList<Category>();
@@ -586,24 +568,60 @@ public class Navigator extends Widget {
             currentCategory = currentCategory.parentCategory;
         }
 
-        var index = 0;
         var startY = this.currentPage == NavigatorPage.PUBLIC ? 40 : 63;
         Collections.reverse(backCategories);
 
         for (var category : backCategories) {
-            index++;
-
-            if (index == 1 && !this.inRoom) {
+            if (index == 0) {
                 this.backTopShow(category.parentCategory.name, e -> this.pendingAction = () -> this.showCategory(category.parentCategory.categoryId));
-                continue;
             }
+            else {
+                content.getChildren().add(new NavigatorBackButton(category.parentCategory.name, startY, index, e -> this.pendingAction = () -> this.showCategory(category.parentCategory.categoryId)));
+            }
+            index++;
+        }
 
-            content.getChildren().add(new NavigatorBackButton(category.parentCategory.name, startY, index, e -> this.pendingAction = () -> this.showCategory(category.parentCategory.categoryId)));
+        if (this.currentPage == NavigatorPage.PUBLIC) {
+            this.title.setTranslateY(18 * index);
+            this.hideFull.setTranslateY(18 * index);
+
+            this.navigatorList.setHeightReduction(18 * index);
+            this.navigatorList.setTranslateY(18 * index);
+        }
+
+        if (this.currentPage == NavigatorPage.PRIVATE) {
+            this.title.setTranslateY((25 + (18 * (index - 1))) - (!backCategories.isEmpty() ? 80 : 0));
+            this.hideFull.setTranslateY((25 + (18 * (index - 1))) - (!backCategories.isEmpty() ? 80 : 0));
+            
+            this.recommendedTitle.setTranslateY(25);
+            this.recommendedRefresh.setTranslateY(25);
+            this.recommendedList.setTranslateY(25);
+
+            this.navigatorList.setHeightReduction((25 + (18 * (index - 1))) - (!backCategories.isEmpty() ? 80 : 0));
+            this.navigatorList.setTranslateY((25 + (18 * (index - 1))) - (!backCategories.isEmpty() ? 80 : 0));
         }
 
         if (backCategories.isEmpty() && !this.inRoom) {
-            this.backTopHide();
+            this.resetBackButtonTranslations();
         }
+
+        this.recommendedTitle.setVisible(backCategories.isEmpty() && this.currentPage == NavigatorPage.PRIVATE);
+        this.recommendedRefresh.setVisible(backCategories.isEmpty() && this.currentPage == NavigatorPage.PRIVATE);
+        this.recommendedList.setVisible(backCategories.isEmpty() && this.currentPage == NavigatorPage.PRIVATE);
+    }
+
+    private void resetBackButtonTranslations() {
+        this.title.setTranslateY(0);
+        this.hideFull.setTranslateY(0);
+        
+        this.recommendedTitle.setTranslateY(0);
+        this.recommendedRefresh.setTranslateY(0);
+        this.recommendedList.setTranslateY(0);
+
+        this.navigatorList.setHeightReduction(0);
+        this.navigatorList.setTranslateY(0);
+
+        this.backTop.setVisible(false);
     }
 
     private void showRecommendedRooms() {
@@ -681,11 +699,6 @@ public class Navigator extends Widget {
         }
 
         return "";
-    }
-
-    public void updateInRoom(Boolean inRoom) {
-        this.inRoom = inRoom;
-        this.updateBackButtons();
     }
 
     // TODO Avery - all the below methods are your entry points to do whatever with :)
