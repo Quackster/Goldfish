@@ -16,6 +16,7 @@ import com.classichabbo.goldfish.client.views.types.room.RoomTransition;
 import com.classichabbo.goldfish.client.views.types.room.RoomView;
 import com.classichabbo.goldfish.client.views.types.widgets.Widget;
 
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.image.ImageView;
@@ -751,30 +752,31 @@ public class Navigator extends Widget {
     private void goToRoom(int roomId) {
         System.out.println("Go to " + roomId);
 
-        if (Movie.getInstance().isInterfaceActive(EntryView.class)) {
-            var entryView = Movie.getInstance().getInterfaceByClass(EntryView.class);
-            Movie.getInstance().removeObject(this);
+        Platform.runLater(() -> {
+            if (Movie.getInstance().isInterfaceActive(EntryView.class)) {
+                var entryView = Movie.getInstance().getInterfaceByClass(EntryView.class);
 
-            entryView.transitionTo(() -> {
-                Movie.getInstance().createObject(new RoomView());
-                Movie.getInstance().removeObject(entryView);
-            });
+                entryView.transitionTo(() -> {
+                    Movie.getInstance().createObject(new RoomView());
+                    Movie.getInstance().removeObject(entryView);
+                });
 
-            Movie.getInstance().hideWidgets();
-        }
+                Movie.getInstance().hideWidgets();
+            }
+        });
     }
 
     private void goToHotelview() {
-        if (Movie.getInstance().isInterfaceActive(RoomView.class)) {
-            var roomView = Movie.getInstance().getInterfaceByClass(RoomView.class);
+        Platform.runLater(() -> {
+            if (Movie.getInstance().isInterfaceActive(RoomView.class)) {
+                var roomView = Movie.getInstance().getInterfaceByClass(RoomView.class);
+                Movie.getInstance().removeObject(roomView);
 
-            Movie.getInstance().removeObject(roomView);
-            Movie.getInstance().removeObject(this);
-
-            Movie.getInstance().createObject(new RoomTransition(() -> {
-                Movie.getInstance().createObject(new EntryView());
-            }));
-        }
+                Movie.getInstance().createObject(new RoomTransition(() -> {
+                    Movie.getInstance().createObject(new EntryView());
+                }));
+            }
+        });
     }
 
     private void addToFavourites(int roomId) { 

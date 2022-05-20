@@ -149,6 +149,7 @@ public class Movie extends Application {
         });
 
         this.views.add(view);
+        // this.printViews();
     }
 
     public void removeObject(View view) {
@@ -184,6 +185,16 @@ public class Movie extends Application {
                 removeObject(x);
             }
         });
+
+       // this.printViews();
+    }
+
+    private void printViews() {
+        this.views.forEach(x -> {
+            System.out.println(x.getClass().getName());
+        });
+
+        System.out.println("------------");
     }
 
     public void registerListeners(MessageHandler messageHandler, HashMap<Integer, MessageRequest> listeners) {

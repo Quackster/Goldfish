@@ -45,8 +45,6 @@ public class RoomToolbar extends View {
                     var entryView = new EntryView();
                     entryView.setRunAfterOpening(() -> entryView.getComponent().entryViewResume());
                     Movie.getInstance().createObject(entryView);
-
-                    Movie.getInstance().createObject(new EntryView());
                 }));
             }
             /*
