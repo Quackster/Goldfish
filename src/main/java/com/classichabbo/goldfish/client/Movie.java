@@ -9,6 +9,7 @@ import com.classichabbo.goldfish.client.views.types.entry.EntryView;
 import com.classichabbo.goldfish.client.views.types.loader.LoadingView;
 import com.classichabbo.goldfish.client.views.types.room.RoomTransition;
 import com.classichabbo.goldfish.client.views.types.room.RoomView;
+import com.classichabbo.goldfish.client.views.types.toolbars.EntryToolbar;
 import com.classichabbo.goldfish.client.views.types.toolbars.RoomToolbar;
 import com.classichabbo.goldfish.client.views.types.widgets.Widget;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
@@ -311,6 +312,12 @@ public class Movie extends Application {
     public void goToRoom(int roomId) {
         Platform.runLater(() -> {
             if (Movie.getInstance().isViewActive(EntryView.class)) {
+                var entryToolbar = Movie.getInstance().getViewByClass(EntryToolbar.class);
+
+                if (entryToolbar != null) {
+                    Movie.getInstance().removeObject(entryToolbar);
+                }
+
                 var entryView = Movie.getInstance().getViewByClass(EntryView.class);
 
                 entryView.transitionTo(() -> {
