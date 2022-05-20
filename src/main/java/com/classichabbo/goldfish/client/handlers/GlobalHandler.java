@@ -5,6 +5,7 @@ import com.classichabbo.goldfish.client.game.values.types.PropertiesManager;
 import com.classichabbo.goldfish.client.game.values.types.TextsManager;
 import com.classichabbo.goldfish.client.views.types.error.ErrorWindow;
 import com.classichabbo.goldfish.client.views.types.loader.LoadingScreen;
+import com.classichabbo.goldfish.networking.Client;
 import com.classichabbo.goldfish.networking.util.NetworkUtil;
 import com.classichabbo.goldfish.networking.wrappers.Connection;
 import com.classichabbo.goldfish.networking.wrappers.Request;
