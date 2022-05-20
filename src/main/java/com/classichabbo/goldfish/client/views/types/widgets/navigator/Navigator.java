@@ -1,6 +1,7 @@
 package com.classichabbo.goldfish.client.views.types.widgets.navigator;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
@@ -586,23 +587,18 @@ public class Navigator extends Widget {
         }
 
         var index = 0;
+        var startY = this.currentPage == NavigatorPage.PUBLIC ? 40 : 63;
+        Collections.reverse(backCategories);
 
         for (var category : backCategories) {
             index++;
 
             if (index == 1 && !this.inRoom) {
                 this.backTopShow(category.parentCategory.name, e -> this.pendingAction = () -> this.showCategory(category.parentCategory.categoryId));
-
-                if (this.currentPage == NavigatorPage.PUBLIC) {
-
-                }
-                if (this.currentPage == NavigatorPage.PRIVATE) {
-
-                }
                 continue;
             }
 
-            content.getChildren().add(new NavigatorBackButton(category.parentCategory.name, index, e -> this.pendingAction = () -> this.showCategory(category.parentCategory.categoryId)));
+            content.getChildren().add(new NavigatorBackButton(category.parentCategory.name, startY, index, e -> this.pendingAction = () -> this.showCategory(category.parentCategory.categoryId)));
         }
 
         if (backCategories.isEmpty() && !this.inRoom) {
@@ -728,13 +724,33 @@ public class Navigator extends Widget {
         }
 
         if (categoryId == 3) {
-            category = new Category(1, "Public Rooms", this.getCategory(1));
-            category.addRoom(new Room(1, "Theatredome", "Perform your latest master piece, or simply catch the latest gossip.", "", 1, 100));
+            category = new Category(3, "Entertainent", this.getCategory(1));
+            category.addCategory(new Category(7, "Secret Subcategory", 0, 100));
         }
 
         if (categoryId == 4) {
-            category = new Category(1, "Trade Floor", this.getCategory(2));
+            category = new Category(4, "Trade Floor", this.getCategory(2));
+            category.addCategory(new Category(5, "Secret Subcategory", 0, 100));
+        }
+
+        if (categoryId == 5) {
+            category = new Category(5, "Secret Subcategory", this.getCategory(4));
+            category.addCategory(new Category(6, "Secret Sub-Subcategory", 0, 100));
+        }
+
+        if (categoryId == 6) {
+            category = new Category(6, "Secret Sub-Subcategory", this.getCategory(5));
             category.addRoom(new Room(1, "Parsnip's Casino", "Parsnip", "Large bets welcomed, games 13/21/poker", 0, 15, Doorbell.OPEN));
+        }
+
+        if (categoryId == 7) {
+            category = new Category(7, "Secret Subcategory", this.getCategory(3));
+            category.addCategory(new Category(8, "Secret Sub-Subcategory", 0, 100));
+        }
+
+        if (categoryId == 8) {
+            category = new Category(8, "Secret Sub-Subcategory", this.getCategory(7));
+            category.addRoom(new Room(1, "Theatredome", "Perform your latest master piece, or simply catch the latest gossip.", "", 1, 100));
         }
 
         return category;
