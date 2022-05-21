@@ -12,6 +12,7 @@ import com.classichabbo.goldfish.client.views.types.room.RoomView;
 import com.classichabbo.goldfish.client.views.types.toolbars.EntryToolbar;
 import com.classichabbo.goldfish.client.views.types.toolbars.RoomToolbar;
 import com.classichabbo.goldfish.client.views.types.widgets.Widget;
+import com.classichabbo.goldfish.client.views.types.widgets.navigator.NavigatorView;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
 import com.classichabbo.goldfish.networking.Client;
 import com.classichabbo.goldfish.networking.wrappers.messages.MessageHandler;
@@ -309,8 +310,18 @@ public class Movie extends Application {
     /**
      * Go to room handler
      */
-    public void goToRoom(int roomId) {
+    public void goToRoom(int roomId, String password) {
         Platform.runLater(() -> {
+            // TODO Avery move this where you like but needs to send back password result
+            // If you're not happy with this just remove the if / else if and the password parameter :)
+            if (password != null && password.equals("password")) {
+                Movie.getInstance().getViewByClass(NavigatorView.class).sendPasswordResult(true);
+            }
+            else if (password != null) {
+                Movie.getInstance().getViewByClass(NavigatorView.class).sendPasswordResult(false);
+                return;
+            }
+
             if (Movie.getInstance().isViewActive(EntryView.class)) {
                 var entryToolbar = Movie.getInstance().getViewByClass(EntryToolbar.class);
 

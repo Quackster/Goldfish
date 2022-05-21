@@ -35,7 +35,7 @@ public class Alert extends Dialog {
         content.getChildren().addAll(text, ok);
 
         this.setTitle("Notice!");
-        this.setContent(content, new Insets(9, 10, 11, 10));
+        this.setContent(content, new Insets(9, 10, 11, 10), true);
         this.initInnerBackground();
         this.setCallAfterFinish(() -> {
             System.out.println("alert finished");

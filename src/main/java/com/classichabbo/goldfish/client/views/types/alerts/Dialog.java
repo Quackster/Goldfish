@@ -55,6 +55,7 @@ public class Dialog extends View {
 
     private boolean isSized;
     private boolean sizedOnce;
+    private boolean showAfterSize;
 
     private double mousePressedX;
     private double mousePressedY;
@@ -149,8 +150,9 @@ public class Dialog extends View {
                     this.callAfterFinish = null;
                 }
 
-                // Alert was finished sizing, now show it!
-                this.setHidden(false);
+                if (this.showAfterSize) {
+                    this.setHidden(false);
+                }
 
                 // Alert was finished sizing, don't size again!
                 this.isSized = true;
@@ -350,7 +352,7 @@ public class Dialog extends View {
         this.getChildren().addAll(this.title, this.dragArea, this.closeButton);
     }
 
-    protected void setContent(Pane content, Insets padding) {
+    protected void setContent(Pane content, Insets padding, boolean showAfter) {
         this.callBeforeFinish = () -> {
             this.newContent = content;
             this.newContent.setVisible(false);
@@ -363,6 +365,7 @@ public class Dialog extends View {
         };
 
         this.isSized = false;
+        this.showAfterSize = showAfter;
     }
 
     protected void closeButtonClicked() {

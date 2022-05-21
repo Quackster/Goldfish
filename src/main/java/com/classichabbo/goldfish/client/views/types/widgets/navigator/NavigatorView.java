@@ -13,13 +13,10 @@ import com.classichabbo.goldfish.client.views.controls.ButtonLarge;
 import com.classichabbo.goldfish.client.views.controls.Label;
 import com.classichabbo.goldfish.client.views.controls.ScrollPane;
 import com.classichabbo.goldfish.client.views.controls.TextField;
-import com.classichabbo.goldfish.client.views.types.entry.EntryView;
-import com.classichabbo.goldfish.client.views.types.room.RoomTransition;
+import com.classichabbo.goldfish.client.views.controls.TextFieldSquare;
 import com.classichabbo.goldfish.client.views.types.room.RoomView;
-import com.classichabbo.goldfish.client.views.types.toolbars.RoomToolbar;
 import com.classichabbo.goldfish.client.views.types.widgets.Widget;
 
-import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -68,6 +65,11 @@ public class NavigatorView extends Widget {
     private Button infoLeftButton;
     private ButtonLarge infoGoButton;
 
+    private BorderPane passwordPrompt;
+    private Label passwordPromptName;
+    private TextFieldSquare passwordPromptField;
+    private ButtonLarge passwordPromptGoButton;
+
     private int publicCategoryId;
     private int privateCategoryId;
 
@@ -88,7 +90,7 @@ public class NavigatorView extends Widget {
         this.init();
         this.padding = new Insets(9, 11, 10, 10);
         this.setTitle(TextsManager.getInstance().getString("navigator"));
-        this.setContent(this.content, this.padding);
+        this.setContent(this.content, this.padding, true);
         this.setLocation();
         this.setPage(NavigatorPage.PUBLIC);
 
@@ -323,6 +325,45 @@ public class NavigatorView extends Widget {
         infoClose.setLayoutY(13);
         infoClose.setOnMouseClicked(e -> this.pendingAction = () -> this.infoHide());
         this.info.getChildren().add(infoClose);
+
+        this.passwordPrompt = new BorderPane();
+        passwordPrompt.setSize(342, 412);
+
+        var passwordPromptImg = new ImageView(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/info_doorbell_password.png"));
+        passwordPromptImg.setLayoutX(122);
+        passwordPromptImg.setLayoutY(60);
+
+        var passwordPromptTitle = new Label(TextsManager.getInstance().getString("nav_goingprivate"), true);
+        passwordPromptTitle.setOnWidth(() -> passwordPromptTitle.setLayoutX((342 / 2) - (passwordPromptTitle.getWidth() / 2)));
+        passwordPromptTitle.setLayoutY(152);
+
+        this.passwordPromptName = new Label("", true);
+        this.passwordPromptName.setOnWidth(() -> this.passwordPromptName.setLayoutX((342 / 2) - (this.passwordPromptName.getWidth() / 2)));
+        this.passwordPromptName.setLayoutY(167);
+
+        var passwordPromptSubtitle = new Label(TextsManager.getInstance().getString("nav_roomispwprotected"));
+        passwordPromptSubtitle.setOnWidth(() -> passwordPromptSubtitle.setLayoutX((342 / 2) - (passwordPromptSubtitle.getWidth() / 2)));
+        passwordPromptSubtitle.setLayoutY(187);
+
+        this.passwordPromptField = new TextFieldSquare("");
+        this.passwordPromptField.setLayoutX(99);
+        this.passwordPromptField.setLayoutY(207);
+
+        var passwordPromptCancel = new Button(TextsManager.getInstance().getString("nav_cancel"));
+        passwordPromptCancel.setOnWidth(() -> passwordPromptCancel.setLayoutX(165 - passwordPromptCancel.getWidth()));
+        passwordPromptCancel.setLayoutY(256);
+        passwordPromptCancel.setOnMouseClicked(e -> {
+            this.setContent(this.content, this.padding, true);
+        });
+
+        this.passwordPromptGoButton = new ButtonLarge(TextsManager.getInstance().getString("nav_ok"));
+        passwordPromptGoButton.setLayoutX(174);
+        passwordPromptGoButton.setLayoutY(253);
+        passwordPromptGoButton.setOnMouseClicked(e -> {
+            this.setContent(this.content, this.padding, true);
+        });
+
+        this.passwordPrompt.addContent(passwordPromptImg, passwordPromptTitle, this.passwordPromptName, passwordPromptSubtitle, this.passwordPromptField, passwordPromptCancel, this.passwordPromptGoButton);
     }
 
     private void setLocation() {
@@ -690,21 +731,17 @@ public class NavigatorView extends Widget {
 
     private void goToRoom(Room room) {
         if (room.doorbell == Doorbell.PASSWORD) {
-            var passwordPrompt = new BorderPane();
-            passwordPrompt.setSize(342, 412);
-
-            var closeButton = new ButtonLarge("cancel");
-            closeButton.setOnMouseClicked(e -> {
-                this.setContent(this.content, this.padding);
-            });
-
-            passwordPrompt.addContent(closeButton);
-
-            this.setContent(passwordPrompt, new Insets(9, 11, 11, 10));
+            this.showPasswordPrompt(room);
         }
         else {
-            Movie.getInstance().goToRoom(room.roomId);
+            Movie.getInstance().goToRoom(room.roomId, null);
         }
+    }
+
+    private void showPasswordPrompt(Room room) {
+        this.passwordPromptName.setText(room.name);
+        this.passwordPromptGoButton.setOnMouseClicked(e -> Movie.getInstance().goToRoom(room.roomId, this.passwordPromptField.getText()));
+        this.setContent(this.passwordPrompt, new Insets(9, 11, 11, 10), true);
     }
 
     private void addRoom(Room room, Boolean recommended) {
@@ -739,6 +776,15 @@ public class NavigatorView extends Widget {
     }
 
     // TODO Avery - all the below methods are your entry points to do whatever with :)
+
+    public void sendPasswordResult(Boolean correct) {
+        if (correct) {
+            this.setContent(this.content, this.padding, false);
+        }
+        else {
+            System.out.println("wrong");
+        }
+    }
 
     private Category getCategory(int categoryId) {
         // Please see note in Category.java :)
@@ -809,9 +855,9 @@ public class NavigatorView extends Widget {
     private ArrayList<Room> getRecommendedRooms () {
         var recommendedRooms = new ArrayList<Room>();
 
-        recommendedRooms.add(new Room(1, "Hall", "C-3", "", 0, 40, Doorbell.OPEN));
-        recommendedRooms.add(new Room(1, "Tresor", "", "zidro", 0, 65, Doorbell.RING));
-        recommendedRooms.add(new Room(1, "Box ( Habbo.nl - 2007 )", "Miquel", "", 0, 120, Doorbell.PASSWORD));
+        recommendedRooms.add(new Room(1, "Box ( Habbo.nl - 2007 )", "Miquel", "Recreated from Habbo NL in 2007. Original room by Vinny.", 0, 40, Doorbell.OPEN));
+        recommendedRooms.add(new Room(1, "Generating the bars of 50c", "ParsnipAlt", "", 0, 65, Doorbell.RING));
+        recommendedRooms.add(new Room(1, "Ban for 2 years, thanks for that", "ParsnipAlt2", "", 0, 120, Doorbell.PASSWORD));
     
         return recommendedRooms;
     }

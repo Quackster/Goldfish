@@ -30,4 +30,10 @@ public class Label extends javafx.scene.control.Label {
         newText = newText.replace("\\n", "\n");
         return newText;
     }
+
+    public void setOnWidth(Runnable runnable) {
+        this.widthProperty().addListener((obs, oldWidth, newWidth) -> {
+            runnable.run();
+        });
+    }
 }
