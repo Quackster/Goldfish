@@ -43,7 +43,9 @@ public class Dialog extends View {
     private Pane dragArea;
     private Pane closeButton;
     private Pane content;
+    private Pane newContent;
 
+    private Runnable callBeforeFinish;
     private Runnable callAfterFinish;
 
     private int paddingLeft;
@@ -52,6 +54,7 @@ public class Dialog extends View {
     private int paddingBottom;
 
     private boolean isSized;
+    private boolean sizedOnce;
 
     private double mousePressedX;
     private double mousePressedY;
@@ -99,54 +102,62 @@ public class Dialog extends View {
     }
 
     private void adjustSize() {
-        if (!this.isSized && this.content.getWidth() > 0) {
-            this.content.setLayoutX(this.paddingLeft);
-            this.content.setLayoutY(this.paddingTop + (this.title != null ? 20 : 0));
-
-            var contentWidth = this.content != null ? (this.content.getWidth() + this.paddingLeft + this.paddingRight) : 0;
-            var contentHeight = this.content != null ? (this.content.getHeight() + this.paddingTop + this.paddingBottom) : 0;
-
-            var dialogWidth = this.title != null ? Math.max(this.title.getWidth(), contentWidth) : contentWidth;
-            var dialogHeight = this.title != null ? contentHeight + 15 : contentHeight;
-
-            this.setSize(dialogWidth, dialogHeight);
-
-            var coords = DimensionUtil.getCenterCoords(dialogWidth, dialogHeight);
-            this.setLayoutX(coords.getX());
-            this.setLayoutY(coords.getY());
-
-            if (this.title != null) {
-                this.title.setLayoutX(Math.round((dialogWidth / 2) - (this.title.getWidth() / 2)) - 2);
-                this.dragArea.setPrefSize(dialogWidth, 31);
-                this.closeButton.setLayoutX(dialogWidth - 25);
+        if (!this.isSized) {
+            if (this.callBeforeFinish != null) {
+                this.callBeforeFinish.run();
+                this.callBeforeFinish = null;
             }
 
-            if (this.innerBackground != null) {
-                this.innerBackground.setLayoutX(paddingLeft);
-                this.innerBackground.setLayoutY(paddingTop + (title != null ? 20 : 0));
-                setInnerSize(this.content.getWidth(), this.content.getHeight());
+            if (this.newContent != null && this.newContent.getWidth() > 0) {
+                this.newContent.setLayoutX(this.paddingLeft);
+                this.newContent.setLayoutY(this.paddingTop + (this.title != null ? 20 : 0));
+
+                var contentWidth = this.newContent != null ? (this.newContent.getWidth() + this.paddingLeft + this.paddingRight) : 0;
+                var contentHeight = this.newContent != null ? (this.newContent.getHeight() + this.paddingTop + this.paddingBottom) : 0;
+
+                var dialogWidth = this.title != null ? Math.max(this.title.getWidth(), contentWidth) : contentWidth;
+                var dialogHeight = this.title != null ? contentHeight + 15 : contentHeight;
+
+                this.setSize(dialogWidth, dialogHeight);
+
+                // Only do this the first time
+                if (!this.sizedOnce) {
+                    var coords = DimensionUtil.getCenterCoords(dialogWidth, dialogHeight);
+                    this.setLayoutX(coords.getX());
+                    this.setLayoutY(coords.getY());
+                }
+
+                if (this.title != null) {
+                    this.title.setLayoutX(Math.round((dialogWidth / 2) - (this.title.getWidth() / 2)) - 2);
+                    this.dragArea.setPrefSize(dialogWidth, 31);
+                    this.closeButton.setLayoutX(dialogWidth - 25);
+                }
+
+                if (this.innerBackground != null) {
+                    this.innerBackground.setLayoutX(paddingLeft);
+                    this.innerBackground.setLayoutY(paddingTop + (title != null ? 20 : 0));
+                    setInnerSize(this.newContent.getWidth(), this.newContent.getHeight());
+                }
+
+                this.newContent.setVisible(true);
+                this.getChildren().remove(this.content);
+                this.content = this.newContent;
+                this.newContent = null;
+
+                if (this.callAfterFinish != null) {
+                    this.callAfterFinish.run();
+                    this.callAfterFinish = null;
+                }
+
+                // Alert was finished sizing, now show it!
+                this.setHidden(false);
+
+                // Alert was finished sizing, don't size again!
+                this.isSized = true;
+                this.sizedOnce = true;
             }
-
-            if (this.callAfterFinish != null) {
-                this.callAfterFinish.run();
-                this.callAfterFinish = null;
-            }
-
-            // Alert was finished sizing, now show it!
-            this.setHidden(false);
-
-            // Alert was finished sizing, don't size again!
-            this.isSized = true;
         }
     }
-
-    /*
-    @Override
-    public void visualiserChanged(Visualiser previousVisualiser, Visualiser currentVisualiser) {
-
-    }
-
-     */
 
     private void initBackground() {
         VBox background = new VBox();
@@ -271,7 +282,6 @@ public class Dialog extends View {
         this.innerBackground.getChildren().addAll(innerTop, innerCenter, innerBottom);
 
         this.getChildren().add(this.innerBackground);
-        content.toFront();
     }
 
     private void setSize(double width, double height) {
@@ -340,16 +350,19 @@ public class Dialog extends View {
         this.getChildren().addAll(this.title, this.dragArea, this.closeButton);
     }
 
-    protected void setContent(Pane content) {
-        this.content = content;
-        this.getChildren().add(this.content);
-    }
+    protected void setContent(Pane content, Insets padding) {
+        this.callBeforeFinish = () -> {
+            this.newContent = content;
+            this.newContent.setVisible(false);
+            this.paddingTop = (int)padding.getTop();
+            this.paddingRight = (int)padding.getRight();
+            this.paddingBottom = (int)padding.getBottom();
+            this.paddingLeft = (int)padding.getLeft();
 
-    protected void setPadding(int paddingTop, int paddingRight, int paddingBottom, int paddingLeft) {
-        this.paddingTop = paddingTop;
-        this.paddingRight = paddingRight;
-        this.paddingBottom = paddingBottom;
-        this.paddingLeft = paddingLeft;
+            this.getChildren().add(this.newContent);
+        };
+
+        this.isSized = false;
     }
 
     protected void closeButtonClicked() {

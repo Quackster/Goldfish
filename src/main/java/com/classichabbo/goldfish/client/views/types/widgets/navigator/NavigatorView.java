@@ -7,6 +7,7 @@ import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
 import com.classichabbo.goldfish.client.game.values.types.TextsManager;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
+import com.classichabbo.goldfish.client.views.controls.BorderPane;
 import com.classichabbo.goldfish.client.views.controls.Button;
 import com.classichabbo.goldfish.client.views.controls.ButtonLarge;
 import com.classichabbo.goldfish.client.views.controls.Label;
@@ -20,6 +21,7 @@ import com.classichabbo.goldfish.client.views.types.widgets.Widget;
 
 import javafx.application.Platform;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.image.ImageView;
@@ -34,7 +36,8 @@ import javafx.scene.layout.VBox;
 
 public class NavigatorView extends Widget {
     private Pane content;
-    
+    private Insets padding;
+
     private Pane searchButton;
     private Pane ownButton;
     private Pane favouritesButton;
@@ -43,7 +46,7 @@ public class NavigatorView extends Widget {
     private Label searchTitle;
     private TextField searchCriteria;
     private Button doSearchButton;
-    private Label searchNoResults;
+    private Label noResults;
 
     private Pane backTop;
     private Label backTopLabel;
@@ -83,9 +86,9 @@ public class NavigatorView extends Widget {
         this.inRoom = false;
         
         this.init();
-        this.setPadding(9, 11, 10, 10);
+        this.padding = new Insets(9, 11, 10, 10);
         this.setTitle(TextsManager.getInstance().getString("navigator"));
-        this.setContent(this.content);
+        this.setContent(this.content, this.padding);
         this.setLocation();
         this.setPage(NavigatorPage.PUBLIC);
 
@@ -217,11 +220,11 @@ public class NavigatorView extends Widget {
         this.doSearchButton.setOnMouseClicked(e -> this.pendingAction = () -> this.showSearchResults());
         this.search.getChildren().add(this.doSearchButton);
 
-        this.searchNoResults = new Label(TextsManager.getInstance().getString("nav_prvrooms_notfound"));
-        this.searchNoResults.setLayoutX(13);
-        this.searchNoResults.setLayoutY(152);
-        this.searchNoResults.setVisible(false);
-        this.content.getChildren().add(this.searchNoResults);
+        this.noResults = new Label("");
+        this.noResults.setLayoutX(13);
+        this.noResults.setLayoutY(152);
+        this.noResults.setVisible(false);
+        this.content.getChildren().add(this.noResults);
 
         this.backTop = new Pane();
         this.backTop.setPrefWidth(340);
@@ -332,6 +335,8 @@ public class NavigatorView extends Widget {
     }
 
     private void setPage(NavigatorPage page) {
+        this.noResults.setVisible(false);
+
         if (page == NavigatorPage.PUBLIC) {
             this.currentPage = NavigatorPage.PUBLIC;
             this.content.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/background_public.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
@@ -417,7 +422,6 @@ public class NavigatorView extends Widget {
         }
         else {
             this.search.setVisible(false);
-            this.searchNoResults.setVisible(false);
         }
 
         if (page == NavigatorPage.OWN) {
@@ -519,9 +523,14 @@ public class NavigatorView extends Widget {
             this.infoLeftButton.setOnMouseClicked(e1 -> this.pendingAction = () -> this.addToFavourites(room.roomId));
         }
 
-        this.infoGoButton.setOnMouseClicked(e1 -> this.pendingAction = () -> Movie.getInstance().goToRoom(room.roomId));
+        this.infoGoButton.setOnMouseClicked(e1 -> this.pendingAction = () -> this.goToRoom(room));
         this.infoLeftButton.setVisible(true);
         this.infoGoButton.setVisible(true);
+
+        if (!this.info.isVisible()) {
+            this.navigatorList.setSize(330, (int)this.navigatorList.getPrefHeight() - 96);
+        }
+
         this.info.setVisible(true);
     }
 
@@ -643,7 +652,8 @@ public class NavigatorView extends Widget {
         var searchResults = this.getSearchResults(this.searchCriteria.getText());
 
         if (searchResults.isEmpty()) {
-            this.searchNoResults.setVisible(true);
+            this.noResults.setText(TextsManager.getInstance().getString("nav_prvrooms_notfound"));
+            this.noResults.setVisible(true);
             return;
         }
 
@@ -656,6 +666,12 @@ public class NavigatorView extends Widget {
         this.navigatorList.clearContent();
 
         var ownRooms = this.getOwnRooms();
+
+        if (ownRooms.isEmpty()) {
+            this.noResults.setText(TextsManager.getInstance().getString("nav_private_norooms"));
+            this.noResults.setVisible(true);
+            return;
+        }
 
         for (var room : ownRooms) {
             this.addRoom(room, false);
@@ -672,10 +688,29 @@ public class NavigatorView extends Widget {
         }
     }
 
+    private void goToRoom(Room room) {
+        if (room.doorbell == Doorbell.PASSWORD) {
+            var passwordPrompt = new BorderPane();
+            passwordPrompt.setSize(342, 412);
+
+            var closeButton = new ButtonLarge("cancel");
+            closeButton.setOnMouseClicked(e -> {
+                this.setContent(this.content, this.padding);
+            });
+
+            passwordPrompt.addContent(closeButton);
+
+            this.setContent(passwordPrompt, new Insets(9, 11, 11, 10));
+        }
+        else {
+            Movie.getInstance().goToRoom(room.roomId);
+        }
+    }
+
     private void addRoom(Room room, Boolean recommended) {
         var navigatorItem = new NavigatorItem(room);
         navigatorItem.setNameButtonOnMouseClicked(e -> this.pendingAction = () -> this.infoShowRoom(room));
-        navigatorItem.setGoButtonOnMouseClicked(e -> this.pendingAction = () -> Movie.getInstance().goToRoom(room.roomId));
+        navigatorItem.setGoButtonOnMouseClicked(e -> this.pendingAction = () -> this.goToRoom(room));
 
         if (recommended) {
             this.recommendedList.getChildren().add(navigatorItem);
@@ -794,6 +829,7 @@ public class NavigatorView extends Widget {
     private ArrayList<Room> getOwnRooms() {        
         var ownRooms = new ArrayList<Room>();
 
+        /*
         ownRooms.add(new Room(1, "Parsnip's Casino", "Parsnip", "Large bets welcomed, games 13/21/poker", 0, 15, Doorbell.OPEN));
         ownRooms.add(new Room(1, "Parsnip's Hub", "Parsnip", "Sit and chat or go through the teles to see some of my favourite rooms", 0, 25, Doorbell.OPEN));
         ownRooms.add(new Room(1, "Parsnip's Room", "Parsnip", "If I'm sat here alone, I'm probably afk", 0, 10, Doorbell.OPEN));
@@ -801,7 +837,8 @@ public class NavigatorView extends Widget {
         ownRooms.add(new Room(1, "Pea's Dutch Lounge", "Parsnip", "Dutch themed lounge for Pea", 0, 15, Doorbell.OPEN));
         ownRooms.add(new Room(1, "Parsnip's Hallway", "Parsnip", "", 0, 25, Doorbell.OPEN));
         ownRooms.add(new Room(1, "Animal Nitrate", "Parsnip", "", 0, 25, Doorbell.OPEN));
-
+        */
+        
         return ownRooms;
     }
 
