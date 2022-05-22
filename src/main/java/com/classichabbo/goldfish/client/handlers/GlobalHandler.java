@@ -80,12 +80,10 @@ public class GlobalHandler extends MessageHandler {
 
     private static void authenticationOK(Connection conn, Request request) {
         conn.send("GET_INFO");
+    }
 
-        /*var loader = Movie.getInstance().getViewByClass(LoadingView.class);
-
-        if (loader != null) {
-            //loader.progressLoader(20);
-        }*/
+    private static void ping(Connection conn, Request request) {
+        conn.send("PONG");
     }
 
     @Override
@@ -95,6 +93,7 @@ public class GlobalHandler extends MessageHandler {
         listeners.put(1, GlobalHandler::handleServerKey);
         listeners.put(277, GlobalHandler::handleCryptoParameters);
         listeners.put(3, GlobalHandler::authenticationOK);
+        listeners.put(50, GlobalHandler::ping);
 
         var commands = new HashMap<String, Integer>();
         commands.put("INIT_CRYPTO", 206);
@@ -103,6 +102,7 @@ public class GlobalHandler extends MessageHandler {
         commands.put("UNIQUEID", 813);
         commands.put("GET_SESSION_PARAMETERS", 1817);
         commands.put("SSO_TICKET", 415);
+        commands.put("PONG", 196);
 
         if (tBool) {
             Movie.getInstance().registerListeners(this, listeners);
