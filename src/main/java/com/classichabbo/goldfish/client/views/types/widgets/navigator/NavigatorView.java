@@ -12,8 +12,9 @@ import com.classichabbo.goldfish.client.views.controls.Button;
 import com.classichabbo.goldfish.client.views.controls.ButtonLarge;
 import com.classichabbo.goldfish.client.views.controls.Label;
 import com.classichabbo.goldfish.client.views.controls.ScrollPane;
-import com.classichabbo.goldfish.client.views.controls.TextField;
+import com.classichabbo.goldfish.client.views.controls.TextFieldRound;
 import com.classichabbo.goldfish.client.views.controls.TextFieldSquare;
+import com.classichabbo.goldfish.client.views.controls.TextField;
 import com.classichabbo.goldfish.client.views.types.room.RoomView;
 import com.classichabbo.goldfish.client.views.types.widgets.Widget;
 
@@ -41,7 +42,7 @@ public class NavigatorView extends Widget {
 
     private Pane search;
     private Label searchTitle;
-    private TextField searchCriteria;
+    private TextFieldRound searchCriteria;
     private Button doSearchButton;
     private Label noResults;
 
@@ -67,8 +68,10 @@ public class NavigatorView extends Widget {
 
     private BorderPane passwordPrompt;
     private Label passwordPromptName;
+    private Label passwordPromptIsProtected;
     private TextFieldSquare passwordPromptField;
-    private ButtonLarge passwordPromptGoButton;
+    private Button passwordPromptCancelButton;
+    private ButtonLarge passwordPromptOkButton;
 
     private int publicCategoryId;
     private int privateCategoryId;
@@ -121,6 +124,8 @@ public class NavigatorView extends Widget {
         }
 
         this.navigatorList.update();
+        this.searchCriteria.update();
+        this.passwordPromptField.update();
     }
 
     @Override
@@ -212,7 +217,7 @@ public class NavigatorView extends Widget {
         this.searchTitle.setLayoutX(7);
         this.search.getChildren().add(this.searchTitle);
 
-        this.searchCriteria = new TextField("");
+        this.searchCriteria = new TextFieldRound("");
         this.searchCriteria.setWidth(250);
         this.searchCriteria.setLayoutY(13);
         this.search.getChildren().add(this.searchCriteria);
@@ -333,37 +338,38 @@ public class NavigatorView extends Widget {
         passwordPromptImg.setLayoutX(122);
         passwordPromptImg.setLayoutY(60);
 
-        var passwordPromptTitle = new Label(TextsManager.getInstance().getString("nav_goingprivate"), true);
-        passwordPromptTitle.setOnWidth(() -> passwordPromptTitle.setLayoutX((342 / 2) - (passwordPromptTitle.getWidth() / 2)));
-        passwordPromptTitle.setLayoutY(152);
+        var passwordPromptGoing = new Label(TextsManager.getInstance().getString("nav_goingprivate"), true);
+        passwordPromptGoing.setOnWidth(() -> passwordPromptGoing.setLayoutX(171 - Math.round(passwordPromptGoing.getWidth() / 2)));
+        passwordPromptGoing.setLayoutY(152);
 
         this.passwordPromptName = new Label("", true);
-        this.passwordPromptName.setOnWidth(() -> this.passwordPromptName.setLayoutX((342 / 2) - (this.passwordPromptName.getWidth() / 2)));
+        this.passwordPromptName.setOnWidth(() -> this.passwordPromptName.setLayoutX(171 - Math.round(this.passwordPromptName.getWidth() / 2)));
         this.passwordPromptName.setLayoutY(167);
 
-        var passwordPromptSubtitle = new Label(TextsManager.getInstance().getString("nav_roomispwprotected"));
-        passwordPromptSubtitle.setOnWidth(() -> passwordPromptSubtitle.setLayoutX((342 / 2) - (passwordPromptSubtitle.getWidth() / 2)));
-        passwordPromptSubtitle.setLayoutY(187);
+        this.passwordPromptIsProtected = new Label(TextsManager.getInstance().getString("nav_roomispwprotected"));
+        this.passwordPromptIsProtected.setOnWidth(() -> this.passwordPromptIsProtected.setLayoutX(171 - Math.round(this.passwordPromptIsProtected.getWidth() / 2)));
+        this.passwordPromptIsProtected.setLayoutY(187);
 
         this.passwordPromptField = new TextFieldSquare("");
         this.passwordPromptField.setLayoutX(99);
         this.passwordPromptField.setLayoutY(207);
+        this.passwordPromptField.setWidth(138);
 
-        var passwordPromptCancel = new Button(TextsManager.getInstance().getString("nav_cancel"));
-        passwordPromptCancel.setOnWidth(() -> passwordPromptCancel.setLayoutX(165 - passwordPromptCancel.getWidth()));
-        passwordPromptCancel.setLayoutY(256);
-        passwordPromptCancel.setOnMouseClicked(e -> {
+        this.passwordPromptCancelButton = new Button(TextsManager.getInstance().getString("nav_cancel"));
+        this.passwordPromptCancelButton.setOnWidth(() -> this.passwordPromptCancelButton.setLayoutX(165 - this.passwordPromptCancelButton.getWidth()));
+        this.passwordPromptCancelButton.setLayoutY(256);
+        this.passwordPromptCancelButton.setOnMouseClicked(e -> {
             this.setContent(this.content, this.padding, true);
         });
 
-        this.passwordPromptGoButton = new ButtonLarge(TextsManager.getInstance().getString("nav_ok"));
-        passwordPromptGoButton.setLayoutX(174);
-        passwordPromptGoButton.setLayoutY(253);
-        passwordPromptGoButton.setOnMouseClicked(e -> {
+        this.passwordPromptOkButton = new ButtonLarge(TextsManager.getInstance().getString("nav_ok"));
+        this.passwordPromptOkButton.setLayoutX(174);
+        this.passwordPromptOkButton.setLayoutY(253);
+        this.passwordPromptOkButton.setOnMouseClicked(e -> {
             this.setContent(this.content, this.padding, true);
         });
 
-        this.passwordPrompt.addContent(passwordPromptImg, passwordPromptTitle, this.passwordPromptName, passwordPromptSubtitle, this.passwordPromptField, passwordPromptCancel, this.passwordPromptGoButton);
+        this.passwordPrompt.addContent(passwordPromptImg, passwordPromptGoing, this.passwordPromptName, this.passwordPromptIsProtected, this.passwordPromptField, this.passwordPromptCancelButton, this.passwordPromptOkButton);
     }
 
     private void setLocation() {
@@ -740,7 +746,7 @@ public class NavigatorView extends Widget {
 
     private void showPasswordPrompt(Room room) {
         this.passwordPromptName.setText(room.name);
-        this.passwordPromptGoButton.setOnMouseClicked(e -> Movie.getInstance().goToRoom(room.roomId, this.passwordPromptField.getText()));
+        this.passwordPromptOkButton.setOnMouseClicked(e -> Movie.getInstance().goToRoom(room.roomId, this.passwordPromptField.getText()));
         this.setContent(this.passwordPrompt, new Insets(9, 11, 11, 10), true);
     }
 
@@ -782,7 +788,37 @@ public class NavigatorView extends Widget {
             this.setContent(this.content, this.padding, false);
         }
         else {
-            System.out.println("wrong");
+            this.passwordPromptIsProtected.setText(TextsManager.getInstance().getString("nav_tryingpw"));
+            this.passwordPromptIsProtected.setLayoutX(171 - Math.round(this.passwordPromptIsProtected.getWidth() / 2));
+            this.passwordPromptIsProtected.setLayoutY(192);
+
+            var incorrect = new Label(TextsManager.getInstance().getString("nav_incorrectflatpw"), true);
+            incorrect.setOnWidth(() -> incorrect.setLayoutX(171 - Math.round(incorrect.getWidth() / 2)));;
+            incorrect.setLayoutY(207);
+            this.passwordPrompt.getChildren().add(incorrect);
+
+            this.passwordPromptField.setVisible(false);
+            this.passwordPromptCancelButton.setVisible(false);
+
+            var oldClicked = this.passwordPromptOkButton.getOnMouseClicked();
+            
+            this.passwordPromptOkButton.setLayoutX(171 - Math.round(this.passwordPromptOkButton.getWidth() / 2));
+            this.passwordPromptOkButton.setLayoutY(238);
+            this.passwordPromptOkButton.setOnMouseClicked(e -> {
+                this.passwordPromptIsProtected.setText(TextsManager.getInstance().getString("nav_tryingpw"));
+                this.passwordPromptIsProtected.setLayoutX(171 - Math.round(this.passwordPromptIsProtected.getWidth() / 2));
+                this.passwordPromptIsProtected.setLayoutY(187);
+
+                this.passwordPrompt.getChildren().remove(incorrect);
+
+                this.passwordPromptField.setVisible(true);
+                this.passwordPromptField.setText("");
+                this.passwordPromptCancelButton.setVisible(true);
+                
+                this.passwordPromptOkButton.setLayoutX(174);
+                this.passwordPromptOkButton.setLayoutY(253);
+                this.passwordPromptOkButton.setOnMouseClicked(oldClicked);
+            });
         }
     }
 

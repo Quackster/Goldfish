@@ -1,52 +1,45 @@
 package com.classichabbo.goldfish.client.views.controls;
 
-import com.classichabbo.goldfish.client.game.resources.ResourceManager;
-
-import javafx.geometry.Insets;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundImage;
-import javafx.scene.layout.BackgroundPosition;
-import javafx.scene.layout.BackgroundRepeat;
-import javafx.scene.layout.BackgroundSize;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 
-public class TextFieldSquare extends HBox {
-    // TODO - build custom control as there are rendering issues with the caret using javafx.scene.control.TextField
-    private javafx.scene.control.TextField center;
+public class TextFieldSquare extends Pane {
+    private Pane background;
+    private TextField text;
 
     public TextFieldSquare(String text) {
-        var left = new Pane();
-        left.setPrefSize(5, 17);
-        left.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/controls/text_field/left.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        this.background = new Pane();
+        this.background.setPrefHeight(26);
+        this.background.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+        
+        this.text = new TextField(text, true, true);
+        this.text.setPrefHeight(26);
+        this.text.setOnWidth(() -> this.text.setLayoutX((this.background.getWidth() / 2) - (this.text.getTextWidth() / 2)));
+        //this.text.setBackground(new Background(new BackgroundFill(Color.RED, null, null)));
 
-        this.center = new javafx.scene.control.TextField();
-        this.center.setStyle("-fx-text-inner-color: #000000;");
-        this.setFont(false);
-        this.center.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/controls/text_field/center.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
-        this.center.setPrefHeight(17);
-
-        var right = new Pane();
-        right.setPrefSize(5, 18);
-        right.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/controls/text_field/right.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
-
-        this.getChildren().addAll(left, this.center, right);
-    }
-
-    public void setFont(Boolean isBold) {
-        this.center.setFont(isBold ? ResourceManager.getInstance().getVolterBold() : ResourceManager.getInstance().getVolter());
-        this.center.setPadding(isBold ? new Insets(-2, 0, 0, 3) : new Insets(-1, 0, 0, 1));
+        this.getChildren().addAll(this.background, this.text);
     }
 
     public void setText(String text) {
-        this.center.setText(text);
+        this.text.setText(text);
     }
 
     public void setWidth(int width) {
-        this.center.setPrefWidth(width - 10);
+        this.background.setPrefWidth(width);
+        this.text.setLayoutX(width / 2);
+        this.text.setSize(width - 10, 26, 0, 0, 8);
     }
 
     public String getText() {
-        return this.center.getText();
+        return this.text.getText();
+    }
+
+    public void update() {
+        this.text.update();
     }
 }

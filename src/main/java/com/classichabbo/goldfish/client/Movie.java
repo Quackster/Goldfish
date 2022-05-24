@@ -5,6 +5,7 @@ import com.classichabbo.goldfish.client.game.scheduler.types.GraphicsScheduler;
 import com.classichabbo.goldfish.client.game.scheduler.types.InterfaceScheduler;
 import com.classichabbo.goldfish.client.views.GlobalView;
 import com.classichabbo.goldfish.client.views.View;
+import com.classichabbo.goldfish.client.views.controls.TextField;
 import com.classichabbo.goldfish.client.views.types.entry.EntryView;
 import com.classichabbo.goldfish.client.views.types.loader.LoadingView;
 import com.classichabbo.goldfish.client.views.types.room.RoomTransition;
@@ -18,6 +19,9 @@ import com.classichabbo.goldfish.networking.Client;
 import com.classichabbo.goldfish.networking.wrappers.messages.MessageHandler;
 import com.classichabbo.goldfish.networking.wrappers.messages.types.MessageCommand;
 import com.classichabbo.goldfish.networking.wrappers.messages.types.MessageListener;
+
+import io.netty.handler.codec.socks.SocksAddressType;
+
 import com.classichabbo.goldfish.networking.wrappers.messages.MessageRequest;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -53,6 +57,7 @@ public class Movie extends Application {
 
     private Pane pane;
     private Scene mainScene;
+    private TextField currentTextField;
 
     public Movie() {
         /*this.visualisers = new ConcurrentHashMap<>();
@@ -99,6 +104,18 @@ public class Movie extends Application {
         this.pane.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
 
         this.mainScene = new Scene(this.pane, WIDTH, HEIGHT, Color.BLACK);
+
+        // Send the key events to the current text field
+        this.mainScene.setOnKeyPressed(e -> {
+            if (this.currentTextField != null) {
+                this.currentTextField.sendKeyPressed(e);
+            }
+        });
+        this.mainScene.setOnKeyTyped(e -> {
+            if (this.currentTextField != null) {
+                this.currentTextField.sendKeyTyped(e);
+            }
+        });
 
         primaryStage.setScene(this.mainScene);
         primaryStage.show();
@@ -339,6 +356,20 @@ public class Movie extends Application {
                 Movie.getInstance().hideWidgets();
             }
         });
+    }
+
+    /**
+     * Set current text field to receive key events
+     */
+    public void setCurrentTextField(TextField textField) {
+        this.currentTextField = textField;
+    }
+
+    /**
+     * Return the current text field
+     */
+    public TextField getCurrentTextField() {
+        return this.currentTextField;
     }
 
     public void startGameScheduler() {
