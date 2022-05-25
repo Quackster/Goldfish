@@ -60,7 +60,7 @@ jobs:
   release-windows:
     permissions: write-all
     name: Release (Windows)
-    runs-on: macos-latest
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-java@v2
