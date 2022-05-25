@@ -133,6 +133,12 @@ public class NavigatorView extends Widget {
         this.setHidden(true);
     }
 
+    @Override
+    public void setHidden(boolean flag) {
+        super.setHidden(flag);
+        this.info.setVisible(true); // reset info back to being visible for when it's closed/opened
+    }
+
     private void init() {
         this.content = new Pane();
         this.content.setPrefSize(342, 414);
@@ -911,7 +917,6 @@ public class NavigatorView extends Widget {
     private ArrayList<Room> getOwnRooms() {        
         var ownRooms = new ArrayList<Room>();
 
-        /*
         ownRooms.add(new Room(1, "Parsnip's Casino", "Parsnip", "Large bets welcomed, games 13/21/poker", 0, 15, Doorbell.OPEN));
         ownRooms.add(new Room(1, "Parsnip's Hub", "Parsnip", "Sit and chat or go through the teles to see some of my favourite rooms", 0, 25, Doorbell.OPEN));
         ownRooms.add(new Room(1, "Parsnip's Room", "Parsnip", "If I'm sat here alone, I'm probably afk", 0, 10, Doorbell.OPEN));
@@ -919,7 +924,6 @@ public class NavigatorView extends Widget {
         ownRooms.add(new Room(1, "Pea's Dutch Lounge", "Parsnip", "Dutch themed lounge for Pea", 0, 15, Doorbell.OPEN));
         ownRooms.add(new Room(1, "Parsnip's Hallway", "Parsnip", "", 0, 25, Doorbell.OPEN));
         ownRooms.add(new Room(1, "Animal Nitrate", "Parsnip", "", 0, 25, Doorbell.OPEN));
-        */
         
         return ownRooms;
     }
