@@ -19,7 +19,7 @@ repositories {
         dirs 'libs'
     }
     */
-    
+
     mavenCentral()
 }
 
@@ -32,10 +32,9 @@ dependencies {
 
 }
 
-//print sourceSets.main.resources.srcDirs
-
-//sourceSets.main.resources.srcDirs = [ "../" ]
-//sourceSets.main.resources.includes = [ "loader.config" ]
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
 
 // Create fat jar with libraries inside of it.
 task fatJar(type: Jar) {
