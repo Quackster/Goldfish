@@ -1,7 +1,8 @@
-package com.classichabbo.goldfish.networking.wrappers;
+package com.classichabbo.goldfish.networking;
 
 import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.networking.util.StringUtil;
+import com.classichabbo.goldfish.networking.wrappers.Command;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.Channel;
 import io.netty.util.Attribute;
@@ -9,10 +10,10 @@ import io.netty.util.AttributeKey;
 import io.netty.util.AttributeMap;
 import io.netty.util.DefaultAttributeMap;
 
-public class Connection extends DefaultAttributeMap {
+public class ChannelConnection extends DefaultAttributeMap {
     private final Channel channel;
 
-    public Connection(Channel channel) {
+    public ChannelConnection(Channel channel) {
         this.channel = channel;
     }
 

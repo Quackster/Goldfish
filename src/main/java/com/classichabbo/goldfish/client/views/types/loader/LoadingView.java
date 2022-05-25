@@ -10,7 +10,7 @@ import com.classichabbo.goldfish.client.views.View;
 import com.classichabbo.goldfish.client.views.types.entry.EntryView;
 import com.classichabbo.goldfish.client.views.types.error.ErrorWindow;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
-import com.classichabbo.goldfish.networking.Client;
+import com.classichabbo.goldfish.networking.Connection;
 import javafx.application.Platform;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
@@ -236,12 +236,12 @@ public class LoadingView extends View {
             // Connect server
             if (this.loaderSteps.contains("connect_server")) {
                 if (this.loaderStepsFinished.contains("load_external_texts")) {
-                    if (Client.getInstance().isConnected() ||
-                            Client.getInstance().getConnectionAttempts().get() >= VariablesManager.getInstance().getInt("connection.max.attempts", 5)) {
+                    if (Connection.getInstance().isConnected() ||
+                            Connection.getInstance().getConnectionAttempts().get() >= VariablesManager.getInstance().getInt("connection.max.attempts", 5)) {
                         this.loaderSteps.remove("connect_server");
                         this.loaderStepsFinished.add("connect_server");
 
-                        if (Client.getInstance().isConnected()) {
+                        if (Connection.getInstance().isConnected()) {
                             this.progressLoader(10);
                         } else {
                             Movie.getInstance().createObject(new ErrorWindow(
@@ -254,8 +254,8 @@ public class LoadingView extends View {
                         return;
                     }
 
-                    if (!Client.getInstance().isConnected() &&
-                            !Client.getInstance().isConnecting()) {
+                    if (!Connection.getInstance().isConnected() &&
+                            !Connection.getInstance().isConnecting()) {
                         this.component.connectServer();
                         return;
                     }

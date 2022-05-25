@@ -2,12 +2,11 @@ package com.classichabbo.goldfish.client.handlers;
 
 import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.game.values.types.PropertiesManager;
-import com.classichabbo.goldfish.client.game.values.types.TextsManager;
 import com.classichabbo.goldfish.client.views.types.error.ErrorWindow;
 import com.classichabbo.goldfish.client.views.types.loader.LoadingView;
-import com.classichabbo.goldfish.networking.Client;
+import com.classichabbo.goldfish.networking.Connection;
 import com.classichabbo.goldfish.networking.util.NetworkUtil;
-import com.classichabbo.goldfish.networking.wrappers.Connection;
+import com.classichabbo.goldfish.networking.ChannelConnection;
 import com.classichabbo.goldfish.networking.wrappers.Request;
 import com.classichabbo.goldfish.networking.wrappers.messages.MessageRequest;
 import com.classichabbo.goldfish.networking.wrappers.messages.MessageHandler;
@@ -17,7 +16,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 
 public class GlobalHandler extends MessageHandler {
-    private static void handleHello(Connection conn, Request request) {
+    private static void handleHello(ChannelConnection conn, Request request) {
         conn.send("INIT_CRYPTO", 0);
 
         var loader = Movie.getInstance().getViewByClass(LoadingView.class);
@@ -28,7 +27,7 @@ public class GlobalHandler extends MessageHandler {
         }
     }
 
-    private static void handleCryptoParameters(Connection conn, Request request) {
+    private static void handleCryptoParameters(ChannelConnection conn, Request request) {
         conn.send("GENERATE_KEY", "0");
 
         var loader = Movie.getInstance().getViewByClass(LoadingView.class);
@@ -38,7 +37,7 @@ public class GlobalHandler extends MessageHandler {
         }
     }
 
-    private static void handleServerKey(Connection conn, Request request) {
+    private static void handleServerKey(ChannelConnection conn, Request request) {
         conn.send("VERSIONCHECK", "Goldfish1", PropertiesManager.getInstance().getString("external.variables"));
         conn.send("UNIQUEID", NetworkUtil.getUniqueIdentifier());
         conn.send("GET_SESSION_PARAMETERS");
@@ -51,7 +50,7 @@ public class GlobalHandler extends MessageHandler {
     }
 
     public void beginLoginSequence() {
-        var conn = Client.getConnection();
+        var conn = Connection.get();
 
         if (conn == null) {
             Movie.getInstance().createObject(new ErrorWindow());
@@ -78,11 +77,11 @@ public class GlobalHandler extends MessageHandler {
         conn.send("SSO_TICKET", ssoTicket);
     }
 
-    private static void authenticationOK(Connection conn, Request request) {
+    private static void authenticationOK(ChannelConnection conn, Request request) {
         conn.send("GET_INFO");
     }
 
-    private static void ping(Connection conn, Request request) {
+    private static void ping(ChannelConnection conn, Request request) {
         conn.send("PONG");
     }
 

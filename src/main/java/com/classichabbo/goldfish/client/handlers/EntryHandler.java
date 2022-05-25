@@ -4,7 +4,7 @@ import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.game.entities.user.UserObject;
 import com.classichabbo.goldfish.client.views.types.entry.EntryView;
 import com.classichabbo.goldfish.client.views.types.loader.LoadingView;
-import com.classichabbo.goldfish.networking.wrappers.Connection;
+import com.classichabbo.goldfish.networking.ChannelConnection;
 import com.classichabbo.goldfish.networking.wrappers.Request;
 import com.classichabbo.goldfish.networking.wrappers.messages.MessageHandler;
 import com.classichabbo.goldfish.networking.wrappers.messages.MessageRequest;
@@ -19,7 +19,7 @@ public class EntryHandler extends MessageHandler {
     }
 
 
-    private static void handleUserObj(Connection connection, Request request) {
+    private static void handleUserObj(ChannelConnection connection, Request request) {
         var userObj = new UserObject(
                 Integer.parseInt(request.readClientString()),
                 request.readClientString(),

@@ -1,8 +1,8 @@
 package com.classichabbo.goldfish.networking.wrappers.messages;
 
-import com.classichabbo.goldfish.networking.wrappers.Connection;
+import com.classichabbo.goldfish.networking.ChannelConnection;
 import com.classichabbo.goldfish.networking.wrappers.Request;
 
 public interface MessageRequest {
-    void received(Connection channel, Request request);
+    void received(ChannelConnection channel, Request request);
 }

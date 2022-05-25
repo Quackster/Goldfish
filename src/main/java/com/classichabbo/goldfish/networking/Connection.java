@@ -1,7 +1,7 @@
 package com.classichabbo.goldfish.networking;
 
 import com.classichabbo.goldfish.client.game.values.types.PropertiesManager;
-import com.classichabbo.goldfish.networking.wrappers.Connection;
+import com.classichabbo.goldfish.networking.netty.NettyChannelInitializer;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.ChannelFuture;
@@ -15,9 +15,9 @@ import io.netty.util.concurrent.GlobalEventExecutor;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class Client {
+public class Connection {
     private static final int BUFFER_SIZE = 2048;
-    private static Client instance;
+    private static Connection instance;
 
     private AtomicInteger connectionAttempts;
     private DefaultChannelGroup channels;
@@ -28,7 +28,7 @@ public class Client {
     private boolean isConnected;
     private boolean isConnecting;
 
-    public Client() {
+    public Connection() {
         this.channels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
         this.connectionAttempts = new AtomicInteger(0);
     }
@@ -74,15 +74,15 @@ public class Client {
         }
     }
 
-    public static Client getInstance() {
+    public static Connection getInstance() {
         if (instance == null) {
-            instance = new Client();
+            instance = new Connection();
         }
 
         return instance;
     }
 
-    public static Connection getConnection() {
+    public static ChannelConnection get() {
         return instance.channelInitializer.getConnectionHandler().getConnection();
     }
 

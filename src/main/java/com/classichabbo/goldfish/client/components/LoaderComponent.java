@@ -7,7 +7,7 @@ import com.classichabbo.goldfish.client.game.values.types.TextsManager;
 import com.classichabbo.goldfish.client.views.GlobalView;
 import com.classichabbo.goldfish.client.views.types.entry.EntryView;
 import com.classichabbo.goldfish.client.views.types.loader.LoadingView;
-import com.classichabbo.goldfish.networking.Client;
+import com.classichabbo.goldfish.networking.Connection;
 import javafx.application.Platform;
 
 import java.awt.*;
@@ -69,7 +69,7 @@ public class LoaderComponent extends Component {
      * Connect server task
      */
     public void connectServer() {
-        if (Client.getInstance().getConnectionAttempts().get() >= VariablesManager.getInstance().getInt("connection.max.attempts", 5)) {
+        if (Connection.getInstance().getConnectionAttempts().get() >= VariablesManager.getInstance().getInt("connection.max.attempts", 5)) {
             return;
         }
 
@@ -77,20 +77,20 @@ public class LoaderComponent extends Component {
             return;
         }
 
-        Client.getInstance().getConnectionAttempts().incrementAndGet();
+        Connection.getInstance().getConnectionAttempts().incrementAndGet();
         this.connectionTimer = System.currentTimeMillis() + 5000; // Retry once every second for a max of 5 times
 
-        var channelFuture = Client.getInstance().createSocket();
+        var channelFuture = Connection.getInstance().createSocket();
 
         channelFuture.addListener(listener -> {
-            Client.getInstance().setConnecting(false);
+            Connection.getInstance().setConnecting(false);
 
             if (listener.isSuccess()) {
                 System.out.println("Successful connection...");
-                Client.getInstance().setConnected(true);
+                Connection.getInstance().setConnected(true);
             } else {
                 System.out.println("Connection failure...");
-                Client.getInstance().setConnected(false);
+                Connection.getInstance().setConnected(false);
             }
         });
     }

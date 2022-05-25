@@ -15,12 +15,10 @@ import com.classichabbo.goldfish.client.views.types.toolbars.RoomToolbar;
 import com.classichabbo.goldfish.client.views.types.widgets.Widget;
 import com.classichabbo.goldfish.client.views.types.widgets.navigator.NavigatorView;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
-import com.classichabbo.goldfish.networking.Client;
+import com.classichabbo.goldfish.networking.Connection;
 import com.classichabbo.goldfish.networking.wrappers.messages.MessageHandler;
 import com.classichabbo.goldfish.networking.wrappers.messages.types.MessageCommand;
 import com.classichabbo.goldfish.networking.wrappers.messages.types.MessageListener;
-
-import io.netty.handler.codec.socks.SocksAddressType;
 
 import com.classichabbo.goldfish.networking.wrappers.messages.MessageRequest;
 import javafx.application.Application;
@@ -132,7 +130,7 @@ public class Movie extends Application {
         this.stopGameScheduler();
         this.stopInterfaceScheduler();
 
-        Client.getInstance().dispose();
+        Connection.getInstance().dispose();
         System.exit(0);
     }
 
@@ -150,6 +148,8 @@ public class Movie extends Application {
      */
     public void createObject(View view, View parent) {
         Platform.runLater(() -> {
+            view.setVisible(false);
+
             if (parent != null) {
                 if (!parent.getChildren().contains(view)) {
                     parent.getChildren().add(view);
@@ -168,6 +168,8 @@ public class Movie extends Application {
             if (view.getHandler() != null) {
                 view.getHandler().regMsgList(true);
             }
+
+            view.setVisible(true);
 
         });
 
@@ -211,7 +213,6 @@ public class Movie extends Application {
                 removeObject(x);
             }
         });
-
        // this.printViews();
     }
 

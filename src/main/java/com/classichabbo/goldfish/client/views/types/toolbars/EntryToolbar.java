@@ -2,7 +2,6 @@ package com.classichabbo.goldfish.client.views.types.toolbars;
 
 import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.game.entities.user.UserObject;
-import com.classichabbo.goldfish.client.game.values.types.TextsManager;
 import com.classichabbo.goldfish.client.views.controls.ImageButton;
 import com.classichabbo.goldfish.client.views.controls.Label;
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
@@ -11,7 +10,7 @@ import com.classichabbo.goldfish.client.views.types.alerts.Alert;
 import com.classichabbo.goldfish.client.views.types.error.ErrorWindow;
 import com.classichabbo.goldfish.client.views.types.widgets.navigator.NavigatorView;
 import com.classichabbo.goldfish.client.util.DimensionUtil;
-import com.classichabbo.goldfish.networking.Client;
+import com.classichabbo.goldfish.networking.Connection;
 import javafx.scene.Cursor;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Background;
@@ -35,7 +34,7 @@ public class EntryToolbar extends View {
         this.scrollOffset = 0;
         this.finishedScroll = false;
 
-        var userObj = Client.getConnection().attr(UserObject.ATTRIBUTE_KEY).get();
+        var userObj = Connection.get().attr(UserObject.ATTRIBUTE_KEY).get();
 
         if (userObj == null) {
             Movie.getInstance().createObject(new ErrorWindow());
