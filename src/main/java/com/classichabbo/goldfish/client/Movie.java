@@ -315,12 +315,16 @@ public class Movie extends Application {
             var roomView = Movie.getInstance().getViewByClass(RoomView.class);
 
             if (roomView != null) {
-                Movie.getInstance().removeObject(roomView);
-                Movie.getInstance().createObject(new RoomTransition(() -> {
+                final RoomTransition roomTransition = new RoomTransition();
+
+                roomTransition.setRunAfterFinished(() -> {
                     var entryView = new EntryView();
                     entryView.setRunAfterOpening(() -> entryView.getComponent().entryViewResume());
                     Movie.getInstance().createObject(entryView);
-                }));
+                });
+
+                Movie.getInstance().removeObject(roomView);
+                Movie.getInstance().createObject(roomTransition);
             }
         });
     }
@@ -350,7 +354,14 @@ public class Movie extends Application {
                 var entryView = Movie.getInstance().getViewByClass(EntryView.class);
 
                 entryView.transitionTo(() -> {
-                    Movie.getInstance().createObject(new RoomView());
+                    final RoomTransition roomTransition = new RoomTransition();
+
+                    roomTransition.setRunAfterFinished(() -> {
+                        Movie.getInstance().createObject(new RoomView());
+                        Movie.getInstance().removeObject(roomTransition);
+                    });
+
+                    Movie.getInstance().createObject(roomTransition);
                     Movie.getInstance().removeObject(entryView);
                 });
 

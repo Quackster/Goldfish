@@ -370,6 +370,10 @@ public class Dialog extends View {
         this.remove();
     }
 
+    /**
+     * Used to move the dialog around after it has finished resizing. Useful for getting height/width as it's not fully determined until initialisation is complete.
+     * @param callAfterFinish
+     */
     public void setCallAfterFinish(Runnable callAfterFinish) {
         this.callAfterFinish = callAfterFinish;
     }

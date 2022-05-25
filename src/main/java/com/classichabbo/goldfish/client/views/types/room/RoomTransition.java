@@ -7,12 +7,17 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 public class RoomTransition extends View {
-    private Runnable delegate;
+    private final long delaySeconds;
+    private Runnable runAfterFinished;
     private Rectangle blackBackground;
     private long timer;
 
-    public RoomTransition(Runnable delegate) {
-        this.delegate = delegate;
+    public RoomTransition() {
+        this.delaySeconds = 300;
+    }
+
+    public RoomTransition(long delaySeconds) {
+        this.delaySeconds = delaySeconds;
     }
 
     @Override
@@ -21,8 +26,7 @@ public class RoomTransition extends View {
         this.blackBackground.setFill(Color.BLACK);
         this.getChildren().add(this.blackBackground);
 
-        this.timer = System.currentTimeMillis() + 300;
-
+        this.timer = System.currentTimeMillis() + delaySeconds;
         Movie.getInstance().getInterfaceScheduler().receiveUpdate(this);
     }
 
@@ -38,10 +42,14 @@ public class RoomTransition extends View {
         this.toFront();
 
         if (System.currentTimeMillis() > this.timer) {
-            if (this.delegate != null) {
-                this.delegate.run();
-                this.delegate = null;
+            if (this.runAfterFinished != null) {
+                this.runAfterFinished.run();
+                this.runAfterFinished = null;
             }
         }
+    }
+
+    public void setRunAfterFinished(Runnable runAfterFinished) {
+        this.runAfterFinished = runAfterFinished;
     }
 }
