@@ -2,7 +2,7 @@ package com.classichabbo.goldfish.networking.wrappers;
 
 import com.classichabbo.goldfish.networking.encoding.Base64Encoding;
 import com.classichabbo.goldfish.networking.errors.MalformedPacketException;
-import com.classichabbo.goldfish.networking.util.StringUtil;
+import com.classichabbo.goldfish.util.StringUtil;
 import io.netty.buffer.ByteBuf;
 
 import java.nio.charset.Charset;

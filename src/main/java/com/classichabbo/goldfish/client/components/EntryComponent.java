@@ -5,7 +5,7 @@ import com.classichabbo.goldfish.client.views.types.entry.EntryView;
 import com.classichabbo.goldfish.client.views.types.toolbars.EntryToolbar;
 import com.classichabbo.goldfish.client.views.types.widgets.navigator.NavigatorView;
 import com.classichabbo.goldfish.client.scripts.Cloud;
-import com.classichabbo.goldfish.client.util.DimensionUtil;
+import com.classichabbo.goldfish.util.DimensionUtil;
 
 import java.util.concurrent.ThreadLocalRandom;
 

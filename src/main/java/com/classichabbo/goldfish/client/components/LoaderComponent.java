@@ -4,7 +4,7 @@ import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.game.values.types.PropertiesManager;
 import com.classichabbo.goldfish.client.game.values.types.VariablesManager;
 import com.classichabbo.goldfish.client.game.values.types.TextsManager;
-import com.classichabbo.goldfish.client.views.GlobalView;
+import com.classichabbo.goldfish.client.views.types.GoldfishView;
 import com.classichabbo.goldfish.client.views.types.entry.EntryView;
 import com.classichabbo.goldfish.client.views.types.loader.LoadingView;
 import com.classichabbo.goldfish.networking.Connection;
@@ -97,7 +97,7 @@ public class LoaderComponent extends Component {
 
     public void showHotel() {
         Platform.runLater(() -> {
-            var global = Movie.getInstance().getViewByClass(GlobalView.class);
+            var global = Movie.getInstance().getViewByClass(GoldfishView.class);
             var loader = Movie.getInstance().getViewByClass(LoadingView.class);
 
             if (loader != null) {

@@ -9,7 +9,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import com.classichabbo.goldfish.client.Movie;
-import com.classichabbo.goldfish.client.util.DimensionUtil;
+import com.classichabbo.goldfish.util.DimensionUtil;
 
 public class RoomView extends View {
     private Pane room;

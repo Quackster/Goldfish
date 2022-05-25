@@ -4,7 +4,7 @@ import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.game.values.types.TextsManager;
 import com.classichabbo.goldfish.client.views.controls.Label;
 import com.classichabbo.goldfish.client.views.View;
-import com.classichabbo.goldfish.client.util.DimensionUtil;
+import com.classichabbo.goldfish.util.DimensionUtil;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.layout.Pane;

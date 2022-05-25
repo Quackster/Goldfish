@@ -6,7 +6,6 @@ import java.util.Collections;
 import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
 import com.classichabbo.goldfish.client.game.values.types.TextsManager;
-import com.classichabbo.goldfish.client.util.DimensionUtil;
 import com.classichabbo.goldfish.client.views.controls.BorderPane;
 import com.classichabbo.goldfish.client.views.controls.Button;
 import com.classichabbo.goldfish.client.views.controls.ButtonLarge;
@@ -14,10 +13,10 @@ import com.classichabbo.goldfish.client.views.controls.Label;
 import com.classichabbo.goldfish.client.views.controls.ScrollPane;
 import com.classichabbo.goldfish.client.views.controls.TextFieldRound;
 import com.classichabbo.goldfish.client.views.controls.TextFieldSquare;
-import com.classichabbo.goldfish.client.views.controls.TextField;
 import com.classichabbo.goldfish.client.views.types.room.RoomView;
 import com.classichabbo.goldfish.client.views.types.widgets.Widget;
 
+import com.classichabbo.goldfish.util.DimensionUtil;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -135,8 +134,8 @@ public class NavigatorView extends Widget {
 
     @Override
     public void setHidden(boolean flag) {
+        this.setPage(this.currentPage); // used to reset info box at the bottom
         super.setHidden(flag);
-        this.info.setVisible(true); // reset info back to being visible for when it's closed/opened
     }
 
     private void init() {

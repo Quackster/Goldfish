@@ -9,7 +9,7 @@ import com.classichabbo.goldfish.client.game.values.types.TextsManager;
 import com.classichabbo.goldfish.client.views.View;
 import com.classichabbo.goldfish.client.views.types.entry.EntryView;
 import com.classichabbo.goldfish.client.views.types.error.ErrorWindow;
-import com.classichabbo.goldfish.client.util.DimensionUtil;
+import com.classichabbo.goldfish.util.DimensionUtil;
 import com.classichabbo.goldfish.networking.Connection;
 import javafx.application.Platform;
 import javafx.scene.image.ImageView;

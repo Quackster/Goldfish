@@ -2,7 +2,7 @@ package com.classichabbo.goldfish.networking.codec;
 
 import com.classichabbo.goldfish.networking.encoding.Base64Encoding;
 import com.classichabbo.goldfish.networking.encoding.VL64Encoding;
-import com.classichabbo.goldfish.networking.util.StringUtil;
+import com.classichabbo.goldfish.util.StringUtil;
 import com.classichabbo.goldfish.networking.wrappers.Command;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageEncoder;

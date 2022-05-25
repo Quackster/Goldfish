@@ -1,4 +1,4 @@
-package com.classichabbo.goldfish.client.util;
+package com.classichabbo.goldfish.util;
 
 import java.text.SimpleDateFormat;
 import java.time.Instant;

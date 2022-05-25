@@ -3,7 +3,7 @@ package com.classichabbo.goldfish.client;
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
 import com.classichabbo.goldfish.client.game.scheduler.types.GraphicsScheduler;
 import com.classichabbo.goldfish.client.game.scheduler.types.InterfaceScheduler;
-import com.classichabbo.goldfish.client.views.GlobalView;
+import com.classichabbo.goldfish.client.views.types.GoldfishView;
 import com.classichabbo.goldfish.client.views.View;
 import com.classichabbo.goldfish.client.views.controls.TextField;
 import com.classichabbo.goldfish.client.views.types.entry.EntryView;
@@ -14,7 +14,7 @@ import com.classichabbo.goldfish.client.views.types.toolbars.EntryToolbar;
 import com.classichabbo.goldfish.client.views.types.toolbars.RoomToolbar;
 import com.classichabbo.goldfish.client.views.types.widgets.Widget;
 import com.classichabbo.goldfish.client.views.types.widgets.navigator.NavigatorView;
-import com.classichabbo.goldfish.client.util.DimensionUtil;
+import com.classichabbo.goldfish.util.DimensionUtil;
 import com.classichabbo.goldfish.networking.Connection;
 import com.classichabbo.goldfish.networking.wrappers.messages.MessageHandler;
 import com.classichabbo.goldfish.networking.wrappers.messages.types.MessageCommand;
@@ -100,7 +100,6 @@ public class Movie extends Application {
 
         this.pane = new Pane();
         this.pane.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
-
         this.mainScene = new Scene(this.pane, WIDTH, HEIGHT, Color.BLACK);
 
         // Send the key events to the current text field
@@ -109,6 +108,7 @@ public class Movie extends Application {
                 this.currentTextField.sendKeyPressed(e);
             }
         });
+
         this.mainScene.setOnKeyTyped(e -> {
             if (this.currentTextField != null) {
                 this.currentTextField.sendKeyTyped(e);
@@ -118,7 +118,7 @@ public class Movie extends Application {
         primaryStage.setScene(this.mainScene);
         primaryStage.show();
 
-        this.createObject(new GlobalView());
+        this.createObject(new GoldfishView());
         this.createObject(new LoadingView());
 
         //this.showVisualiser(VisualiserType.LOADER);

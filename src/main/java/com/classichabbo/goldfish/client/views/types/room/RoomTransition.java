@@ -2,8 +2,7 @@ package com.classichabbo.goldfish.client.views.types.room;
 
 import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.views.View;
-import com.classichabbo.goldfish.client.util.DimensionUtil;
-import javafx.application.Platform;
+import com.classichabbo.goldfish.util.DimensionUtil;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 

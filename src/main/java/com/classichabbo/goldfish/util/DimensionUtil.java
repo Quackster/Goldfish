@@ -1,4 +1,4 @@
-package com.classichabbo.goldfish.client.util;
+package com.classichabbo.goldfish.util;
 
 import com.classichabbo.goldfish.client.Movie;
 import javafx.geometry.Point2D;

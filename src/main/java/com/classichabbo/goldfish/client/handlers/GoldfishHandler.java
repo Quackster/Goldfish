@@ -5,7 +5,7 @@ import com.classichabbo.goldfish.client.game.values.types.PropertiesManager;
 import com.classichabbo.goldfish.client.views.types.error.ErrorWindow;
 import com.classichabbo.goldfish.client.views.types.loader.LoadingView;
 import com.classichabbo.goldfish.networking.Connection;
-import com.classichabbo.goldfish.networking.util.NetworkUtil;
+import com.classichabbo.goldfish.util.NetworkUtil;
 import com.classichabbo.goldfish.networking.ChannelConnection;
 import com.classichabbo.goldfish.networking.wrappers.Request;
 import com.classichabbo.goldfish.networking.wrappers.messages.MessageRequest;
@@ -15,7 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 
-public class GlobalHandler extends MessageHandler {
+public class GoldfishHandler extends MessageHandler {
     private static void handleHello(ChannelConnection conn, Request request) {
         conn.send("INIT_CRYPTO", 0);
 
@@ -88,11 +88,11 @@ public class GlobalHandler extends MessageHandler {
     @Override
     public void regMsgList(boolean tBool) {
         var listeners = new HashMap<Integer, MessageRequest>();
-        listeners.put(0, GlobalHandler::handleHello);
-        listeners.put(1, GlobalHandler::handleServerKey);
-        listeners.put(277, GlobalHandler::handleCryptoParameters);
-        listeners.put(3, GlobalHandler::authenticationOK);
-        listeners.put(50, GlobalHandler::ping);
+        listeners.put(0, GoldfishHandler::handleHello);
+        listeners.put(1, GoldfishHandler::handleServerKey);
+        listeners.put(277, GoldfishHandler::handleCryptoParameters);
+        listeners.put(3, GoldfishHandler::authenticationOK);
+        listeners.put(50, GoldfishHandler::ping);
 
         var commands = new HashMap<String, Integer>();
         commands.put("INIT_CRYPTO", 206);

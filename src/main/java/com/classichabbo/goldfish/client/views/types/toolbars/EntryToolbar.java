@@ -9,7 +9,7 @@ import com.classichabbo.goldfish.client.views.View;
 import com.classichabbo.goldfish.client.views.types.alerts.Alert;
 import com.classichabbo.goldfish.client.views.types.error.ErrorWindow;
 import com.classichabbo.goldfish.client.views.types.widgets.navigator.NavigatorView;
-import com.classichabbo.goldfish.client.util.DimensionUtil;
+import com.classichabbo.goldfish.util.DimensionUtil;
 import com.classichabbo.goldfish.networking.Connection;
 import javafx.scene.Cursor;
 import javafx.scene.image.Image;

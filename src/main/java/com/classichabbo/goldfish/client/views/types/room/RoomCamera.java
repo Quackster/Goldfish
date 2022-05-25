@@ -2,7 +2,7 @@ package com.classichabbo.goldfish.client.views.types.room;
 
 import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.game.scheduler.types.InterfaceScheduler;
-import com.classichabbo.goldfish.client.util.DimensionUtil;
+import com.classichabbo.goldfish.util.DimensionUtil;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 

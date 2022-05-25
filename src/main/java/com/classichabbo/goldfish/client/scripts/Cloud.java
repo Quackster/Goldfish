@@ -4,7 +4,7 @@ import com.classichabbo.goldfish.client.game.resources.ResourceManager;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
-import com.classichabbo.goldfish.client.util.DimensionUtil;
+import com.classichabbo.goldfish.util.DimensionUtil;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;

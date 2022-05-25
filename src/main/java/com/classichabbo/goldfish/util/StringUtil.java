@@ -1,17 +1,11 @@
-package com.classichabbo.goldfish.networking.util;
+package com.classichabbo.goldfish.util;
 
 import org.apache.commons.codec.binary.Hex;
 
-import java.net.NetworkInterface;
-import java.net.SocketException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.UUID;
 
 public class StringUtil {
     public static Charset getCharset() {

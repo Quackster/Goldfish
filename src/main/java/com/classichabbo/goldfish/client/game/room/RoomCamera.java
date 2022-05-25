@@ -1,6 +1,6 @@
 package com.classichabbo.goldfish.client.game.room;
 
-import com.classichabbo.goldfish.client.util.DimensionUtil;
+import com.classichabbo.goldfish.util.DimensionUtil;
 
 public class RoomCamera {
     private static RoomCamera instance;

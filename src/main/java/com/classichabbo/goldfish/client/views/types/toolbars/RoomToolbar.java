@@ -5,11 +5,8 @@ import com.classichabbo.goldfish.client.views.controls.ButtonLarge;
 import com.classichabbo.goldfish.client.views.controls.ImageButton;
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
 import com.classichabbo.goldfish.client.views.View;
-import com.classichabbo.goldfish.client.views.types.entry.EntryView;
-import com.classichabbo.goldfish.client.views.types.room.RoomView;
 import com.classichabbo.goldfish.client.views.types.alerts.Alert;
-import com.classichabbo.goldfish.client.views.types.room.RoomTransition;
-import com.classichabbo.goldfish.client.util.DimensionUtil;
+import com.classichabbo.goldfish.util.DimensionUtil;
 
 import com.classichabbo.goldfish.client.views.types.widgets.navigator.NavigatorView;
 import javafx.scene.layout.Background;
