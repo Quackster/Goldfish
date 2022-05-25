@@ -25,7 +25,7 @@ public class TextFieldSquare extends TextFieldContainer {
 
         this.getChildren().addAll(this.background, this.text);
         this.setOnMouseClicked(e -> Movie.getInstance().setCurrentTextField(this.text));
-        this.initCaret(7, 9);
+        this.initCaret(7, 8, 11);
     }
 
     public void setText(String text) {
@@ -34,7 +34,7 @@ public class TextFieldSquare extends TextFieldContainer {
 
     public void setWidth(int width) {
         this.background.setPrefWidth(width);
-        this.text.setWidth(width - 10);
+        this.text.setWidth(width - 12);
     }
 
     public String getText() {

@@ -6,7 +6,6 @@ import java.util.List;
 
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
 
-import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Bounds;
@@ -23,6 +22,7 @@ public class TextField extends FlowPane {
     private String text;
     private boolean isPassword;
     private int lines;
+    private boolean center;
     private TextFieldContainer parent;
 
     private boolean full;
@@ -36,10 +36,22 @@ public class TextField extends FlowPane {
         this.color = color;
         this.isPassword = isPassword;
         this.lines = lines;
+        this.center = center;
         this.parent = parent;
 
-        if (center) {
+        if (this.center) {
             this.setAlignment(Pos.CENTER);
+            var _this = this;
+
+            var listener = new ChangeListener<Number>() {
+                @Override
+                public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                    _this.moveCaret(0);
+                    _this.widthProperty().removeListener(this);
+                }
+            };
+
+            this.widthProperty().addListener(listener);
         }
 
         this.setMinHeight(11);
@@ -61,7 +73,8 @@ public class TextField extends FlowPane {
         this.caretPosition = caretPosition;
 
         if (this.getChildren().size() == 0 || caretPosition - 1 == -1) {
-            this.parent.moveCaret(0, 0);
+            var x = this.center ? (this.getWidth() / 2) - 3 : 0;
+            this.parent.moveCaret(x, 0);
         }
         else {
             var character = this.getChildren().get(caretPosition - 1);
@@ -69,24 +82,19 @@ public class TextField extends FlowPane {
             var y = character.getBoundsInParent().getMinY();
 
             if (y < 0) {
-                var parent = this.parent;
+                var _this = this;
                 var listener = new ChangeListener<Bounds>() {
                     @Override
                     public void changed(ObservableValue<? extends Bounds> observable, Bounds oldValue, Bounds newValue) {
                         var x = newValue.getMaxX();
                         var y = newValue.getMinY();
-        
-                        System.out.println("caretPosition = " + caretPosition);
-                        System.out.println("character = " + ((Text)character).getText());
-                        System.out.println("x = " + x);
-                        System.out.println("y = " + y);
-                        System.out.println("\n");
 
                         if (y < 0) {
                             return;
                         }
-
-                        parent.moveCaret(x, y);
+                        
+                        _this.outputCaret(caretPosition, ((Text)character).getText(), x, y);
+                        _this.parent.moveCaret(x, y);
                         character.boundsInParentProperty().removeListener(this);
                     }
                 };
@@ -94,15 +102,17 @@ public class TextField extends FlowPane {
                 character.boundsInParentProperty().addListener(listener);
             }
             else {
-                System.out.println("caretPosition = " + caretPosition);
-                System.out.println("character = " + ((Text)character).getText());
-                System.out.println("x = " + x);
-                System.out.println("y = " + y);
-                System.out.println("\n");
-
+                this.outputCaret(caretPosition, ((Text)character).getText(), x, y);
                 this.parent.moveCaret(x, y);
             }
         }
+    }
+
+    private void outputCaret(int position, String character, double x, double y) {
+        System.out.println("caretPosition = " + caretPosition);
+        System.out.println("character = " + character);
+        System.out.println("x = " + x);
+        System.out.println("y = " + y);
     }
 
     public void setWidth(int width) {
@@ -111,7 +121,9 @@ public class TextField extends FlowPane {
 
     public void setText(String text) {
         this.text = text;
+        this.full = false;
         this.renderText();
+        this.moveCaret(0);
     }
 
     private void renderText() {
@@ -133,11 +145,8 @@ public class TextField extends FlowPane {
     }
 
     public String getText() {
+        System.out.println("this.text = " + this.text);
         return this.text;
-    }
-
-    public void setOnWidth(ChangeListener<Number> listener) {
-        this.widthProperty().addListener(listener);
     }
 
     public void sendKeyPressed(KeyEvent e) {
