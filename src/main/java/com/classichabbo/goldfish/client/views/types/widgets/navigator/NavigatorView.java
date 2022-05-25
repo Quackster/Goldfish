@@ -545,7 +545,7 @@ public class NavigatorView extends Widget {
         this.backTop.setVisible(true);
     }
 
-    private void infoShowRoom(Room room) {
+    private void infoShowRoom(NavigatorRoom room) {
         if (room.isPublic) {
             this.infoImg.setTranslateX(16);
             this.infoImg.setTranslateY(15);
@@ -740,7 +740,7 @@ public class NavigatorView extends Widget {
         }
     }
 
-    private void goToRoom(Room room) {
+    private void goToRoom(NavigatorRoom room) {
         if (room.doorbell == Doorbell.PASSWORD) {
             this.showPasswordPrompt(room);
         }
@@ -749,13 +749,13 @@ public class NavigatorView extends Widget {
         }
     }
 
-    private void showPasswordPrompt(Room room) {
+    private void showPasswordPrompt(NavigatorRoom room) {
         this.passwordPromptName.setText(room.name);
         this.passwordPromptOkButton.setOnMouseClicked(e -> Movie.getInstance().goToRoom(room.roomId, this.passwordPromptField.getText()));
         this.setContent(this.passwordPrompt, new Insets(9, 11, 11, 10), true);
     }
 
-    private void addRoom(Room room, Boolean recommended) {
+    private void addRoom(NavigatorRoom room, Boolean recommended) {
         var navigatorItem = new NavigatorItem(room);
         navigatorItem.setNameButtonOnMouseClicked(e -> this.pendingAction = () -> this.infoShowRoom(room));
         navigatorItem.setGoButtonOnMouseClicked(e -> this.pendingAction = () -> this.goToRoom(room));
@@ -833,10 +833,10 @@ public class NavigatorView extends Widget {
 
         if (categoryId == 1) {
             category = new Category(1, "Public Rooms");
-            category.addRoom(new Room(1, "Welcome Lounge", "New? Lost? Get a warm welcome here!", "", 1, 40));
-            category.addRoom(new Room(1, "The Park", "Visit the park and the infamous Infobus", "", 40, 65));
-            category.addRoom(new Room(1, "Habbo Lido", "Splish, splash and have a bash in the famous Habbo pool!", "", 115, 120));
-            category.addRoom(new Room(1, "Rooftop Rumble", "Wobble Squabble your bum off in our cool rooftop hang out", "", 50, 50));
+            category.addRoom(new NavigatorRoom(1, "Welcome Lounge", "New? Lost? Get a warm welcome here!", "", 1, 40));
+            category.addRoom(new NavigatorRoom(1, "The Park", "Visit the park and the infamous Infobus", "", 40, 65));
+            category.addRoom(new NavigatorRoom(1, "Habbo Lido", "Splish, splash and have a bash in the famous Habbo pool!", "", 115, 120));
+            category.addRoom(new NavigatorRoom(1, "Rooftop Rumble", "Wobble Squabble your bum off in our cool rooftop hang out", "", 50, 50));
             category.addCategory(new Category(3, "Entertainment", 0, 100));
             category.addCategory(new Category(3, "Restaurants and Cafes", 0, 100));
             category.addCategory(new Category(3, "Lounges and Clubs", 0, 100));
@@ -877,7 +877,7 @@ public class NavigatorView extends Widget {
 
         if (categoryId == 6) {
             category = new Category(6, "Secret Sub-Subcategory", this.getCategory(5));
-            category.addRoom(new Room(1, "Parsnip's Casino", "Parsnip", "Large bets welcomed, games 13/21/poker", 0, 15, Doorbell.OPEN));
+            category.addRoom(new NavigatorRoom(1, "Parsnip's Casino", "Parsnip", "Large bets welcomed, games 13/21/poker", 0, 15, Doorbell.OPEN));
         }
 
         if (categoryId == 7) {
@@ -887,50 +887,50 @@ public class NavigatorView extends Widget {
 
         if (categoryId == 8) {
             category = new Category(8, "Secret Sub-Subcategory", this.getCategory(7));
-            category.addRoom(new Room(1, "Theatredome", "Perform your latest master piece, or simply catch the latest gossip.", "", 1, 100));
+            category.addRoom(new NavigatorRoom(1, "Theatredome", "Perform your latest master piece, or simply catch the latest gossip.", "", 1, 100));
         }
 
         return category;
     }
 
-    private ArrayList<Room> getRecommendedRooms () {
-        var recommendedRooms = new ArrayList<Room>();
+    private ArrayList<NavigatorRoom> getRecommendedRooms () {
+        var recommendedRooms = new ArrayList<NavigatorRoom>();
 
-        recommendedRooms.add(new Room(1, "Box ( Habbo.nl - 2007 )", "Miquel", "Recreated from Habbo NL in 2007. Original room by Vinny.", 0, 40, Doorbell.OPEN));
-        recommendedRooms.add(new Room(1, "Generating the bars of 50c", "ParsnipAlt", "", 0, 65, Doorbell.RING));
-        recommendedRooms.add(new Room(1, "Ban for 2 years, thanks for that", "ParsnipAlt2", "", 0, 120, Doorbell.PASSWORD));
+        recommendedRooms.add(new NavigatorRoom(1, "Box ( Habbo.nl - 2007 )", "Miquel", "Recreated from Habbo NL in 2007. Original room by Vinny.", 0, 40, Doorbell.OPEN));
+        recommendedRooms.add(new NavigatorRoom(1, "Generating the bars of 50c", "ParsnipAlt", "", 0, 65, Doorbell.RING));
+        recommendedRooms.add(new NavigatorRoom(1, "Ban for 2 years, thanks for that", "ParsnipAlt2", "", 0, 120, Doorbell.PASSWORD));
     
         return recommendedRooms;
     }
 
-    private ArrayList<Room> getSearchResults(String criteria) {
-        var searchResults = new ArrayList<Room>();
+    private ArrayList<NavigatorRoom> getSearchResults(String criteria) {
+        var searchResults = new ArrayList<NavigatorRoom>();
 
         if (criteria.equals("Parsnip")) {
-            searchResults.add(new Room(1, "Parsnip's Casino", "Parsnip", "Large bets welcomed, games 13/21/poker", 0, 15, Doorbell.OPEN));
+            searchResults.add(new NavigatorRoom(1, "Parsnip's Casino", "Parsnip", "Large bets welcomed, games 13/21/poker", 0, 15, Doorbell.OPEN));
         }
 
         return searchResults;
     }
 
-    private ArrayList<Room> getOwnRooms() {        
-        var ownRooms = new ArrayList<Room>();
+    private ArrayList<NavigatorRoom> getOwnRooms() {
+        var ownRooms = new ArrayList<NavigatorRoom>();
 
-        ownRooms.add(new Room(1, "Parsnip's Casino", "Parsnip", "Large bets welcomed, games 13/21/poker", 0, 15, Doorbell.OPEN));
-        ownRooms.add(new Room(1, "Parsnip's Hub", "Parsnip", "Sit and chat or go through the teles to see some of my favourite rooms", 0, 25, Doorbell.OPEN));
-        ownRooms.add(new Room(1, "Parsnip's Room", "Parsnip", "If I'm sat here alone, I'm probably afk", 0, 10, Doorbell.OPEN));
-        ownRooms.add(new Room(1, "Siract's Trophy Room", "Parsnip", "Tribute to Siract - will be sorely missed!", 0, 10, Doorbell.OPEN));
-        ownRooms.add(new Room(1, "Pea's Dutch Lounge", "Parsnip", "Dutch themed lounge for Pea", 0, 15, Doorbell.OPEN));
-        ownRooms.add(new Room(1, "Parsnip's Hallway", "Parsnip", "", 0, 25, Doorbell.OPEN));
-        ownRooms.add(new Room(1, "Animal Nitrate", "Parsnip", "", 0, 25, Doorbell.OPEN));
+        ownRooms.add(new NavigatorRoom(1, "Parsnip's Casino", "Parsnip", "Large bets welcomed, games 13/21/poker", 0, 15, Doorbell.OPEN));
+        ownRooms.add(new NavigatorRoom(1, "Parsnip's Hub", "Parsnip", "Sit and chat or go through the teles to see some of my favourite rooms", 0, 25, Doorbell.OPEN));
+        ownRooms.add(new NavigatorRoom(1, "Parsnip's Room", "Parsnip", "If I'm sat here alone, I'm probably afk", 0, 10, Doorbell.OPEN));
+        ownRooms.add(new NavigatorRoom(1, "Siract's Trophy Room", "Parsnip", "Tribute to Siract - will be sorely missed!", 0, 10, Doorbell.OPEN));
+        ownRooms.add(new NavigatorRoom(1, "Pea's Dutch Lounge", "Parsnip", "Dutch themed lounge for Pea", 0, 15, Doorbell.OPEN));
+        ownRooms.add(new NavigatorRoom(1, "Parsnip's Hallway", "Parsnip", "", 0, 25, Doorbell.OPEN));
+        ownRooms.add(new NavigatorRoom(1, "Animal Nitrate", "Parsnip", "", 0, 25, Doorbell.OPEN));
         
         return ownRooms;
     }
 
-    private ArrayList<Room> getFavouriteRooms() {
-        var favouriteRooms = new ArrayList<Room>();
+    private ArrayList<NavigatorRoom> getFavouriteRooms() {
+        var favouriteRooms = new ArrayList<NavigatorRoom>();
 
-        favouriteRooms.add(new Room(1, "Parsnip's Casino", "Parsnip", "Large bets welcomed, games 13/21/poker", 0, 15, Doorbell.OPEN));
+        favouriteRooms.add(new NavigatorRoom(1, "Parsnip's Casino", "Parsnip", "Large bets welcomed, games 13/21/poker", 0, 15, Doorbell.OPEN));
         
         return favouriteRooms;
     }

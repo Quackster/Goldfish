@@ -23,7 +23,7 @@ public class NavigatorItem extends Pane {
     private String backgroundImg;
     private Double percentageFull;
 
-    public NavigatorItem(Room room) {
+    public NavigatorItem(NavigatorRoom room) {
         this.setMinHeight(16);
         this.setMaxWidth(311);
         this.calculatePercentageFull(room.visitors, room.maxVisitors);

@@ -1,6 +1,6 @@
 package com.classichabbo.goldfish.client.views.types.widgets.navigator;
 
-public class Room {
+public class NavigatorRoom {
     public int roomId;
     public String name;
     public String owner;
@@ -11,7 +11,7 @@ public class Room {
     public Doorbell doorbell;
     public Boolean isPublic;
 
-    public Room(int roomId, String name, String description, String infoImg, int visitors, int maxVisitors) {
+    public NavigatorRoom(int roomId, String name, String description, String infoImg, int visitors, int maxVisitors) {
         this.roomId = roomId;
         this.name = name;
         this.description = description;
@@ -21,7 +21,7 @@ public class Room {
         this.isPublic = true;
     }
 
-    public Room(int id, String name, String owner, String description, int visitors, int maxVisitors, Doorbell doorbell) {
+    public NavigatorRoom(int id, String name, String owner, String description, int visitors, int maxVisitors, Doorbell doorbell) {
         this.roomId = id;
         this.name = name;
         this.owner = owner;

@@ -8,7 +8,7 @@ public class Category {
     private int visitors;
     private int maxVisitors;
     public Category parentCategory;
-    public ArrayList<Room> rooms;
+    public ArrayList<NavigatorRoom> rooms;
     public ArrayList<Category> categories;
 
     // I didn't know whether visitors/maxVisitors is calculated by the client or server, but this should be able to
@@ -19,7 +19,7 @@ public class Category {
         this.name = name;
         this.visitors = -1;
         this.maxVisitors = -1;
-        this.rooms = new ArrayList<Room>();
+        this.rooms = new ArrayList<NavigatorRoom>();
         this.categories = new ArrayList<Category>();
     }
 
@@ -28,7 +28,7 @@ public class Category {
         this.name = name;
         this.visitors = visitors;
         this.maxVisitors = maxVisitors;
-        this.rooms = new ArrayList<Room>();
+        this.rooms = new ArrayList<NavigatorRoom>();
         this.categories = new ArrayList<Category>();
     }
 
@@ -38,7 +38,7 @@ public class Category {
         this.visitors = -1;
         this.maxVisitors = -1;
         this.parentCategory = parentCategory;
-        this.rooms = new ArrayList<Room>();
+        this.rooms = new ArrayList<NavigatorRoom>();
         this.categories = new ArrayList<Category>();
     }
 
@@ -48,11 +48,11 @@ public class Category {
         this.visitors = visitors;
         this.maxVisitors = maxVisitors;
         this.parentCategory = parentCategory;
-        this.rooms = new ArrayList<Room>();
+        this.rooms = new ArrayList<NavigatorRoom>();
         this.categories = new ArrayList<Category>();
     }
 
-    public void addRoom(Room room) {
+    public void addRoom(NavigatorRoom room) {
         this.rooms.add(room);
     }
 
