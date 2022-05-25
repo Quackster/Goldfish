@@ -1,109 +1,129 @@
 package com.classichabbo.goldfish.networking;
 
-import com.classichabbo.goldfish.client.game.values.types.PropertiesManager;
-import com.classichabbo.goldfish.networking.netty.NettyChannelInitializer;
-import io.netty.bootstrap.Bootstrap;
-import io.netty.buffer.PooledByteBufAllocator;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
-import io.netty.channel.FixedRecvByteBufAllocator;
-import io.netty.channel.group.DefaultChannelGroup;
-import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.util.concurrent.GlobalEventExecutor;
+import com.classichabbo.goldfish.client.Goldfish;
+import com.classichabbo.goldfish.client.Movie;
+import com.classichabbo.goldfish.networking.netty.NettyClientConnection;
+import com.classichabbo.goldfish.networking.wrappers.messages.MessageHandler;
+import com.classichabbo.goldfish.networking.wrappers.messages.MessageRequest;
+import com.classichabbo.goldfish.networking.wrappers.messages.types.MessageCommand;
+import com.classichabbo.goldfish.networking.wrappers.messages.types.MessageListener;
+import com.classichabbo.goldfish.networking.wrappers.Command;
+import io.netty.channel.Channel;
+import io.netty.util.DefaultAttributeMap;
+import javafx.application.Application;
 
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-public class Connection {
-    private static final int BUFFER_SIZE = 2048;
-    private static Connection instance;
-
-    private AtomicInteger connectionAttempts;
-    private DefaultChannelGroup channels;
-    private Bootstrap bootstrap;
-    private EventLoopGroup workerGroup;
-    private NettyChannelInitializer channelInitializer;
-
-    private boolean isConnected;
-    private boolean isConnecting;
+public class Connection extends DefaultAttributeMap {
+    private Channel channel;
+    private List<MessageListener> listeners;
+    private List<MessageCommand> commands;
 
     public Connection() {
-        this.channels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
-        this.connectionAttempts = new AtomicInteger(0);
+        this.listeners = new CopyOnWriteArrayList<>();
+        this.commands = new CopyOnWriteArrayList<>();
     }
 
     /**
-     * Create the Netty sockets.
-     * @return
+     * Send command to server.
      */
-    public ChannelFuture createSocket() {
-        this.isConnected = false;
-        this.isConnecting = true;
+    public void send(String tCmd, Object... data) {
+        var messageCommand = this.commands.stream()
+                .filter(x -> x.getHeaderName().equals(tCmd))
+                .findFirst().orElse(null);//.map(x -> x.getHeader()).findFirst().orElse(null);
 
-        try {
-            this.bootstrap = new Bootstrap();
-            this.workerGroup = new NioEventLoopGroup();
-            this.channelInitializer = new NettyChannelInitializer(this);
-
-            this.bootstrap
-                    .group(this.workerGroup)
-                    .channel(NioSocketChannel.class)
-                    .option(ChannelOption.SO_KEEPALIVE, true)
-                    .option(ChannelOption.SO_RCVBUF, BUFFER_SIZE)
-                    .option(ChannelOption.RCVBUF_ALLOCATOR, new FixedRecvByteBufAllocator(BUFFER_SIZE))
-                    .option(ChannelOption.ALLOCATOR, new PooledByteBufAllocator(true))
-                    .handler(this.channelInitializer);
-
-            return this.bootstrap.connect(
-                    PropertiesManager.getInstance().getString("connection.info.host"),
-                    PropertiesManager.getInstance().getInt("connection.info.port")
-            );
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        if (messageCommand == null) {
+            System.out.println("Command '" + tCmd + "' not found");
+            return;
         }
 
-        return null;
+        var header = messageCommand.getHeader();
+        this.channel.writeAndFlush(new Command(header, data));
     }
 
-    public void dispose() {
-        try {
-            this.workerGroup.shutdownGracefully().sync();
-        } catch (Exception ex) {
+    /**
+     * Main call of Java application
+     *
+     * @param args System arguments
+     */
+    public static void main(String[] args) {
+        Application.launch(Movie.class);
+    }
 
+    /**
+     * Register listener handler for views.
+     */
+    public void registerListeners(MessageHandler messageHandler, HashMap<Integer, MessageRequest> listeners) {
+        for (var x : listeners.entrySet()) {
+            this.listeners.add(new MessageListener(messageHandler.getClass(), x.getKey(), x.getValue()));
         }
     }
 
-    public static Connection getInstance() {
-        if (instance == null) {
-            instance = new Connection();
+    /**
+     * Unregister listener handler for views.
+     */
+    public void unregisterListeners(MessageHandler messageHandler, HashMap<Integer, MessageRequest> listeners) {
+        listeners.forEach((key, value) -> this.listeners.removeIf(message ->
+                message.getHandlerClass() == messageHandler.getClass() && message.getHeader() == key.intValue()));
+    }
+
+    /**
+     * Register command handler for views.
+     */
+    public void registerCommands(MessageHandler messageHandler, HashMap<String, Integer> listeners) {
+        for (var x : listeners.entrySet()) {
+            this.commands.add(new MessageCommand(messageHandler.getClass(), x.getValue(), x.getKey()));
         }
-
-        return instance;
+    }
+    /**
+     * Unegister command handler for views.
+     */
+    public void unregisterCommands(MessageHandler messageHandler, HashMap<String, Integer> commands) {
+        commands.forEach((key, value) -> this.commands.removeIf(message ->
+                message.getHandlerClass() == messageHandler.getClass() && message.getHeader() == value.intValue()));
     }
 
-    public static ChannelConnection get() {
-        return instance.channelInitializer.getConnectionHandler().getConnection();
+    /**
+     * Get listeners registered by views.
+     */
+    public List<MessageListener> getListeners() {
+        return listeners;
     }
 
-
-    public boolean isConnected() {
-        return isConnected;
+    /**
+     * Get commands registered by views.
+     */
+    public List<MessageCommand> getCommands() {
+        return commands;
     }
 
-    public void setConnected(boolean connected) {
-        isConnected = connected;
+    /**
+     * Get the netty channel
+     */
+    public Channel getChannel() {
+        return channel;
     }
 
-    public boolean isConnecting() {
-        return isConnecting;
+    /**
+     * Set the netty channel
+     */
+    public void setChannel(Channel channel) {
+        this.channel = channel;
     }
 
-    public void setConnecting(boolean connecting) {
-        isConnecting = connecting;
+    /**
+     * Get connection
+     */
+    public static Connection get() {
+        return NettyClientConnection.getInstance().getConnection();
     }
 
-    public AtomicInteger getConnectionAttempts() {
-        return connectionAttempts;
+    /**
+     * Close the connection
+     */
+    public void close() {
+        this.channel.close();
     }
 }

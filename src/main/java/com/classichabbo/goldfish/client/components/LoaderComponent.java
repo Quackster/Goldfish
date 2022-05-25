@@ -7,7 +7,7 @@ import com.classichabbo.goldfish.client.game.values.types.TextsManager;
 import com.classichabbo.goldfish.client.views.types.GoldfishView;
 import com.classichabbo.goldfish.client.views.types.entry.EntryView;
 import com.classichabbo.goldfish.client.views.types.loader.LoadingView;
-import com.classichabbo.goldfish.networking.Connection;
+import com.classichabbo.goldfish.networking.netty.NettyClientConnection;
 import javafx.application.Platform;
 
 import java.awt.*;
@@ -69,7 +69,7 @@ public class LoaderComponent extends Component {
      * Connect server task
      */
     public void connectServer() {
-        if (Connection.getInstance().getConnectionAttempts().get() >= VariablesManager.getInstance().getInt("connection.max.attempts", 5)) {
+        if (NettyClientConnection.getInstance().getConnectionAttempts().get() >= VariablesManager.getInstance().getInt("connection.max.attempts", 5)) {
             return;
         }
 
@@ -77,20 +77,20 @@ public class LoaderComponent extends Component {
             return;
         }
 
-        Connection.getInstance().getConnectionAttempts().incrementAndGet();
+        NettyClientConnection.getInstance().getConnectionAttempts().incrementAndGet();
         this.connectionTimer = System.currentTimeMillis() + 5000; // Retry once every second for a max of 5 times
 
-        var channelFuture = Connection.getInstance().createSocket();
+        var channelFuture = NettyClientConnection.getInstance().createSocket();
 
         channelFuture.addListener(listener -> {
-            Connection.getInstance().setConnecting(false);
+            NettyClientConnection.getInstance().setConnecting(false);
 
             if (listener.isSuccess()) {
                 System.out.println("Successful connection...");
-                Connection.getInstance().setConnected(true);
+                NettyClientConnection.getInstance().setConnected(true);
             } else {
                 System.out.println("Connection failure...");
-                Connection.getInstance().setConnected(false);
+                NettyClientConnection.getInstance().setConnected(false);
             }
         });
     }

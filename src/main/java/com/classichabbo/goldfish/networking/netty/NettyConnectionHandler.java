@@ -1,30 +1,23 @@
 package com.classichabbo.goldfish.networking.netty;
 
+import com.classichabbo.goldfish.client.Goldfish;
 import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.game.values.types.TextsManager;
 import com.classichabbo.goldfish.client.views.types.error.ErrorWindow;
 import com.classichabbo.goldfish.networking.Connection;
-import com.classichabbo.goldfish.networking.ChannelConnection;
 import com.classichabbo.goldfish.networking.wrappers.Request;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
 public class NettyConnectionHandler extends SimpleChannelInboundHandler<Request> {
-    private Connection connection;
-    private ChannelConnection channel;
-
-    public NettyConnectionHandler(Connection server) {
-        this.connection = server;
-    }
-
     @Override
     public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
-        this.channel = new ChannelConnection(ctx.channel());
+        Connection.get().setChannel(ctx.channel());
     }
 
     @Override
     public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
-        if (!Connection.getInstance().isConnected()) {
+        if (!NettyClientConnection.getInstance().isConnected()) {
             return;
         }
 
@@ -34,18 +27,20 @@ public class NettyConnectionHandler extends SimpleChannelInboundHandler<Request>
                 false
         ));
 
-        this.channel = null;
+        Connection.get().setChannel(null);
     }
 
 
     @Override
     public void channelRead0(ChannelHandlerContext ctx, Request message) {
-        this.channel = new ChannelConnection(ctx.channel());
+        // this.channel = new ChannelConnection(ctx.channel()); - wtf is this? my fault anyways for putting that here :^) - Avery
         System.out.println("[" + message.getHeaderId() + " / " + message.getHeader() + "] - " + message.getMessageBody());
 
-        Movie.getInstance().getListeners().forEach(x -> {
+        var conn = Connection.get();
+
+       conn.getListeners().forEach(x -> {
             if (x.getHeader() == message.getHeaderId()) {
-                x.getMessage().received(this.channel, message);
+                x.getMessage().received(conn, message);
             }
         });
     }
@@ -59,7 +54,4 @@ public class NettyConnectionHandler extends SimpleChannelInboundHandler<Request>
         // }
     }
 
-    public ChannelConnection getConnection() {
-        return channel;
-    }
 }
