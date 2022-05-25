@@ -16,7 +16,7 @@ import io.netty.util.concurrent.GlobalEventExecutor;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class NettyClientConnection {
-    private static final int BUFFER_SIZE = 2048;
+    private static final int BUFFER_SIZE = 4096;
     private static NettyClientConnection instance;
 
     private Connection connection;
