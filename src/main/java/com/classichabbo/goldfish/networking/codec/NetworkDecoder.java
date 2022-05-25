@@ -18,11 +18,12 @@ public class NetworkDecoder extends ByteToMessageDecoder {
             var character = buffer.readByte();
 
             if (character == 1) {
-                out.add(new Request(content));
-               break;
+                break;
             }
 
             content.writeByte(character);
         }
+
+        out.add(new Request(content));
     }
 }
