@@ -12,33 +12,33 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
-public class TextFieldRound extends TextFieldContainer {
+public class TextAreaRound extends TextFieldContainer {
     private Pane center;
 
-    public TextFieldRound(String text) {
+    public TextAreaRound(String text) {
         super();
         var background = new HBox();
-
+        
         var left = new Pane();
-        left.setPrefSize(5, 17);
-        left.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/controls/text_field_round/left.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        left.setPrefSize(5, 44);
+        left.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/controls/text_area_round/left.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
 
         this.center = new Pane();
-        this.center.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/controls/text_field_round/center.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
-        this.center.setPrefHeight(17);
+        this.center.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/controls/text_area_round/center.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        this.center.setPrefHeight(44);
 
         var right = new Pane();
-        right.setPrefSize(5, 17);
-        right.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/controls/text_field_round/right.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        right.setPrefSize(5, 44);
+        right.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/controls/text_area_round/right.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
 
-        this.text = new TextField(text, false, Color.BLACK, false, 1, false, this);
-        this.text.setLayoutX(7);
-        this.text.setLayoutY(4);
+        this.text = new TextField(text, false, Color.BLACK, false, 3, false, this);
+        this.text.setLayoutX(6);
+        this.text.setLayoutY(6);
 
         background.getChildren().addAll(left, this.center, right);
         this.getChildren().addAll(background, this.text);
         this.setOnMouseClicked(e -> Movie.getInstance().setCurrentTextField(this.text));
-        this.initCaret(7, 4);
+        this.initCaret(6, 6);
     }
 
     public void setText(String text) {

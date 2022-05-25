@@ -11,6 +11,7 @@ import com.classichabbo.goldfish.client.views.controls.Button;
 import com.classichabbo.goldfish.client.views.controls.ButtonLarge;
 import com.classichabbo.goldfish.client.views.controls.Label;
 import com.classichabbo.goldfish.client.views.controls.ScrollPane;
+import com.classichabbo.goldfish.client.views.controls.TextAreaRound;
 import com.classichabbo.goldfish.client.views.controls.TextFieldRound;
 import com.classichabbo.goldfish.client.views.controls.TextFieldSquare;
 import com.classichabbo.goldfish.client.views.types.room.RoomView;
@@ -44,6 +45,8 @@ public class NavigatorView extends Widget {
     private TextFieldRound searchCriteria;
     private Button doSearchButton;
     private Label noResults;
+
+    private TextAreaRound test;
 
     private Pane backTop;
     private Label backTopLabel;
@@ -124,6 +127,7 @@ public class NavigatorView extends Widget {
 
         this.navigatorList.update();
         this.searchCriteria.update();
+        this.test.update();
         this.passwordPromptField.update();
     }
 
@@ -211,6 +215,8 @@ public class NavigatorView extends Widget {
         favouritesLabel.setLayoutY(4);
         this.favouritesButton.getChildren().add(favouritesLabel);
 
+
+
         this.search = new Pane();
         this.search.setPrefSize(328, 30);
         this.search.setLayoutX(6);
@@ -237,6 +243,10 @@ public class NavigatorView extends Widget {
         this.noResults.setLayoutY(152);
         this.noResults.setVisible(false);
         this.content.getChildren().add(this.noResults);
+
+        this.test = new TextAreaRound("");
+        this.test.setWidth(240);
+        this.content.getChildren().add(test);
 
         this.backTop = new Pane();
         this.backTop.setPrefWidth(340);

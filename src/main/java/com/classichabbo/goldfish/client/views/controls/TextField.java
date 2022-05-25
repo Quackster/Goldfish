@@ -1,167 +1,177 @@
 package com.classichabbo.goldfish.client.views.controls;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.classichabbo.goldfish.client.Movie;
+import com.classichabbo.goldfish.client.game.resources.ResourceManager;
 
-import javafx.scene.Cursor;
+import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.geometry.Bounds;
+import javafx.geometry.Pos;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 
-public class TextField extends Pane {
-    // TODO - highlighting, mouse move caret
-    private Pane container;
-    private Label text;
-    private Label beforeRender;
-    private Label beforeCaret;
-    private Pane caret;
-    private Boolean isPassword;
-    private int caretPosition;
-    private int caretAnimation;
-    private int right;
-    private String value;
-    private String beforeRenderValue;
+public class TextField extends FlowPane {
+    private Color color;
+    private Font font;
+    private String text;
+    private boolean isPassword;
+    private int lines;
+    private TextFieldContainer parent;
+
+    private boolean full;
+    private int caretPosition = 0;
 
     private final List<String> volter = Arrays.asList(" ", "!", "\"", "#", "$", "%", "&", "'", "(", ")", "*", "+", ",", "-", ".", "/", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ":", ";", ">", "=", "<", "?", "@", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "[", "\\", "]", "^", "_", "`", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "{", "|", "}", "~", " ", "¡", "¢", "£", "¤", "¥", "§", "¨", "©", "ª", "«", "¬", "®", "¯", "°", "±", "´", "µ", "¶", "·", "¸", "º", "»", "¿", "À", "Á", "Â", "Ã", "Ä", "Å", "Æ", "Ç", "È", "É", "Ê", "Ë", "Ì", "Í", "Î", "Ï", "Ñ", "Ò", "Ó", "Ô", "Õ", "Ö", "Ø", "Ù", "Ú", "Û", "Ü", "ß", "à", "á", "â", "ã", "ä", "å", "æ", "ç", "è", "é", "ê", "ë", "ì", "í", "î", "ï", "ñ", "ò", "ó", "ô", "õ", "ö", "÷", "ø", "ù", "ú", "û", "ü", "ÿ", "ı", "Œ", "œ", "Ÿ", "ƒ", "ˆ", "ˇ", "˘", "˙", "˚", "˛", "˜", "˝", "π", "–", "—", "‘", "’", "‚", "“", "”", "„", "†", "‡", "•", "…", "‰", "‹", "›", "⁄", "€", "™", "Ω", "∂", "∆", "∏", "∑", "√", "∞", "∫", "≈", "≠", "≤", "≥", "◊", "", "ﬁ", "ﬂ");
 
-    public TextField(String text, Boolean isBold, Boolean isPassword) {
+    public TextField(String text, boolean isBold, Color color, boolean isPassword, int lines, boolean center, TextFieldContainer parent) {
+        this.text = text;
+        this.font = isBold ? ResourceManager.getInstance().getVolterBold() : ResourceManager.getInstance().getVolter();
+        this.color = color;
         this.isPassword = isPassword;
-        this.caretAnimation = 0;
-        this.beforeRenderValue = text;
-        this.value = "";
+        this.lines = lines;
+        this.parent = parent;
 
-        this.caret = new Pane();
-        this.caret.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
-        this.caret.setPrefSize(1, isBold ? 11 : 10);
-        this.caret.setLayoutY(1);
+        if (center) {
+            this.setAlignment(Pos.CENTER);
+        }
 
-        this.container = new Pane();
+        this.setMinHeight(11);
+        this.setText(text);
+        this.setVgap(1);
+        this.heightProperty().addListener((obs, oldHeight, newHeight) -> {
+            var totalLines = (this.getHeight() == 11 ? this.getHeight() : this.getHeight() + 1) / 11;
 
-        this.text = new Label("", isBold);
-        this.container.getChildren().add(this.text);
-
-        this.beforeRender = new Label(text, isBold);
-        this.beforeRender.setVisible(false);
-        this.beforeRender.setOnWidth(() -> {
-            if (this.beforeRender.getWidth() < this.container.getMaxWidth() - this.right && this.beforeRender.getText() != null) {
-                this.text.setText(this.beforeRender.getText());
-                this.value = this.beforeRenderValue;
-                this.updateCaret(true);
+            if (totalLines > this.lines) {
+                this.text = this.text.substring(0, this.text.length() - 1);
+                this.renderText();
+                this.moveCaret(this.caretPosition - 1);
+                this.full = true;
             }
-
-            this.beforeRender.setText(null);
-            this.beforeRenderValue = null;
         });
-
-        this.beforeCaret = new Label("", isBold);
-        this.beforeCaret.setVisible(false);
-        this.beforeCaret.widthProperty().addListener((obs, oldWidth, newWidth) -> {
-            this.caret.setTranslateX(this.beforeCaret.getWidth());
-        });
-
-        this.getChildren().addAll(this.container, this.beforeRender, this.beforeCaret, this.caret);
     }
 
-    public void update() {
-        if (Movie.getInstance().getCurrentTextField() == this) {
-            this.getParent().setCursor(Cursor.TEXT);
+    private void moveCaret(int caretPosition) {
+        this.caretPosition = caretPosition;
 
-            if (this.caretAnimation == 0) {
-                this.caret.setVisible(true);
-            }
-            if (this.caretAnimation == 10) {
-                this.caret.setVisible(false);
-            }
-            if (this.caretAnimation == 20) {
-                this.caretAnimation = -1;
-            }
-
-            this.caretAnimation++;
+        if (this.getChildren().size() == 0 || caretPosition - 1 == -1) {
+            this.parent.moveCaret(0, 0);
         }
         else {
-            this.getParent().setCursor(Cursor.DEFAULT);
-            this.caret.setVisible(false);
+            var character = this.getChildren().get(caretPosition - 1);
+            var x = character.getBoundsInParent().getMaxX();
+            var y = character.getBoundsInParent().getMinY();
+
+            if (y < 0) {
+                var parent = this.parent;
+                var listener = new ChangeListener<Bounds>() {
+                    @Override
+                    public void changed(ObservableValue<? extends Bounds> observable, Bounds oldValue, Bounds newValue) {
+                        var x = newValue.getMaxX();
+                        var y = newValue.getMinY();
+        
+                        System.out.println("caretPosition = " + caretPosition);
+                        System.out.println("character = " + ((Text)character).getText());
+                        System.out.println("x = " + x);
+                        System.out.println("y = " + y);
+                        System.out.println("\n");
+
+                        if (y < 0) {
+                            return;
+                        }
+
+                        parent.moveCaret(x, y);
+                        character.boundsInParentProperty().removeListener(this);
+                    }
+                };
+
+                character.boundsInParentProperty().addListener(listener);
+            }
+            else {
+                System.out.println("caretPosition = " + caretPosition);
+                System.out.println("character = " + ((Text)character).getText());
+                System.out.println("x = " + x);
+                System.out.println("y = " + y);
+                System.out.println("\n");
+
+                this.parent.moveCaret(x, y);
+            }
+        }
+    }
+
+    public void setWidth(int width) {
+        this.setMaxWidth(width);
+    }
+
+    public void setText(String text) {
+        this.text = text;
+        this.renderText();
+    }
+
+    private void renderText() {
+        if (this.text != null) {
+            var texts = new ArrayList<Text>();
+
+            for (var c : this.text.toCharArray()) {
+                var t = new Text(this.isPassword ? "*" : String.valueOf(c));
+                t.setFont(this.font);
+                t.setFill(this.color);
+                texts.add(t);
+            }
+
+            this.getChildren().setAll(texts);
+        }
+        else {
+            this.getChildren().clear();
         }
     }
 
     public String getText() {
-        System.out.println(this.value);
-        return this.value;
+        return this.text;
     }
 
-    public int getTextWidth() {
-        return (int)Math.round(this.text.getWidth());
-    }
-
-    public void setText(String text) {
-        this.value = text;
-        this.text.setText(text);
-        this.updateCaret(0);
-    }
-
-    public void setSize(int width, int height, int left, int right, int topBottom) {
-        this.setPrefSize(width, height);
-
-        this.right = right;
-
-        this.container.setLayoutX(left);
-        this.container.setLayoutY(topBottom);
-        this.container.setMaxSize(width - left - right, height - (topBottom * 2));
-        this.container.setClip(new Rectangle(width - left - right, height - (topBottom * 2) + 2));
-
-        this.caret.setLayoutX(left);
-        this.caret.setTranslateY(topBottom);
-    }
-
-    public void setOnWidth(Runnable runnable) {
-        this.text.widthProperty().addListener((obs, oldWidth, newWidth) -> {
-            runnable.run();
-        });
+    public void setOnWidth(ChangeListener<Number> listener) {
+        this.widthProperty().addListener(listener);
     }
 
     public void sendKeyPressed(KeyEvent e) {
         switch(e.getCode()) {
             case BACK_SPACE:
                 if (this.caretPosition != 0) {
-                    this.value = this.value.substring(0, this.caretPosition - 1) + this.value.substring(this.caretPosition);
-
-                    if (this.isPassword) {
-                        this.text.setText(this.text.getText().substring(1));
-                    }
-                    else {
-                        this.text.setText(this.value);
-                    }
-                    this.updateCaret(false);
+                    this.text = this.text.substring(0, this.caretPosition - 1) + this.text.substring(this.caretPosition);
+                    this.renderText();
+                    this.moveCaret(this.caretPosition - 1);
+                    this.full = false;
                 }
                 break;
             case DELETE:
-                if (this.caretPosition != this.value.length()) {
-                    this.value = this.value.substring(0, this.caretPosition) + this.value.substring(this.caretPosition + 1);
-
-                    if (this.isPassword) {
-                        this.text.setText(this.text.getText().substring(1));
-                    }
-                    else {
-                        this.text.setText(this.value);
-                    }
+                if (this.caretPosition != this.text.length()) {
+                    this.text = this.text.substring(0, this.caretPosition) + this.text.substring(this.caretPosition + 1);
+                    this.renderText();
+                    this.full = false;
                 }
                 break;
             case LEFT:
-                this.updateCaret(false);
+                if (this.caretPosition != 0) {
+                    this.moveCaret(this.caretPosition - 1);
+                }
                 break;
             case RIGHT:
-                this.updateCaret(true);
+                if (this.caretPosition < this.text.length()) {
+                    this.moveCaret(this.caretPosition + 1);
+                }
                 break;
             case HOME:
-                this.updateCaret(0);
+                this.moveCaret(0);
                 break;
             case END:
-                this.updateCaret(this.value.length());
+                this.moveCaret(this.text.length());
                 break;
             default:
                 break;
@@ -169,29 +179,10 @@ public class TextField extends Pane {
     }
 
     public void sendKeyTyped(KeyEvent e) {
-        if (volter.contains(e.getCharacter())) {
-            this.beforeRenderValue = this.value.substring(0, this.caretPosition) + e.getCharacter() + this.value.substring(this.caretPosition);
-            if (this.isPassword) {
-                this.beforeRender.setText(this.text.getText() + "*");
-            }
-            else {
-                this.beforeRender.setText(this.value.substring(0, this.caretPosition) + e.getCharacter() + this.value.substring(this.caretPosition));
-            }
+        if (volter.contains(e.getCharacter()) && !this.full) {
+            this.text = this.text.substring(0, this.caretPosition) + e.getCharacter() + this.text.substring(this.caretPosition);
+            this.renderText();
+            this.moveCaret(this.caretPosition + 1);
         }
-    }
-
-    private void updateCaret(Boolean increment) {
-        if ((increment && this.caretPosition == this.value.length()) || (!increment && this.caretPosition == 0)) {
-            return;
-        }
-
-        this.caretPosition = increment ? this.caretPosition + 1 : this.caretPosition - 1;
-        this.beforeCaret.setText(this.text.getText().substring(0, this.caretPosition));
-    }
-
-    private void updateCaret(int position) {
-
-        this.caretPosition = position;
-        this.beforeCaret.setText(this.text.getText().substring(0, this.caretPosition));
     }
 }
