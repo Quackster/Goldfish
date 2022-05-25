@@ -9,8 +9,9 @@ import com.classichabbo.goldfish.client.views.View;
 import com.classichabbo.goldfish.client.views.types.alerts.Alert;
 import com.classichabbo.goldfish.client.views.types.error.ErrorWindow;
 import com.classichabbo.goldfish.client.views.types.widgets.navigator.NavigatorView;
-import com.classichabbo.goldfish.util.DimensionUtil;
 import com.classichabbo.goldfish.networking.Connection;
+import com.classichabbo.goldfish.util.DimensionUtil;
+import com.classichabbo.goldfish.networking.netty.NettyClientConnection;
 import javafx.scene.Cursor;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Background;
@@ -59,7 +60,7 @@ public class EntryToolbar extends View {
         var mottoLabel = new Label(userObj.getMotto(), "#FFFFFF");
         mottoLabel.setLayoutX(53);
         mottoLabel.setLayoutY(20);
-        
+
         var updateIdLabel = new Label("Update My Habbo Id >>", "#FFFFFF");
         updateIdLabel.setLayoutX(53);
         updateIdLabel.setLayoutY(32);
@@ -80,40 +81,51 @@ public class EntryToolbar extends View {
         var clubButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/interfaces/entry_toolbar/club.png"));
         clubButton.setLayoutX(245);
         clubButton.setOnMouseClicked(e -> Movie.getInstance().createObject(new Alert("clubButton clicked")));
-        
+
         this.chatButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/interfaces/entry_toolbar/chat.png"));
         this.chatButton.setOnMouseClicked(e -> Movie.getInstance().createObject(new Alert("chatButton clicked")));
-        
+
         this.friendsButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/interfaces/entry_toolbar/friends.png"));
         this.friendsButton.setOnMouseClicked(e -> Movie.getInstance().createObject(new Alert("friendsButton clicked")));
-        
+
         this.navigatorButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/interfaces/entry_toolbar/navigator.png"));
         this.navigatorButton.setOnMouseClicked(e -> Movie.getInstance().getViews().stream().filter(x -> x instanceof NavigatorView).findFirst().ifPresent(x -> {
             x.toggleVisibility();
             x.toFront();
         }));
-        
+
         this.eventsButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/interfaces/entry_toolbar/events.png"));
         this.eventsButton.setOnMouseClicked(e -> Movie.getInstance().createObject(new Alert("eventsButton clicked")));
-        
+
         this.catalogueButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/interfaces/entry_toolbar/catalogue.png"));
         this.catalogueButton.setOnMouseClicked(e -> Movie.getInstance().createObject(new Alert("catalogueButton clicked")));
-        
+
         this.gamesButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/interfaces/entry_toolbar/games.png"));
         this.gamesButton.setOnMouseClicked(e -> Movie.getInstance().createObject(new Alert("gamesButton clicked")));
-        
+
         this.helpButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/interfaces/entry_toolbar/help.png"));
         this.helpButton.setOnMouseClicked(e -> Movie.getInstance().createObject(new Alert("helpButton clicked")));
-        
+
         this.getChildren().addAll(userHead, userLabel, mottoLabel, updateIdLabel, clubTitleLabel, clubDescLabel);
         this.getChildren().addAll(clubButton, chatButton, friendsButton, navigatorButton, eventsButton, catalogueButton, gamesButton, helpButton);
         this.toFront();
-
-        Movie.getInstance().getGameScheduler().receiveUpdate(this);
+        this.registerUpdate();
     }
 
     @Override
     public void stop() {
+        this.removeUpdate();
+    }
+
+    @Override
+    public void registerUpdate() {
+        // Queue to receive
+        Movie.getInstance().getGameScheduler().receiveUpdate(this);
+    }
+
+    @Override
+    public void removeUpdate() {
+        // Remove from update queue
         Movie.getInstance().getGameScheduler().removeUpdate(this);
     }
 

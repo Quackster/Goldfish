@@ -99,13 +99,24 @@ public class NavigatorView extends Widget {
         this.setLocation();
         this.setPage(NavigatorPage.PUBLIC);
 
-        Movie.getInstance().getInterfaceScheduler().receiveUpdate(this);
+        this.registerUpdate();
     }
 
     @Override
     public void stop() {
-        super.update();
+        super.stop();
+        this.removeUpdate();
+    }
 
+    @Override
+    public void registerUpdate() {
+        // Queue to receive
+        Movie.getInstance().getInterfaceScheduler().receiveUpdate(this);
+    }
+
+    @Override
+    public void removeUpdate() {
+        // Remove from update queue
         Movie.getInstance().getInterfaceScheduler().removeUpdate(this);
     }
 

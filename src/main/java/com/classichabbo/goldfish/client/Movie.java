@@ -15,12 +15,8 @@ import com.classichabbo.goldfish.client.views.types.toolbars.RoomToolbar;
 import com.classichabbo.goldfish.client.views.types.widgets.Widget;
 import com.classichabbo.goldfish.client.views.types.widgets.navigator.NavigatorView;
 import com.classichabbo.goldfish.util.DimensionUtil;
-import com.classichabbo.goldfish.networking.Connection;
-import com.classichabbo.goldfish.networking.wrappers.messages.MessageHandler;
-import com.classichabbo.goldfish.networking.wrappers.messages.types.MessageCommand;
-import com.classichabbo.goldfish.networking.wrappers.messages.types.MessageListener;
+import com.classichabbo.goldfish.networking.netty.NettyClientConnection;
 
-import com.classichabbo.goldfish.networking.wrappers.messages.MessageRequest;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -34,7 +30,6 @@ import javafx.stage.Stage;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -45,31 +40,14 @@ public class Movie extends Application {
     private GraphicsScheduler gameScheduler;
     private InterfaceScheduler interfaceScheduler;
 
-    //private final Map<VisualiserType, Visualiser> visualisers;
     private final List<View> views;
-
-    //private Visualiser currentVisualiser;
-
-    private List<MessageListener> listeners;
-    private List<MessageCommand> commands;
 
     private Pane pane;
     private Scene mainScene;
     private TextField currentTextField;
 
     public Movie() {
-        /*this.visualisers = new ConcurrentHashMap<>();
-        this.visualisers.put(VisualiserType.LOADER, new LoaderVisualiser());
-        this.visualisers.put(VisualiserType.HOTEL_VIEW, new EntryVisualiser());
-        this.visualisers.put(VisualiserType.ROOM, new RoomVisualiser());*/
-
-        this.listeners = new CopyOnWriteArrayList<>();
-        this.commands = new CopyOnWriteArrayList<>();
         this.views = new CopyOnWriteArrayList<>();
-    }
-
-    public static void main(String[] args) {
-        Application.launch();
     }
 
     @Override
@@ -130,7 +108,7 @@ public class Movie extends Application {
         this.stopGameScheduler();
         this.stopInterfaceScheduler();
 
-        Connection.getInstance().dispose();
+        NettyClientConnection.getInstance().dispose();
         System.exit(0);
     }
 
@@ -216,45 +194,37 @@ public class Movie extends Application {
        // this.printViews();
     }
 
+    /**
+     * Hides an object, the same way the official client does *WITHOUT* affecting view order.
+     *
+     * Will unregister it from the game loops too - assuming they exist.
+     */
+    public void hideObject(View view) {
+        Platform.runLater(() -> {
+            view.setVisible(false);
+            view.removeUpdate();
+        });
+    }
+
+    /**
+     * Shows an object, the same way the official client does *WITHOUT* affecting view order.
+     *
+     * Will register back to the game loops too - assuming they need to be within the overrided View function.
+     */
+    public void showObject(View view) {
+        Platform.runLater(() -> {
+            view.registerUpdate();
+            view.setVisible(true);
+        });
+    }
+
+
     private void printViews() {
         this.views.forEach(x -> {
             System.out.println(x.getClass().getName());
         });
 
         System.out.println("------------");
-    }
-
-    /**
-     * Register listener handler for views.
-     */
-    public void registerListeners(MessageHandler messageHandler, HashMap<Integer, MessageRequest> listeners) {
-        for (var x : listeners.entrySet()) {
-            this.listeners.add(new MessageListener(messageHandler.getClass(), x.getKey(), x.getValue()));
-        }
-    }
-
-    /**
-     * Unregister listener handler for views.
-     */
-    public void unregisterListeners(MessageHandler messageHandler, HashMap<Integer, MessageRequest> listeners) {
-        listeners.forEach((key, value) -> this.listeners.removeIf(message ->
-                message.getHandlerClass() == messageHandler.getClass() && message.getHeader() == key.intValue()));
-    }
-
-    /**
-     * Register command handler for views.
-     */
-    public void registerCommands(MessageHandler messageHandler, HashMap<String, Integer> listeners) {
-        for (var x : listeners.entrySet()) {
-            this.commands.add(new MessageCommand(messageHandler.getClass(), x.getValue(), x.getKey()));
-        }
-    }
-    /**
-     * Unegister command handler for views.
-     */
-    public void unregisterCommands(MessageHandler messageHandler, HashMap<String, Integer> commands) {
-        commands.forEach((key, value) -> this.commands.removeIf(message ->
-                message.getHandlerClass() == messageHandler.getClass() && message.getHeader() == value.intValue()));
     }
 
     /**
@@ -306,25 +276,27 @@ public class Movie extends Application {
         }
 
         Platform.runLater(() -> {
-            var roomToolbar = Movie.getInstance().getViewByClass(RoomToolbar.class);
+            if (Movie.getInstance().isViewActive(EntryView.class)) {
+                final var entryView = this.getViewByClass(EntryView.class);
+                final var roomView = this.getViewByClass(RoomView.class);
+                final var roomToolbar = this.getViewByClass(RoomToolbar.class);
 
-            if (roomToolbar != null) {
-                Movie.getInstance().removeObject(roomToolbar);
-            }
+                if (roomToolbar != null) {
+                    this.removeObject(roomToolbar);
+                }
 
-            var roomView = Movie.getInstance().getViewByClass(RoomView.class);
+                if (roomView != null) {
+                    final RoomTransition roomTransition = new RoomTransition();
 
-            if (roomView != null) {
-                final RoomTransition roomTransition = new RoomTransition();
+                    roomTransition.setRunAfterFinished(() -> {
+                        entryView.setRunAfterOpening(() -> entryView.getComponent().entryViewResume());
+                        this.removeObject(roomTransition);
+                        this.showObject(entryView);
+                    });
 
-                roomTransition.setRunAfterFinished(() -> {
-                    var entryView = new EntryView();
-                    entryView.setRunAfterOpening(() -> entryView.getComponent().entryViewResume());
-                    Movie.getInstance().createObject(entryView);
-                });
-
-                Movie.getInstance().removeObject(roomView);
-                Movie.getInstance().createObject(roomTransition);
+                    this.removeObject(roomView);
+                    this.createObject(roomTransition);
+                }
             }
         });
     }
@@ -337,35 +309,34 @@ public class Movie extends Application {
             // TODO Avery move this where you like but needs to send back password result
             // If you're not happy with this just remove the if / else if and the password parameter :)
             if (password != null && password.equals("password")) {
-                Movie.getInstance().getViewByClass(NavigatorView.class).sendPasswordResult(true);
+                this.getViewByClass(NavigatorView.class).sendPasswordResult(true);
             }
             else if (password != null) {
-                Movie.getInstance().getViewByClass(NavigatorView.class).sendPasswordResult(false);
+                this.getViewByClass(NavigatorView.class).sendPasswordResult(false);
                 return;
             }
 
             if (Movie.getInstance().isViewActive(EntryView.class)) {
+                var entryView = Movie.getInstance().getViewByClass(EntryView.class);
                 var entryToolbar = Movie.getInstance().getViewByClass(EntryToolbar.class);
 
                 if (entryToolbar != null) {
-                    Movie.getInstance().removeObject(entryToolbar);
+                    this.removeObject(entryToolbar);
                 }
 
-                var entryView = Movie.getInstance().getViewByClass(EntryView.class);
-
-                entryView.transitionTo(() -> {
+                entryView.setRunAfterClosing(() -> {
                     final RoomTransition roomTransition = new RoomTransition();
 
                     roomTransition.setRunAfterFinished(() -> {
-                        Movie.getInstance().createObject(new RoomView());
-                        Movie.getInstance().removeObject(roomTransition);
+                        this.createObject(new RoomView());
+                        this.removeObject(roomTransition);
                     });
 
-                    Movie.getInstance().createObject(roomTransition);
-                    Movie.getInstance().removeObject(entryView);
+                    this.createObject(roomTransition);
+                    this.hideObject(entryView);
                 });
 
-                Movie.getInstance().hideWidgets();
+                this.hideWidgets();
             }
         });
     }
@@ -442,15 +413,4 @@ public class Movie extends Application {
         return pane;
     }
 
-    public Scene getMainScene() {
-        return mainScene;
-    }
-
-    public List<MessageListener> getListeners() {
-        return listeners;
-    }
-
-    public List<MessageCommand> getCommands() {
-        return commands;
-    }
 }

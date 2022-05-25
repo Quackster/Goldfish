@@ -27,12 +27,25 @@ public class RoomTransition extends View {
         this.getChildren().add(this.blackBackground);
 
         this.timer = System.currentTimeMillis() + delaySeconds;
-        Movie.getInstance().getInterfaceScheduler().receiveUpdate(this);
+        this.registerUpdate();
     }
 
     @Override
     public void stop() {
-        Movie.getInstance().getInterfaceScheduler().removeUpdate(this);
+        super.stop();
+        this.removeUpdate();
+    }
+
+    @Override
+    public void registerUpdate() {
+        // Queue to receive
+        Movie.getInstance().getGameScheduler().receiveUpdate(this);
+    }
+
+    @Override
+    public void removeUpdate() {
+        // Remove from update queue
+        Movie.getInstance().getGameScheduler().removeUpdate(this);
     }
 
     @Override

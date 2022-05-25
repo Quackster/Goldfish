@@ -10,7 +10,7 @@ import com.classichabbo.goldfish.client.views.View;
 import com.classichabbo.goldfish.client.views.types.entry.EntryView;
 import com.classichabbo.goldfish.client.views.types.error.ErrorWindow;
 import com.classichabbo.goldfish.util.DimensionUtil;
-import com.classichabbo.goldfish.networking.Connection;
+import com.classichabbo.goldfish.networking.netty.NettyClientConnection;
 import javafx.application.Platform;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
@@ -91,11 +91,24 @@ public class LoadingView extends View {
 
         this.loaderBar.setPickOnBounds(false);
 
-        Movie.getInstance().getInterfaceScheduler().receiveUpdate(this);
+        this.registerUpdate();
     }
 
     @Override
     public void stop() {
+        super.stop();
+        this.removeUpdate();
+    }
+
+    @Override
+    public void registerUpdate() {
+        // Queue to receive
+        Movie.getInstance().getInterfaceScheduler().receiveUpdate(this);
+    }
+
+    @Override
+    public void removeUpdate() {
+        // Remove from update queue
         Movie.getInstance().getInterfaceScheduler().removeUpdate(this);
     }
 
@@ -236,12 +249,12 @@ public class LoadingView extends View {
             // Connect server
             if (this.loaderSteps.contains("connect_server")) {
                 if (this.loaderStepsFinished.contains("load_external_texts")) {
-                    if (Connection.getInstance().isConnected() ||
-                            Connection.getInstance().getConnectionAttempts().get() >= VariablesManager.getInstance().getInt("connection.max.attempts", 5)) {
+                    if (NettyClientConnection.getInstance().isConnected() ||
+                            NettyClientConnection.getInstance().getConnectionAttempts().get() >= VariablesManager.getInstance().getInt("connection.max.attempts", 5)) {
                         this.loaderSteps.remove("connect_server");
                         this.loaderStepsFinished.add("connect_server");
 
-                        if (Connection.getInstance().isConnected()) {
+                        if (NettyClientConnection.getInstance().isConnected()) {
                             this.progressLoader(10);
                         } else {
                             Movie.getInstance().createObject(new ErrorWindow(
@@ -254,8 +267,8 @@ public class LoadingView extends View {
                         return;
                     }
 
-                    if (!Connection.getInstance().isConnected() &&
-                            !Connection.getInstance().isConnecting()) {
+                    if (!NettyClientConnection.getInstance().isConnected() &&
+                            !NettyClientConnection.getInstance().isConnecting()) {
                         this.component.connectServer();
                         return;
                     }

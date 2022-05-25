@@ -22,6 +22,8 @@ public class View extends Pane implements GameUpdate {
 
     public void start() { }
     public void stop() { }
+    public void registerUpdate() { }
+    public void removeUpdate() { }
     public void update() { }
     public void remove() {
         Movie.getInstance().removeObject(this);

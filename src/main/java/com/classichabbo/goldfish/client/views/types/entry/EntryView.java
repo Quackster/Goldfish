@@ -49,7 +49,7 @@ public class EntryView extends View {
     public boolean queueOpenView = false;
     public boolean queueCloseView = false;
     private boolean queueAnimateSign = false;
-    private Runnable transitionTo;
+    private Runnable runAfterClosing;
     private Runnable runAfterOpening;
 
     public EntryView() {
@@ -89,8 +89,6 @@ public class EntryView extends View {
         this.sun = new ImageView();
         this.sun.setImage(new Image(VariablesManager.getInstance().getString("hotel.view.image.sun")));
         this.sun.setX(DimensionUtil.getCenterCoords(this.sun.getImage().getWidth(), this.sun.getImage().getHeight()).getX());
-
-        this.pViewOpenTime = System.currentTimeMillis() + (MAX_VIEW_TIME * 2);
         this.bottomReveal.setY(Movie.getInstance().getPrimaryStage().getHeight() / 2);
 
         this.stretchBars();
@@ -140,12 +138,24 @@ public class EntryView extends View {
         // Always make this the backdrop
         this.toBack();
 
+        // Register to update
+        this.registerUpdate();
+    }
+
+    @Override
+    public void stop() {
+        this.removeUpdate();
+    }
+
+    @Override
+    public void registerUpdate() {
         // Queue to receive
         Movie.getInstance().getGameScheduler().receiveUpdate(this);
     }
 
     @Override
-    public void stop() {
+    public void removeUpdate() {
+        // Remove from update queue
         Movie.getInstance().getGameScheduler().removeUpdate(this);
     }
 
@@ -312,11 +322,21 @@ public class EntryView extends View {
         }
     }
 
-    public void transitionTo(Runnable run) {
+    public void setRunAfterClosing(Runnable run) {
         this.pViewCloseTime = System.currentTimeMillis() + (MAX_VIEW_TIME * 2);
-        this.transitionTo = run;
+        this.runAfterClosing = run;
         this.queueCloseView = true;
 
+    }
+
+    /**
+     * Sets the callback after the entry has finished opening
+     * @param runAfterOpening
+     */
+    public void setRunAfterOpening(Runnable runAfterOpening) {
+        this.pViewOpenTime = System.currentTimeMillis() + (MAX_VIEW_TIME * 2);
+        this.runAfterOpening = runAfterOpening;
+        this.queueOpenView = true;
     }
 
     /**
@@ -333,8 +353,8 @@ public class EntryView extends View {
      * When the reveal task is finished, set these to invisible
      */
     private void closeRevealTaskFinished() {
-        this.transitionTo.run();
-        this.transitionTo = null;
+        this.runAfterClosing.run();
+        this.runAfterClosing = null;
 
     }
 
@@ -362,13 +382,5 @@ public class EntryView extends View {
     @Override
     public EntryHandler getHandler() {
         return handler;
-    }
-
-    /**
-     * Sets the callback after the entry has finished opening
-     * @param runAfterOpening
-     */
-    public void setRunAfterOpening(Runnable runAfterOpening) {
-        this.runAfterOpening = runAfterOpening;
     }
 }

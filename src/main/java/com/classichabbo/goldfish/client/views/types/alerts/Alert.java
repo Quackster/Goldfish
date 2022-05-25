@@ -41,13 +41,24 @@ public class Alert extends Dialog {
             System.out.println("alert finished");
         });
 
-        Movie.getInstance().getInterfaceScheduler().receiveUpdate(this);
+        this.registerUpdate();
     }
 
     @Override
     public void stop() {
         super.stop();
+        this.removeUpdate();
+    }
 
+    @Override
+    public void registerUpdate() {
+        // Queue to receive
+        Movie.getInstance().getInterfaceScheduler().receiveUpdate(this);
+    }
+
+    @Override
+    public void removeUpdate() {
+        // Remove from update queue
         Movie.getInstance().getInterfaceScheduler().removeUpdate(this);
     }
 
