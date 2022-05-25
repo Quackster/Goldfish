@@ -1,5 +1,7 @@
 package com.classichabbo.goldfish.client.views.controls;
 
+import com.classichabbo.goldfish.client.Movie;
+
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderStroke;
 import javafx.scene.layout.BorderStrokeStyle;
@@ -20,9 +22,9 @@ public class TextFieldSquare extends Pane {
         this.text = new TextField(text, true, true);
         this.text.setPrefHeight(26);
         this.text.setOnWidth(() -> this.text.setLayoutX((this.background.getWidth() / 2) - (this.text.getTextWidth() / 2)));
-        //this.text.setBackground(new Background(new BackgroundFill(Color.RED, null, null)));
 
         this.getChildren().addAll(this.background, this.text);
+        this.text.setOnMouseClicked(e -> Movie.getInstance().setCurrentTextField(this.text));
     }
 
     public void setText(String text) {
