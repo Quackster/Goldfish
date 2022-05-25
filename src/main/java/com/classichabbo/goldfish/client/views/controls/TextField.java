@@ -65,12 +65,11 @@ public class TextField extends Pane {
         });
 
         this.getChildren().addAll(this.container, this.beforeRender, this.beforeCaret, this.caret);
-        this.setOnMouseClicked(e -> Movie.getInstance().setCurrentTextField(this));
     }
 
     public void update() {
         if (Movie.getInstance().getCurrentTextField() == this) {
-            this.setCursor(Cursor.TEXT);
+            this.getParent().setCursor(Cursor.TEXT);
 
             if (this.caretAnimation == 0) {
                 this.caret.setVisible(true);
@@ -85,7 +84,7 @@ public class TextField extends Pane {
             this.caretAnimation++;
         }
         else {
-            this.setCursor(Cursor.DEFAULT);
+            this.getParent().setCursor(Cursor.DEFAULT);
             this.caret.setVisible(false);
         }
     }
@@ -102,8 +101,7 @@ public class TextField extends Pane {
     public void setText(String text) {
         this.value = text;
         this.text.setText(text);
-        this.caretPosition = 0;
-        this.beforeCaret.setText("");
+        this.updateCaret(0);
     }
 
     public void setSize(int width, int height, int left, int right, int topBottom) {
@@ -159,6 +157,12 @@ public class TextField extends Pane {
             case RIGHT:
                 this.updateCaret(true);
                 break;
+            case HOME:
+                this.updateCaret(0);
+                break;
+            case END:
+                this.updateCaret(this.value.length());
+                break;
             default:
                 break;
         }
@@ -182,7 +186,12 @@ public class TextField extends Pane {
         }
 
         this.caretPosition = increment ? this.caretPosition + 1 : this.caretPosition - 1;
-        
+        this.beforeCaret.setText(this.text.getText().substring(0, this.caretPosition));
+    }
+
+    private void updateCaret(int position) {
+
+        this.caretPosition = position;
         this.beforeCaret.setText(this.text.getText().substring(0, this.caretPosition));
     }
 }

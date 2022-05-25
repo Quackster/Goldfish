@@ -225,7 +225,7 @@ public class NavigatorView extends Widget {
 
         this.searchCriteria = new TextFieldRound("");
         this.searchCriteria.setWidth(250);
-        this.searchCriteria.setLayoutY(13);
+        this.searchCriteria.setLayoutY(15);
         this.search.getChildren().add(this.searchCriteria);
 
         this.doSearchButton = new Button(TextsManager.getInstance().getString("nav_searchbutton"));
@@ -357,12 +357,12 @@ public class NavigatorView extends Widget {
         this.passwordPromptIsProtected.setLayoutY(187);
 
         this.passwordPromptField = new TextFieldSquare("");
-        this.passwordPromptField.setLayoutX(99);
+        this.passwordPromptField.setLayoutX(100);
         this.passwordPromptField.setLayoutY(207);
         this.passwordPromptField.setWidth(138);
 
         this.passwordPromptCancelButton = new Button(TextsManager.getInstance().getString("nav_cancel"));
-        this.passwordPromptCancelButton.setOnWidth(() -> this.passwordPromptCancelButton.setLayoutX(165 - this.passwordPromptCancelButton.getWidth()));
+        this.passwordPromptCancelButton.setOnWidth(() -> this.passwordPromptCancelButton.setLayoutX(166 - this.passwordPromptCancelButton.getWidth()));
         this.passwordPromptCancelButton.setLayoutY(256);
         this.passwordPromptCancelButton.setOnMouseClicked(e -> {
             this.setContent(this.content, this.padding, true);

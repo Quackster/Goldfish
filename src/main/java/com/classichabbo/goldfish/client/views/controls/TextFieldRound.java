@@ -1,5 +1,6 @@
 package com.classichabbo.goldfish.client.views.controls;
 
+import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
 
 import javafx.scene.layout.Background;
@@ -27,6 +28,7 @@ public class TextFieldRound extends HBox {
         right.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/controls/text_field/right.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
 
         this.getChildren().addAll(left, this.text, right);
+        this.text.setOnMouseClicked(e -> Movie.getInstance().setCurrentTextField(this.text));
     }
 
     public void setText(String text) {
