@@ -1,6 +1,6 @@
 package com.classichabbo.goldfish.networking.wrappers.messages.types;
 
-import com.classichabbo.goldfish.client.views.View;
+import com.classichabbo.goldfish.client.modules.View;
 import com.classichabbo.goldfish.networking.wrappers.messages.MessageHandler;
 import com.classichabbo.goldfish.networking.wrappers.messages.MessageRequest;
 

@@ -1,9 +1,8 @@
 package com.classichabbo.goldfish.networking.netty;
 
-import com.classichabbo.goldfish.client.Goldfish;
 import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.game.values.types.TextsManager;
-import com.classichabbo.goldfish.client.views.types.error.ErrorWindow;
+import com.classichabbo.goldfish.client.modules.types.error.ErrorWindow;
 import com.classichabbo.goldfish.networking.Connection;
 import com.classichabbo.goldfish.networking.wrappers.Request;
 import io.netty.channel.ChannelHandlerContext;

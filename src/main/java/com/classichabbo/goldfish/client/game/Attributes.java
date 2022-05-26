@@ -1,6 +1,6 @@
 package com.classichabbo.goldfish.client.game;
 
-import com.classichabbo.goldfish.client.game.club.HabboClubObject;
+import com.classichabbo.goldfish.client.game.entities.user.HabboClubObject;
 import com.classichabbo.goldfish.client.game.entities.user.UserObject;
 import io.netty.util.AttributeKey;
 

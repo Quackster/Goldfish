@@ -1,6 +1,5 @@
 package com.classichabbo.goldfish.networking;
 
-import com.classichabbo.goldfish.client.views.View;
 import com.classichabbo.goldfish.networking.netty.NettyClientConnection;
 import com.classichabbo.goldfish.networking.wrappers.messages.MessageHandler;
 import com.classichabbo.goldfish.networking.wrappers.messages.MessageRequest;

@@ -1,6 +1,5 @@
 package com.classichabbo.goldfish.networking.wrappers.messages.types;
 
-import com.classichabbo.goldfish.client.views.View;
 import com.classichabbo.goldfish.networking.wrappers.messages.MessageHandler;
 
 public class MessageCommand {
