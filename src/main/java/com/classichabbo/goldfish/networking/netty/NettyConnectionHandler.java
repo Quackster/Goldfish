@@ -34,7 +34,8 @@ public class NettyConnectionHandler extends SimpleChannelInboundHandler<Request>
     @Override
     public void channelRead0(ChannelHandlerContext ctx, Request message) {
         // this.channel = new ChannelConnection(ctx.channel()); - wtf is this? my fault anyways for putting that here :^) - Avery
-        System.out.println("[" + message.getHeaderId() + " / " + message.getHeader() + "] - " + message.getMessageBody());
+        if (!Connection.LISTENER_LOG_BLACKLIST.contains(message.getHeaderId()))
+            System.out.println("[" + message.getHeaderId() + " / " + message.getHeader() + "] - " + message.getMessageBody());
 
         var conn = Connection.get();
 

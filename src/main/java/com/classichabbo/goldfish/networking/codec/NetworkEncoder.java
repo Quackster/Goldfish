@@ -1,5 +1,6 @@
 package com.classichabbo.goldfish.networking.codec;
 
+import com.classichabbo.goldfish.networking.Connection;
 import com.classichabbo.goldfish.networking.encoding.Base64Encoding;
 import com.classichabbo.goldfish.networking.encoding.VL64Encoding;
 import com.classichabbo.goldfish.util.StringUtil;
@@ -27,9 +28,13 @@ public class NetworkEncoder extends MessageToMessageEncoder<Command> {
             }
         }
 
-
+        // Append message length at the end
         message.setBytes(1, Base64Encoding.encode(message.writerIndex() - 3, 2));
-        System.out.println("-> [" + command.getHeader() + "] " + message.toString(StringUtil.getCharset()));
+
+        if (!Connection.COMMAND_LOG_BLACKLIST.contains(command.getHeader())) {
+            System.out.println("-> [" + command.getHeader() + "] " + message.toString(StringUtil.getCharset()));
+        }
+
         out.add(message);
     }
 }

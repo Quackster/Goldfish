@@ -12,6 +12,7 @@ import io.netty.channel.Channel;
 import io.netty.util.DefaultAttributeMap;
 import javafx.application.Application;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -20,6 +21,9 @@ public class Connection extends DefaultAttributeMap {
     private Channel channel;
     private List<MessageListener> listeners;
     private List<MessageCommand> commands;
+
+    public static final List<Integer> LISTENER_LOG_BLACKLIST = List.of(50); // hide ping from logs
+    public static final List<Integer> COMMAND_LOG_BLACKLIST = List.of(196); // hide ping from logs
 
     public Connection() {
         this.listeners = new CopyOnWriteArrayList<>();
@@ -41,15 +45,6 @@ public class Connection extends DefaultAttributeMap {
 
         var header = messageCommand.getHeader();
         this.channel.writeAndFlush(new Command(header, data));
-    }
-
-    /**
-     * Main call of Java application
-     *
-     * @param args System arguments
-     */
-    public static void main(String[] args) {
-        Application.launch(Movie.class);
     }
 
     /**
