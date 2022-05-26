@@ -3,17 +3,17 @@ package com.classichabbo.goldfish.client;
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
 import com.classichabbo.goldfish.client.game.scheduler.types.GraphicsScheduler;
 import com.classichabbo.goldfish.client.game.scheduler.types.InterfaceScheduler;
-import com.classichabbo.goldfish.client.views.types.GoldfishView;
-import com.classichabbo.goldfish.client.views.View;
-import com.classichabbo.goldfish.client.views.controls.TextField;
-import com.classichabbo.goldfish.client.views.types.entry.EntryView;
-import com.classichabbo.goldfish.client.views.types.loader.LoadingView;
-import com.classichabbo.goldfish.client.views.types.room.RoomTransition;
-import com.classichabbo.goldfish.client.views.types.room.RoomView;
-import com.classichabbo.goldfish.client.views.types.toolbars.EntryToolbar;
-import com.classichabbo.goldfish.client.views.types.toolbars.RoomToolbar;
-import com.classichabbo.goldfish.client.views.types.widgets.Widget;
-import com.classichabbo.goldfish.client.views.types.widgets.navigator.NavigatorView;
+import com.classichabbo.goldfish.client.modules.types.GoldfishView;
+import com.classichabbo.goldfish.client.modules.View;
+import com.classichabbo.goldfish.client.modules.controls.TextField;
+import com.classichabbo.goldfish.client.modules.types.entry.EntryView;
+import com.classichabbo.goldfish.client.modules.types.loader.LoaderView;
+import com.classichabbo.goldfish.client.modules.types.room.RoomTransition;
+import com.classichabbo.goldfish.client.modules.types.room.RoomView;
+import com.classichabbo.goldfish.client.modules.types.toolbars.entry.EntryToolbarView;
+import com.classichabbo.goldfish.client.modules.types.toolbars.RoomToolbar;
+import com.classichabbo.goldfish.client.modules.types.widgets.Widget;
+import com.classichabbo.goldfish.client.modules.types.widgets.navigator.NavigatorView;
 import com.classichabbo.goldfish.util.DimensionUtil;
 import com.classichabbo.goldfish.networking.netty.NettyClientConnection;
 
@@ -97,7 +97,7 @@ public class Movie extends Application {
         primaryStage.show();
 
         this.createObject(new GoldfishView());
-        this.createObject(new LoadingView());
+        this.createObject(new LoaderView());
 
         //this.showVisualiser(VisualiserType.LOADER);
         // this.showVisualiser(VisualiserType.ROOM);
@@ -318,7 +318,7 @@ public class Movie extends Application {
 
             if (Movie.getInstance().isViewActive(EntryView.class)) {
                 var entryView = Movie.getInstance().getViewByClass(EntryView.class);
-                var entryToolbar = Movie.getInstance().getViewByClass(EntryToolbar.class);
+                var entryToolbar = Movie.getInstance().getViewByClass(EntryToolbarView.class);
 
                 if (entryToolbar != null) {
                     this.removeObject(entryToolbar);

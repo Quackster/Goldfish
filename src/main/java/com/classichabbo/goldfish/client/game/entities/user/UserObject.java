@@ -1,13 +1,11 @@
 package com.classichabbo.goldfish.client.game.entities.user;
 
-import io.netty.util.AttributeKey;
-
 public class UserObject {
     private int id;
     private String username;
     private String figure;
     private String gender;
-    private String motto;
+    private String mission;
 
     /*
     public UserObject(int id, String username, String figure, String gender, String motto) {
@@ -51,11 +49,11 @@ public class UserObject {
         this.gender = gender;
     }
 
-    public String getMotto() {
-        return motto;
+    public String getMission() {
+        return mission;
     }
 
-    public void setMotto(String motto) {
-        this.motto = motto;
+    public void setMission(String mission) {
+        this.mission = mission;
     }
 }
