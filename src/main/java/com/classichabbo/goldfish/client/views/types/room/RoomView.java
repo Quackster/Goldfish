@@ -1,8 +1,9 @@
 package com.classichabbo.goldfish.client.views.types.room;
 
+import com.classichabbo.goldfish.client.components.types.LoaderComponent;
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
 import com.classichabbo.goldfish.client.views.View;
-import com.classichabbo.goldfish.client.components.RoomViewComponent;
+import com.classichabbo.goldfish.client.components.types.RoomViewComponent;
 import com.classichabbo.goldfish.client.views.types.toolbars.RoomToolbar;
 
 import javafx.beans.value.ObservableValue;
@@ -120,10 +121,6 @@ public class RoomView extends View {
             this.draggedX = -1;
             this.draggedY = -1;
         }
-    }
-
-    public RoomViewComponent getComponent() {
-        return component;
     }
 
 }

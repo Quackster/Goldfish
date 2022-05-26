@@ -22,6 +22,7 @@ public class Goldfish {
     public static void main(String[] args) {
         Application.launch(Movie.class);
     }
+
     /**
      * Goldfish singleton
      */

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.classichabbo.goldfish.client.components.Component;
+import com.classichabbo.goldfish.client.components.types.LoaderComponent;
 import com.classichabbo.goldfish.client.game.scheduler.GameUpdate;
 import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.networking.wrappers.messages.MessageHandler;
@@ -30,6 +32,7 @@ public class View extends Pane implements GameUpdate {
     }
 
     public MessageHandler getHandler() { return null; }
+    public Component getComponent() { return null; }
 
     @Override
     public void toFront() {

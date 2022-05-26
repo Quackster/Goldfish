@@ -289,7 +289,7 @@ public class Movie extends Application {
                     final RoomTransition roomTransition = new RoomTransition();
 
                     roomTransition.setRunAfterFinished(() -> {
-                        entryView.setRunAfterOpening(() -> entryView.getComponent().entryViewResume());
+                        entryView.setRunAfterOpening(() -> entryView.getComponent().toHotelView());
                         this.removeObject(roomTransition);
                         this.showObject(entryView);
                     });

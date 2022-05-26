@@ -120,13 +120,13 @@ public class EntryToolbar extends View {
     @Override
     public void registerUpdate() {
         // Queue to receive
-        Movie.getInstance().getGameScheduler().receiveUpdate(this);
+        Movie.getInstance().getInterfaceScheduler().receiveUpdate(this);
     }
 
     @Override
     public void removeUpdate() {
         // Remove from update queue
-        Movie.getInstance().getGameScheduler().removeUpdate(this);
+        Movie.getInstance().getInterfaceScheduler().removeUpdate(this);
     }
 
     @Override

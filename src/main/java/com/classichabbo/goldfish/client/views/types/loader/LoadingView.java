@@ -1,7 +1,7 @@
 package com.classichabbo.goldfish.client.views.types.loader;
 
 import com.classichabbo.goldfish.client.Movie;
-import com.classichabbo.goldfish.client.components.LoaderComponent;
+import com.classichabbo.goldfish.client.components.types.LoaderComponent;
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
 import com.classichabbo.goldfish.client.game.values.types.PropertiesManager;
 import com.classichabbo.goldfish.client.game.values.types.VariablesManager;
@@ -141,10 +141,7 @@ public class LoadingView extends View {
             var entryView = Movie.getInstance().getViewByClass(EntryView.class);
 
             if (entryView != null) {
-                Platform.runLater(() -> {
-                    entryView.getComponent().tryLogin();
-                });
-
+                entryView.getComponent().tryLogin();
                 Movie.getInstance().removeObject(this);
             }
         }
@@ -302,6 +299,7 @@ public class LoadingView extends View {
         }
     }
 
+    @Override
     public LoaderComponent getComponent() {
         return component;
     }

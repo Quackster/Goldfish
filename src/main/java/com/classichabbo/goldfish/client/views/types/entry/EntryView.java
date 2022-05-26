@@ -1,7 +1,8 @@
 package com.classichabbo.goldfish.client.views.types.entry;
 
 import com.classichabbo.goldfish.client.Movie;
-import com.classichabbo.goldfish.client.components.EntryComponent;
+import com.classichabbo.goldfish.client.components.types.EntryComponent;
+import com.classichabbo.goldfish.client.components.types.LoaderComponent;
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
 import com.classichabbo.goldfish.client.game.scheduler.types.GraphicsScheduler;
 import com.classichabbo.goldfish.client.game.values.ValueType;
@@ -221,9 +222,20 @@ public class EntryView extends View {
             int initX = 0;
             int initY = ThreadLocalRandom.current().nextInt(0, (int) (DimensionUtil.getProgramHeight()*0.66));
 
-            this.component.addCloud("left", initX, initY);
+            this.addCloud("left", initX, initY);
             this.timeNextCloud = DateUtil.getCurrentTimeSeconds() + ThreadLocalRandom.current().nextInt(1, 10);
         }
+    }
+
+    /**
+     * Add cloud handler
+     */
+    public void addCloud(String direction, int initX, int initY) {
+        var cloud = new Cloud(this.getCloudTurnPoint(), "cloud_" + ThreadLocalRandom.current().nextInt(4), direction, initX, initY);
+        cloud.setViewOrder(this.CLOUD_Z_INDEX);
+
+        this.getClouds().add(cloud);
+        this.getChildren().add(cloud);
     }
 
     /**
@@ -374,7 +386,9 @@ public class EntryView extends View {
 
     /**
      * Entry component
+     * @return
      */
+    @Override
     public EntryComponent getComponent() {
         return component;
     }
