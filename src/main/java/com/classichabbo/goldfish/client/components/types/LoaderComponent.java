@@ -1,16 +1,16 @@
-package com.classichabbo.goldfish.client.components;
+package com.classichabbo.goldfish.client.components.types;
 
 import com.classichabbo.goldfish.client.Movie;
+import com.classichabbo.goldfish.client.components.Component;
 import com.classichabbo.goldfish.client.game.values.types.PropertiesManager;
 import com.classichabbo.goldfish.client.game.values.types.VariablesManager;
 import com.classichabbo.goldfish.client.game.values.types.TextsManager;
 import com.classichabbo.goldfish.client.views.types.GoldfishView;
+import com.classichabbo.goldfish.client.views.types.club.ClubView;
 import com.classichabbo.goldfish.client.views.types.entry.EntryView;
 import com.classichabbo.goldfish.client.views.types.loader.LoadingView;
 import com.classichabbo.goldfish.networking.netty.NettyClientConnection;
 import javafx.application.Platform;
-
-import java.awt.*;
 
 public class LoaderComponent extends Component {
     private long connectionTimer = 0;
@@ -96,7 +96,7 @@ public class LoaderComponent extends Component {
     }
 
     public void showHotel() {
-        Platform.runLater(() -> {
+        invoke(() -> {
             var global = Movie.getInstance().getViewByClass(GoldfishView.class);
             var loader = Movie.getInstance().getViewByClass(LoadingView.class);
 
