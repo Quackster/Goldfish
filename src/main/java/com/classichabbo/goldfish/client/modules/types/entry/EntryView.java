@@ -19,6 +19,7 @@ import javafx.scene.shape.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class EntryView extends View {
     private final EntryHandler handler;
@@ -41,6 +42,7 @@ public class EntryView extends View {
     private static int MAX_VIEW_TIME = 500;
     private long pViewOpenTime = 0;
     private long pViewCloseTime = 0;
+    private AtomicInteger requiredSteps;
 
     public static int CLOUD_Z_INDEX = 5000;
 
@@ -58,6 +60,7 @@ public class EntryView extends View {
 
     @Override
     public void start() {
+        this.requiredSteps = new AtomicInteger(3);
         this.cloudTurnPoint = VariablesManager.getInstance().getInt("hotel.view.cloud.turn.point", 330);
 
         this.topReveal = new Rectangle(1,1);
@@ -67,14 +70,24 @@ public class EntryView extends View {
         this.bottomReveal.setFill(Color.BLACK);
 
         this.topRight = new ImageView();
-        this.topRight.setImage(ResourceManager.getInstance().getWebImage(VariablesManager.getInstance().getString("hotel.view.image.top.right", "")));
-        this.topRight.setY(this.topRight.getImage().getHeight() * -1);
-
         this.bottomLeft = new ImageView();
-        this.bottomLeft.setImage(ResourceManager.getInstance().getWebImage(VariablesManager.getInstance().getString("hotel.view.image.bottom.left", "")));
-
         this.bottomRight = new ImageView();
-        this.bottomRight.setImage(ResourceManager.getInstance().getWebImage(VariablesManager.getInstance().getString("hotel.view.image.bottom.right", "")));
+
+        ResourceManager.getInstance().getWebImage(VariablesManager.getInstance().getString("hotel.view.image.top.right", ""), (x) -> {
+            this.topRight.setImage(x);
+            this.topRight.setY(this.topRight.getImage().getHeight() * -1);
+            this.requiredSteps.decrementAndGet();
+        });
+
+        ResourceManager.getInstance().getWebImage(VariablesManager.getInstance().getString("hotel.view.image.bottom.left", ""), (x) -> {
+            this.bottomLeft.setImage(x);
+            this.requiredSteps.decrementAndGet();
+        });
+
+        ResourceManager.getInstance().getWebImage(VariablesManager.getInstance().getString("hotel.view.image.bottom.right", ""), (x) -> {
+            this.bottomRight.setImage(x);
+            this.requiredSteps.decrementAndGet();
+        });
 
         this.stretchLeft = new Rectangle(1,1);//= new ImageView();
         this.stretchLeft.setFill((Color) VariablesManager.getInstance().getType("hotel.view.left.color", ValueType.COLOR_RGB, Color.rgb(117, 175, 203)));
@@ -161,6 +174,10 @@ public class EntryView extends View {
      * Update tick to resize the images and boxes necessary for responsiveness
      */
     public void update() {
+        if (this.requiredSteps.get() > 0) {
+            return; // images aren't downloaded yet
+        }
+
         if (this.queueOpenView) {
             this.openView();
         }

@@ -4,6 +4,7 @@ import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.game.Attributes;
 import com.classichabbo.goldfish.client.game.entities.user.HabboClubObject;
 import com.classichabbo.goldfish.client.game.entities.user.UserObject;
+import com.classichabbo.goldfish.client.game.values.types.TextsManager;
 import com.classichabbo.goldfish.client.modules.controls.ImageButton;
 import com.classichabbo.goldfish.client.modules.controls.Label;
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
@@ -17,6 +18,8 @@ import javafx.scene.Cursor;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.paint.Color;
+import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.image.Image;
 
 public class EntryToolbarView extends View {
     private final EntryToolbarComponent component;
@@ -31,6 +34,7 @@ public class EntryToolbarView extends View {
 
     private int scrollOffset;
     private boolean finishedScroll;
+    private boolean scrollReady = false;
 
     private Label club_bottombar_text1;
     private Label club_bottombar_text2;
@@ -46,6 +50,7 @@ public class EntryToolbarView extends View {
     public void start() {
         this.scrollOffset = 0;
         this.finishedScroll = false;
+        this.scrollReady = false;
 
         var userObj = Connection.get().attr(Attributes.USER_OBJECT).get();
 
@@ -57,8 +62,6 @@ public class EntryToolbarView extends View {
         this.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
 
         this.ownhabbo_icon_image = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/misc/blank.png"));
-        ownhabbo_icon_image.setLayoutX(Math.floor(65 / 2 - ownhabbo_icon_image.getImage().getWidth() / 2));
-        ownhabbo_icon_image.setLayoutY(Math.round(55 / 2 - ownhabbo_icon_image.getImage().getHeight() / 2));
         ownhabbo_icon_image.setCursor(Cursor.HAND);
         ownhabbo_icon_image.setOnMouseClicked(e -> Movie.getInstance().createObject(new Alert("userHead clicked")));
 
@@ -124,18 +127,11 @@ public class EntryToolbarView extends View {
 
         this.toFront();
         this.registerUpdate();
+
+        this.scrollReady = true;
     }
 
-
-    public void updateDetails(UserObject userObj) {
-
-    }
-
-    public void updateClubStatus(HabboClubObject habboClubObject) {
-
-    }
-
-    public void refreshTexts() {
+    private void refreshTexts() {
         var userObj = Connection.get().attr(Attributes.USER_OBJECT).get();
 
         if (userObj != null) {
@@ -146,6 +142,50 @@ public class EntryToolbarView extends View {
 
         if (userObj != null) {
             this.getComponent().updateClubStatus(habboClubObject);
+        }
+
+        this.scrollReady = true;
+    }
+
+    public void updateDetails(UserObject userObj) {
+        if (userObj == null) {
+            return;
+        }
+
+        ResourceManager.getInstance().getWebImage("https://cdn.classichabbo.com/habbo-imaging/avatarimage?figure=" + userObj.getFigure() + "&size=b&head=1&direction=3&head_direction=3&gesture=std", (image) -> {
+            this.ownhabbo_icon_image.setImage(image);
+            this.ownhabbo_icon_image.setLayoutX(Math.floor(65 / 2 - this.ownhabbo_icon_image.getImage().getWidth() / 2));
+            this.ownhabbo_icon_image.setLayoutY(Math.round(55 / 2 - this.ownhabbo_icon_image.getImage().getHeight() / 2));
+        });
+
+
+        //this.ownhabbo_icon_image.setImage(new Image("https://cdn.classichabbo.com/habbo-imaging/avatarimage?figure=" + userObj.getFigure() + "&size=b&head=1&direction=3&head_direction=3&gesture=std"));
+
+
+        this.ownhabbo_name_text.setText(userObj.getUsername());
+        this.ownhabbo_name_text.setText(userObj.getMission());
+    }
+
+    public void updateClubStatus(HabboClubObject tStatus) {
+        if (tStatus == null) {
+            return;
+        }
+
+        var tDays = tStatus.getDaysLeft() + (tStatus.getPrepaidPeriods() * 31);
+
+        if (tStatus.getPrepaidPeriods() < 0) {
+            this.club_bottombar_text1.setText(TextsManager.getInstance().getString("club_habbo.bottombar.text.member"));
+            this.club_bottombar_text2.setText(TextsManager.getInstance().getString("club_member"));
+        } else {
+            if (tDays == 0) {
+                this.club_bottombar_text1.setText(TextsManager.getInstance().getString("club_habbo.bottombar.text.notmember"));
+                this.club_bottombar_text2.setText(TextsManager.getInstance().getString("club_habbo.bottombar.link.notmember"));
+            } else {
+                var tStr = TextsManager.getInstance().getString("club_habbo.bottombar.link.member");
+                tStr = tStr.replace("%days%", String.valueOf(tDays));
+                this.club_bottombar_text1.setText(TextsManager.getInstance().getString("club_habbo.bottombar.text.member"));
+                this.club_bottombar_text2.setText(tStr);
+            }
         }
     }
 
@@ -168,6 +208,8 @@ public class EntryToolbarView extends View {
 
     @Override
     public void update() {
+        if (!this.scrollReady)
+            return;
         /*
         if (this.scrollOffset != 55) {
             this.scrollOffset += 5;

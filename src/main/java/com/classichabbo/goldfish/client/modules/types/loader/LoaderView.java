@@ -2,6 +2,7 @@ package com.classichabbo.goldfish.client.modules.types.loader;
 
 import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
+import com.classichabbo.goldfish.client.game.scheduler.SchedulerManager;
 import com.classichabbo.goldfish.client.game.values.types.PropertiesManager;
 import com.classichabbo.goldfish.client.game.values.types.VariablesManager;
 import com.classichabbo.goldfish.client.game.values.types.TextsManager;
@@ -136,6 +137,14 @@ public class LoaderView extends View {
             this.totalLoaderProgress++;
         }
 
+        if (this.loadingLogoImage.isVisible()) {
+            var entryView = Movie.getInstance().getViewByClass(EntryView.class);
+
+            if (entryView != null) {
+                this.loadingLogoImage.setVisible(false);
+            }
+        }
+
         if (finishedLoading) {
             var entryView = Movie.getInstance().getViewByClass(EntryView.class);
 
@@ -144,6 +153,8 @@ public class LoaderView extends View {
                 Movie.getInstance().removeObject(this);
             }
         }
+
+
         /*
         if (this.totalLoaderProgress == 50) {
             this.loadingLogoImage.setVisible(false);
@@ -175,10 +186,8 @@ public class LoaderView extends View {
             if (this.loaderSteps.contains("load_client_config")) {
                 if (this.component.getClientConfigTask() == null) {
                     this.component.setClientConfigTask(
-                            new Thread(() -> this.component.loadClientConfig())
+                            SchedulerManager.getInstance().asyncCallback(() -> this.component.loadClientConfig())
                     );
-
-                    this.component.getClientConfigTask().start();
                     return;
                 }
 
@@ -198,10 +207,9 @@ public class LoaderView extends View {
                 if (this.loaderStepsFinished.contains("load_client_config")) {
                     if (this.component.getExternalVariablesTask() == null) {
                         this.component.setExternalVariablesTask(
-                                new Thread(() -> this.component.loadExternalVariables())
+                                SchedulerManager.getInstance().asyncCallback(() -> this.component.loadExternalVariables())
                         );
 
-                        this.component.getExternalVariablesTask().start();
                         return;
                     }
 
@@ -222,10 +230,8 @@ public class LoaderView extends View {
                 if (this.loaderStepsFinished.contains("load_external_variables")) {
                     if (this.component.getExternalTextsTask() == null) {
                         this.component.setExternalTextsTask(
-                                new Thread(() -> this.component.loadExternalTexts())
+                                SchedulerManager.getInstance().asyncCallback(() -> this.component.loadExternalTexts())
                         );
-
-                        this.component.getExternalTextsTask().start();
                         return;
                     }
 

@@ -6,20 +6,15 @@ import java.util.concurrent.ScheduledExecutorService;
 
 public class SchedulerManager {
     private static SchedulerManager instance;
-    private final ScheduledExecutorService scheduledPool;
-    private final ExecutorService cachedPool;
 
     public SchedulerManager() {
-        this.scheduledPool =  Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
-        this.cachedPool =  Executors.newCachedThreadPool();
+
     }
 
-    public ScheduledExecutorService getScheduledPool() {
-        return scheduledPool;
-    }
-
-    public ExecutorService getCachedPool() {
-        return cachedPool;
+    public Thread asyncCallback(Runnable run) {
+        var thread = new Thread(run);
+        thread.start();
+        return thread;
     }
 
     public static SchedulerManager getInstance() {

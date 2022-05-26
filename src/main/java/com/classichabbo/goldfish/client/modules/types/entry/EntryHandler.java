@@ -2,9 +2,12 @@ package com.classichabbo.goldfish.client.modules.types.entry;
 
 import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.game.Attributes;
+import com.classichabbo.goldfish.client.game.entities.user.HabboClubObject;
 import com.classichabbo.goldfish.client.game.entities.user.UserObject;
 import com.classichabbo.goldfish.client.modules.types.alerts.Alert;
+import com.classichabbo.goldfish.client.modules.types.club.ClubView;
 import com.classichabbo.goldfish.client.modules.types.loader.LoaderView;
+import com.classichabbo.goldfish.client.modules.types.toolbars.entry.EntryToolbarView;
 import com.classichabbo.goldfish.networking.Connection;
 import com.classichabbo.goldfish.networking.wrappers.Request;
 import com.classichabbo.goldfish.networking.wrappers.messages.MessageHandler;
@@ -35,6 +38,11 @@ public class EntryHandler extends MessageHandler {
         if (loader != null) {
             loader.progressLoader(20);
         }
+
+        var entryToolbarView = Movie.getInstance().getViewByClass(EntryToolbarView.class);
+
+        if (entryToolbarView != null)
+            entryToolbarView.getComponent().updateDetails(userObj);
     }
 
     @Override

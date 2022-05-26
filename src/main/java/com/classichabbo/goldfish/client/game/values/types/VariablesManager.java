@@ -28,16 +28,6 @@ public class VariablesManager extends Values {
         readLines(resource);
         resource.close();
 
-        ImageView tmpImages = null;
-        tmpImages = new ImageView();
-        tmpImages.setImage(ResourceManager.getInstance().getWebImage(getString("hotel.view.image.top.right", "")));
-
-        tmpImages = new ImageView();
-        tmpImages.setImage(ResourceManager.getInstance().getWebImage(getString("hotel.view.image.bottom.left", "")));
-
-        tmpImages = new ImageView();
-        tmpImages.setImage(ResourceManager.getInstance().getWebImage(getString("hotel.view.image.bottom.right", "")));
-
         System.out.println(values.size() + " external variables loaded");
         this.setFinished(true);
     }

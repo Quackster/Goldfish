@@ -98,7 +98,6 @@ public class LoaderComponent extends Component {
             var loader = Movie.getInstance().getViewByClass(LoaderView.class);
 
             if (loader != null) {
-                loader.getLoadingLogoImage().setVisible(false);
                 loader.getLoaderBar().toFront();
 
                 var entryView = new EntryView();

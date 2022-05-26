@@ -3,6 +3,7 @@ package com.classichabbo.goldfish.client.game.resources;
 import javax.imageio.ImageIO;
 
 import com.classichabbo.goldfish.client.game.scheduler.SchedulerManager;
+import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import javafx.scene.text.Font;
@@ -14,6 +15,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 public class ResourceManager {
     private static ResourceManager instance;
@@ -34,25 +36,33 @@ public class ResourceManager {
     }
 
     public void loadFonts() {
-        SchedulerManager.getInstance().getCachedPool().submit(() -> {
-            try {
-                this.volter = javafx.scene.text.Font.loadFont(ResourceManager.getInstance().getResource("sprites/volter/volter.woff").openStream(), 9);
-                this.volterBold = javafx.scene.text.Font.loadFont(ResourceManager.getInstance().getResource("sprites/volter/volter_bold.woff").openStream(), 9);
-                this.volterLarge = javafx.scene.text.Font.loadFont(ResourceManager.getInstance().getResource("sprites/volter/volter.woff").openStream(), 18);
-                this.volterBoldLarge = Font.loadFont(ResourceManager.getInstance().getResource("sprites/volter/volter_bold.woff").openStream(), 18);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
+        try {
+            this.volter = javafx.scene.text.Font.loadFont(ResourceManager.getInstance().getResource("sprites/volter/volter.woff").openStream(), 9);
+            this.volterBold = javafx.scene.text.Font.loadFont(ResourceManager.getInstance().getResource("sprites/volter/volter_bold.woff").openStream(), 9);
+            this.volterLarge = javafx.scene.text.Font.loadFont(ResourceManager.getInstance().getResource("sprites/volter/volter.woff").openStream(), 18);
+            this.volterBoldLarge = Font.loadFont(ResourceManager.getInstance().getResource("sprites/volter/volter_bold.woff").openStream(), 18);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    public Image getWebImage(String httpUrl) {
+    public void getWebImage(String httpUrl, Consumer<Image> onCompletion) {
         if (this.webImages.containsKey(httpUrl)) {
-            return SwingFXUtils.toFXImage(this.webImages.get(httpUrl), null);
+            onCompletion.accept(SwingFXUtils.toFXImage(this.webImages.get(httpUrl), null));
         } else {
-            var fxImage = new Image(httpUrl);
-            this.webImages.put(httpUrl, SwingFXUtils.fromFXImage(fxImage, null));
-            return fxImage;
+            SchedulerManager.getInstance().asyncCallback(() -> {
+                try {
+                    URL url = new URL(httpUrl);
+                    var image = ImageIO.read(url);
+                    this.webImages.put(httpUrl, image);
+
+                    Platform.runLater(() -> {
+                        onCompletion.accept(SwingFXUtils.toFXImage(image, null));
+                    });
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
         }
     }
 

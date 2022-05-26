@@ -19,8 +19,12 @@ import com.classichabbo.goldfish.networking.netty.NettyClientConnection;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
@@ -32,6 +36,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Function;
 
 public class Movie extends Application {
     private static Movie instance;
@@ -80,6 +85,9 @@ public class Movie extends Application {
         this.pane.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
         this.mainScene = new Scene(this.pane, WIDTH, HEIGHT, Color.BLACK);
 
+        setupKeyboardEvents();
+        setupContextMenu();
+
         // Send the key events to the current text field
         this.mainScene.setOnKeyPressed(e -> {
             if (this.currentTextField != null) {
@@ -101,6 +109,45 @@ public class Movie extends Application {
 
         //this.showVisualiser(VisualiserType.LOADER);
         // this.showVisualiser(VisualiserType.ROOM);
+    }
+
+    private void setupContextMenu() {
+        Function<Boolean, String> alwaysOnTopText = (isAlwaysOnTop) -> {
+            return (isAlwaysOnTop ? Symbols.CROSS : Symbols.TICK) + " Always on top";
+        };
+
+
+        ContextMenu contextMenu = new ContextMenu();
+
+        MenuItem menuItem1 = new MenuItem("Take screenshot");
+        MenuItem menuItem2 = new MenuItem("Pause Client Ticks");
+        MenuItem menuItem3 = new MenuItem(alwaysOnTopText.apply(this.primaryStage.isAlwaysOnTop()));
+
+        menuItem1.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                // TODO: Take screenshot
+            }
+        });
+
+        menuItem3.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                boolean isAlwaysOnTop = !primaryStage.isAlwaysOnTop();
+                primaryStage.setAlwaysOnTop(isAlwaysOnTop);
+                menuItem2.setText(alwaysOnTopText.apply(isAlwaysOnTop));
+            }
+        });
+
+        contextMenu.getItems().add(menuItem1);
+        contextMenu.getItems().add(menuItem2);
+
+        this.mainScene.setOnContextMenuRequested(event -> {
+          contextMenu.show(this.mainScene.getWindow(), event.getScreenX(), event.getScreenY());
+        });
+
+    }
+
+    private void setupKeyboardEvents() {
+
     }
 
     @Override
