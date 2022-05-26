@@ -1,8 +1,9 @@
 package com.classichabbo.goldfish.client.handlers;
 
-import com.classichabbo.goldfish.client.Goldfish;
 import com.classichabbo.goldfish.client.Movie;
+import com.classichabbo.goldfish.client.game.Attributes;
 import com.classichabbo.goldfish.client.game.entities.user.UserObject;
+import com.classichabbo.goldfish.client.views.View;
 import com.classichabbo.goldfish.client.views.types.alerts.Alert;
 import com.classichabbo.goldfish.client.views.types.entry.EntryView;
 import com.classichabbo.goldfish.client.views.types.loader.LoadingView;
@@ -14,10 +15,8 @@ import com.classichabbo.goldfish.networking.wrappers.messages.MessageRequest;
 import java.util.HashMap;
 
 public class EntryHandler extends MessageHandler {
-    private final EntryView entryView;
-
-    public EntryHandler(EntryView entryView) {
-        this.entryView = entryView;
+    public EntryHandler(EntryView view) {
+        super(view);
     }
 
     private static void handleSystemBroadcast(Connection conn, Request request) {
@@ -25,15 +24,13 @@ public class EntryHandler extends MessageHandler {
     }
 
     private static void handleUserObj(Connection conn, Request request) {
-        var userObj = new UserObject(
-                Integer.parseInt(request.readClientString()),
-                request.readClientString(),
-                request.readClientString(),
-                request.readClientString(),
-                request.readClientString()
-        );
-
-        conn.attr(UserObject.ATTRIBUTE_KEY).set(userObj);
+        var userObj = new UserObject();
+        userObj.setId(Integer.parseInt(request.readClientString()));
+        userObj.setUsername(request.readClientString());
+        userObj.setFigure(request.readClientString());
+        userObj.setGender(request.readClientString());
+        userObj.setMotto(request.readClientString());
+        conn.attr(Attributes.USER_OBJECT).set(userObj);
 
         var loader = Movie.getInstance().getViewByClass(LoadingView.class);
 

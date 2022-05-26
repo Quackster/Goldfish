@@ -1,7 +1,6 @@
 package com.classichabbo.goldfish.networking;
 
-import com.classichabbo.goldfish.client.Goldfish;
-import com.classichabbo.goldfish.client.Movie;
+import com.classichabbo.goldfish.client.views.View;
 import com.classichabbo.goldfish.networking.netty.NettyClientConnection;
 import com.classichabbo.goldfish.networking.wrappers.messages.MessageHandler;
 import com.classichabbo.goldfish.networking.wrappers.messages.MessageRequest;
@@ -10,9 +9,7 @@ import com.classichabbo.goldfish.networking.wrappers.messages.types.MessageListe
 import com.classichabbo.goldfish.networking.wrappers.Command;
 import io.netty.channel.Channel;
 import io.netty.util.DefaultAttributeMap;
-import javafx.application.Application;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -52,7 +49,7 @@ public class Connection extends DefaultAttributeMap {
      */
     public void registerListeners(MessageHandler messageHandler, HashMap<Integer, MessageRequest> listeners) {
         for (var x : listeners.entrySet()) {
-            this.listeners.add(new MessageListener(messageHandler.getClass(), x.getKey(), x.getValue()));
+            this.listeners.add(new MessageListener(messageHandler.getClass(), x.getKey(), x.getValue(), messageHandler.getView()));
         }
     }
 

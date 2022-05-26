@@ -377,4 +377,11 @@ public class Dialog extends View {
     public void setCallAfterFinish(Runnable callAfterFinish) {
         this.callAfterFinish = callAfterFinish;
     }
+
+    /**
+     * Get if this widget has finished initialising and properly sized itself.
+     */
+    public boolean isCreated() {
+        return isSized;
+    }
 }

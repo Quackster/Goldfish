@@ -3,10 +3,10 @@ package com.classichabbo.goldfish.client.handlers;
 import com.classichabbo.goldfish.client.Goldfish;
 import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.game.values.types.PropertiesManager;
+import com.classichabbo.goldfish.client.views.View;
 import com.classichabbo.goldfish.client.views.types.GoldfishView;
 import com.classichabbo.goldfish.client.views.types.error.ErrorWindow;
 import com.classichabbo.goldfish.client.views.types.loader.LoadingView;
-import com.classichabbo.goldfish.networking.netty.NettyClientConnection;
 import com.classichabbo.goldfish.util.NetworkUtil;
 import com.classichabbo.goldfish.networking.Connection;
 import com.classichabbo.goldfish.networking.wrappers.Request;
@@ -18,10 +18,8 @@ import java.nio.file.Path;
 import java.util.HashMap;
 
 public class GoldfishHandler extends MessageHandler {
-    private GoldfishView goldfishView;
-
     public GoldfishHandler(GoldfishView goldfishView) {
-        this.goldfishView = goldfishView;
+        super(goldfishView);
     }
 
     private static void handleHello(Connection conn, Request request) {
@@ -82,9 +80,10 @@ public class GoldfishHandler extends MessageHandler {
             return;
         }
 
-        this.goldfishView.getComponent().loadModules();
-        this.goldfishView.getComponent().loadWidgets();
+        // Prepare login modules
+        ((GoldfishView)this.getView()).getComponent().loadModules();
 
+        // Ask server to authenticate us
         conn.send("SSO_TICKET", ssoTicket, Goldfish.VERSION);
     }
 

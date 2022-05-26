@@ -1,6 +1,7 @@
 package com.classichabbo.goldfish.client.views.types.toolbars;
 
 import com.classichabbo.goldfish.client.Movie;
+import com.classichabbo.goldfish.client.game.Attributes;
 import com.classichabbo.goldfish.client.game.entities.user.UserObject;
 import com.classichabbo.goldfish.client.views.controls.ImageButton;
 import com.classichabbo.goldfish.client.views.controls.Label;
@@ -35,7 +36,7 @@ public class EntryToolbar extends View {
         this.scrollOffset = 0;
         this.finishedScroll = false;
 
-        var userObj = Connection.get().attr(UserObject.ATTRIBUTE_KEY).get();
+        var userObj = Connection.get().attr(Attributes.USER_OBJECT).get();
 
         if (userObj == null) {
             Movie.getInstance().createObject(new ErrorWindow());

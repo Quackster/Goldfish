@@ -3,14 +3,9 @@ package com.classichabbo.goldfish.client.components.types;
 import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.components.Component;
 import com.classichabbo.goldfish.client.views.types.GoldfishView;
-import com.classichabbo.goldfish.client.views.types.club.ClubView;
 import com.classichabbo.goldfish.client.views.types.entry.EntryView;
 import com.classichabbo.goldfish.client.views.types.toolbars.EntryToolbar;
 import com.classichabbo.goldfish.client.views.types.widgets.navigator.NavigatorView;
-import com.classichabbo.goldfish.client.scripts.Cloud;
-import com.classichabbo.goldfish.util.DimensionUtil;
-
-import java.util.concurrent.ThreadLocalRandom;
 
 public class EntryComponent extends Component {
     private final EntryView entryView;
@@ -33,13 +28,17 @@ public class EntryComponent extends Component {
 
     public void toHotelView() {
         invoke(() -> {
+            // Always open back up navigator when headed towards hotel view
             if (Movie.getInstance().isViewActive(NavigatorView.class)) {
                 var navigator = Movie.getInstance().getViewByClass(NavigatorView.class);
 
-                navigator.toFront();
-                navigator.setHidden(false);
+                if (navigator != null && navigator.isCreated()) {
+                    navigator.toFront();
+                    navigator.setHidden(false);
+                }
             }
 
+            // Add entry toolbar back
             if (!Movie.getInstance().isViewActive(EntryToolbar.class)) {
                 Movie.getInstance().createObject(new EntryToolbar(), this.entryView);
             }

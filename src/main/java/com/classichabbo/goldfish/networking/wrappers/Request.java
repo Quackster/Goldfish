@@ -1,6 +1,7 @@
 package com.classichabbo.goldfish.networking.wrappers;
 
 import com.classichabbo.goldfish.networking.encoding.Base64Encoding;
+import com.classichabbo.goldfish.networking.encoding.VL64Encoding;
 import com.classichabbo.goldfish.networking.errors.MalformedPacketException;
 import com.classichabbo.goldfish.util.StringUtil;
 import io.netty.buffer.ByteBuf;
@@ -16,6 +17,16 @@ public class Request {
         this.buffer = buffer;
         this.header = new String(new byte[] { buffer.readByte(), buffer.readByte() });;
         this.headerId = Base64Encoding.decode(this.header.getBytes());
+    }
+
+    public int readInt() {
+        byte[] remaining = this.remainingBytes();
+
+        int length = remaining[0] >> 3 & 7;
+        int value = VL64Encoding.decode(remaining);
+        readBytes(length);
+
+        return value;
     }
 
     public String readClientString() {
@@ -41,42 +52,30 @@ public class Request {
         }
     }
 
-    public byte[] remainingBytes() throws MalformedPacketException {
-        try {
-            this.buffer.markReaderIndex();
+    public byte[] remainingBytes() {
+        this.buffer.markReaderIndex();
 
-            byte[] bytes = new byte[this.buffer.readableBytes()];
-            buffer.readBytes(bytes);
+        byte[] bytes = new byte[this.buffer.readableBytes()];
+        buffer.readBytes(bytes);
 
-            this.buffer.resetReaderIndex();
-            return bytes;
-        } catch (Exception ex) {
-            throw new MalformedPacketException("The packet sent to the server was malformed.");
-        }
+        this.buffer.resetReaderIndex();
+        return bytes;
     }
 
-    public byte[] readBytes(int len) throws MalformedPacketException {
-        try {
-            byte[] payload = new byte[len];
-            this.buffer.readBytes(payload);
-            return payload;
-        } catch (Exception ex) {
-            throw new MalformedPacketException("The packet sent to the server was malformed.");
-        }
+    public byte[] readBytes(int len) {
+        byte[] payload = new byte[len];
+        this.buffer.readBytes(payload);
+        return payload;
     }
 
-    public String contents() throws MalformedPacketException {
-        try {
-            byte[] remiainingBytes = this.remainingBytes();
+    public String contents() {
+        byte[] remiainingBytes = this.remainingBytes();
 
-            if (remiainingBytes != null) {
-                return new String(remiainingBytes);
-            }
-
-            return null;
-        } catch (Exception ex) {
-            throw new MalformedPacketException("The packet sent to the server was malformed.");
+        if (remiainingBytes != null) {
+            return new String(remiainingBytes);
         }
+
+        return null;
     }
 
     public String getMessageBody() {
@@ -96,4 +95,5 @@ public class Request {
     public int getHeaderId() {
         return headerId;
     }
+
 }
