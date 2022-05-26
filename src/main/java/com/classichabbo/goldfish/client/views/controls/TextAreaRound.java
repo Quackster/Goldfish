@@ -38,7 +38,7 @@ public class TextAreaRound extends TextFieldContainer {
         background.getChildren().addAll(left, this.center, right);
         this.getChildren().addAll(background, this.text);
         this.setOnMouseClicked(e -> Movie.getInstance().setCurrentTextField(this.text));
-        this.initCaret(6, 6);
+        this.initCaret(6, 6, 11);
     }
 
     public void setText(String text) {

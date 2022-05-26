@@ -18,15 +18,16 @@ public class TextFieldContainer extends Pane {
 
         this.caret = new Pane();
         this.caret.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
-        this.caret.setPrefSize(1, 9);//isBold ? 11 : 10);
+        this.caret.setPrefWidth(1);
         this.caret.setVisible(false);
 
         this.getChildren().add(this.caret);
     }
 
-    public void initCaret(double x, double y) {
+    public void initCaret(double x, double y, int height) {
         this.caret.setLayoutX(x);
         this.caret.setLayoutY(y);
+        this.caret.setPrefHeight(height);
         this.caret.toFront();
     }
 

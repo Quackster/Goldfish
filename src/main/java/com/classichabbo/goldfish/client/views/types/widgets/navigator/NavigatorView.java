@@ -9,11 +9,13 @@ import com.classichabbo.goldfish.client.game.values.types.TextsManager;
 import com.classichabbo.goldfish.client.views.controls.BorderPane;
 import com.classichabbo.goldfish.client.views.controls.Button;
 import com.classichabbo.goldfish.client.views.controls.ButtonLarge;
+import com.classichabbo.goldfish.client.views.controls.ImageButton;
 import com.classichabbo.goldfish.client.views.controls.Label;
 import com.classichabbo.goldfish.client.views.controls.ScrollPane;
 import com.classichabbo.goldfish.client.views.controls.TextAreaRound;
 import com.classichabbo.goldfish.client.views.controls.TextFieldRound;
 import com.classichabbo.goldfish.client.views.controls.TextFieldSquare;
+import com.classichabbo.goldfish.client.views.types.alerts.Alert;
 import com.classichabbo.goldfish.client.views.types.room.RoomView;
 import com.classichabbo.goldfish.client.views.types.widgets.Widget;
 
@@ -46,7 +48,10 @@ public class NavigatorView extends Widget {
     private Button doSearchButton;
     private Label noResults;
 
-    private TextAreaRound test;
+    private Pane room;
+    private Label roomTitle;
+    private Button roomCreateButton;
+    private ImageButton roomCreateImg;
 
     private Pane backTop;
     private Label backTopLabel;
@@ -138,7 +143,6 @@ public class NavigatorView extends Widget {
 
         this.navigatorList.update();
         this.searchCriteria.update();
-        this.test.update();
         this.passwordPromptField.update();
     }
 
@@ -226,8 +230,6 @@ public class NavigatorView extends Widget {
         favouritesLabel.setLayoutY(4);
         this.favouritesButton.getChildren().add(favouritesLabel);
 
-
-
         this.search = new Pane();
         this.search.setPrefSize(328, 30);
         this.search.setLayoutX(6);
@@ -255,9 +257,29 @@ public class NavigatorView extends Widget {
         this.noResults.setVisible(false);
         this.content.getChildren().add(this.noResults);
 
-        this.test = new TextAreaRound("");
-        this.test.setWidth(240);
-        this.content.getChildren().add(test);
+        this.room = new Pane();
+        this.room.setPrefSize(340, 44);
+        this.room.setLayoutX(1);
+        this.room.setLayoutY(81);
+        this.room.setVisible(false);
+        this.content.getChildren().add(room);
+
+        this.roomTitle = new Label(TextsManager.getInstance().getString("nav_createroom_hd"));
+        this.roomTitle.setLayoutX(11);
+        this.roomTitle.setLayoutY(8);
+        this.room.getChildren().add(roomTitle);
+
+        this.roomCreateButton = new Button(TextsManager.getInstance().getString("nav_createroom"));
+        this.roomCreateButton.setLayoutX(5);
+        this.roomCreateButton.setLayoutY(22);
+        this.roomCreateButton.setOnMouseClicked(e -> this.pendingAction = () -> this.showCreateRoom());
+        this.room.getChildren().add(roomCreateButton);
+
+        this.roomCreateImg = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/room-create-img.png"));
+        this.roomCreateImg.setLayoutX(306);
+        this.roomCreateImg.setLayoutY(5);
+        this.roomCreateImg.setOnMouseClicked(e -> this.pendingAction = () -> this.showCreateRoom());
+        this.room.getChildren().add(roomCreateImg);
 
         this.backTop = new Pane();
         this.backTop.setPrefWidth(340);
@@ -385,6 +407,7 @@ public class NavigatorView extends Widget {
         this.passwordPromptCancelButton.setOnWidth(() -> this.passwordPromptCancelButton.setLayoutX(166 - this.passwordPromptCancelButton.getWidth()));
         this.passwordPromptCancelButton.setLayoutY(256);
         this.passwordPromptCancelButton.setOnMouseClicked(e -> {
+            this.passwordPromptField.setText("");
             this.setContent(this.content, this.padding, true);
         });
 
@@ -504,6 +527,8 @@ public class NavigatorView extends Widget {
             this.title.setLayoutY(135);
             this.hideFull.setVisible(false);
 
+            this.room.setVisible(true);
+
             this.navigatorList.setSize(330, 162);
             this.navigatorList.setLayoutY(150);
 
@@ -515,6 +540,9 @@ public class NavigatorView extends Widget {
 
             this.updateBackButtons();
             this.showOwnRooms();
+        }
+        else {
+            this.room.setVisible(false);
         }
 
         if (page == NavigatorPage.FAVOURITES) {
@@ -805,6 +833,10 @@ public class NavigatorView extends Widget {
         }
 
         return "";
+    }
+
+    public void showCreateRoom() {
+        Movie.getInstance().createObject(new Alert("showCreateRoom"));
     }
 
     // TODO Avery - all the below methods are your entry points to do whatever with :)
