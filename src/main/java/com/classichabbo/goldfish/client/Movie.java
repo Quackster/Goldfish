@@ -179,9 +179,11 @@ public class Movie extends Application {
         contextMenu.getItems().add(menuItem3);
 
         this.mainScene.setOnContextMenuRequested(event -> {
-          contextMenu.show(this.mainScene.getWindow(), event.getScreenX(), event.getScreenY());
-        });
+            if (Movie.getInstance().isViewActive(LoaderView.class))
+                return;
 
+            contextMenu.show(this.mainScene.getWindow(), event.getScreenX(), event.getScreenY());
+        });
     }
 
     private void setupKeyboardEvents() {
