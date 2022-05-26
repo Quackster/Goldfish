@@ -7,6 +7,7 @@ public class InterfaceScheduler extends Scheduler {
     public static final int MAX_FPS = 24;
 
     public InterfaceScheduler() {
+        super();
     }
 
     /**

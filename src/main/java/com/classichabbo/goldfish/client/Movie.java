@@ -1,6 +1,7 @@
 package com.classichabbo.goldfish.client;
 
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
+import com.classichabbo.goldfish.client.game.scheduler.GameUpdate;
 import com.classichabbo.goldfish.client.game.scheduler.types.GraphicsScheduler;
 import com.classichabbo.goldfish.client.game.scheduler.types.InterfaceScheduler;
 import com.classichabbo.goldfish.client.modules.types.GoldfishView;
@@ -14,15 +15,18 @@ import com.classichabbo.goldfish.client.modules.types.toolbars.entry.EntryToolba
 import com.classichabbo.goldfish.client.modules.types.toolbars.RoomToolbar;
 import com.classichabbo.goldfish.client.modules.types.widgets.Widget;
 import com.classichabbo.goldfish.client.modules.types.widgets.navigator.NavigatorView;
+import com.classichabbo.goldfish.util.DateUtil;
 import com.classichabbo.goldfish.util.DimensionUtil;
 import com.classichabbo.goldfish.networking.netty.NettyClientConnection;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.Background;
@@ -30,8 +34,10 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,6 +64,8 @@ public class Movie extends Application {
     @Override
     public void init() {
         instance = this;
+        this.interfaceScheduler = new InterfaceScheduler();
+        this.gameScheduler = new GraphicsScheduler();
 
         startGameScheduler();
         startInterfaceScheduler();
@@ -113,19 +121,48 @@ public class Movie extends Application {
 
     private void setupContextMenu() {
         Function<Boolean, String> alwaysOnTopText = (isAlwaysOnTop) -> {
-            return (isAlwaysOnTop ? Symbols.CROSS : Symbols.TICK) + " Always on top";
+            return (isAlwaysOnTop ? Symbols.TICK : Symbols.CROSS) + " Always on top";
         };
 
 
         ContextMenu contextMenu = new ContextMenu();
 
         MenuItem menuItem1 = new MenuItem("Take screenshot");
-        MenuItem menuItem2 = new MenuItem("Pause Client Ticks");
+        MenuItem menuItem2 = new MenuItem("Pause");
         MenuItem menuItem3 = new MenuItem(alwaysOnTopText.apply(this.primaryStage.isAlwaysOnTop()));
 
         menuItem1.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
-                // TODO: Take screenshot
+                var image = mainScene.snapshot(null);
+
+                //Creating a File chooser
+                FileChooser fileChooser = new FileChooser();
+                fileChooser.setTitle("Save");
+                fileChooser.setInitialFileName(DateUtil.getCurrentDate("dd-MM-yyyy") + ".png");
+                fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("PNG", "*.png"));
+                var file = fileChooser.showSaveDialog(primaryStage);
+
+                try {
+                    ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
+                } catch (Exception ex) {
+
+                }
+            }
+        });
+
+        menuItem2.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                if (gameScheduler != null && interfaceScheduler != null &&
+                        gameScheduler.isRunning() && interfaceScheduler.isRunning()) {
+                    stopGameScheduler();
+                    stopInterfaceScheduler();
+                    menuItem2.setText("Resume");
+
+                } else {
+                    startGameScheduler();
+                    startInterfaceScheduler();
+                    menuItem2.setText("Pause");
+                }
             }
         });
 
@@ -133,12 +170,13 @@ public class Movie extends Application {
             @Override public void handle(ActionEvent e) {
                 boolean isAlwaysOnTop = !primaryStage.isAlwaysOnTop();
                 primaryStage.setAlwaysOnTop(isAlwaysOnTop);
-                menuItem2.setText(alwaysOnTopText.apply(isAlwaysOnTop));
+                menuItem3.setText(alwaysOnTopText.apply(isAlwaysOnTop));
             }
         });
 
         contextMenu.getItems().add(menuItem1);
         contextMenu.getItems().add(menuItem2);
+        contextMenu.getItems().add(menuItem3);
 
         this.mainScene.setOnContextMenuRequested(event -> {
           contextMenu.show(this.mainScene.getWindow(), event.getScreenX(), event.getScreenY());
@@ -403,37 +441,19 @@ public class Movie extends Application {
     }
 
     public void startGameScheduler() {
-        if (this.gameScheduler != null) {
-            stopGameScheduler();
-        }
-
-        this.gameScheduler = new GraphicsScheduler();
-    }
-
-    public void stopGameScheduler() {
-        if (this.gameScheduler == null) {
-            return;
-        }
-
-        this.gameScheduler.setRunning(false);
-        this.gameScheduler = null;
+        this.gameScheduler.restartThread();
     }
 
     public void startInterfaceScheduler() {
-        if (this.interfaceScheduler != null) {
-            stopInterfaceScheduler();
-        }
+        this.interfaceScheduler.restartThread();
+    }
 
-        this.interfaceScheduler = new InterfaceScheduler();
+    public void stopGameScheduler() {
+        this.gameScheduler.setRunning(false);
     }
 
     public void stopInterfaceScheduler() {
-        if (this.interfaceScheduler == null) {
-            return;
-        }
-
         this.interfaceScheduler.setRunning(false);
-        this.interfaceScheduler = null;
     }
 
     public Stage getPrimaryStage() {

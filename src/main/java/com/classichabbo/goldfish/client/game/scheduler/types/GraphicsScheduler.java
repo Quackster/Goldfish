@@ -7,7 +7,7 @@ public class GraphicsScheduler extends Scheduler {
     public static final int MAX_FPS = 12;
 
     public GraphicsScheduler() {
-
+        super();
     }
 
     /**

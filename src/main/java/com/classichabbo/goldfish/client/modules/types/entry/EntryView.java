@@ -146,6 +146,23 @@ public class EntryView extends View {
             }
         }
 
+        // Kickstart some clouds after turn point :^)
+        for (int i = 0; i < ThreadLocalRandom.current().nextInt(2, 5) + 1; i++) {
+            int initX = this.getCloudTurnPoint() + ThreadLocalRandom.current().nextInt(30, (int) (DimensionUtil.getProgramWidth() * 0.5));
+            ;
+            int initY = ThreadLocalRandom.current().nextInt(0, (int) (DimensionUtil.getProgramHeight() * 0.66));
+
+            this.addCloud("right", initX, initY);
+        }
+
+        // Kickstart some clouds before turn point :^)
+        for (int i = 0; i < ThreadLocalRandom.current().nextInt(1, 2) + 1; i++) {
+            int initX = this.getCloudTurnPoint() - ThreadLocalRandom.current().nextInt(35, 60);
+            int initY = ThreadLocalRandom.current().nextInt(0, (int) (DimensionUtil.getProgramHeight() * 0.66));
+
+            this.addCloud("left", initX, initY);
+        }
+
         // Always make this the backdrop
         this.toBack();
 

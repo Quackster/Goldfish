@@ -10,6 +10,20 @@ public abstract class Scheduler implements Runnable {
 
     public Scheduler() {
         this.updatesRequired = new CopyOnWriteArrayList<>();
+        this.isRunning = true;
+    }
+
+    public void restartThread() {
+        // If the loop is running, set the loop to stop running and wait
+        // for the thread to die by using join();
+        if (this.gameLoop != null) {
+            try {
+                this.isRunning = false;
+                this.gameLoop.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
 
         this.isRunning = true;
         this.gameLoop = new Thread(this);
