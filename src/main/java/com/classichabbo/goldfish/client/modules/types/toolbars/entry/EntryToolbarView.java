@@ -163,7 +163,7 @@ public class EntryToolbarView extends View {
 
 
         this.ownhabbo_name_text.setText(userObj.getUsername());
-        this.ownhabbo_name_text.setText(userObj.getMission());
+        this.ownhabbo_mission_text.setText(userObj.getMission());
     }
 
     public void updateClubStatus(HabboClubObject tStatus) {
