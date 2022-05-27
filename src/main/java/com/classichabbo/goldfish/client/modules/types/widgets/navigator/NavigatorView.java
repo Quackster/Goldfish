@@ -6,6 +6,7 @@ import java.util.Collections;
 import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
 import com.classichabbo.goldfish.client.game.values.types.TextsManager;
+import com.classichabbo.goldfish.client.modules.Component;
 import com.classichabbo.goldfish.client.modules.controls.BorderPane;
 import com.classichabbo.goldfish.client.modules.controls.Button;
 import com.classichabbo.goldfish.client.modules.controls.ButtonLarge;
@@ -18,6 +19,7 @@ import com.classichabbo.goldfish.client.modules.types.alerts.Alert;
 import com.classichabbo.goldfish.client.modules.types.room.RoomView;
 import com.classichabbo.goldfish.client.modules.types.widgets.Widget;
 
+import com.classichabbo.goldfish.networking.wrappers.messages.MessageHandler;
 import com.classichabbo.goldfish.util.DimensionUtil;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -87,6 +89,14 @@ public class NavigatorView extends Widget {
     private Category currentCategory;
     private Runnable pendingAction;
 
+    private NavigatorComponent component;
+    private NavigatorHandler handler;
+
+    public NavigatorView() {
+        this.component = new NavigatorComponent(this);
+        this.handler = new NavigatorHandler(this);
+    }
+
     @Override
     public void start() {
         super.start();
@@ -154,6 +164,16 @@ public class NavigatorView extends Widget {
     public void setHidden(boolean flag) {
         this.setPage(this.currentPage); // used to reset info box at the bottom
         super.setHidden(flag);
+    }
+
+    @Override
+    public NavigatorHandler getHandler() {
+        return handler;
+    }
+
+    @Override
+    public NavigatorComponent getComponent() {
+        return component;
     }
 
     private void init() {

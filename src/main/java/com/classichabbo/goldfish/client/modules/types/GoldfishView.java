@@ -1,6 +1,5 @@
 package com.classichabbo.goldfish.client.modules.types;
 
-import com.classichabbo.goldfish.client.modules.GoldfishHandler;
 import com.classichabbo.goldfish.client.modules.View;
 
 public class GoldfishView extends View {

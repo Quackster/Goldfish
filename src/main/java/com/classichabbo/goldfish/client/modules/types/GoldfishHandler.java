@@ -1,9 +1,8 @@
-package com.classichabbo.goldfish.client.modules;
+package com.classichabbo.goldfish.client.modules.types;
 
 import com.classichabbo.goldfish.client.Goldfish;
 import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.game.values.types.PropertiesManager;
-import com.classichabbo.goldfish.client.modules.types.GoldfishView;
 import com.classichabbo.goldfish.client.modules.types.error.ErrorWindow;
 import com.classichabbo.goldfish.client.modules.types.loader.LoaderView;
 import com.classichabbo.goldfish.util.NetworkUtil;
