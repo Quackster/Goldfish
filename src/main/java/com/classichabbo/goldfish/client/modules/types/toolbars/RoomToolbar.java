@@ -37,36 +37,36 @@ public class RoomToolbar extends View {
 
         this.getChildren().add(temp);
         
-        this.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/room_toolbar/background.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        this.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/views/room_toolbar/background.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
         
-        this.chatButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/interfaces/room_toolbar/chat.png"));
+        this.chatButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/views/room_toolbar/chat.png"));
         chatButton.setOnMouseClicked(e -> Movie.getInstance().createObject(new Alert("chatButton clicked")));
         
-        this.friendsButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/interfaces/room_toolbar/friends.png"));
+        this.friendsButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/views/room_toolbar/friends.png"));
         friendsButton.setOnMouseClicked(e -> Movie.getInstance().createObject(new Alert("friendsButton clicked")));
         
-        this.navigatorButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/interfaces/room_toolbar/navigator.png"));
+        this.navigatorButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/views/room_toolbar/navigator.png"));
         navigatorButton.setOnMouseClicked(e -> Movie.getInstance().getViews().stream().filter(x -> x instanceof NavigatorView).findFirst().ifPresent(navigator -> {
             navigator.toggleVisibility();
             navigator.toFront();
         }));
         
-        this.eventsButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/interfaces/room_toolbar/events.png"));
+        this.eventsButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/views/room_toolbar/events.png"));
         eventsButton.setOnMouseClicked(e -> Movie.getInstance().createObject(new Alert("eventsButton clicked")));
         
-        this.handButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/interfaces/room_toolbar/hand.png"));
+        this.handButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/views/room_toolbar/hand.png"));
         handButton.setOnMouseClicked(e -> Movie.getInstance().createObject(new Alert("catalogueButton clicked")));
         
-        this.catalogueButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/interfaces/room_toolbar/catalogue.png"));
+        this.catalogueButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/views/room_toolbar/catalogue.png"));
         catalogueButton.setOnMouseClicked(e -> Movie.getInstance().createObject(new Alert("catalogueButton clicked")));
         
-        this.gamesButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/interfaces/room_toolbar/games.png"));
+        this.gamesButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/views/room_toolbar/games.png"));
         gamesButton.setOnMouseClicked(e -> Movie.getInstance().createObject(new Alert("gamesButton clicked")));
         
-        this.helpButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/interfaces/room_toolbar/help.png"));
+        this.helpButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/views/room_toolbar/help.png"));
         helpButton.setOnMouseClicked(e -> Movie.getInstance().createObject(new Alert("helpButton clicked")));
 
-        this.volumeButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/interfaces/room_toolbar/volume.png"));
+        this.volumeButton = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/views/room_toolbar/volume.png"));
         volumeButton.setOnMouseClicked(e -> Movie.getInstance().createObject(new Alert("helpButton clicked")));
         
         this.getChildren().addAll(chatButton, friendsButton, navigatorButton, eventsButton, catalogueButton, handButton, gamesButton, helpButton, volumeButton);

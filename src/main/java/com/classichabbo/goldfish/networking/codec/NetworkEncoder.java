@@ -20,16 +20,18 @@ public class NetworkEncoder extends MessageToMessageEncoder<Command> {
         for (var obj : command.getData()) {
             if (obj instanceof Integer) {
                 message.writeBytes(VL64Encoding.encode((int) obj));
+                continue;
             }
 
             if (obj instanceof String) {
                 message.writeBytes(Base64Encoding.encode(obj.toString().length(), 2));
                 message.writeBytes(obj.toString().getBytes(StringUtil.getCharset()));
+                continue;
             }
         }
 
         // Append message length at the end
-        message.setBytes(1, Base64Encoding.encode(message.writerIndex() - 3, 2));
+        message.setBytes(0, Base64Encoding.encode(message.writerIndex() - 3, 3));
 
         if (!Connection.COMMAND_LOG_BLACKLIST.contains(command.getHeader())) {
             System.out.println("-> [" + command.getHeader() + "] " + message.toString(StringUtil.getCharset()));

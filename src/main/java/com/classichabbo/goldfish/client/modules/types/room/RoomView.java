@@ -40,7 +40,7 @@ public class RoomView extends View {
         //this.setBackground(new Background(new BackgroundFill(Color.PINK, CornerRadii.EMPTY, Insets.EMPTY)));
 
         this.roomLayout = new ImageView();
-        this.roomLayout.setImage(ResourceManager.getInstance().getFxImage("sprites/scenes/room/room_test.png"));
+        this.roomLayout.setImage(ResourceManager.getInstance().getFxImage("sprites/views/room/room_test.png"));
 
         this.room.setOnMousePressed(event -> {
             this.mousePressedX = event.getX();

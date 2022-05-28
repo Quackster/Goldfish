@@ -91,11 +91,9 @@ public class EntryView extends View {
 
         this.stretchLeft = new Rectangle(1,1);//= new ImageView();
         this.stretchLeft.setFill((Color) VariablesManager.getInstance().getType("hotel.view.left.color", ValueType.COLOR_RGB, Color.rgb(117, 175, 203)));
-        //this.stretchLeft.setImage(new Image(new File("resources/scenes/hotel_view/stretch_left.png").toURI().toString()));
 
         this.stretchRight = new Rectangle(1,1);
         this.stretchRight.setFill((Color) VariablesManager.getInstance().getType("hotel.view.right.color", ValueType.COLOR_RGB, Color.rgb(139, 205, 233)));
-        //this.stretchRight.setImage(new Image(new File("resources/scenes/hotel_view/stretch_right.png").toURI().toString()));
 
         this.sun = new ImageView();
         this.sun.setImage(new Image(VariablesManager.getInstance().getString("hotel.view.image.sun")));

@@ -52,8 +52,7 @@ public class ResourceManager {
         } else {
             SchedulerManager.getInstance().asyncCallback(() -> {
                 try {
-                    URL url = new URL(httpUrl);
-                    var image = ImageIO.read(url);
+                    var image = ImageIO.read(new URL(httpUrl));
                     this.webImages.put(httpUrl, image);
 
                     Platform.runLater(() -> {

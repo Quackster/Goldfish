@@ -31,7 +31,7 @@ public class NavigatorItem extends Pane {
         this.nameButton = new Pane();
         this.nameButton.setPrefSize(251, 16);
         this.nameButton.setCursor(Cursor.HAND);
-        this.nameButton.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/room_doorbell_" + NavigatorView.getBackgroundByDoorbell(room.doorbell) + ".png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        this.nameButton.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/views/navigator/room_doorbell_" + NavigatorView.getBackgroundByDoorbell(room.doorbell) + ".png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
         
         var nameLabel = new Label(room.name);
         nameLabel.setLayoutX(17);
@@ -42,7 +42,7 @@ public class NavigatorItem extends Pane {
         this.goButton.setPrefSize(58, 16);
         this.goButton.setLayoutX(253);
         this.goButton.setCursor(Cursor.HAND);
-        this.goButton.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/go_" + this.backgroundImg + ".png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        this.goButton.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/views/navigator/go_" + this.backgroundImg + ".png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
 
         var goLabel = new Label(TextsManager.getInstance().getString(percentageFull == 1 ? "nav_fullbutton" : "nav_gobutton"));
         goLabel.setLayoutX(18);
@@ -76,7 +76,7 @@ public class NavigatorItem extends Pane {
 
         this.getChildren().addAll(nameLabel, openLabel);
         this.setCursor(Cursor.HAND);
-        this.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/category_" + this.backgroundImg + ".png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        this.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/views/navigator/category_" + this.backgroundImg + ".png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
     }
 
     private void calculatePercentageFull(int visitors, int maxVisitors) {

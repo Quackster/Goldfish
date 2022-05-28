@@ -141,7 +141,7 @@ public class Cloud extends Pane {
     }
 
     private String getCloudPath() {
-        return "sprites/scenes/hotel_view/clouds/" + this.fileName + "_" + this.direction + ".png";
+        return "sprites/views/hotel_view/clouds/" + this.fileName + "_" + this.direction + ".png";
     }
 
     private String getFlippedCloudPath() {
@@ -151,7 +151,7 @@ public class Cloud extends Pane {
             oppositeDirection = "right";
         }
 
-        return "sprites/scenes/hotel_view/clouds/" + this.fileName + "_" + oppositeDirection + ".png";
+        return "sprites/views/hotel_view/clouds/" + this.fileName + "_" + oppositeDirection + ".png";
     }
 
     public void setFinished(boolean finished) {
