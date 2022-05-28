@@ -59,7 +59,7 @@ public class NavigatorItem extends Pane {
     public NavigatorItem(Category category) {
         this.setMinHeight(16);
         this.setMaxWidth(311);
-        this.calculatePercentageFull(category.getVisitors(), category.getMaxVisitors());
+        this.calculatePercentageFull(category.visitors, category.maxVisitors);
         
         var nameLabel = new Label(category.name);
         nameLabel.setLayoutX(17);
