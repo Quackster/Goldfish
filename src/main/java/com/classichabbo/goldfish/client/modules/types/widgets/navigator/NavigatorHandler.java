@@ -68,7 +68,31 @@ public class NavigatorHandler extends MessageHandler {
             category.rooms.add(new NavigatorRoom(child.getFlatId(), child.getName(), child.getOwner(), child.getDescription(), child.getUsercount(), child.getMaxUsers(), getDoorbellFromString(child.getDoor())));
         }
         
-        Platform.runLater(() -> Movie.getInstance().getViewByClass(NavigatorView.class).showCategory(category));
+        Platform.runLater(() -> Movie.getInstance().getViewByClass(NavigatorView.class).updateRoomList(category));
+    }
+
+    private static void getOwnRooms(Connection connection, Request request) {
+        var list = parseFlatCategoryNode(request);
+        var navRooms = new ArrayList<NavigatorRoom>();
+
+        for (var item : list) {
+            navRooms.add(new NavigatorRoom(item.getFlatId(), item.getName(), item.getOwner(), item.getDescription(), item.getUsercount(), item.getMaxUsers(), getDoorbellFromString(item.getDoor())));
+        }
+
+        Platform.runLater(() -> Movie.getInstance().getViewByClass(NavigatorView.class).updateOwnRooms(navRooms));
+    }
+
+    private static void getFavouriteRooms(Connection connection, Request request) {
+        var navRooms = new ArrayList<NavigatorRoom>();
+
+        var mask = request.readInt();
+        var id = request.readInt();
+        var type = request.readInt();
+        var tNodeInfo = parseNode(request);
+
+        // TODO
+
+        Platform.runLater(() -> Movie.getInstance().getViewByClass(NavigatorView.class).updateFavouriteRooms(navRooms));
     }
 
     private static Doorbell getDoorbellFromString(String str) {
@@ -147,6 +171,24 @@ public class NavigatorHandler extends MessageHandler {
         conn.send("NAVIGATE", this.isHideFull(), categoryId, 1);
     }
 
+    public void sendGetFvrf() {
+        var conn = Connection.get();
+
+        if (conn == null)
+            return;
+
+        conn.send("GETFVRF");
+    }
+
+    public void sendSUserF() {
+        var conn = Connection.get();
+
+        if (conn == null)
+            return;
+
+        conn.send("SUSERF");
+    }
+
     private boolean isHideFull() {
         return ((NavigatorView)this.getView()).isHideFullRooms();
     }
@@ -154,9 +196,13 @@ public class NavigatorHandler extends MessageHandler {
     @Override
     public void regMsgList(boolean tBool) {
         var listeners = new HashMap<Integer, MessageRequest>();
+        listeners.put(16, NavigatorHandler::getOwnRooms);
+        listeners.put(61, NavigatorHandler::getFavouriteRooms);
         listeners.put(220, NavigatorHandler::navnodeinfo);
 
         var commands = new HashMap<String, Integer>();
+        commands.put("SUSERF", 16);
+        commands.put("GETFVRF", 18);
         commands.put("NAVIGATE", 150);
 
         if (tBool) {
