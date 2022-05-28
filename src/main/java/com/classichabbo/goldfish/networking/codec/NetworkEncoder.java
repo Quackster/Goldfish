@@ -20,7 +20,10 @@ public class NetworkEncoder extends MessageToMessageEncoder<Command> {
         for (var obj : command.getData()) {
             if (obj instanceof Integer) {
                 message.writeBytes(VL64Encoding.encode((int) obj));
-                continue;
+            }
+
+            if (obj instanceof Boolean) {
+                message.writeBytes(VL64Encoding.encode(((boolean) obj) ? 1 : 0));
             }
 
             if (obj instanceof String) {

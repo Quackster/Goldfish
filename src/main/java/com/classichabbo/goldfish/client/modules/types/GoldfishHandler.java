@@ -78,11 +78,11 @@ public class GoldfishHandler extends MessageHandler {
             return;
         }
 
-        // Prepare login modules
-        ((GoldfishView)this.getView()).getComponent().loadModules();
-
         // Ask server to authenticate us
         conn.send("SSO_TICKET", ssoTicket, Goldfish.VERSION);
+
+        // Prepare login modules
+        ((GoldfishView)this.getView()).getComponent().loadModules();
     }
 
     private static void authenticationOK(Connection conn, Request request) {

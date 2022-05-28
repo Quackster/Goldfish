@@ -6,6 +6,7 @@ import java.util.Collections;
 import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
 import com.classichabbo.goldfish.client.game.values.types.TextsManager;
+import com.classichabbo.goldfish.client.game.values.types.VariablesManager;
 import com.classichabbo.goldfish.client.modules.Component;
 import com.classichabbo.goldfish.client.modules.controls.BorderPane;
 import com.classichabbo.goldfish.client.modules.controls.Button;
@@ -138,6 +139,8 @@ public class NavigatorView extends Widget {
     private NavigatorComponent component;
     private NavigatorHandler handler;
 
+    private boolean hideFullRooms;
+
     public NavigatorView() {
         this.component = new NavigatorComponent(this);
         this.handler = new NavigatorHandler(this);
@@ -148,9 +151,10 @@ public class NavigatorView extends Widget {
         super.start();
         
         // TODO Avery - I'm not sure where you get these from
-        this.publicCategoryId = 1;
-        this.privateCategoryId = 2;
+        this.publicCategoryId = VariablesManager.getInstance().getInt("navigator.public.default", 3);
+        this.privateCategoryId = VariablesManager.getInstance().getInt("navigator.private.default", 3);
         this.inRoom = false;
+        this.hideFullRooms = false;
         
         this.init();
         this.padding = new Insets(9, 11, 10, 10);
@@ -158,6 +162,12 @@ public class NavigatorView extends Widget {
         this.setContent(this.content, this.padding, true);
         this.setLocation();
         this.setPage(NavigatorPage.PUBLIC);
+
+        this.handler.sendNavigate(this.publicCategoryId);
+        this.handler.sendNavigate(this.privateCategoryId);
+
+        toFront();
+        setHidden(false);
 
         this.registerUpdate();
     }
@@ -522,7 +532,9 @@ public class NavigatorView extends Widget {
             this.infoLeftButton.setText(TextsManager.getInstance().getString("nav_addtofavourites"));
             this.infoLeftButton.setTranslateX(0);
 
-            this.showCategory(this.publicCategoryId);
+            //this.handler.sendNavigate(VariablesManager.getInstance().getInt("navigator.private.default", 3));
+
+            //this.showCategory(this.publicCategoryId);
         }
         else {
             this.searchButton.setVisible(true);
@@ -550,6 +562,8 @@ public class NavigatorView extends Widget {
             this.infoImg.setImage(ResourceManager.getInstance().getFxImage("sprites/views/navigator/info_private.png"));
             this.infoLeftButton.setText(TextsManager.getInstance().getString("nav_addtofavourites"));
             this.infoLeftButton.setTranslateX(0);
+
+            //this.handler.sendNavigate(this.publicCategoryId);
 
             this.showCategory(this.privateCategoryId);
             this.showRecommendedRooms();
@@ -874,7 +888,7 @@ public class NavigatorView extends Widget {
     }
 
     private void showModifyRoom(NavigatorRoom room) {
-        this.content.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/background_modify_room.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        this.content.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/views/navigator/background_modify_room.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
         this.room.setVisible(false);
         this.title.setVisible(false);
         this.navigatorList.setVisible(false);
@@ -1073,6 +1087,14 @@ public class NavigatorView extends Widget {
     
     private void removeFromFavourites(int roomId) { 
         System.out.println("Remove " + roomId + " from favourites");
+    }
+
+    public boolean isHideFullRooms() {
+        return hideFullRooms;
+    }
+
+    public void setHideFullRooms(boolean hideFullRooms) {
+        this.hideFullRooms = hideFullRooms;
     }
 
     private enum NavigatorPage {

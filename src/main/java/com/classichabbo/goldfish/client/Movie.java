@@ -127,7 +127,7 @@ public class Movie extends Application {
 
         ContextMenu contextMenu = new ContextMenu();
 
-        MenuItem menuItem1 = new MenuItem("Take screenshot");
+        MenuItem menuItem1 = new MenuItem("Save screenshot");
         MenuItem menuItem2 = new MenuItem("Pause");
         MenuItem menuItem3 = new MenuItem(alwaysOnTopText.apply(this.primaryStage.isAlwaysOnTop()));
 
@@ -227,12 +227,12 @@ public class Movie extends Application {
                 }
             }
 
-            view.start();
-            view.update();
-
             if (view.getHandler() != null) {
                 view.getHandler().regMsgList(true);
             }
+
+            view.start();
+            view.update();
 
             view.setVisible(true);
 

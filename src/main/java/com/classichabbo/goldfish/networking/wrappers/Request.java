@@ -29,6 +29,10 @@ public class Request {
         return value;
     }
 
+    public boolean readBool() {
+        return readInt() == 1;
+    }
+
     public String readClientString() {
         try {
             byte[] data = remainingBytes();
@@ -95,5 +99,4 @@ public class Request {
     public int getHeaderId() {
         return headerId;
     }
-
 }

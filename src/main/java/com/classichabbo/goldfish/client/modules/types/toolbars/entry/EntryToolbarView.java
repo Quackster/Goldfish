@@ -42,6 +42,8 @@ public class EntryToolbarView extends View {
     private Label ownhabbo_name_text;
     private Label ownhabbo_mission_text;
 
+    private Runnable runAfterScroll;
+
     public EntryToolbarView() {
         this.component = new EntryToolbarComponent(this);
     }
@@ -226,6 +228,11 @@ public class EntryToolbarView extends View {
                 this.scrollOffset += 5;
             } else {
                 this.finishedScroll = true;
+
+                if (this.runAfterScroll != null) {
+                    this.runAfterScroll.run();
+                    this.runAfterScroll = null;
+                }
             }
         }
 
@@ -247,6 +254,10 @@ public class EntryToolbarView extends View {
     @Override
     public EntryToolbarComponent getComponent() {
         return component;
+    }
+
+    public void setRunAfterScroll(Runnable runAfterScroll) {
+        this.runAfterScroll = runAfterScroll;
     }
 
     /*
