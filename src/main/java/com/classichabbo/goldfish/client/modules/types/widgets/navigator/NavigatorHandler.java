@@ -85,12 +85,22 @@ public class NavigatorHandler extends MessageHandler {
     private static void getFavouriteRooms(Connection connection, Request request) {
         var navRooms = new ArrayList<NavigatorRoom>();
 
+        // TODO fix public rooms in favourites
+        // and figure out what all these unused values are for
         var mask = request.readInt();
+        var nodeid = request.readInt();
+        var nodeType = request.readInt();
         var id = request.readInt();
-        var type = request.readInt();
-        var tNodeInfo = parseNode(request);
+        var name = request.readClientString();
+        var usercount = request.readInt();
+        var maxUsers = request.readInt();
+        var parentId = request.readInt();
 
-        // TODO
+        while (request.remainingBytes().length > 0) {
+            var tFlatInfo = parseNavigatorFlatNode(request);
+
+            navRooms.add(new NavigatorRoom(tFlatInfo.getFlatId(), tFlatInfo.getName(), tFlatInfo.getOwner(), tFlatInfo.getDescription(), tFlatInfo.getUsercount(), tFlatInfo.getMaxUsers(), getDoorbellFromString(tFlatInfo.getDoor())));
+        }
 
         Platform.runLater(() -> Movie.getInstance().getViewByClass(NavigatorView.class).updateFavouriteRooms(navRooms));
     }
@@ -146,20 +156,24 @@ public class NavigatorHandler extends MessageHandler {
     private static List<NavigatorFlatNode> parseFlatCategoryNode(Request request) {
         var tFlatList = new ArrayList<NavigatorFlatNode>();
         var tFlatCount = request.readInt();
-
+        
         for (int i =0; i < tFlatCount; i++) {
-            var tFlatInfo = new NavigatorFlatNode();
-            tFlatInfo.setFlatId(request.readInt());
-            tFlatInfo.setName(request.readClientString());
-            tFlatInfo.setOwner(request.readClientString());
-            tFlatInfo.setDoor(request.readClientString());
-            tFlatInfo.setUsercount(request.readInt());
-            tFlatInfo.setMaxUsers(request.readInt());
-            tFlatInfo.setDescription(request.readClientString());
-            tFlatList.add(tFlatInfo);
+            tFlatList.add(parseNavigatorFlatNode(request));
         }
 
         return tFlatList;
+    }
+
+    private static NavigatorFlatNode parseNavigatorFlatNode(Request request) {
+        var tFlatInfo = new NavigatorFlatNode();
+        tFlatInfo.setFlatId(request.readInt());
+        tFlatInfo.setName(request.readClientString());
+        tFlatInfo.setOwner(request.readClientString());
+        tFlatInfo.setDoor(request.readClientString());
+        tFlatInfo.setUsercount(request.readInt());
+        tFlatInfo.setMaxUsers(request.readInt());
+        tFlatInfo.setDescription(request.readClientString());
+        return tFlatInfo;
     }
 
     public void sendNavigate(int categoryId) {
