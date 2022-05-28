@@ -10,9 +10,13 @@ import com.classichabbo.goldfish.client.modules.Component;
 import com.classichabbo.goldfish.client.modules.controls.BorderPane;
 import com.classichabbo.goldfish.client.modules.controls.Button;
 import com.classichabbo.goldfish.client.modules.controls.ButtonLarge;
+import com.classichabbo.goldfish.client.modules.controls.CheckBox;
+import com.classichabbo.goldfish.client.modules.controls.Dropdown;
 import com.classichabbo.goldfish.client.modules.controls.ImageButton;
 import com.classichabbo.goldfish.client.modules.controls.Label;
+import com.classichabbo.goldfish.client.modules.controls.NumericUpDown;
 import com.classichabbo.goldfish.client.modules.controls.ScrollPane;
+import com.classichabbo.goldfish.client.modules.controls.TextAreaRound;
 import com.classichabbo.goldfish.client.modules.controls.TextFieldRound;
 import com.classichabbo.goldfish.client.modules.controls.TextFieldSquare;
 import com.classichabbo.goldfish.client.modules.types.alerts.Alert;
@@ -66,6 +70,48 @@ public class NavigatorView extends Widget {
     
     private ScrollPane navigatorList;
     
+    private Pane modifyRoomBack;
+    private Label modifyRoomBackLabel;
+    
+    private Pane modifyRoomPage1;
+    private Label modifyRoomNameLabel;
+    private TextFieldRound modifyRoomName;
+    private Label modifyRoomDescriptionLabel;
+    private TextAreaRound modifyRoomDescription;
+    private Label modifyRoomCategoryLabel;
+    private Dropdown modifyRoomCategory;
+    private Label modifyRoomMaxVisitorsLabel;
+    private NumericUpDown modifyRoomMaxVisitors;
+    private Label modifyRoomShowNameLabel;
+    private CheckBox modifyRoomShowNameYes;
+    private Label modifyRoomShowNameYesLabel;
+    private CheckBox modifyRoomShowNameNo;
+    private Label modifyRoomShowNameNoLabel;
+
+    private Label modifyRoomDoorbellLabel;
+    private CheckBox modifyRoomDoorbellOpen;
+    private Label modifyRoomDoorbellOpenLabel;
+    private CheckBox modifyRoomDoorbellRing;
+    private Label modifyRoomDoorbellRingLabel;
+    private CheckBox modifyRoomDoorbellPassword;
+    private Label modifyRoomDoorbellPasswordLabel;
+    private TextAreaRound modifyRoomDoorbellPassword1;
+    private Label modifyRoomDoorbellPassword1Label;
+    private TextAreaRound modifyRoomDoorbellPassword2;
+    private Label modifyRoomDoorbellPassword2Label;
+    private CheckBox openRights;
+    private Label openRightsLabel;
+    private Button resetRightsButton;
+    private Label resetRightsLabel;
+
+    private Label modifyRoomPrevious;
+    private Label modifyRoomPageLabel;
+    private Label modifyRoomNext;
+
+    private Button modifyRoomCancelButton;
+    private Button modifyRoomDeleteButton;
+    private Button modifyRoomOkButton;
+
     private Pane info;
     private ImageView infoImg;
     private Label infoTitle;
@@ -349,6 +395,8 @@ public class NavigatorView extends Widget {
         this.navigatorList.setLayoutX(5);
         this.content.getChildren().add(this.navigatorList);
 
+        // TODO Parsnip
+
         this.info = new Pane();
         this.info.setPrefSize(340, 100);
         this.info.setLayoutX(1);
@@ -450,7 +498,9 @@ public class NavigatorView extends Widget {
     }
 
     private void setPage(NavigatorPage page) {
+        this.title.setVisible(true);
         this.noResults.setVisible(false);
+        this.navigatorList.setVisible(true);
 
         if (page == NavigatorPage.PUBLIC) {
             this.currentPage = NavigatorPage.PUBLIC;
@@ -634,7 +684,7 @@ public class NavigatorView extends Widget {
         this.infoDescription.setText(room.description);
 
         if (this.currentPage == NavigatorPage.OWN) {
-            // TODO Parsnip - room settings UI
+            this.infoLeftButton.setOnMouseClicked(e1 -> this.pendingAction = () -> this.showModifyRoom(room));
         }
         else if (this.currentPage == NavigatorPage.FAVOURITES) {
             this.infoLeftButton.setOnMouseClicked(e1 -> this.pendingAction = () -> this.removeFromFavourites(room.roomId));
@@ -823,6 +873,16 @@ public class NavigatorView extends Widget {
         this.setContent(this.passwordPrompt, new Insets(9, 11, 11, 10), true);
     }
 
+    private void showModifyRoom(NavigatorRoom room) {
+        this.content.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/interfaces/navigator/background_modify_room.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        this.room.setVisible(false);
+        this.title.setVisible(false);
+        this.navigatorList.setVisible(false);
+        this.infoHide();
+
+        // TODO Parsnip
+    }
+
     private void addRoom(NavigatorRoom room, Boolean recommended) {
         var navigatorItem = new NavigatorItem(room);
         navigatorItem.setNameButtonOnMouseClicked(e -> this.pendingAction = () -> this.infoShowRoom(room));
@@ -837,8 +897,8 @@ public class NavigatorView extends Widget {
 
     private void addCategory(Category category) {
         var navigatorItem = new NavigatorItem(category);
-        navigatorItem.setOnMouseClicked(e -> this.pendingAction = () -> this.showCategory(category.categoryId)); // TODO Parsnip - open categories
-
+        navigatorItem.setOnMouseClicked(e -> this.pendingAction = () -> this.showCategory(category.categoryId));
+        
         this.navigatorList.addContent(navigatorItem);
     }
 
