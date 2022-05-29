@@ -84,7 +84,7 @@ public class NavigatorHandler extends MessageHandler {
         }
 
         if (tNodeType == 2) {
-            node.setNodeType(0);
+            node.setNodeType(0); // we is a category instead >:)
             node.getChildren().addAll(parseFlatCategoryNode(request));
         }
 
@@ -104,6 +104,7 @@ public class NavigatorHandler extends MessageHandler {
             tFlatInfo.setUsercount(request.readInt());
             tFlatInfo.setMaxUsers(request.readInt());
             tFlatInfo.setDescription(request.readClientString());
+            tFlatInfo.setNodeType(2);
             tFlatList.add(tFlatInfo);
         }
 

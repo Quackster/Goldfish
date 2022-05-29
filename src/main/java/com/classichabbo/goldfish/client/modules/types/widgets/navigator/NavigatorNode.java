@@ -92,11 +92,11 @@ public class NavigatorNode {
     }
 
     public boolean isPublicRoom() {
-        return this.unitStrId != null;
+        return this.nodeType == 1;
     }
 
     public boolean isRoom() {
-        return this.unitStrId != null || this.owner != null;
+        return this.nodeType == 2 || this.nodeType == 1;
     }
 
     public int getPort() {
