@@ -5,6 +5,7 @@ import com.classichabbo.goldfish.networking.Connection;
 import com.classichabbo.goldfish.networking.wrappers.Request;
 import com.classichabbo.goldfish.networking.wrappers.messages.MessageHandler;
 import com.classichabbo.goldfish.networking.wrappers.messages.MessageRequest;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,11 +39,11 @@ public class NavigatorHandler extends MessageHandler {
             var tNodeId = tNodeInfo.getId();
             var tParentId = tNode.getParentid();
 
+            tNodeInfo.getChildren().add(tNode);
+
             if (tParentId == tCategoryId) {
                 tNodeInfo.getChildren().forEach(x -> x.setParentid(tNodeId));
             }
-
-            tNodeInfo.getChildren().add(tNode);
         }
 
         var navigatorView = Movie.getInstance().getViewByClass(NavigatorView.class);
