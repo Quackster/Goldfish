@@ -3,6 +3,7 @@ package com.classichabbo.goldfish.client.modules.types.widgets.navigator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import com.classichabbo.goldfish.client.Movie;
@@ -606,6 +607,8 @@ public class NavigatorView extends Widget {
 
         if (page == NavigatorPage.OWN) {
             this.currentPage = NavigatorPage.OWN;
+            this.handler.sendGetOwnFlats();
+
             this.content.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/views/navigator/background_own.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
             this.title.setText(TextsManager.getInstance().getString("nav_own_hd"));
             this.title.setLayoutY(135);
@@ -857,7 +860,7 @@ public class NavigatorView extends Widget {
         this.backTop.setVisible(false);
     }
 
-    public void updateRecommendedRooms(ArrayList<NavigatorNode> recommendedRooms) {
+    public void updateRecommendedRooms(List<NavigatorNode> recommendedRooms) {
         this.recommendedList.getChildren().clear();
 
         for (var room : recommendedRooms) {
@@ -877,8 +880,22 @@ public class NavigatorView extends Widget {
             this.addRoom(room, false);
         }
 
-        for (var childNavigatorNode : category.getChildren().stream().filter(x -> !x.isRoom()).collect(Collectors.toList())) {
+        for (var childNavigatorNode : category.getChildren().stream().filter(x -> x.isCategory()).collect(Collectors.toList())) {
             this.addCategory(childNavigatorNode); // TODO
+        }
+    }
+
+    public void updateOwnRooms(List<NavigatorNode> ownRooms) {
+        this.navigatorList.clearContent();
+
+        if (ownRooms.isEmpty()) {
+            this.noResults.setText(TextsManager.getInstance().getString("nav_private_norooms"));
+            this.noResults.setVisible(true);
+            return;
+        }
+
+        for (var room : ownRooms) {
+            this.addRoom(room, false);
         }
     }
 
@@ -908,33 +925,6 @@ public class NavigatorView extends Widget {
             this.addRoom(searchResult, false);
         }
     }
-
-    /*
-    private void showOwnRooms() {
-        this.navigatorList.clearContent();
-
-        var ownRooms = this.getOwnRooms();
-
-        if (ownRooms.isEmpty()) {
-            this.noResults.setText(TextsManager.getInstance().getString("nav_private_norooms"));
-            this.noResults.setVisible(true);
-            return;
-        }
-
-        for (var room : ownRooms) {
-           //  this.addRoom(room, false);
-        }
-    }
-    
-    private void showFavouriteRooms() {
-        this.navigatorList.clearContent();
-
-        var favouriteRooms = this.getFavouriteRooms();
-
-        for (var room : favouriteRooms) {
-            // this.addRoom(room, false);
-        }
-    }*/
 
     private void goToRoom(NavigatorNode room) {
         if (room.getDoorbell() == Doorbell.PASSWORD) {
@@ -1036,116 +1026,6 @@ public class NavigatorView extends Widget {
             });
         }
     }
-
-    /*
-    private NavigatorNode getCategory(int categoryId) {
-        // Please see note in Category.java :)
-        NavigatorNode NavigatorNode = null;
-
-        if (categoryId == 1) {
-            NavigatorNode = new Category(1, "Public Rooms");
-            category.addRoom(new NavigatorRoom(1, "Welcome Lounge", "New? Lost? Get a warm welcome here!", "", 1, 40));
-            category.addRoom(new NavigatorRoom(1, "The Park", "Visit the park and the infamous Infobus", "", 40, 65));
-            category.addRoom(new NavigatorRoom(1, "Habbo Lido", "Splish, splash and have a bash in the famous Habbo pool!", "", 115, 120));
-            category.addRoom(new NavigatorRoom(1, "Rooftop Rumble", "Wobble Squabble your bum off in our cool rooftop hang out", "", 50, 50));
-            category.addCategory(new Category(3, "Entertainment", 0, 100));
-            category.addCategory(new Category(3, "Restaurants and Cafes", 0, 100));
-            category.addCategory(new Category(3, "Lounges and Clubs", 0, 100));
-            category.addCategory(new Category(3, "Habbo Club", 0, 100));
-            category.addCategory(new Category(3, "Outside Spaces", 0, 100));
-            category.addCategory(new Category(3, "The Lobbies", 0, 100));
-            category.addCategory(new Category(3, "The Hallways", 0, 100));
-            category.addCategory(new Category(3, "Games", 0, 100));
-        }
-
-        if (categoryId == 2) {
-            NavigatorNode = new Category(2, "Guest Rooms");
-            category.addCategory(new Category(4, "Flower Power Puzzle", 0, 100));
-            category.addCategory(new Category(4, "Gaming & Race Rooms", 0, 100));
-            category.addCategory(new Category(4, "Restaurant, Bar & Night Club Rooms", 0, 100));
-            category.addCategory(new Category(4, "Trade Floor", 0, 100));
-            category.addCategory(new Category(4, "Chill, Chat & Discussion Rooms", 0, 100));
-            category.addCategory(new Category(4, "Hair Salons & Modelling Rooms", 0, 100));
-            category.addCategory(new Category(4, "Maze & Theme Park Rooms", 0, 100));
-            category.addCategory(new Category(4, "Help Centre Rooms", 0, 100));
-            category.addCategory(new Category(4, "Miscellaneous", 0, 100));
-        }
-
-        if (categoryId == 3) {
-            NavigatorNode = new Category(3, "Entertainent", this.getCategory(1));
-            category.addCategory(new Category(7, "Secret Subcategory", 0, 100));
-        }
-
-        if (categoryId == 4) {
-            NavigatorNode = new Category(4, "Trade Floor", this.getCategory(2));
-            category.addCategory(new Category(5, "Secret Subcategory", 0, 100));
-        }
-
-        if (categoryId == 5) {
-            NavigatorNode = new Category(5, "Secret Subcategory", this.getCategory(4));
-            category.addCategory(new Category(6, "Secret Sub-Subcategory", 0, 100));
-        }
-
-        if (categoryId == 6) {
-            NavigatorNode = new Category(6, "Secret Sub-Subcategory", this.getCategory(5));
-            category.addRoom(new NavigatorRoom(1, "Parsnip's Casino", "Parsnip", "Large bets welcomed, games 13/21/poker", 0, 15, Doorbell.OPEN));
-        }
-
-        if (categoryId == 7) {
-            NavigatorNode = new Category(7, "Secret Subcategory", this.getCategory(3));
-            category.addCategory(new Category(8, "Secret Sub-Subcategory", 0, 100));
-        }
-
-        if (categoryId == 8) {
-            NavigatorNode = new Category(8, "Secret Sub-Subcategory", this.getCategory(7));
-            category.addRoom(new NavigatorRoom(1, "Theatredome", "Perform your latest master piece, or simply catch the latest gossip.", "", 1, 100));
-        }
-
-        return category;
-    }
-
-    private ArrayList<NavigatorRoom> getRecommendedRooms () {
-        var recommendedRooms = new ArrayList<NavigatorRoom>();
-
-        recommendedRooms.add(new NavigatorRoom(1, "Box ( Habbo.nl - 2007 )", "Miquel", "Recreated from Habbo NL in 2007. Original room by Vinny.", 0, 40, Doorbell.OPEN));
-        recommendedRooms.add(new NavigatorRoom(1, "Generating the bars of 50c", "ParsnipAlt", "", 0, 65, Doorbell.RING));
-        recommendedRooms.add(new NavigatorRoom(1, "Ban for 2 years, thanks for that", "ParsnipAlt2", "", 0, 120, Doorbell.PASSWORD));
-    
-        return recommendedRooms;
-    }
-
-    private ArrayList<NavigatorRoom> getSearchResults(String criteria) {
-        var searchResults = new ArrayList<NavigatorRoom>();
-
-        if (criteria.equals("Parsnip")) {
-            searchResults.add(new NavigatorRoom(1, "Parsnip's Casino", "Parsnip", "Large bets welcomed, games 13/21/poker", 0, 15, Doorbell.OPEN));
-        }
-
-        return searchResults;
-    }
-
-    private ArrayList<NavigatorRoom> getOwnRooms() {
-        var ownRooms = new ArrayList<NavigatorRoom>();
-
-        ownRooms.add(new NavigatorRoom(1, "Parsnip's Casino", "Parsnip", "Large bets welcomed, games 13/21/poker", 0, 15, Doorbell.OPEN));
-        ownRooms.add(new NavigatorRoom(1, "Parsnip's Hub", "Parsnip", "Sit and chat or go through the teles to see some of my favourite rooms", 0, 25, Doorbell.OPEN));
-        ownRooms.add(new NavigatorRoom(1, "Parsnip's Room", "Parsnip", "If I'm sat here alone, I'm probably afk", 0, 10, Doorbell.OPEN));
-        ownRooms.add(new NavigatorRoom(1, "Siract's Trophy Room", "Parsnip", "Tribute to Siract - will be sorely missed!", 0, 10, Doorbell.OPEN));
-        ownRooms.add(new NavigatorRoom(1, "Pea's Dutch Lounge", "Parsnip", "Dutch themed lounge for Pea", 0, 15, Doorbell.OPEN));
-        ownRooms.add(new NavigatorRoom(1, "Parsnip's Hallway", "Parsnip", "", 0, 25, Doorbell.OPEN));
-        ownRooms.add(new NavigatorRoom(1, "Animal Nitrate", "Parsnip", "", 0, 25, Doorbell.OPEN));
-        
-        return ownRooms;
-    }
-
-    private ArrayList<NavigatorRoom> getFavouriteRooms() {
-        var favouriteRooms = new ArrayList<NavigatorRoom>();
-
-        favouriteRooms.add(new NavigatorRoom(1, "Parsnip's Casino", "Parsnip", "Large bets welcomed, games 13/21/poker", 0, 15, Doorbell.OPEN));
-        
-        return favouriteRooms;
-    }
-    */
 
     private void addToFavourites(int roomId) { 
         System.out.println("Add " + roomId + " to favourites");

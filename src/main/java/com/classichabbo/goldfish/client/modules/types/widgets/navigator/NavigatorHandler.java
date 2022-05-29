@@ -1,6 +1,7 @@
 package com.classichabbo.goldfish.client.modules.types.widgets.navigator;
 
 import com.classichabbo.goldfish.client.Movie;
+import com.classichabbo.goldfish.client.game.Attributes;
 import com.classichabbo.goldfish.networking.Connection;
 import com.classichabbo.goldfish.networking.wrappers.Request;
 import com.classichabbo.goldfish.networking.wrappers.messages.MessageHandler;
@@ -50,6 +51,13 @@ public class NavigatorHandler extends MessageHandler {
 
         if (navigatorView != null)
             navigatorView.getComponent().processNavigatorData(tNodeInfo);
+    }
+
+    private static void noflatsforuser(Connection connection, Request request) {
+        var navigatorView = Movie.getInstance().getViewByClass(NavigatorView.class);
+
+        if (navigatorView != null)
+            navigatorView.getComponent().processFlatData(List.of()); // force send no flats!
     }
 
     private static NavigatorNode parseNode(Request request) {
@@ -120,6 +128,20 @@ public class NavigatorHandler extends MessageHandler {
         conn.send("NAVIGATE", this.isHideFull(), categoryId, 1);
     }
 
+    public void sendGetOwnFlats() {
+        var conn = Connection.get();
+
+        if (conn == null)
+            return;
+
+        var userObj = conn.attr(Attributes.USER_OBJECT).get();
+
+        if (userObj == null)
+            return;
+
+        conn.send("SUSERF", userObj.getUsername());
+    }
+
     private boolean isHideFull() {
         return this.getView().isHideFullRooms();
     }
@@ -133,9 +155,11 @@ public class NavigatorHandler extends MessageHandler {
     public void regMsgList(boolean tBool) {
         var listeners = new HashMap<Integer, MessageRequest>();
         listeners.put(220, NavigatorHandler::navnodeinfo);
+        listeners.put(57, NavigatorHandler::noflatsforuser);
 
         var commands = new HashMap<String, Integer>();
         commands.put("NAVIGATE", 150);
+        commands.put("SUSERF", 16);
 
         if (tBool) {
             Connection.get().registerListeners(this, listeners);

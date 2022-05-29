@@ -37,6 +37,17 @@ public class NavigatorComponent extends Component {
         });
     }
 
+
+    public void processFlatData(List<NavigatorNode> flatList) {
+        invoke(() -> {
+            var navigatorView = Movie.getInstance().getViewByClass(NavigatorView.class);
+
+            if (navigatorView != null) {
+                navigatorView.updateOwnRooms(flatList);
+            }
+        });
+    }
+
     /**
      * Finds the parent of the current node, if no parameter is specified then it will
      * default to the current node in-use.

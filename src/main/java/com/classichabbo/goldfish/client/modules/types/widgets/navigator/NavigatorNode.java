@@ -100,6 +100,10 @@ public class NavigatorNode {
         return this.nodeType == NavigatorNodeType.PUBLIC_ROOM || this.nodeType == NavigatorNodeType.PRIVATE_ROOM;
     }
 
+    public boolean isCategory() {
+        return this.nodeType == NavigatorNodeType.CATEGORY;
+    }
+
     public int getPort() {
         return port;
     }
