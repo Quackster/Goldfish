@@ -58,8 +58,6 @@ public class NavigatorHandler extends MessageHandler {
         if (tNodeId <= 0)
             return null;
 
-        //System.out.println(new String(request.readBytes(request.remainingBytes().length)));
-
         var node = new NavigatorNode();
 
         var tNodeType = request.readInt();
@@ -75,18 +73,19 @@ public class NavigatorHandler extends MessageHandler {
         node.setMaxUsers(maxUsers);
         node.setParentid(parentid);
 
-        if (tNodeType == 1) {
-            node.setUnitStrId(request.readClientString());
-            node.setPort(request.readInt());
-            node.setDoor(String.valueOf(request.readInt()));
-            node.setCasts(request.readClientString());
-            node.setUsersInQueue(request.readInt());
-            node.setVisible(request.readBool());
-        }
-
-        if (tNodeType == 2) {
-            node.setNodeType(0); // we is a category instead >:)
-            node.getChildren().addAll(parseFlatCategoryNode(request));
+        switch (tNodeType) {
+            case 1:
+                node.setUnitStrId(request.readClientString());
+                node.setPort(request.readInt());
+                node.setDoor(String.valueOf(request.readInt()));
+                node.setCasts(request.readClientString());
+                node.setUsersInQueue(request.readInt());
+                node.setVisible(request.readBool());
+                break;
+            case 2:
+                node.setNodeType(0); // we is a category instead >:)
+                node.getChildren().addAll(parseFlatCategoryNode(request));
+                break;
         }
 
         return node;

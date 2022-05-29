@@ -1,6 +1,7 @@
 package com.classichabbo.goldfish.client.modules.types.widgets.navigator;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
@@ -32,6 +33,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
@@ -680,7 +682,9 @@ public class NavigatorView extends Widget {
         if (room.isPublic) {
             this.infoImg.setTranslateX(16);
             this.infoImg.setTranslateY(15);
-            this.infoImg.setImage(ResourceManager.getInstance().getFxImage("sprites/views/navigator/public_placeholder.png")); // TODO Avery - get Public Room preview image
+
+            // System.out.println("sprites/views/navigator/thumbnails/" + room.infoImg + ".png");
+            this.infoImg.setImage(this.resolveThumbnail(room));
             this.infoTitle.setText(room.name + " (" + room.visitors + "/" + room.maxVisitors + ")");
             this.infoSubtitle.setText("");
             this.infoDescription.setTranslateY(0);
@@ -715,6 +719,35 @@ public class NavigatorView extends Widget {
         }
 
         this.info.setVisible(true);
+    }
+
+    private Image resolveThumbnail(NavigatorRoom node) {
+        Image img = null;
+
+        try {
+            img = ResourceManager.getInstance().getFxImage("sprites/views/navigator/thumbnails/" + node.infoImg + ".png");
+        } catch (Exception ex) {
+
+        }
+
+        if (img == null) {
+            try {
+                var imgUrl = String.join("_", Arrays.copyOf(node.infoImg.split("_"), node.infoImg.split("_").length - 1)); // remove last entry and try again, eg beauty salon
+                img = ResourceManager.getInstance().getFxImage("sprites/views/navigator/thumbnails/" + imgUrl + ".png");
+            } catch (Exception ex) {
+
+            }
+        }
+
+        if (img == null) {
+            try {
+                img = ResourceManager.getInstance().getFxImage("sprites/views/navigator/thumbnails/parsnip_placeholder.png");
+            } catch (Exception ex) {
+
+            }
+        }
+
+        return img;
     }
 
     private void infoHide() {

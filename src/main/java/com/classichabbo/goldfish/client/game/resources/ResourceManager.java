@@ -75,6 +75,15 @@ public class ResourceManager {
         }
     }
 
+    public Image getFxImage(String url, String backupUrl) {
+        try {
+            return getFxImage(url);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return getFxImage(backupUrl);
+        }
+    }
+
     public BufferedImage getAwtImage(String url) {
         try {
             if (this.awtImages.containsKey(url)) {
