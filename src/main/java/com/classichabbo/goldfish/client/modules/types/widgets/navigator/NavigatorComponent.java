@@ -36,7 +36,7 @@ public class NavigatorComponent extends Component {
             }
         });
     }
-    
+
     /**
      * Finds the parent of the current node, if no parameter is specified then it will
      * default to the current node in-use.

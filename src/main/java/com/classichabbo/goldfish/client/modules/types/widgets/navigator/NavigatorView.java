@@ -623,7 +623,7 @@ public class NavigatorView extends Widget {
             this.infoLeftButton.setTranslateX(0);
 
             this.updateBackButtons();
-            this.showOwnRooms();
+            //this.showOwnRooms();
         }
         else {
             this.room.setVisible(false);
@@ -646,7 +646,7 @@ public class NavigatorView extends Widget {
             this.infoLeftButton.setTranslateX(-30);
 
             this.updateBackButtons();
-            this.showFavouriteRooms();
+            //this.showFavouriteRooms();
         }
 
         this.info.setVisible(true);
@@ -678,39 +678,39 @@ public class NavigatorView extends Widget {
         this.backTop.setVisible(true);
     }
 
-    private void infoShowRoom(NavigatorRoom room) {
-        if (room.isPublic) {
+    private void infoShowRoom(NavigatorNode node) {
+        if (node.getNodeType() == NavigatorNodeType.PUBLIC_ROOM) {
             this.infoImg.setTranslateX(16);
             this.infoImg.setTranslateY(15);
 
             // System.out.println("sprites/views/navigator/thumbnails/" + room.infoImg + ".png");
-            this.infoImg.setImage(this.resolveThumbnail(room));
-            this.infoTitle.setText(room.name + " (" + room.visitors + "/" + room.maxVisitors + ")");
+            this.infoImg.setImage(this.resolveThumbnail(node));
+            this.infoTitle.setText(node.getName() + " (" + node.getUsercount() + "/" + node.getMaxUsers() + ")");
             this.infoSubtitle.setText("");
             this.infoDescription.setTranslateY(0);
         }
         else {
             this.infoImg.setTranslateX(0);
             this.infoImg.setTranslateY(0);
-            this.infoImg.setImage(ResourceManager.getInstance().getFxImage("sprites/views/navigator/info_doorbell_" + getBackgroundByDoorbell(room.doorbell) + ".png"));
-            this.infoTitle.setText(room.name);
-            this.infoSubtitle.setText("(" + room.visitors + "/" + room.maxVisitors + ") " + TextsManager.getInstance().getString("room_owner") + " " + room.owner);
+            this.infoImg.setImage(ResourceManager.getInstance().getFxImage("sprites/views/navigator/info_doorbell_" + getBackgroundByDoorbell(node.getDoorbell()) + ".png"));
+            this.infoTitle.setText(node.getName());
+            this.infoSubtitle.setText("(" + node.getUsercount() + "/" + node.getMaxUsers() + ") " + TextsManager.getInstance().getString("room_owner") + " " + node.getOwner());
             this.infoDescription.setTranslateY(10);
         }
 
-        this.infoDescription.setText(room.description);
+        this.infoDescription.setText(node.getDescription());
 
         if (this.currentPage == NavigatorPage.OWN) {
-            this.infoLeftButton.setOnMouseClicked(e1 -> this.pendingAction = () -> this.showModifyRoom(room));
+            this.infoLeftButton.setOnMouseClicked(e1 -> this.pendingAction = () -> this.showModifyRoom(node));
         }
         else if (this.currentPage == NavigatorPage.FAVOURITES) {
-            this.infoLeftButton.setOnMouseClicked(e1 -> this.pendingAction = () -> this.removeFromFavourites(room.roomId));
+            this.infoLeftButton.setOnMouseClicked(e1 -> this.pendingAction = () -> this.removeFromFavourites(node.getId()));
         }
         else {
-            this.infoLeftButton.setOnMouseClicked(e1 -> this.pendingAction = () -> this.addToFavourites(room.roomId));
+            this.infoLeftButton.setOnMouseClicked(e1 -> this.pendingAction = () -> this.addToFavourites(node.getId()));
         }
 
-        this.infoGoButton.setOnMouseClicked(e1 -> this.pendingAction = () -> this.goToRoom(room));
+        this.infoGoButton.setOnMouseClicked(e1 -> this.pendingAction = () -> this.goToRoom(node));
         this.infoLeftButton.setVisible(true);
         this.infoGoButton.setVisible(true);
 
@@ -721,18 +721,18 @@ public class NavigatorView extends Widget {
         this.info.setVisible(true);
     }
 
-    private Image resolveThumbnail(NavigatorRoom node) {
+    private Image resolveThumbnail(NavigatorNode node) {
         Image img = null;
 
         try {
-            img = ResourceManager.getInstance().getFxImage("sprites/views/navigator/thumbnails/" + node.infoImg + ".png");
+            img = ResourceManager.getInstance().getFxImage("sprites/views/navigator/thumbnails/" + node.getUnitStrId() + ".png");
         } catch (Exception ex) {
 
         }
 
         if (img == null) {
             try {
-                var imgUrl = String.join("_", Arrays.copyOf(node.infoImg.split("_"), node.infoImg.split("_").length - 1)); // remove last entry and try again, eg beauty salon
+                var imgUrl = String.join("_", Arrays.copyOf(node.getUnitStrId().split("_"), node.getUnitStrId().split("_").length - 1)); // remove last entry and try again, eg beauty salon
                 img = ResourceManager.getInstance().getFxImage("sprites/views/navigator/thumbnails/" + imgUrl + ".png");
             } catch (Exception ex) {
 
@@ -857,11 +857,11 @@ public class NavigatorView extends Widget {
         this.backTop.setVisible(false);
     }
 
-    public void updateRecommendedRooms(ArrayList<NavigatorRoom> recommendedRooms) {
+    public void updateRecommendedRooms(ArrayList<NavigatorNode> recommendedRooms) {
         this.recommendedList.getChildren().clear();
 
         for (var room : recommendedRooms) {
-           // this.addRoom(room, true);
+            this.addRoom(room, true);
         }
     }
 
@@ -882,6 +882,7 @@ public class NavigatorView extends Widget {
         }
     }
 
+    /*
     private void showRecommendedRooms() {
         this.recommendedList.getChildren().clear();
 
@@ -891,11 +892,11 @@ public class NavigatorView extends Widget {
            // this.addRoom(room, true);
         }
     }
-
+*/
     private void showSearchResults() {
         this.navigatorList.clearContent();
 
-        var searchResults = this.getSearchResults(this.searchCriteria.getText());
+        var searchResults = new ArrayList<NavigatorNode>();//this.getSearchResults(this.searchCriteria.getText());
 
         if (searchResults.isEmpty()) {
             this.noResults.setText(TextsManager.getInstance().getString("nav_prvrooms_notfound"));
@@ -904,10 +905,11 @@ public class NavigatorView extends Widget {
         }
 
         for (var searchResult : searchResults) {
-            // this.addRoom(searchResult, false);
+            this.addRoom(searchResult, false);
         }
     }
 
+    /*
     private void showOwnRooms() {
         this.navigatorList.clearContent();
 
@@ -932,24 +934,24 @@ public class NavigatorView extends Widget {
         for (var room : favouriteRooms) {
             // this.addRoom(room, false);
         }
-    }
+    }*/
 
-    private void goToRoom(NavigatorRoom room) {
-        if (room.doorbell == Doorbell.PASSWORD) {
+    private void goToRoom(NavigatorNode room) {
+        if (room.getDoorbell() == Doorbell.PASSWORD) {
             this.showPasswordPrompt(room);
         }
         else {
-            Movie.getInstance().goToRoom(room.roomId, null);
+            Movie.getInstance().goToRoom(room.getId(), null);
         }
     }
 
-    private void showPasswordPrompt(NavigatorRoom room) {
-        this.passwordPromptName.setText(room.name);
-        this.passwordPromptOkButton.setOnMouseClicked(e -> Movie.getInstance().goToRoom(room.roomId, this.passwordPromptField.getText()));
+    private void showPasswordPrompt(NavigatorNode room) {
+        this.passwordPromptName.setText(room.getName());
+        this.passwordPromptOkButton.setOnMouseClicked(e -> Movie.getInstance().goToRoom(room.getId(), this.passwordPromptField.getText()));
         this.setContent(this.passwordPrompt, new Insets(9, 11, 11, 10), true);
     }
 
-    private void showModifyRoom(NavigatorRoom room) {
+    private void showModifyRoom(NavigatorNode room) {
         this.content.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/views/navigator/background_modify_room.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
         this.room.setVisible(false);
         this.title.setVisible(false);
@@ -961,8 +963,8 @@ public class NavigatorView extends Widget {
 
     private void addRoom(NavigatorNode room, Boolean recommended) {
         var navigatorItem = new NavigatorItem(room);
-        navigatorItem.setNameButtonOnMouseClicked(e -> this.pendingAction = () -> this.infoShowRoom(navigatorItem.getRoom()));
-        navigatorItem.setGoButtonOnMouseClicked(e -> this.pendingAction = () -> this.goToRoom(navigatorItem.getRoom()));
+        navigatorItem.setNameButtonOnMouseClicked(e -> this.pendingAction = () -> this.infoShowRoom(navigatorItem.getNode()));
+        navigatorItem.setGoButtonOnMouseClicked(e -> this.pendingAction = () -> this.goToRoom(navigatorItem.getNode()));
 
         if (recommended) {
             this.recommendedList.getChildren().add(navigatorItem);
@@ -1101,7 +1103,7 @@ public class NavigatorView extends Widget {
 
         return category;
     }
-        */
+
     private ArrayList<NavigatorRoom> getRecommendedRooms () {
         var recommendedRooms = new ArrayList<NavigatorRoom>();
 
@@ -1143,6 +1145,7 @@ public class NavigatorView extends Widget {
         
         return favouriteRooms;
     }
+    */
 
     private void addToFavourites(int roomId) { 
         System.out.println("Add " + roomId + " to favourites");

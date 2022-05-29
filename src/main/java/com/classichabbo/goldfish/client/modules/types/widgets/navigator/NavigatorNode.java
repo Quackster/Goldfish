@@ -6,7 +6,7 @@ import java.util.List;
 public class NavigatorNode {
     private int id;
     private boolean hideFull;
-    private int nodeType;
+    private NavigatorNodeType nodeType;
     private String name;
     private int usercount;
     private int maxUsers;
@@ -44,12 +44,12 @@ public class NavigatorNode {
         this.hideFull = hideFull;
     }
 
-    public int getNodeType() {
+    public NavigatorNodeType getNodeType() {
         return nodeType;
     }
 
     public void setNodeType(int nodeType) {
-        this.nodeType = nodeType;
+        this.nodeType = NavigatorNodeType.getTypeById(nodeType);
     }
 
     public String getName() {
@@ -93,11 +93,11 @@ public class NavigatorNode {
     }
 
     public boolean isPublicRoom() {
-        return this.nodeType == 1;
+        return this.nodeType == NavigatorNodeType.PUBLIC_ROOM;
     }
 
     public boolean isRoom() {
-        return this.nodeType == 2 || this.nodeType == 1;
+        return this.nodeType == NavigatorNodeType.PUBLIC_ROOM || this.nodeType == NavigatorNodeType.PRIVATE_ROOM;
     }
 
     public int getPort() {
