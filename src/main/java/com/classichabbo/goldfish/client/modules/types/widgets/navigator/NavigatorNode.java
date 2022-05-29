@@ -5,7 +5,7 @@ import java.util.List;
 
 public class NavigatorNode {
     private int id;
-    private int nodeMask;
+    private boolean hideFull;
     private int nodeType;
     private String name;
     private int usercount;
@@ -13,11 +13,16 @@ public class NavigatorNode {
     private int parentid;
     private String unitStrId;
     private int port;
-    private int door;
+    private String door;
     private String casts;
     private int usersInQueue;
     private boolean isVisible;
-    private List<NavigatorFlatNode> children;
+    private int flatId;
+    private String owner;
+    private String description;
+    private int nodeId;
+
+    private List<NavigatorNode> children;
 
     public NavigatorNode() {
         this.children = new ArrayList<>();
@@ -31,12 +36,12 @@ public class NavigatorNode {
         this.id = id;
     }
 
-    public int getNodeMask() {
-        return nodeMask;
+    public boolean getHideFull() {
+        return hideFull;
     }
 
-    public void setNodeMask(int nodeMask) {
-        this.nodeMask = nodeMask;
+    public void setHideFull(boolean hideFull) {
+        this.hideFull = hideFull;
     }
 
     public int getNodeType() {
@@ -95,11 +100,11 @@ public class NavigatorNode {
         this.port = port;
     }
 
-    public int getDoor() {
+    public String getDoor() {
         return door;
     }
 
-    public void setDoor(int door) {
+    public void setDoor(String door) {
         this.door = door;
     }
 
@@ -127,7 +132,40 @@ public class NavigatorNode {
         isVisible = visible;
     }
 
-    public List<NavigatorFlatNode> getChildren() {
+    public int getFlatId() {
+        return flatId;
+    }
+
+    public void setFlatId(int flatId) {
+        this.flatId = flatId;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public int getNodeId() {
+        return nodeId;
+    }
+
+    public void setNodeId(int nodeId) {
+        this.nodeId = nodeId;
+    }
+
+
+    public List<NavigatorNode> getChildren() {
         return children;
     }
 }

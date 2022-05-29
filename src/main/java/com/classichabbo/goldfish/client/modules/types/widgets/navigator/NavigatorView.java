@@ -152,7 +152,7 @@ public class NavigatorView extends Widget {
         
         // TODO Avery - I'm not sure where you get these from
         this.publicCategoryId = VariablesManager.getInstance().getInt("navigator.public.default", 3);
-        this.privateCategoryId = VariablesManager.getInstance().getInt("navigator.private.default", 3);
+        this.privateCategoryId = VariablesManager.getInstance().getInt("navigator.private.default", 4);
         this.inRoom = false;
         this.hideFullRooms = false;
         
@@ -161,13 +161,6 @@ public class NavigatorView extends Widget {
         this.setTitle(TextsManager.getInstance().getString("navigator"));
         this.setContent(this.content, this.padding, true);
         this.setLocation();
-        this.setPage(NavigatorPage.PUBLIC);
-
-        this.handler.sendNavigate(this.publicCategoryId);
-        this.handler.sendNavigate(this.privateCategoryId);
-
-        toFront();
-        setHidden(false);
 
         this.registerUpdate();
     }
@@ -218,7 +211,12 @@ public class NavigatorView extends Widget {
 
     @Override
     public void setHidden(boolean flag) {
-        this.setPage(this.currentPage); // used to reset info box at the bottom
+        if (this.currentPage == null)
+            this.currentPage = NavigatorPage.PUBLIC;
+
+        if (!flag)
+            this.setPage(this.currentPage); // used to reset info box at the bottom
+
         super.setHidden(flag);
     }
 
@@ -514,6 +512,7 @@ public class NavigatorView extends Widget {
 
         if (page == NavigatorPage.PUBLIC) {
             this.currentPage = NavigatorPage.PUBLIC;
+            this.handler.sendNavigate(this.publicCategoryId);
             this.content.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/views/navigator/background_public.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
             this.title.setLayoutY(62);
             this.hideFull.setLayoutY(62);
@@ -541,14 +540,16 @@ public class NavigatorView extends Widget {
             this.ownButton.setVisible(true);
             this.favouritesButton.setVisible(true);
         }
-        
+
         if (page == NavigatorPage.PRIVATE) {
             this.currentPage = NavigatorPage.PRIVATE;
+            this.handler.sendNavigate(this.privateCategoryId);
+
             this.content.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/views/navigator/background_private.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
             this.title.setLayoutY(163);
             this.hideFull.setLayoutY(163);
             this.hideFull.setVisible(true);
-            
+
             this.recommendedTitle.setVisible(true);
             this.recommendedRefresh.setVisible(true);
             this.recommendedList.setVisible(true);
@@ -563,10 +564,7 @@ public class NavigatorView extends Widget {
             this.infoLeftButton.setText(TextsManager.getInstance().getString("nav_addtofavourites"));
             this.infoLeftButton.setTranslateX(0);
 
-            //this.handler.sendNavigate(this.publicCategoryId);
-
-            this.showCategory(this.privateCategoryId);
-            this.showRecommendedRooms();
+            this.updateRecommendedRooms(new ArrayList<>());
         }
         else {
             this.recommendedTitle.setVisible(false);
@@ -770,9 +768,9 @@ public class NavigatorView extends Widget {
 
         for (var category : backCategories) {
             if (index == 0) {
-                this.backTopShow(category.parentCategory.name, e -> this.pendingAction = () -> this.showCategory(category.parentCategory.categoryId));
+                this.backTopShow(category.parentCategory.name, e -> this.pendingAction = () -> this.handler.sendNavigate(category.parentCategory.categoryId)); //this.showCategory(category.parentCategory.categoryId));
             } else {
-                content.getChildren().add(new NavigatorBackButton(category.parentCategory.name, startY, index, e -> this.pendingAction = () -> this.showCategory(category.parentCategory.categoryId)));
+                content.getChildren().add(new NavigatorBackButton(category.parentCategory.name, startY, index, e -> this.pendingAction = () -> this.handler.sendNavigate(category.parentCategory.categoryId))); //this.showCategory(category.parentCategory.categoryId)));
             }
             index++;
         }
@@ -818,6 +816,31 @@ public class NavigatorView extends Widget {
         this.navigatorList.setTranslateY(0);
 
         this.backTop.setVisible(false);
+    }
+
+    public void updateRecommendedRooms(ArrayList<NavigatorRoom> recommendedRooms) {
+        this.recommendedList.getChildren().clear();
+
+        for (var room : recommendedRooms) {
+            this.addRoom(room, true);
+        }
+    }
+
+    public void updateRoomList(Category category) {
+        this.navigatorList.clearContent();
+
+        this.currentCategory = category;
+        //this.currentCategory = this.getCategory(categoryId);
+        this.updateBackButtons();
+        this.title.setText(this.currentCategory.name);
+
+        for (var room : this.currentCategory.rooms) {
+            this.addRoom(room, false);
+        }
+
+        for (var childCategory : this.currentCategory.categories) {
+            this.addCategory(childCategory);
+        }
     }
 
     private void showRecommendedRooms() {
@@ -1095,6 +1118,10 @@ public class NavigatorView extends Widget {
 
     public void setHideFullRooms(boolean hideFullRooms) {
         this.hideFullRooms = hideFullRooms;
+    }
+
+    public Category getCurrentCategory() {
+        return this.currentCategory;
     }
 
     private enum NavigatorPage {

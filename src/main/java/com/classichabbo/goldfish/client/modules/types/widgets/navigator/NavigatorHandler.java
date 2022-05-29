@@ -1,16 +1,12 @@
 package com.classichabbo.goldfish.client.modules.types.widgets.navigator;
 
-import com.classichabbo.goldfish.client.game.values.types.VariablesManager;
-import com.classichabbo.goldfish.client.modules.Component;
-import com.classichabbo.goldfish.client.modules.types.GoldfishHandler;
+import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.networking.Connection;
 import com.classichabbo.goldfish.networking.wrappers.Request;
 import com.classichabbo.goldfish.networking.wrappers.messages.MessageHandler;
 import com.classichabbo.goldfish.networking.wrappers.messages.MessageRequest;
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -19,6 +15,7 @@ public class NavigatorHandler extends MessageHandler {
 
     public NavigatorHandler(NavigatorView navigatorView) {
         super(navigatorView);
+
     }
 
     private static void navnodeinfo(Connection connection, Request request) {
@@ -29,7 +26,7 @@ public class NavigatorHandler extends MessageHandler {
             return;
         }
 
-        tNodeInfo.setNodeMask(tNodeMask);
+        tNodeInfo.setHideFull(tNodeMask == 1);
         var tCategoryId = tNodeInfo.getId();
 
         while (request.remainingBytes().length > 0) {
@@ -45,20 +42,13 @@ public class NavigatorHandler extends MessageHandler {
                 tNodeInfo.getChildren().forEach(x -> x.setNodeId(tNodeId));
             }
 
-            //System.out.println("sub: " + gson.toJson(tNode));
+            tNodeInfo.getChildren().add(tNode);
         }
 
-        // System.out.println(gson.toJson(tNodeInfo));
+        var navigatorView = Movie.getInstance().getViewByClass(NavigatorView.class);
 
-        /*
-        if (!isPublicSpaces) {
-            System.out.println("room size: " + request.readInt());
-            return;
-        } else {
-            while (request.remainingBytes().length > 0) {
-                System.out.println(new String(request.readBytes(request.remainingBytes().length)));
-            }
-        }*/
+        if (navigatorView != null)
+            navigatorView.getComponent().processNavigatorData(tNodeInfo);
     }
 
     private static NavigatorNode parseNode(Request request) {
@@ -66,6 +56,8 @@ public class NavigatorHandler extends MessageHandler {
 
         if (tNodeId <= 0)
             return null;
+
+        //System.out.println(new String(request.readBytes(request.remainingBytes().length)));
 
         var node = new NavigatorNode();
 
@@ -85,7 +77,7 @@ public class NavigatorHandler extends MessageHandler {
         if (tNodeType == 1) {
             node.setUnitStrId(request.readClientString());
             node.setPort(request.readInt());
-            node.setDoor(request.readInt());
+            node.setDoor(String.valueOf(request.readInt()));
             node.setCasts(request.readClientString());
             node.setUsersInQueue(request.readInt());
             node.setVisible(request.readBool());
@@ -99,18 +91,19 @@ public class NavigatorHandler extends MessageHandler {
         return node;
     }
 
-    private static List<NavigatorFlatNode> parseFlatCategoryNode(Request request) {
-        var tFlatList = new ArrayList<NavigatorFlatNode>();
+    private static List<NavigatorNode> parseFlatCategoryNode(Request request) {
+        var tFlatList = new ArrayList<NavigatorNode>();
         var tFlatCount = request.readInt();
 
-        for (int i =0; i < tFlatCount; i++) {
-            var tFlatInfo = new NavigatorFlatNode();
+        for (int i = 0; i < tFlatCount; i++) {
+            var tFlatInfo = new NavigatorNode();
             tFlatInfo.setFlatId(request.readInt());
             tFlatInfo.setName(request.readClientString());
             tFlatInfo.setOwner(request.readClientString());
             tFlatInfo.setDoor(request.readClientString());
             tFlatInfo.setUsercount(request.readInt());
             tFlatInfo.setMaxUsers(request.readInt());
+            tFlatInfo.setDescription(request.readClientString());
             tFlatList.add(tFlatInfo);
         }
 
@@ -127,7 +120,12 @@ public class NavigatorHandler extends MessageHandler {
     }
 
     private boolean isHideFull() {
-        return ((NavigatorView)this.getView()).isHideFullRooms();
+        return this.getView().isHideFullRooms();
+    }
+
+    @Override
+    public NavigatorView getView() {
+        return ((NavigatorView)super.getView());
     }
 
     @Override
