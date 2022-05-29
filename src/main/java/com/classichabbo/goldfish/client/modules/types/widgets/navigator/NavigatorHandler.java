@@ -1,6 +1,5 @@
 package com.classichabbo.goldfish.client.modules.types.widgets.navigator;
 
-import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.game.values.types.VariablesManager;
 import com.classichabbo.goldfish.client.modules.Component;
 import com.classichabbo.goldfish.client.modules.types.GoldfishHandler;
@@ -9,8 +8,6 @@ import com.classichabbo.goldfish.networking.wrappers.Request;
 import com.classichabbo.goldfish.networking.wrappers.messages.MessageHandler;
 import com.classichabbo.goldfish.networking.wrappers.messages.MessageRequest;
 import com.google.gson.Gson;
-
-import javafx.application.Platform;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,14 +32,6 @@ public class NavigatorHandler extends MessageHandler {
         tNodeInfo.setNodeMask(tNodeMask);
         var tCategoryId = tNodeInfo.getId();
 
-        var parentCategory = Movie.getInstance().getViewByClass(NavigatorView.class).getCurrentCategory();
-
-        if ((parentCategory != null && parentCategory.categoryId == tNodeInfo.getId()) || tNodeInfo.getParentid() == 0) {
-            parentCategory = null;
-        }
-
-        var category = new Category(tNodeInfo.getId(), tNodeInfo.getName(), parentCategory, tNodeInfo.getUsercount(), tNodeInfo.getMaxUsers());
-
         while (request.remainingBytes().length > 0) {
             var tNode = parseNode(request);
 
@@ -56,29 +45,20 @@ public class NavigatorHandler extends MessageHandler {
                 tNodeInfo.getChildren().forEach(x -> x.setNodeId(tNodeId));
             }
 
-            if (tNode.getNodeType() == 0) {
-                category.categories.add(new Category(tNode.getId(), tNode.getName(), category, tNode.getUsercount(), tNode.getMaxUsers() == 0 ? 1 : tNode.getMaxUsers()));
-            }
-            if (tNode.getNodeType() == 1) {
-                category.rooms.add(new NavigatorRoom(tNode.getId(), tNode.getName(), tNode.getCasts(), "", tNode.getUsercount(), tNode.getMaxUsers()));
-            }
+            //System.out.println("sub: " + gson.toJson(tNode));
         }
 
-        for (var child : tNodeInfo.getChildren()) {
-            category.rooms.add(new NavigatorRoom(child.getFlatId(), child.getName(), child.getOwner(), child.getDescription(), child.getUsercount(), child.getMaxUsers(), getDoorbellFromString(child.getDoor())));
-        }
-        
-        Platform.runLater(() -> Movie.getInstance().getViewByClass(NavigatorView.class).showCategory(category));
-    }
+        // System.out.println(gson.toJson(tNodeInfo));
 
-    private static Doorbell getDoorbellFromString(String str) {
-        if (str.equals("password")) {
-            return Doorbell.PASSWORD;
-        }
-        if (str.equals("closed")) {
-            return Doorbell.RING;
-        }
-        return Doorbell.OPEN;
+        /*
+        if (!isPublicSpaces) {
+            System.out.println("room size: " + request.readInt());
+            return;
+        } else {
+            while (request.remainingBytes().length > 0) {
+                System.out.println(new String(request.readBytes(request.remainingBytes().length)));
+            }
+        }*/
     }
 
     private static NavigatorNode parseNode(Request request) {
@@ -131,7 +111,6 @@ public class NavigatorHandler extends MessageHandler {
             tFlatInfo.setDoor(request.readClientString());
             tFlatInfo.setUsercount(request.readInt());
             tFlatInfo.setMaxUsers(request.readInt());
-            tFlatInfo.setDescription(request.readClientString());
             tFlatList.add(tFlatInfo);
         }
 

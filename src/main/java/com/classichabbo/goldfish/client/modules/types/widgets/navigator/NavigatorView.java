@@ -150,6 +150,7 @@ public class NavigatorView extends Widget {
     public void start() {
         super.start();
         
+        // TODO Avery - I'm not sure where you get these from
         this.publicCategoryId = VariablesManager.getInstance().getInt("navigator.public.default", 3);
         this.privateCategoryId = VariablesManager.getInstance().getInt("navigator.private.default", 3);
         this.inRoom = false;
@@ -161,8 +162,12 @@ public class NavigatorView extends Widget {
         this.setContent(this.content, this.padding, true);
         this.setLocation();
         this.setPage(NavigatorPage.PUBLIC);
-        this.toFront();
-        this.setHidden(false);
+
+        this.handler.sendNavigate(this.publicCategoryId);
+        this.handler.sendNavigate(this.privateCategoryId);
+
+        toFront();
+        setHidden(false);
 
         this.registerUpdate();
     }
@@ -509,8 +514,6 @@ public class NavigatorView extends Widget {
 
         if (page == NavigatorPage.PUBLIC) {
             this.currentPage = NavigatorPage.PUBLIC;
-            this.handler.sendNavigate(this.publicCategoryId);
-            
             this.content.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/views/navigator/background_public.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
             this.title.setLayoutY(62);
             this.hideFull.setLayoutY(62);
@@ -528,6 +531,10 @@ public class NavigatorView extends Widget {
             this.infoImg.setImage(ResourceManager.getInstance().getFxImage("sprites/views/navigator/info_public.png"));
             this.infoLeftButton.setText(TextsManager.getInstance().getString("nav_addtofavourites"));
             this.infoLeftButton.setTranslateX(0);
+
+            //this.handler.sendNavigate(VariablesManager.getInstance().getInt("navigator.private.default", 3));
+
+            //this.showCategory(this.publicCategoryId);
         }
         else {
             this.searchButton.setVisible(true);
@@ -537,8 +544,6 @@ public class NavigatorView extends Widget {
         
         if (page == NavigatorPage.PRIVATE) {
             this.currentPage = NavigatorPage.PRIVATE;
-            this.handler.sendNavigate(this.privateCategoryId);
-
             this.content.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/views/navigator/background_private.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
             this.title.setLayoutY(163);
             this.hideFull.setLayoutY(163);
@@ -558,6 +563,9 @@ public class NavigatorView extends Widget {
             this.infoLeftButton.setText(TextsManager.getInstance().getString("nav_addtofavourites"));
             this.infoLeftButton.setTranslateX(0);
 
+            //this.handler.sendNavigate(this.publicCategoryId);
+
+            this.showCategory(this.privateCategoryId);
             this.showRecommendedRooms();
         }
         else {
@@ -715,11 +723,10 @@ public class NavigatorView extends Widget {
         this.info.setVisible(false);
     }
 
-    public void showCategory(Category category) {
+    private void showCategory(int categoryId) {
         this.navigatorList.clearContent();
         
-        this.currentCategory = category;
-        //this.currentCategory = this.getCategory(categoryId);
+        this.currentCategory = this.getCategory(categoryId);
         this.updateBackButtons();
         this.title.setText(this.currentCategory.name);
 
@@ -730,10 +737,6 @@ public class NavigatorView extends Widget {
         for (var childCategory : this.currentCategory.categories) {
             this.addCategory(childCategory);
         }
-    }
-
-    public Category getCurrentCategory() {
-        return this.currentCategory;
     }
 
     private void updateBackButtons() {
@@ -767,9 +770,9 @@ public class NavigatorView extends Widget {
 
         for (var category : backCategories) {
             if (index == 0) {
-                this.backTopShow(category.parentCategory.name, e -> this.pendingAction = () -> this.handler.sendNavigate(category.parentCategory.categoryId)); //this.showCategory(category.parentCategory.categoryId));
+                this.backTopShow(category.parentCategory.name, e -> this.pendingAction = () -> this.showCategory(category.parentCategory.categoryId));
             } else {
-                content.getChildren().add(new NavigatorBackButton(category.parentCategory.name, startY, index, e -> this.pendingAction = () -> this.handler.sendNavigate(category.parentCategory.categoryId))); //this.showCategory(category.parentCategory.categoryId)));
+                content.getChildren().add(new NavigatorBackButton(category.parentCategory.name, startY, index, e -> this.pendingAction = () -> this.showCategory(category.parentCategory.categoryId)));
             }
             index++;
         }
@@ -908,7 +911,7 @@ public class NavigatorView extends Widget {
 
     private void addCategory(Category category) {
         var navigatorItem = new NavigatorItem(category);
-        navigatorItem.setOnMouseClicked(e -> this.pendingAction = () -> this.handler.sendNavigate(category.categoryId)); //showCategory(category.categoryId));
+        navigatorItem.setOnMouseClicked(e -> this.pendingAction = () -> this.showCategory(category.categoryId));
         
         this.navigatorList.addContent(navigatorItem);
     }
@@ -968,6 +971,72 @@ public class NavigatorView extends Widget {
                 this.passwordPromptOkButton.setOnMouseClicked(oldClicked);
             });
         }
+    }
+
+    private Category getCategory(int categoryId) {
+        // Please see note in Category.java :)
+        Category category = null;
+
+        if (categoryId == 1) {
+            category = new Category(1, "Public Rooms");
+            category.addRoom(new NavigatorRoom(1, "Welcome Lounge", "New? Lost? Get a warm welcome here!", "", 1, 40));
+            category.addRoom(new NavigatorRoom(1, "The Park", "Visit the park and the infamous Infobus", "", 40, 65));
+            category.addRoom(new NavigatorRoom(1, "Habbo Lido", "Splish, splash and have a bash in the famous Habbo pool!", "", 115, 120));
+            category.addRoom(new NavigatorRoom(1, "Rooftop Rumble", "Wobble Squabble your bum off in our cool rooftop hang out", "", 50, 50));
+            category.addCategory(new Category(3, "Entertainment", 0, 100));
+            category.addCategory(new Category(3, "Restaurants and Cafes", 0, 100));
+            category.addCategory(new Category(3, "Lounges and Clubs", 0, 100));
+            category.addCategory(new Category(3, "Habbo Club", 0, 100));
+            category.addCategory(new Category(3, "Outside Spaces", 0, 100));
+            category.addCategory(new Category(3, "The Lobbies", 0, 100));
+            category.addCategory(new Category(3, "The Hallways", 0, 100));
+            category.addCategory(new Category(3, "Games", 0, 100));
+        }
+
+        if (categoryId == 2) {
+            category = new Category(2, "Guest Rooms");
+            category.addCategory(new Category(4, "Flower Power Puzzle", 0, 100));
+            category.addCategory(new Category(4, "Gaming & Race Rooms", 0, 100));
+            category.addCategory(new Category(4, "Restaurant, Bar & Night Club Rooms", 0, 100));
+            category.addCategory(new Category(4, "Trade Floor", 0, 100));
+            category.addCategory(new Category(4, "Chill, Chat & Discussion Rooms", 0, 100));
+            category.addCategory(new Category(4, "Hair Salons & Modelling Rooms", 0, 100));
+            category.addCategory(new Category(4, "Maze & Theme Park Rooms", 0, 100));
+            category.addCategory(new Category(4, "Help Centre Rooms", 0, 100));
+            category.addCategory(new Category(4, "Miscellaneous", 0, 100));
+        }
+
+        if (categoryId == 3) {
+            category = new Category(3, "Entertainent", this.getCategory(1));
+            category.addCategory(new Category(7, "Secret Subcategory", 0, 100));
+        }
+
+        if (categoryId == 4) {
+            category = new Category(4, "Trade Floor", this.getCategory(2));
+            category.addCategory(new Category(5, "Secret Subcategory", 0, 100));
+        }
+
+        if (categoryId == 5) {
+            category = new Category(5, "Secret Subcategory", this.getCategory(4));
+            category.addCategory(new Category(6, "Secret Sub-Subcategory", 0, 100));
+        }
+
+        if (categoryId == 6) {
+            category = new Category(6, "Secret Sub-Subcategory", this.getCategory(5));
+            category.addRoom(new NavigatorRoom(1, "Parsnip's Casino", "Parsnip", "Large bets welcomed, games 13/21/poker", 0, 15, Doorbell.OPEN));
+        }
+
+        if (categoryId == 7) {
+            category = new Category(7, "Secret Subcategory", this.getCategory(3));
+            category.addCategory(new Category(8, "Secret Sub-Subcategory", 0, 100));
+        }
+
+        if (categoryId == 8) {
+            category = new Category(8, "Secret Sub-Subcategory", this.getCategory(7));
+            category.addRoom(new NavigatorRoom(1, "Theatredome", "Perform your latest master piece, or simply catch the latest gossip.", "", 1, 100));
+        }
+
+        return category;
     }
 
     private ArrayList<NavigatorRoom> getRecommendedRooms () {
