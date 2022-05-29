@@ -1,10 +1,12 @@
 package com.classichabbo.goldfish.client.modules.types.widgets.navigator;
 
 import com.classichabbo.goldfish.client.Movie;
+import com.classichabbo.goldfish.client.game.Attributes;
 import com.classichabbo.goldfish.client.modules.Component;
 import com.classichabbo.goldfish.client.modules.types.GoldfishView;
 import com.classichabbo.goldfish.client.modules.types.club.ClubView;
 import com.classichabbo.goldfish.client.modules.types.widgets.navigator.NavigatorView;
+import com.classichabbo.goldfish.networking.Connection;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -46,6 +48,43 @@ public class NavigatorComponent extends Component {
                 navigatorView.updateOwnRooms(flatList);
             }
         });
+    }
+
+    public void sendNavigate(int categoryId) {
+        var conn = Connection.get();
+
+        if (conn == null)
+            return;
+
+        conn.send("NAVIGATE", this.isHideFull(), categoryId, 1);
+    }
+
+    public void sendGetOwnFlats() {
+        var conn = Connection.get();
+
+        if (conn == null)
+            return;
+
+        var userObj = conn.attr(Attributes.USER_OBJECT).get();
+
+        if (userObj == null)
+            return;
+
+        conn.send("SUSERF", userObj.getUsername());
+    }
+
+    public void sendSearchFlats(String tQuery) {
+        var conn = Connection.get();
+
+        if (conn == null)
+            return;
+
+        conn.send("SRCHF", tQuery);
+    }
+
+
+    private boolean isHideFull() {
+        return this.navigatorView.isHideFullRooms();
     }
 
     /**

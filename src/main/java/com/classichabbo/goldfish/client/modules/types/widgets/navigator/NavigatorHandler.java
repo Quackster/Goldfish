@@ -60,6 +60,13 @@ public class NavigatorHandler extends MessageHandler {
             navigatorView.getComponent().processFlatData(List.of()); // force send no flats!
     }
 
+    private static void search_flat_results(Connection connection, Request request) {
+        var navigatorView = Movie.getInstance().getViewByClass(NavigatorView.class);
+
+        if (navigatorView != null)
+            navigatorView.getComponent().processFlatData(parseFlatCategoryNode(request)); // force send no flats!
+    }
+
     private static NavigatorNode parseNode(Request request) {
         var tNodeId = request.readInt();
 
@@ -119,47 +126,17 @@ public class NavigatorHandler extends MessageHandler {
         return tFlatList;
     }
 
-    public void sendNavigate(int categoryId) {
-        var conn = Connection.get();
-
-        if (conn == null)
-            return;
-
-        conn.send("NAVIGATE", this.isHideFull(), categoryId, 1);
-    }
-
-    public void sendGetOwnFlats() {
-        var conn = Connection.get();
-
-        if (conn == null)
-            return;
-
-        var userObj = conn.attr(Attributes.USER_OBJECT).get();
-
-        if (userObj == null)
-            return;
-
-        conn.send("SUSERF", userObj.getUsername());
-    }
-
-    private boolean isHideFull() {
-        return this.getView().isHideFullRooms();
-    }
-
-    @Override
-    public NavigatorView getView() {
-        return ((NavigatorView)super.getView());
-    }
-
     @Override
     public void regMsgList(boolean tBool) {
         var listeners = new HashMap<Integer, MessageRequest>();
         listeners.put(220, NavigatorHandler::navnodeinfo);
         listeners.put(57, NavigatorHandler::noflatsforuser);
+        listeners.put(55, NavigatorHandler::search_flat_results);
 
         var commands = new HashMap<String, Integer>();
         commands.put("NAVIGATE", 150);
         commands.put("SUSERF", 16);
+        commands.put("SRCHF", 17);
 
         if (tBool) {
             Connection.get().registerListeners(this, listeners);

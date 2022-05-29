@@ -329,7 +329,7 @@ public class NavigatorView extends Widget {
 
         this.doSearchButton = new Button(TextsManager.getInstance().getString("nav_searchbutton"));
         this.doSearchButton.setLayoutY(12);
-        this.doSearchButton.setOnMouseClicked(e -> this.pendingAction = () -> this.showSearchResults());
+        this.doSearchButton.setOnMouseClicked(e -> this.pendingAction = () -> this.component.sendSearchFlats(this.searchCriteria.getText()));
         this.search.getChildren().add(this.doSearchButton);
 
         this.noResults = new Label("");
@@ -520,7 +520,7 @@ public class NavigatorView extends Widget {
 
         if (page == NavigatorPage.PUBLIC) {
             this.currentPage = NavigatorPage.PUBLIC;
-            this.handler.sendNavigate(this.publicCategoryId);
+            this.component.sendNavigate(this.publicCategoryId);
             this.content.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/views/navigator/", "background_public.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
             this.title.setLayoutY(62);
             this.hideFull.setLayoutY(62);
@@ -551,7 +551,7 @@ public class NavigatorView extends Widget {
 
         if (page == NavigatorPage.PRIVATE) {
             this.currentPage = NavigatorPage.PRIVATE;
-            this.handler.sendNavigate(this.privateCategoryId);
+            this.component.sendNavigate(this.privateCategoryId);
 
             this.content.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/views/navigator/", "background_private.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
             this.title.setLayoutY(163);
@@ -611,7 +611,7 @@ public class NavigatorView extends Widget {
 
         if (page == NavigatorPage.OWN) {
             this.currentPage = NavigatorPage.OWN;
-            this.handler.sendGetOwnFlats();
+            this.component.sendGetOwnFlats();
 
             this.content.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/views/navigator/", "background_own.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
             this.title.setText(TextsManager.getInstance().getString("nav_own_hd"));
@@ -695,8 +695,7 @@ public class NavigatorView extends Widget {
             this.infoTitle.setText(node.getName() + " (" + node.getUsercount() + "/" + node.getMaxUsers() + ")");
             this.infoSubtitle.setText("");
             this.infoDescription.setTranslateY(0);
-        }
-        else {
+        } else {
             this.infoImg.setTranslateX(0);
             this.infoImg.setTranslateY(0);
             this.infoImg.setImage(ResourceManager.getInstance().getFxImage("sprites/views/navigator/", "info_doorbell_" + getBackgroundByDoorbell(node.getDoorbell()) + ".png"));
@@ -709,11 +708,9 @@ public class NavigatorView extends Widget {
 
         if (this.currentPage == NavigatorPage.OWN) {
             this.infoLeftButton.setOnMouseClicked(e1 -> this.pendingAction = () -> this.showModifyRoom(node));
-        }
-        else if (this.currentPage == NavigatorPage.FAVOURITES) {
+        } else if (this.currentPage == NavigatorPage.FAVOURITES) {
             this.infoLeftButton.setOnMouseClicked(e1 -> this.pendingAction = () -> this.removeFromFavourites(node.getId()));
-        }
-        else {
+        } else {
             this.infoLeftButton.setOnMouseClicked(e1 -> this.pendingAction = () -> this.addToFavourites(node.getId()));
         }
 
@@ -722,7 +719,7 @@ public class NavigatorView extends Widget {
         this.infoGoButton.setVisible(true);
 
         if (!this.info.isVisible()) {
-            this.navigatorList.setSize(330, (int)this.navigatorList.getPrefHeight() - 96);
+            this.navigatorList.setSize(330, (int) this.navigatorList.getPrefHeight() - 96);
         }
 
         this.info.setVisible(true);
@@ -785,7 +782,7 @@ public class NavigatorView extends Widget {
         }
 
         // moar rooms pls
-        this.handler.sendNavigate(category.getId());
+        this.component.sendNavigate(category.getId());
     }
 
     private void updateBackButtons() {
@@ -821,9 +818,9 @@ public class NavigatorView extends Widget {
             var parentNode = this.getComponent().getParentNode(category);
 
             if (index == 0) {
-                this.backTopShow(parentNode.getName(), e -> this.pendingAction = () -> this.handler.sendNavigate(category.getParentid())); //this.showCategory(category.parentCategory.categoryId));
+                this.backTopShow(parentNode.getName(), e -> this.pendingAction = () -> this.component.sendNavigate(category.getParentid())); //this.showCategory(category.parentCategory.categoryId));
             } else {
-                content.getChildren().add(new NavigatorBackButton(parentNode.getName(), startY, index, e -> this.pendingAction = () ->  this.handler.sendNavigate(category.getParentid()))); //this.showCategory(category.parentCategory.categoryId)));
+                content.getChildren().add(new NavigatorBackButton(parentNode.getName(), startY, index, e -> this.pendingAction = () ->  this.component.sendNavigate(category.getParentid()))); //this.showCategory(category.parentCategory.categoryId)));
             }
             index++;
         }
