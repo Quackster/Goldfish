@@ -52,7 +52,7 @@ public class NavigatorItem extends Pane {
                                 node.getDescription(),
                                 node.getUsercount(),
                                 node.getMaxUsers(),
-                                Doorbell.OPEN // TODO :)
+                                node.getDoorbell() // TODO :)
                         )
                 );
             }

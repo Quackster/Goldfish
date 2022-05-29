@@ -20,6 +20,7 @@ public class NavigatorNode {
     private int flatId;
     private String owner;
     private String description;
+    private Doorbell doorbell;
 
     private List<NavigatorNode> children;
 
@@ -113,6 +114,16 @@ public class NavigatorNode {
 
     public void setDoor(String door) {
         this.door = door;
+
+        if (this.door.equals("password")) {
+            this.doorbell = Doorbell.PASSWORD;
+        }
+        if (this.door.equals("closed")) {
+            this.doorbell = Doorbell.RING;
+        }
+        if (this.door.equals("open")) {
+            this.doorbell = Doorbell.OPEN;
+        }
     }
 
     public String getCasts() {
@@ -166,5 +177,13 @@ public class NavigatorNode {
 
     public List<NavigatorNode> getChildren() {
         return children;
+    }
+
+    public Doorbell getDoorbell() {
+        return doorbell;
+    }
+
+    public void setDoorbell(Doorbell doorbell) {
+        this.doorbell = doorbell;
     }
 }

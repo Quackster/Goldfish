@@ -36,7 +36,7 @@ public class NavigatorComponent extends Component {
             }
         });
     }
-
+    
     /**
      * Finds the parent of the current node, if no parameter is specified then it will
      * default to the current node in-use.
@@ -53,10 +53,16 @@ public class NavigatorComponent extends Component {
         return null;
     }
 
+    /**
+     * Gets the current node in use.
+     */
     public NavigatorNode getCurrentNode() {
         return currentNode;
     }
 
+    /**
+     * Sets the current node in use.
+     */
     public void setCurrentNode(NavigatorNode category) {
         currentNode = category;
     }
