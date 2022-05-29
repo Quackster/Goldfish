@@ -24,11 +24,8 @@ public class NavigatorComponent extends Component {
     }
 
     public void processNavigatorData(NavigatorNode tNodeInfo) {
-        Gson gson = new Gson();
-        System.out.println(gson.toJson(tNodeInfo));
-        this.currentNode = tNodeInfo;
-
         // Rebuild node structure...
+        this.currentNode = tNodeInfo;
         this.nodes.put(tNodeInfo.getId(), this.currentNode);
 
         invoke(() -> {
@@ -49,8 +46,8 @@ public class NavigatorComponent extends Component {
     public NavigatorNode getParentNode(NavigatorNode... node) {
         var nodeToUse = node.length > 0 ? node[0] : this.currentNode;
 
-        if (nodeToUse.getParentid() > 0 && this.nodes.containsKey(nodeToUse.getId())) {
-            return this.nodes.get(0);
+        if (nodeToUse.getParentid() > 0 && this.nodes.containsKey(nodeToUse.getParentid())) {
+            return this.nodes.get(nodeToUse.getParentid());
         }
 
         return null;
@@ -58,5 +55,9 @@ public class NavigatorComponent extends Component {
 
     public NavigatorNode getCurrentNode() {
         return currentNode;
+    }
+
+    public void setCurrentNode(NavigatorNode category) {
+        currentNode = category;
     }
 }

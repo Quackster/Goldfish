@@ -724,8 +724,8 @@ public class NavigatorView extends Widget {
 
     private void showCategory(NavigatorNode category) {
         this.navigatorList.clearContent();
-        
-       // this.currentNavigatorNode = this.getCategory(categoryId);
+
+        this.component.setCurrentNode(category);
         this.updateBackButtons();
         this.title.setText(category.getName());
 
@@ -736,8 +736,10 @@ public class NavigatorView extends Widget {
         for (var childNavigatorNode : category.getChildren().stream().filter(x -> !x.isRoom()).collect(Collectors.toList())) {
             this.addCategory(childNavigatorNode);
         }
-    }
 
+        // moar rooms pls
+        this.handler.sendNavigate(category.getId());
+    }
 
     private void updateBackButtons() {
         this.content.getChildren().removeIf(NavigatorBackButton.class::isInstance);
