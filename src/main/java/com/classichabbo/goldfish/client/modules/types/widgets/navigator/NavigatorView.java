@@ -2,6 +2,7 @@ package com.classichabbo.goldfish.client.modules.types.widgets.navigator;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.stream.Collectors;
 
 import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
@@ -26,6 +27,7 @@ import com.classichabbo.goldfish.client.modules.types.widgets.Widget;
 
 import com.classichabbo.goldfish.networking.wrappers.messages.MessageHandler;
 import com.classichabbo.goldfish.util.DimensionUtil;
+import com.google.gson.Gson;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -133,7 +135,6 @@ public class NavigatorView extends Widget {
 
     private boolean inRoom;
     private NavigatorPage currentPage;
-    private Category currentCategory;
     private Runnable pendingAction;
 
     private NavigatorComponent component;
@@ -721,10 +722,11 @@ public class NavigatorView extends Widget {
         this.info.setVisible(false);
     }
 
+    /*
     private void showCategory(int categoryId) {
         this.navigatorList.clearContent();
         
-        this.currentCategory = this.getCategory(categoryId);
+        this.currentNavigatorNode = this.getCategory(categoryId);
         this.updateBackButtons();
         this.title.setText(this.currentCategory.name);
 
@@ -732,10 +734,12 @@ public class NavigatorView extends Widget {
             this.addRoom(room, false);
         }
         
-        for (var childCategory : this.currentCategory.categories) {
+        for (var childNavigatorNode : this.currentCategory.categories) {
             this.addCategory(childCategory);
         }
     }
+
+     */
 
     private void updateBackButtons() {
         this.content.getChildren().removeIf(NavigatorBackButton.class::isInstance);
@@ -756,21 +760,23 @@ public class NavigatorView extends Widget {
             index++;
         }
 
-        var backCategories = new ArrayList<Category>();
-        var currentCategory = this.currentCategory;
-        while (currentCategory.parentCategory != null) {
-            backCategories.add(currentCategory);
-            currentCategory = currentCategory.parentCategory;
+        var backCategories = new ArrayList<NavigatorNode>();
+        var currentNavigatorNode = this.getComponent().getCurrentNode();
+        while (this.getComponent().getParentNode(currentNavigatorNode) != null) {
+            backCategories.add(currentNavigatorNode);
+            currentNavigatorNode = this.getComponent().getParentNode(currentNavigatorNode);
         }
 
         var startY = this.currentPage == NavigatorPage.PUBLIC ? 40 : 63;
         Collections.reverse(backCategories);
 
         for (var category : backCategories) {
+            var parentNode = this.getComponent().getParentNode(category);
+
             if (index == 0) {
-                this.backTopShow(category.parentCategory.name, e -> this.pendingAction = () -> this.handler.sendNavigate(category.parentCategory.categoryId)); //this.showCategory(category.parentCategory.categoryId));
+                this.backTopShow(parentNode.getName(), e -> this.pendingAction = () -> this.handler.sendNavigate(category.getParentid())); //this.showCategory(category.parentCategory.categoryId));
             } else {
-                content.getChildren().add(new NavigatorBackButton(category.parentCategory.name, startY, index, e -> this.pendingAction = () -> this.handler.sendNavigate(category.parentCategory.categoryId))); //this.showCategory(category.parentCategory.categoryId)));
+                content.getChildren().add(new NavigatorBackButton(parentNode.getName(), startY, index, e -> this.pendingAction = () ->  this.handler.sendNavigate(category.getParentid()))); //this.showCategory(category.parentCategory.categoryId)));
             }
             index++;
         }
@@ -822,24 +828,28 @@ public class NavigatorView extends Widget {
         this.recommendedList.getChildren().clear();
 
         for (var room : recommendedRooms) {
-            this.addRoom(room, true);
+           // this.addRoom(room, true);
         }
     }
 
-    public void updateRoomList(Category category) {
+    public void updateRoomList(NavigatorNode category) {
         this.navigatorList.clearContent();
 
-        this.currentCategory = category;
-        //this.currentCategory = this.getCategory(categoryId);
+        //var currentNavigatorNode = this.getCategory(categoryId);
         this.updateBackButtons();
-        this.title.setText(this.currentCategory.name);
+        this.title.setText(category.getName());
 
-        for (var room : this.currentCategory.rooms) {
+        var gson = new Gson();
+        var list = category.getChildren().stream().filter(x -> x.isRoom()).collect(Collectors.toList());
+        System.out.println(gson.toJson(list));
+
+        // Filter out rooms
+        for (var room : category.getChildren().stream().filter(x -> x.isRoom()).collect(Collectors.toList())) {
             this.addRoom(room, false);
         }
 
-        for (var childCategory : this.currentCategory.categories) {
-            this.addCategory(childCategory);
+        for (var childNavigatorNode : category.getChildren()) {
+            // this.addCategory(childCategory); // TODO
         }
     }
 
@@ -849,7 +859,7 @@ public class NavigatorView extends Widget {
         var recommendedRooms = this.getRecommendedRooms();
 
         for (var room : recommendedRooms) {
-            this.addRoom(room, true);
+           // this.addRoom(room, true);
         }
     }
 
@@ -865,7 +875,7 @@ public class NavigatorView extends Widget {
         }
 
         for (var searchResult : searchResults) {
-            this.addRoom(searchResult, false);
+            // this.addRoom(searchResult, false);
         }
     }
 
@@ -881,7 +891,7 @@ public class NavigatorView extends Widget {
         }
 
         for (var room : ownRooms) {
-            this.addRoom(room, false);
+           //  this.addRoom(room, false);
         }
     }
     
@@ -891,7 +901,7 @@ public class NavigatorView extends Widget {
         var favouriteRooms = this.getFavouriteRooms();
 
         for (var room : favouriteRooms) {
-            this.addRoom(room, false);
+            // this.addRoom(room, false);
         }
     }
 
@@ -920,10 +930,10 @@ public class NavigatorView extends Widget {
         // TODO Parsnip
     }
 
-    private void addRoom(NavigatorRoom room, Boolean recommended) {
+    private void addRoom(NavigatorNode room, Boolean recommended) {
         var navigatorItem = new NavigatorItem(room);
-        navigatorItem.setNameButtonOnMouseClicked(e -> this.pendingAction = () -> this.infoShowRoom(room));
-        navigatorItem.setGoButtonOnMouseClicked(e -> this.pendingAction = () -> this.goToRoom(room));
+        navigatorItem.setNameButtonOnMouseClicked(e -> this.pendingAction = () -> this.infoShowRoom(navigatorItem.getRoom()));
+        navigatorItem.setGoButtonOnMouseClicked(e -> this.pendingAction = () -> this.goToRoom(navigatorItem.getRoom()));
 
         if (recommended) {
             this.recommendedList.getChildren().add(navigatorItem);
@@ -932,11 +942,11 @@ public class NavigatorView extends Widget {
         }
     }
 
-    private void addCategory(Category category) {
-        var navigatorItem = new NavigatorItem(category);
-        navigatorItem.setOnMouseClicked(e -> this.pendingAction = () -> this.showCategory(category.categoryId));
+    private void addCategory(NavigatorNode category) {
+        //var navigatorItem = new NavigatorItem(category);
+        //navigatorItem.setOnMouseClicked(e -> this.pendingAction = () -> this.showCategory(category.categoryId));
         
-        this.navigatorList.addContent(navigatorItem);
+        //this.navigatorList.addContent(navigatorItem);
     }
 
     public static String getBackgroundByDoorbell(Doorbell doorbell) {
@@ -996,12 +1006,13 @@ public class NavigatorView extends Widget {
         }
     }
 
-    private Category getCategory(int categoryId) {
+    /*
+    private NavigatorNode getCategory(int categoryId) {
         // Please see note in Category.java :)
-        Category category = null;
+        NavigatorNode NavigatorNode = null;
 
         if (categoryId == 1) {
-            category = new Category(1, "Public Rooms");
+            NavigatorNode = new Category(1, "Public Rooms");
             category.addRoom(new NavigatorRoom(1, "Welcome Lounge", "New? Lost? Get a warm welcome here!", "", 1, 40));
             category.addRoom(new NavigatorRoom(1, "The Park", "Visit the park and the infamous Infobus", "", 40, 65));
             category.addRoom(new NavigatorRoom(1, "Habbo Lido", "Splish, splash and have a bash in the famous Habbo pool!", "", 115, 120));
@@ -1017,7 +1028,7 @@ public class NavigatorView extends Widget {
         }
 
         if (categoryId == 2) {
-            category = new Category(2, "Guest Rooms");
+            NavigatorNode = new Category(2, "Guest Rooms");
             category.addCategory(new Category(4, "Flower Power Puzzle", 0, 100));
             category.addCategory(new Category(4, "Gaming & Race Rooms", 0, 100));
             category.addCategory(new Category(4, "Restaurant, Bar & Night Club Rooms", 0, 100));
@@ -1030,38 +1041,38 @@ public class NavigatorView extends Widget {
         }
 
         if (categoryId == 3) {
-            category = new Category(3, "Entertainent", this.getCategory(1));
+            NavigatorNode = new Category(3, "Entertainent", this.getCategory(1));
             category.addCategory(new Category(7, "Secret Subcategory", 0, 100));
         }
 
         if (categoryId == 4) {
-            category = new Category(4, "Trade Floor", this.getCategory(2));
+            NavigatorNode = new Category(4, "Trade Floor", this.getCategory(2));
             category.addCategory(new Category(5, "Secret Subcategory", 0, 100));
         }
 
         if (categoryId == 5) {
-            category = new Category(5, "Secret Subcategory", this.getCategory(4));
+            NavigatorNode = new Category(5, "Secret Subcategory", this.getCategory(4));
             category.addCategory(new Category(6, "Secret Sub-Subcategory", 0, 100));
         }
 
         if (categoryId == 6) {
-            category = new Category(6, "Secret Sub-Subcategory", this.getCategory(5));
+            NavigatorNode = new Category(6, "Secret Sub-Subcategory", this.getCategory(5));
             category.addRoom(new NavigatorRoom(1, "Parsnip's Casino", "Parsnip", "Large bets welcomed, games 13/21/poker", 0, 15, Doorbell.OPEN));
         }
 
         if (categoryId == 7) {
-            category = new Category(7, "Secret Subcategory", this.getCategory(3));
+            NavigatorNode = new Category(7, "Secret Subcategory", this.getCategory(3));
             category.addCategory(new Category(8, "Secret Sub-Subcategory", 0, 100));
         }
 
         if (categoryId == 8) {
-            category = new Category(8, "Secret Sub-Subcategory", this.getCategory(7));
+            NavigatorNode = new Category(8, "Secret Sub-Subcategory", this.getCategory(7));
             category.addRoom(new NavigatorRoom(1, "Theatredome", "Perform your latest master piece, or simply catch the latest gossip.", "", 1, 100));
         }
 
         return category;
     }
-
+        */
     private ArrayList<NavigatorRoom> getRecommendedRooms () {
         var recommendedRooms = new ArrayList<NavigatorRoom>();
 
@@ -1118,10 +1129,6 @@ public class NavigatorView extends Widget {
 
     public void setHideFullRooms(boolean hideFullRooms) {
         this.hideFullRooms = hideFullRooms;
-    }
-
-    public Category getCurrentCategory() {
-        return this.currentCategory;
     }
 
     private enum NavigatorPage {

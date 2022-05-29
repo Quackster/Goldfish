@@ -22,6 +22,81 @@ public class NavigatorItem extends Pane {
 
     private String backgroundImg;
     private Double percentageFull;
+    private NavigatorRoom room;
+                    /*
+                        public NavigatorRoom(int roomId, String name, String description, String infoImg, int visitors, int maxVisitors) {
+    public NavigatorRoom(int id, String name, String owner, String description, int visitors, int maxVisitors, Doorbell doorbell) {
+                     */
+
+    public NavigatorItem(NavigatorNode room) {
+        //if (room.getNodeType() == 2) { // rooms?
+            if (room.isPublicRoom()) {
+                this.apply(
+                        new NavigatorRoom(
+                                room.getId(),
+                                room.getName(),
+                                room.getDescription(),
+                                room.getUnitStrId(),
+                                room.getUsercount(),
+                                room.getMaxUsers(),
+                                Integer.parseInt(room.getDoor())
+                        )
+                );
+            } else {
+                this.apply(
+                        new NavigatorRoom(
+                                room.getId(),
+                                room.getName(),
+                                room.getOwner(),
+                                room.getDescription(),
+                                room.getUsercount(),
+                                room.getMaxUsers(),
+                                Doorbell.OPEN // TODO :)
+                        )
+                );
+            }
+
+        //}
+    }
+
+    private void apply(NavigatorRoom room) {
+        this.room = room;
+
+        if (room.isPublic) {
+            room.description = TextsManager.getInstance().getString("nav_venue_" + room.infoImg + "/" + room.door + "_desc", "");
+        }
+
+        this.setMinHeight(16);
+        this.setMaxWidth(311);
+        this.calculatePercentageFull(room.visitors, room.maxVisitors);
+
+        this.nameButton = new Pane();
+        this.nameButton.setPrefSize(251, 16);
+        this.nameButton.setCursor(Cursor.HAND);
+        this.nameButton.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/views/navigator/room_doorbell_" + NavigatorView.getBackgroundByDoorbell(room.doorbell) + ".png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+
+        var nameLabel = new Label(room.name);
+        nameLabel.setLayoutX(17);
+        nameLabel.setLayoutY(2);
+        this.nameButton.getChildren().add(nameLabel);
+
+        this.goButton = new Pane();
+        this.goButton.setPrefSize(58, 16);
+        this.goButton.setLayoutX(253);
+        this.goButton.setCursor(Cursor.HAND);
+        this.goButton.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/views/navigator/go_" + this.backgroundImg + ".png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+
+        var goLabel = new Label(TextsManager.getInstance().getString(percentageFull == 1 ? "nav_fullbutton" : "nav_gobutton"));
+        goLabel.setLayoutX(18);
+        goLabel.setLayoutY(2);
+        goLabel.setAlignment(Pos.TOP_RIGHT);
+        goLabel.setMinWidth(24);
+        goLabel.setUnderline(true);
+        goLabel.setTextFill(this.percentageFull == 1 ? Color.web("#D47979") : Color.BLACK);
+        this.goButton.getChildren().add(goLabel);
+
+        this.getChildren().addAll(this.nameButton, this.goButton);
+    }
 
     public NavigatorItem(NavigatorRoom room) {
         this.setMinHeight(16);
@@ -56,6 +131,7 @@ public class NavigatorItem extends Pane {
         this.getChildren().addAll(this.nameButton, this.goButton);
     }
 
+    /*
     public NavigatorItem(Category category) {
         this.setMinHeight(16);
         this.setMaxWidth(311);
@@ -77,7 +153,7 @@ public class NavigatorItem extends Pane {
         this.getChildren().addAll(nameLabel, openLabel);
         this.setCursor(Cursor.HAND);
         this.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/views/navigator/category_" + this.backgroundImg + ".png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
-    }
+    }*/
 
     private void calculatePercentageFull(int visitors, int maxVisitors) {
         this.percentageFull = (1.0 / maxVisitors) * visitors;
@@ -101,5 +177,9 @@ public class NavigatorItem extends Pane {
 
     public void setGoButtonOnMouseClicked(EventHandler<MouseEvent> value) {
         this.goButton.setOnMouseClicked(value);
+    }
+
+    public NavigatorRoom getRoom() {
+        return room;
     }
 }

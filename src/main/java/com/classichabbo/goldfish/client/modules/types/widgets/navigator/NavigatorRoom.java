@@ -6,18 +6,20 @@ public class NavigatorRoom {
     public String owner;
     public String description;
     public String infoImg;
+    public int door;
     public int visitors;
     public int maxVisitors;
     public Doorbell doorbell;
     public Boolean isPublic;
 
-    public NavigatorRoom(int roomId, String name, String description, String infoImg, int visitors, int maxVisitors) {
+    public NavigatorRoom(int roomId, String name, String description, String infoImg, int visitors, int maxVisitors, int door) {
         this.roomId = roomId;
         this.name = name;
         this.description = description;
         this.infoImg = infoImg;
         this.visitors = visitors;
         this.maxVisitors = maxVisitors;
+        this.door = door;
         this.isPublic = true;
     }
 

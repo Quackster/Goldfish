@@ -20,7 +20,6 @@ public class NavigatorNode {
     private int flatId;
     private String owner;
     private String description;
-    private int nodeId;
 
     private List<NavigatorNode> children;
 
@@ -92,6 +91,14 @@ public class NavigatorNode {
         this.unitStrId = unitStrId;
     }
 
+    public boolean isPublicRoom() {
+        return this.unitStrId != null;
+    }
+
+    public boolean isRoom() {
+        return this.unitStrId != null || this.owner != null;
+    }
+
     public int getPort() {
         return port;
     }
@@ -154,14 +161,6 @@ public class NavigatorNode {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public int getNodeId() {
-        return nodeId;
-    }
-
-    public void setNodeId(int nodeId) {
-        this.nodeId = nodeId;
     }
 
 

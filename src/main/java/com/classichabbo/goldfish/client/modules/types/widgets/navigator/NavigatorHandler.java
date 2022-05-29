@@ -35,11 +35,11 @@ public class NavigatorHandler extends MessageHandler {
             if (tNode == null)
                 continue;
 
-            var tNodeId = tNode.getParentid();
+            var tNodeId = tNodeInfo.getId();
             var tParentId = tNode.getParentid();
 
             if (tParentId == tCategoryId) {
-                tNodeInfo.getChildren().forEach(x -> x.setNodeId(tNodeId));
+                tNodeInfo.getChildren().forEach(x -> x.setParentid(tNodeId));
             }
 
             tNodeInfo.getChildren().add(tNode);
