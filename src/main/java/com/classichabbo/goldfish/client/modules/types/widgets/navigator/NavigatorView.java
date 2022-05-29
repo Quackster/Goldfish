@@ -318,7 +318,7 @@ public class NavigatorView extends Widget {
 
         this.doSearchButton = new Button(TextsManager.getInstance().getString("nav_searchbutton"));
         this.doSearchButton.setLayoutY(12);
-        this.doSearchButton.setOnMouseClicked(e -> this.pendingAction = () -> this.updateSearchResults(new ArrayList<>()));
+        this.doSearchButton.setOnMouseClicked(e -> this.pendingAction = () -> this.showSearchResults());
         this.search.getChildren().add(this.doSearchButton);
 
         this.noResults = new Label("");
@@ -510,7 +510,7 @@ public class NavigatorView extends Widget {
         if (page == NavigatorPage.PUBLIC) {
             this.currentPage = NavigatorPage.PUBLIC;
             this.handler.sendNavigate(this.publicCategoryId);
-
+            
             this.content.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/views/navigator/background_public.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
             this.title.setLayoutY(62);
             this.hideFull.setLayoutY(62);
@@ -558,7 +558,7 @@ public class NavigatorView extends Widget {
             this.infoLeftButton.setText(TextsManager.getInstance().getString("nav_addtofavourites"));
             this.infoLeftButton.setTranslateX(0);
 
-            this.updateRecommendedRooms(new ArrayList<>());
+            this.showRecommendedRooms();
         }
         else {
             this.recommendedTitle.setVisible(false);
@@ -597,8 +597,6 @@ public class NavigatorView extends Widget {
 
         if (page == NavigatorPage.OWN) {
             this.currentPage = NavigatorPage.OWN;
-            this.handler.sendSUserF();
-
             this.content.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/views/navigator/background_own.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
             this.title.setText(TextsManager.getInstance().getString("nav_own_hd"));
             this.title.setLayoutY(135);
@@ -616,7 +614,7 @@ public class NavigatorView extends Widget {
             this.infoLeftButton.setTranslateX(0);
 
             this.updateBackButtons();
-            //this.updateOwnRooms(new ArrayList<>());
+            this.showOwnRooms();
         }
         else {
             this.room.setVisible(false);
@@ -624,8 +622,6 @@ public class NavigatorView extends Widget {
 
         if (page == NavigatorPage.FAVOURITES) {
             this.currentPage = NavigatorPage.FAVOURITES;
-            this.handler.sendGetFvrf();
-
             this.content.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/views/navigator/background_favourites.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
             this.title.setText(TextsManager.getInstance().getString("nav_fav_hd"));
             this.title.setLayoutY(90);
@@ -641,7 +637,7 @@ public class NavigatorView extends Widget {
             this.infoLeftButton.setTranslateX(-30);
 
             this.updateBackButtons();
-            this.updateFavouriteRooms(new ArrayList<>());
+            this.showFavouriteRooms();
         }
 
         this.info.setVisible(true);
@@ -717,6 +713,27 @@ public class NavigatorView extends Widget {
     private void infoHide() {
         this.navigatorList.setSize(330, (int)this.navigatorList.getPrefHeight() + 96);
         this.info.setVisible(false);
+    }
+
+    public void showCategory(Category category) {
+        this.navigatorList.clearContent();
+        
+        this.currentCategory = category;
+        //this.currentCategory = this.getCategory(categoryId);
+        this.updateBackButtons();
+        this.title.setText(this.currentCategory.name);
+
+        for (var room : this.currentCategory.rooms) {
+            this.addRoom(room, false);
+        }
+        
+        for (var childCategory : this.currentCategory.categories) {
+            this.addCategory(childCategory);
+        }
+    }
+
+    public Category getCurrentCategory() {
+        return this.currentCategory;
     }
 
     private void updateBackButtons() {
@@ -800,6 +817,58 @@ public class NavigatorView extends Widget {
         this.backTop.setVisible(false);
     }
 
+    private void showRecommendedRooms() {
+        this.recommendedList.getChildren().clear();
+
+        var recommendedRooms = this.getRecommendedRooms();
+
+        for (var room : recommendedRooms) {
+            this.addRoom(room, true);
+        }
+    }
+
+    private void showSearchResults() {
+        this.navigatorList.clearContent();
+
+        var searchResults = this.getSearchResults(this.searchCriteria.getText());
+
+        if (searchResults.isEmpty()) {
+            this.noResults.setText(TextsManager.getInstance().getString("nav_prvrooms_notfound"));
+            this.noResults.setVisible(true);
+            return;
+        }
+
+        for (var searchResult : searchResults) {
+            this.addRoom(searchResult, false);
+        }
+    }
+
+    private void showOwnRooms() {
+        this.navigatorList.clearContent();
+
+        var ownRooms = this.getOwnRooms();
+
+        if (ownRooms.isEmpty()) {
+            this.noResults.setText(TextsManager.getInstance().getString("nav_private_norooms"));
+            this.noResults.setVisible(true);
+            return;
+        }
+
+        for (var room : ownRooms) {
+            this.addRoom(room, false);
+        }
+    }
+    
+    private void showFavouriteRooms() {
+        this.navigatorList.clearContent();
+
+        var favouriteRooms = this.getFavouriteRooms();
+
+        for (var room : favouriteRooms) {
+            this.addRoom(room, false);
+        }
+    }
+
     private void goToRoom(NavigatorRoom room) {
         if (room.doorbell == Doorbell.PASSWORD) {
             this.showPasswordPrompt(room);
@@ -860,6 +929,8 @@ public class NavigatorView extends Widget {
         Movie.getInstance().createObject(new Alert("showCreateRoom"));
     }
 
+    // TODO Avery - all the below methods are your entry points to do whatever with :)
+
     public void sendPasswordResult(Boolean correct) {
         if (correct) {
             this.setContent(this.content, this.padding, false);
@@ -899,69 +970,46 @@ public class NavigatorView extends Widget {
         }
     }
 
-    public void updateRoomList(Category category) {
-        this.navigatorList.clearContent();
-        
-        this.currentCategory = category;
-        //this.currentCategory = this.getCategory(categoryId);
-        this.updateBackButtons();
-        this.title.setText(this.currentCategory.name);
+    private ArrayList<NavigatorRoom> getRecommendedRooms () {
+        var recommendedRooms = new ArrayList<NavigatorRoom>();
 
-        for (var room : this.currentCategory.rooms) {
-            this.addRoom(room, false);
-        }
-        
-        for (var childCategory : this.currentCategory.categories) {
-            this.addCategory(childCategory);
-        }
-    }
-
-    public void updateRecommendedRooms(ArrayList<NavigatorRoom> recommendedRooms) {
-        this.recommendedList.getChildren().clear();
-
-        for (var room : recommendedRooms) {
-            this.addRoom(room, true);
-        }
-    }
-
-    public void updateSearchResults(ArrayList<NavigatorRoom> searchResults) {
-        this.navigatorList.clearContent();
-
-        if (searchResults.isEmpty()) {
-            this.noResults.setText(TextsManager.getInstance().getString("nav_prvrooms_notfound"));
-            this.noResults.setVisible(true);
-            return;
-        }
-
-        for (var searchResult : searchResults) {
-            this.addRoom(searchResult, false);
-        }
-    }
-
-    public void updateOwnRooms(ArrayList<NavigatorRoom> ownRooms) {
-        this.navigatorList.clearContent();
-
-        if (ownRooms.isEmpty()) {
-            this.noResults.setText(TextsManager.getInstance().getString("nav_private_norooms"));
-            this.noResults.setVisible(true);
-            return;
-        }
-
-        for (var room : ownRooms) {
-            this.addRoom(room, false);
-        }
-    }
+        recommendedRooms.add(new NavigatorRoom(1, "Box ( Habbo.nl - 2007 )", "Miquel", "Recreated from Habbo NL in 2007. Original room by Vinny.", 0, 40, Doorbell.OPEN));
+        recommendedRooms.add(new NavigatorRoom(1, "Generating the bars of 50c", "ParsnipAlt", "", 0, 65, Doorbell.RING));
+        recommendedRooms.add(new NavigatorRoom(1, "Ban for 2 years, thanks for that", "ParsnipAlt2", "", 0, 120, Doorbell.PASSWORD));
     
-    public void updateFavouriteRooms(ArrayList<NavigatorRoom> favouriteRooms) {
-        this.navigatorList.clearContent();
-
-        for (var room : favouriteRooms) {
-            this.addRoom(room, false);
-        }
+        return recommendedRooms;
     }
 
-    public Category getCurrentCategory() {
-        return this.currentCategory;
+    private ArrayList<NavigatorRoom> getSearchResults(String criteria) {
+        var searchResults = new ArrayList<NavigatorRoom>();
+
+        if (criteria.equals("Parsnip")) {
+            searchResults.add(new NavigatorRoom(1, "Parsnip's Casino", "Parsnip", "Large bets welcomed, games 13/21/poker", 0, 15, Doorbell.OPEN));
+        }
+
+        return searchResults;
+    }
+
+    private ArrayList<NavigatorRoom> getOwnRooms() {
+        var ownRooms = new ArrayList<NavigatorRoom>();
+
+        ownRooms.add(new NavigatorRoom(1, "Parsnip's Casino", "Parsnip", "Large bets welcomed, games 13/21/poker", 0, 15, Doorbell.OPEN));
+        ownRooms.add(new NavigatorRoom(1, "Parsnip's Hub", "Parsnip", "Sit and chat or go through the teles to see some of my favourite rooms", 0, 25, Doorbell.OPEN));
+        ownRooms.add(new NavigatorRoom(1, "Parsnip's Room", "Parsnip", "If I'm sat here alone, I'm probably afk", 0, 10, Doorbell.OPEN));
+        ownRooms.add(new NavigatorRoom(1, "Siract's Trophy Room", "Parsnip", "Tribute to Siract - will be sorely missed!", 0, 10, Doorbell.OPEN));
+        ownRooms.add(new NavigatorRoom(1, "Pea's Dutch Lounge", "Parsnip", "Dutch themed lounge for Pea", 0, 15, Doorbell.OPEN));
+        ownRooms.add(new NavigatorRoom(1, "Parsnip's Hallway", "Parsnip", "", 0, 25, Doorbell.OPEN));
+        ownRooms.add(new NavigatorRoom(1, "Animal Nitrate", "Parsnip", "", 0, 25, Doorbell.OPEN));
+        
+        return ownRooms;
+    }
+
+    private ArrayList<NavigatorRoom> getFavouriteRooms() {
+        var favouriteRooms = new ArrayList<NavigatorRoom>();
+
+        favouriteRooms.add(new NavigatorRoom(1, "Parsnip's Casino", "Parsnip", "Large bets welcomed, games 13/21/poker", 0, 15, Doorbell.OPEN));
+        
+        return favouriteRooms;
     }
 
     private void addToFavourites(int roomId) { 
