@@ -722,24 +722,22 @@ public class NavigatorView extends Widget {
         this.info.setVisible(false);
     }
 
-    /*
-    private void showCategory(int categoryId) {
+    private void showCategory(NavigatorNode category) {
         this.navigatorList.clearContent();
         
-        this.currentNavigatorNode = this.getCategory(categoryId);
+       // this.currentNavigatorNode = this.getCategory(categoryId);
         this.updateBackButtons();
-        this.title.setText(this.currentCategory.name);
+        this.title.setText(category.getName());
 
-        for (var room : this.currentCategory.rooms) {
+        for (var room : category.getChildren().stream().filter(x -> x.isRoom()).collect(Collectors.toList())) {
             this.addRoom(room, false);
         }
         
-        for (var childNavigatorNode : this.currentCategory.categories) {
-            this.addCategory(childCategory);
+        for (var childNavigatorNode : category.getChildren().stream().filter(x -> !x.isRoom()).collect(Collectors.toList())) {
+            this.addCategory(childNavigatorNode);
         }
     }
 
-     */
 
     private void updateBackButtons() {
         this.content.getChildren().removeIf(NavigatorBackButton.class::isInstance);
@@ -839,17 +837,13 @@ public class NavigatorView extends Widget {
         this.updateBackButtons();
         this.title.setText(category.getName());
 
-        var gson = new Gson();
-        var list = category.getChildren().stream().filter(x -> x.isRoom()).collect(Collectors.toList());
-        System.out.println(gson.toJson(list));
-
         // Filter out rooms
         for (var room : category.getChildren().stream().filter(x -> x.isRoom()).collect(Collectors.toList())) {
             this.addRoom(room, false);
         }
 
-        for (var childNavigatorNode : category.getChildren()) {
-            // this.addCategory(childCategory); // TODO
+        for (var childNavigatorNode : category.getChildren().stream().filter(x -> !x.isRoom()).collect(Collectors.toList())) {
+            this.addCategory(childNavigatorNode); // TODO
         }
     }
 
@@ -943,10 +937,10 @@ public class NavigatorView extends Widget {
     }
 
     private void addCategory(NavigatorNode category) {
-        //var navigatorItem = new NavigatorItem(category);
-        //navigatorItem.setOnMouseClicked(e -> this.pendingAction = () -> this.showCategory(category.categoryId));
+        var navigatorItem = new NavigatorItem(category);
+        navigatorItem.setOnMouseClicked(e -> this.pendingAction = () -> this.showCategory(category));
         
-        //this.navigatorList.addContent(navigatorItem);
+        this.navigatorList.addContent(navigatorItem);
     }
 
     public static String getBackgroundByDoorbell(Doorbell doorbell) {

@@ -28,34 +28,37 @@ public class NavigatorItem extends Pane {
     public NavigatorRoom(int id, String name, String owner, String description, int visitors, int maxVisitors, Doorbell doorbell) {
                      */
 
-    public NavigatorItem(NavigatorNode room) {
+    public NavigatorItem(NavigatorNode node) {
         //if (room.getNodeType() == 2) { // rooms?
-            if (room.isPublicRoom()) {
+        if (node.isRoom()) {
+            if (node.isPublicRoom()) {
                 this.apply(
                         new NavigatorRoom(
-                                room.getId(),
-                                room.getName(),
-                                room.getDescription(),
-                                room.getUnitStrId(),
-                                room.getUsercount(),
-                                room.getMaxUsers(),
-                                Integer.parseInt(room.getDoor())
+                                node.getId(),
+                                node.getName(),
+                                node.getDescription(),
+                                node.getUnitStrId(),
+                                node.getUsercount(),
+                                node.getMaxUsers(),
+                                Integer.parseInt(node.getDoor())
                         )
                 );
             } else {
                 this.apply(
                         new NavigatorRoom(
-                                room.getId(),
-                                room.getName(),
-                                room.getOwner(),
-                                room.getDescription(),
-                                room.getUsercount(),
-                                room.getMaxUsers(),
+                                node.getId(),
+                                node.getName(),
+                                node.getOwner(),
+                                node.getDescription(),
+                                node.getUsercount(),
+                                node.getMaxUsers(),
                                 Doorbell.OPEN // TODO :)
                         )
                 );
             }
-
+        } else {
+            this.apply(node);
+        }
         //}
     }
 
@@ -98,46 +101,12 @@ public class NavigatorItem extends Pane {
         this.getChildren().addAll(this.nameButton, this.goButton);
     }
 
-    public NavigatorItem(NavigatorRoom room) {
+    public void apply(NavigatorNode category) {
         this.setMinHeight(16);
         this.setMaxWidth(311);
-        this.calculatePercentageFull(room.visitors, room.maxVisitors);
+        this.calculatePercentageFull(category.getUsercount(), category.getMaxUsers());
         
-        this.nameButton = new Pane();
-        this.nameButton.setPrefSize(251, 16);
-        this.nameButton.setCursor(Cursor.HAND);
-        this.nameButton.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/views/navigator/room_doorbell_" + NavigatorView.getBackgroundByDoorbell(room.doorbell) + ".png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
-        
-        var nameLabel = new Label(room.name);
-        nameLabel.setLayoutX(17);
-        nameLabel.setLayoutY(2);
-        this.nameButton.getChildren().add(nameLabel);
-
-        this.goButton = new Pane();
-        this.goButton.setPrefSize(58, 16);
-        this.goButton.setLayoutX(253);
-        this.goButton.setCursor(Cursor.HAND);
-        this.goButton.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/views/navigator/go_" + this.backgroundImg + ".png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
-
-        var goLabel = new Label(TextsManager.getInstance().getString(percentageFull == 1 ? "nav_fullbutton" : "nav_gobutton"));
-        goLabel.setLayoutX(18);
-        goLabel.setLayoutY(2);
-        goLabel.setAlignment(Pos.TOP_RIGHT);
-        goLabel.setMinWidth(24);
-        goLabel.setUnderline(true);
-        goLabel.setTextFill(this.percentageFull == 1 ? Color.web("#D47979") : Color.BLACK);
-        this.goButton.getChildren().add(goLabel);
-
-        this.getChildren().addAll(this.nameButton, this.goButton);
-    }
-
-    /*
-    public NavigatorItem(Category category) {
-        this.setMinHeight(16);
-        this.setMaxWidth(311);
-        this.calculatePercentageFull(category.getVisitors(), category.getMaxVisitors());
-        
-        var nameLabel = new Label(category.name);
+        var nameLabel = new Label(category.getName());
         nameLabel.setLayoutX(17);
         nameLabel.setLayoutY(2);
         nameLabel.setTextFill(this.percentageFull == 1 ? Color.web("#D47979") : Color.BLACK);
@@ -153,9 +122,15 @@ public class NavigatorItem extends Pane {
         this.getChildren().addAll(nameLabel, openLabel);
         this.setCursor(Cursor.HAND);
         this.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/views/navigator/category_" + this.backgroundImg + ".png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
-    }*/
+    }
 
     private void calculatePercentageFull(int visitors, int maxVisitors) {
+        if (maxVisitors <= 0) {
+            this.backgroundImg = "0";
+            this.percentageFull = 0d;
+            return; // divide by 0 bullshit
+        }
+
         this.percentageFull = (1.0 / maxVisitors) * visitors;
 
         if (percentageFull == 0) {

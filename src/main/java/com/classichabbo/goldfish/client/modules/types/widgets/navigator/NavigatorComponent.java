@@ -49,8 +49,6 @@ public class NavigatorComponent extends Component {
     public NavigatorNode getParentNode(NavigatorNode... node) {
         var nodeToUse = node.length > 0 ? node[0] : this.currentNode;
 
-        System.out.println("4K3[4K24  " + nodeToUse);
-
         if (nodeToUse.getParentid() > 0 && this.nodes.containsKey(nodeToUse.getId())) {
             return this.nodes.get(0);
         }

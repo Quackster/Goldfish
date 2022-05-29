@@ -89,6 +89,7 @@ public class ResourceManager {
             }
 
         } catch (IOException e) {
+            System.out.println("Could not locate: " + url);
             e.printStackTrace();
         }
 

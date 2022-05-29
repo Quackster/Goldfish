@@ -28,9 +28,6 @@ public class RoomView extends View {
         return room;
     }
 
-    private static void changed(ObservableValue<? extends Number> obs, Number oldVal, Number newVal) {
-        System.out.println("testing 123");
-    }
 
     @Override
     public void start() {
