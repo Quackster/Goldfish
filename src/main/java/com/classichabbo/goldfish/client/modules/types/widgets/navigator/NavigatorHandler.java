@@ -60,17 +60,48 @@ public class NavigatorHandler extends MessageHandler {
             navigatorView.getComponent().processFlatData(List.of()); // force send no flats!
     }
 
+    private static void noflats(Connection connection, Request request) {
+        noflatsforuser(connection, request);
+    }
+
     private static void search_flat_results(Connection connection, Request request) {
+        userflatcats(connection, request);
+    }
+
+    private static void userflatcats(Connection connection, Request request) {
         var navigatorView = Movie.getInstance().getViewByClass(NavigatorView.class);
 
         if (navigatorView != null)
             navigatorView.getComponent().processFlatData(parseFlatCategoryNode(request)); // force send no flats!
     }
 
+    private static void favouriteroomresults(Connection connection, Request request) {
+        var tNodeMask = request.readInt();
+        var tNodeInfo = parseNode(request);
+
+        if (tNodeInfo == null) {
+            return;
+        }
+
+        while (request.remainingBytes().length > 0) {
+            var tNode = parseNode(request);
+
+            if (tNode == null)
+                continue;
+
+            tNodeInfo.getChildren().add(tNode);
+        }
+
+        var navigatorView = Movie.getInstance().getViewByClass(NavigatorView.class);
+
+        if (navigatorView != null)
+            navigatorView.getComponent().processFavouriteRooms(tNodeInfo);
+    }
+
     private static NavigatorNode parseNode(Request request) {
         var tNodeId = request.readInt();
 
-        if (tNodeId <= 0)
+        if (tNodeId < 0)
             return null;
 
         var node = new NavigatorNode();
@@ -131,12 +162,16 @@ public class NavigatorHandler extends MessageHandler {
         var listeners = new HashMap<Integer, MessageRequest>();
         listeners.put(220, NavigatorHandler::navnodeinfo);
         listeners.put(57, NavigatorHandler::noflatsforuser);
+        listeners.put(58, NavigatorHandler::noflats);
         listeners.put(55, NavigatorHandler::search_flat_results);
+        listeners.put(16, NavigatorHandler::userflatcats);
+        listeners.put(61, NavigatorHandler::favouriteroomresults);
 
         var commands = new HashMap<String, Integer>();
         commands.put("NAVIGATE", 150);
         commands.put("SUSERF", 16);
         commands.put("SRCHF", 17);
+        commands.put("GETFVRF", 18);
 
         if (tBool) {
             Connection.get().registerListeners(this, listeners);

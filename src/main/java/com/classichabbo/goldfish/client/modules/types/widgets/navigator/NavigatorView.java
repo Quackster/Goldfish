@@ -638,6 +638,8 @@ public class NavigatorView extends Widget {
 
         if (page == NavigatorPage.FAVOURITES) {
             this.currentPage = NavigatorPage.FAVOURITES;
+            this.component.sendGetFavoriteFlats();
+
             this.content.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/views/navigator/", "background_favourites.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
             this.title.setText(TextsManager.getInstance().getString("nav_fav_hd"));
             this.title.setLayoutY(90);
@@ -876,6 +878,25 @@ public class NavigatorView extends Widget {
         }
     }
 
+    public void updateFavouriteRoomList(NavigatorNode category) {
+        this.navigatorList.clearContent();
+
+        //var currentNavigatorNode = this.getCategory(categoryId);
+        category.setName(TextsManager.getInstance().getString("nav_fav_hd"));
+
+        this.updateBackButtons();
+        this.title.setText(category.getName());
+
+        // Filter out rooms
+        for (var room : category.getChildren().stream().filter(x -> x.isRoom()).collect(Collectors.toList())) {
+            this.addRoom(room, false);
+        }
+
+        for (var childNavigatorNode : category.getChildren().stream().filter(x -> x.isCategory()).collect(Collectors.toList())) {
+            this.addCategory(childNavigatorNode);
+        }
+    }
+
     public void updateRoomList(NavigatorNode category) {
         this.navigatorList.clearContent();
 
@@ -889,7 +910,7 @@ public class NavigatorView extends Widget {
         }
 
         for (var childNavigatorNode : category.getChildren().stream().filter(x -> x.isCategory()).collect(Collectors.toList())) {
-            this.addCategory(childNavigatorNode); // TODO
+            this.addCategory(childNavigatorNode);
         }
     }
 
@@ -918,21 +939,6 @@ public class NavigatorView extends Widget {
         }
     }
 */
-    private void showSearchResults() {
-        this.navigatorList.clearContent();
-
-        var searchResults = new ArrayList<NavigatorNode>();//this.getSearchResults(this.searchCriteria.getText());
-
-        if (searchResults.isEmpty()) {
-            this.noResults.setText(TextsManager.getInstance().getString("nav_prvrooms_notfound"));
-            this.noResults.setVisible(true);
-            return;
-        }
-
-        for (var searchResult : searchResults) {
-            this.addRoom(searchResult, false);
-        }
-    }
 
     private void goToRoom(NavigatorNode room) {
         if (room.getDoorbell() == Doorbell.PASSWORD) {

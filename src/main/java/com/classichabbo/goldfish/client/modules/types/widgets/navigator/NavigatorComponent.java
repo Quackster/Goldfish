@@ -40,6 +40,21 @@ public class NavigatorComponent extends Component {
     }
 
 
+    public void processFavouriteRooms(NavigatorNode tNodeInfo) {
+        // Rebuild node structure...
+        this.currentNode = tNodeInfo;
+        this.nodes.put(tNodeInfo.getId(), this.currentNode);
+
+        invoke(() -> {
+            var navigatorView = Movie.getInstance().getViewByClass(NavigatorView.class);
+
+            if (navigatorView != null) {
+                navigatorView.updateFavouriteRoomList(tNodeInfo);
+            }
+        });
+    }
+
+
     public void processFlatData(List<NavigatorNode> flatList) {
         invoke(() -> {
             var navigatorView = Movie.getInstance().getViewByClass(NavigatorView.class);
@@ -82,6 +97,14 @@ public class NavigatorComponent extends Component {
         conn.send("SRCHF", tQuery);
     }
 
+    public void sendGetFavoriteFlats() {
+        var conn = Connection.get();
+
+        if (conn == null)
+            return;
+
+        conn.send("GETFVRF", false);
+    }
 
     private boolean isHideFull() {
         return this.navigatorView.isHideFullRooms();
