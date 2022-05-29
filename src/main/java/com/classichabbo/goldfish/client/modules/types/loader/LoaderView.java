@@ -67,11 +67,11 @@ public class LoaderView extends View {
         this.component = new LoaderComponent();
 
         this.loadingLogoImage = new ImageView();
-        this.loadingLogoImage.setImage(ResourceManager.getInstance().getFxImage("sprites/views/loader/logo.png"));
+        this.loadingLogoImage.setImage(ResourceManager.getInstance().getFxImage("sprites/views/loader", "logo.png"));
         this.getChildren().add(this.loadingLogoImage);
 
         this.loaderBarImage = new ImageView();
-        this.loaderBarImage.setImage(ResourceManager.getInstance().getFxImage("sprites/views/loader/loader_bar_0.png"));
+        this.loaderBarImage.setImage(ResourceManager.getInstance().getFxImage("sprites/views/loader", "loader_bar_0.png"));
         this.loaderBar.getChildren().add(this.loaderBarImage);
 
         this.loaderProgress = new Rectangle(0, 12);

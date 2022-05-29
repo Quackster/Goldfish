@@ -3,6 +3,7 @@ package com.classichabbo.goldfish.client.game.resources;
 import javax.imageio.ImageIO;
 
 import com.classichabbo.goldfish.client.game.scheduler.SchedulerManager;
+import com.google.gson.Gson;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
@@ -30,6 +31,7 @@ public class ResourceManager {
     public Map<String, BufferedImage> awtImages;
 
     public ResourceManager() {
+        super();
         this.fxImages = new HashMap<>();
         this.awtImages = new HashMap<>();
         this.webImages = new HashMap<>();
@@ -65,26 +67,21 @@ public class ResourceManager {
         }
     }
 
-    public Image getFxImage(String url) {
+    public Image getFxImage(String directory, String fileName) {
+        var url = directory + "/" + fileName;
+
         if (this.fxImages.containsKey(url)) {
             return this.fxImages.get(url);
         } else {
-            var fxImage = SwingFXUtils.toFXImage(getAwtImage(url), null);
+            var fxImage = SwingFXUtils.toFXImage(getAwtImage(directory, fileName), null);
             this.fxImages.put(url, fxImage);
             return fxImage;
         }
     }
 
-    public Image getFxImage(String url, String backupUrl) {
-        try {
-            return getFxImage(url);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return getFxImage(backupUrl);
-        }
-    }
+    public BufferedImage getAwtImage(String directory, String fileName) {
+        var url = directory + "/" + fileName;
 
-    public BufferedImage getAwtImage(String url) {
         try {
             if (this.awtImages.containsKey(url)) {
                 return this.awtImages.get(url);

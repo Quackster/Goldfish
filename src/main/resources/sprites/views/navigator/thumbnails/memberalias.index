@@ -1,0 +1,12 @@
+bb_lobby_tournament=bb_lobby_1
+bb_lobby_beginner=bb_lobby_1
+bb_lobby_amateur=bb_lobby_1
+bb_lobby_intermediate=bb_lobby_1
+bb_lobby_expert=bb_lobby_1
+
+sw_lobby_beginner=snowwar_lobby_1
+sw_lobby_amateur=snowwar_lobby_1
+sw_lobby_intermediate=snowwar_lobby_1
+sw_lobby_expert=snowwar_lobby_1
+sw_lobby_tournament=snowwar_lobby_1
+sw_lobby_free=snowwar_lobby_1

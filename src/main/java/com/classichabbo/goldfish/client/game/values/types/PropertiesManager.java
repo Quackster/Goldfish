@@ -7,9 +7,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class PropertiesManager extends Values {
@@ -22,7 +22,7 @@ public class PropertiesManager extends Values {
         //System.out.println("Loading system configuration...");
 
         InputStream resource = ResourceManager.getInstance().getResource("loader.config").openStream();
-        readLines(resource);
+        this.values = readLines(resource);
         resource.close();
 
         System.out.println(this.values);
@@ -31,17 +31,20 @@ public class PropertiesManager extends Values {
         this.setFinished(true);
     }
 
-    private void readLines(InputStream resource) {
+    public static Map<String, String> readLines(InputStream resource) {
+        var values = new HashMap<String, String>();
         List<String> doc = new BufferedReader(new InputStreamReader(resource)).lines().collect(Collectors.toList());
 
         for (var line : doc) {
-            if (line.startsWith("#"))
+            if (line.startsWith("#") || line.length() <= 1)
                 continue;
 
             String key = line.substring(0, line.indexOf("="));
             String value = line.substring(line.indexOf("=") + 1);
-            this.values.put(key, value);
+            values.put(key, value);
         }
+
+        return values;
     }
 
     public static PropertiesManager getInstance() {

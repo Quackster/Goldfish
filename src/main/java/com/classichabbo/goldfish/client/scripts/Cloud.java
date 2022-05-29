@@ -39,7 +39,7 @@ public class Cloud extends Pane {
         else
             this.pVertDir = 1;
 
-        this.cloud.setImage(ResourceManager.getInstance().getFxImage(this.getCloudPath()));
+        this.cloud.setImage(ResourceManager.getInstance().getFxImage("sprites/views/hotel_view/clouds", this.getCloudPath()));
 
         // If the X is at the start, subtract its width so it slowly slides instead of just suddenly appearing
         if (this.initX <= 0)
@@ -58,8 +58,8 @@ public class Cloud extends Pane {
         this.rightImage = null;
 
         try {
-            this.rightImage = ResourceManager.getInstance().getAwtImage(this.getFlippedCloudPath()); // eventually C:\\ImageTest\\pic2.jpg
-            this.leftImage = ResourceManager.getInstance().getAwtImage(this.getCloudPath()); // eventually C:\\ImageTest\\pic2.jpg
+            this.rightImage = ResourceManager.getInstance().getAwtImage("sprites/views/hotel_view/clouds", this.getFlippedCloudPath()); // eventually C:\\ImageTest\\pic2.jpg
+            this.leftImage = ResourceManager.getInstance().getAwtImage("sprites/views/hotel_view/clouds", this.getCloudPath()); // eventually C:\\ImageTest\\pic2.jpg
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -141,7 +141,7 @@ public class Cloud extends Pane {
     }
 
     private String getCloudPath() {
-        return "sprites/views/hotel_view/clouds/" + this.fileName + "_" + this.direction + ".png";
+        return this.fileName + "_" + this.direction + ".png";
     }
 
     private String getFlippedCloudPath() {
@@ -151,7 +151,7 @@ public class Cloud extends Pane {
             oppositeDirection = "right";
         }
 
-        return "sprites/views/hotel_view/clouds/" + this.fileName + "_" + oppositeDirection + ".png";
+        return this.fileName + "_" + oppositeDirection + ".png";
     }
 
     public void setFinished(boolean finished) {
