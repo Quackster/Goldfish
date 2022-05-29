@@ -6,6 +6,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.List;
 
 public class NetworkDecoder extends ByteToMessageDecoder {
@@ -13,17 +14,19 @@ public class NetworkDecoder extends ByteToMessageDecoder {
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf buffer, List<Object> out) throws UnsupportedEncodingException {
         var content = ctx.alloc().buffer();
+        buffer.markReaderIndex();
 
         while (buffer.readableBytes() > 0) {
             var character = buffer.readByte();
 
             if (character == 1) {
-                break;
+                out.add(new Request(content));
+                return;
             }
 
             content.writeByte(character);
         }
 
-        out.add(new Request(content));
+        buffer.resetReaderIndex();
     }
 }
