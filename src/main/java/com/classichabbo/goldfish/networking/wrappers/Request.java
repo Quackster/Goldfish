@@ -15,7 +15,8 @@ public class Request {
 
     public Request(ByteBuf buffer) {
         this.buffer = buffer;
-        this.header = new String(new byte[] { buffer.readByte(), buffer.readByte() });;
+        this.header = new String(new byte[]{buffer.readByte(), buffer.readByte()});
+        ;
         this.headerId = Base64Encoding.decode(this.header.getBytes());
     }
 
@@ -35,22 +36,25 @@ public class Request {
 
     public String readClientString() {
         try {
+            String val = "";
             byte[] data = remainingBytes();
 
-            int position = 0;
+            if (data[0] != (char) 2) {
+                int position = 0;
 
-            for (int i = 0; i < data.length; i++) {
-                if (data[i] == (byte) 2) {
-                    break;
+                for (int i = 0; i < data.length; i++) {
+                    if (data[i] == (char) 2) {
+                        break;
+                    }
+
+                    position = i;
                 }
 
-                position = i;
+                val = new String(this.readBytes(position + 1), StringUtil.getCharset());
             }
 
-            String readData = new String(this.readBytes(position + 1), StringUtil.getCharset());
             this.readBytes(1);
-            return readData;
-
+            return val;
         } catch (Exception ex) {
             return null;
         }
