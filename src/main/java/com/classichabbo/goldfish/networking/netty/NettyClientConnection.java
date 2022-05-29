@@ -71,9 +71,14 @@ public class NettyClientConnection {
     public void dispose() {
         try {
             this.workerGroup.shutdownGracefully().sync();
+            instance.disposeConnection();
         } catch (Exception ex) {
 
         }
+    }
+
+    private void disposeConnection() {
+        this.connection = null;
     }
 
     public static NettyClientConnection getInstance() {

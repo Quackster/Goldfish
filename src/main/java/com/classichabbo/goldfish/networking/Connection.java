@@ -26,6 +26,10 @@ public class Connection extends DefaultAttributeMap {
         this.commands = new CopyOnWriteArrayList<>();
     }
 
+    public static void dispose() {
+        NettyClientConnection.getInstance().dispose();
+    }
+
     /**
      * Send command to server.
      */

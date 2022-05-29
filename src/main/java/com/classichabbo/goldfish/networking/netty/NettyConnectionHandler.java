@@ -26,7 +26,7 @@ public class NettyConnectionHandler extends SimpleChannelInboundHandler<Request>
                 false
         ));
 
-        Connection.get().setChannel(null);
+        Connection.dispose();
     }
 
 
@@ -40,9 +40,13 @@ public class NettyConnectionHandler extends SimpleChannelInboundHandler<Request>
 
        conn.getListeners().forEach(x -> {
             if (x.getHeader() == message.getHeaderId()) {
+                message.getBuffer().markReaderIndex();
                 x.getMessage().received(conn, message);
+                message.getBuffer().resetReaderIndex();
             }
         });
+
+       message.getBuffer().release();
     }
 
     @Override

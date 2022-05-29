@@ -96,6 +96,10 @@ public class Request {
         return consoleText;
     }
 
+    public ByteBuf getBuffer() {
+        return buffer;
+    }
+
     public String getHeader() {
         return header;
     }
