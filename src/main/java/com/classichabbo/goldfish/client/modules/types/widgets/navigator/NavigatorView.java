@@ -42,6 +42,7 @@ import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 
 public class NavigatorView extends Widget {
     private Pane content;
@@ -92,6 +93,7 @@ public class NavigatorView extends Widget {
     private CheckBox modifyRoomShowNameNo;
     private Label modifyRoomShowNameNoLabel;
 
+    private Pane modifyRoomPage2;
     private Label modifyRoomDoorbellLabel;
     private CheckBox modifyRoomDoorbellOpen;
     private Label modifyRoomDoorbellOpenLabel;
@@ -99,22 +101,23 @@ public class NavigatorView extends Widget {
     private Label modifyRoomDoorbellRingLabel;
     private CheckBox modifyRoomDoorbellPassword;
     private Label modifyRoomDoorbellPasswordLabel;
+    private Pane modifyRoomPasswordFields;
     private TextAreaRound modifyRoomDoorbellPassword1;
     private Label modifyRoomDoorbellPassword1Label;
     private TextAreaRound modifyRoomDoorbellPassword2;
     private Label modifyRoomDoorbellPassword2Label;
-    private CheckBox openRights;
-    private Label openRightsLabel;
-    private Button resetRightsButton;
-    private Label resetRightsLabel;
+    private CheckBox modifyRoomOpenRights;
+    private Label modifyRoomOpenRightsLabel;
+    private Button modifyRoomResetRightsButton;
+    private Label modifyRoomResetRightsLabel;
 
+    private Pane modifyRoomFooter;
     private Label modifyRoomPrevious;
     private Label modifyRoomPageLabel;
     private Label modifyRoomNext;
-
     private Button modifyRoomCancelButton;
     private Button modifyRoomDeleteButton;
-    private Button modifyRoomOkButton;
+    private ButtonLarge modifyRoomOkButton;
 
     private Pane info;
     private ImageView infoImg;
@@ -139,6 +142,7 @@ public class NavigatorView extends Widget {
 
     private boolean inRoom;
     private NavigatorPage currentPage;
+    private NavigatorNode modifyRoom;
     private Runnable pendingAction;
 
     private NavigatorComponent component;
@@ -422,8 +426,166 @@ public class NavigatorView extends Widget {
         this.navigatorList.setLayoutX(5);
         this.content.getChildren().add(this.navigatorList);
 
-        // TODO Parsnip
+        this.modifyRoomBack = new Pane();
+        this.modifyRoomBack.setPrefSize(340, 22);
+        this.modifyRoomBack.setLayoutX(1);
+        this.modifyRoomBack.setLayoutY(79);
+        this.modifyRoomBack.setCursor(Cursor.HAND);
+        this.modifyRoomBack.setVisible(false);
+        this.modifyRoomBack.setOnMouseClicked(e -> this.pendingAction = () -> this.hideModifyRoom());
+        this.content.getChildren().add(modifyRoomBack);
+        
+        this.modifyRoomBackLabel = new Label(TextsManager.getInstance().getString("nav_roomnfo_hd_own"), true, "#336666");
+        this.modifyRoomBackLabel.setLayoutX(39);
+        this.modifyRoomBackLabel.setLayoutY(8);
+        this.modifyRoomBack.getChildren().add(modifyRoomBackLabel);
 
+        this.modifyRoomPage1 = new Pane();
+        this.modifyRoomPage1.setPrefSize(340, 250);
+        this.modifyRoomPage1.setLayoutX(1);
+        this.modifyRoomPage1.setLayoutY(102);
+        this.modifyRoomPage1.setVisible(false);
+        this.content.getChildren().add(modifyRoomPage1);
+
+        this.modifyRoomNameLabel = new Label(TextsManager.getInstance().getString("nav_modify_nameoftheroom"), true);
+        this.modifyRoomNameLabel.setLayoutX(39);
+        this.modifyRoomNameLabel.setLayoutY(11);
+        this.modifyRoomPage1.getChildren().add(this.modifyRoomNameLabel);
+        
+        this.modifyRoomDescriptionLabel = new Label(TextsManager.getInstance().getString("nav_modify_roomdescription"), true);
+        this.modifyRoomDescriptionLabel.setLayoutX(39);
+        this.modifyRoomDescriptionLabel.setLayoutY(50);
+        this.modifyRoomPage1.getChildren().add(this.modifyRoomDescriptionLabel);
+
+        this.modifyRoomCategoryLabel = new Label(TextsManager.getInstance().getString("nav_modify_choosecategory"), true);
+        this.modifyRoomCategoryLabel.setLayoutX(39);
+        this.modifyRoomCategoryLabel.setLayoutY(119);
+        this.modifyRoomPage1.getChildren().add(this.modifyRoomCategoryLabel);
+
+        this.modifyRoomMaxVisitorsLabel = new Label(TextsManager.getInstance().getString("nav_modify_maxvisitors"), true);
+        this.modifyRoomMaxVisitorsLabel.setLayoutX(39);
+        this.modifyRoomMaxVisitorsLabel.setLayoutY(163);
+        this.modifyRoomPage1.getChildren().add(this.modifyRoomMaxVisitorsLabel);
+
+        this.modifyRoomShowNameLabel = new Label(TextsManager.getInstance().getString("nav_modify_nameshow"), true);
+        this.modifyRoomShowNameLabel.setLayoutX(39);
+        this.modifyRoomShowNameLabel.setLayoutY(210);
+        this.modifyRoomPage1.getChildren().add(this.modifyRoomShowNameLabel);
+
+        this.modifyRoomShowNameYesLabel = new Label(TextsManager.getInstance().getString("yes"));
+        this.modifyRoomShowNameYesLabel.setLayoutX(61);
+        this.modifyRoomShowNameYesLabel.setLayoutY(226);
+        this.modifyRoomPage1.getChildren().add(this.modifyRoomShowNameYesLabel);
+
+        this.modifyRoomShowNameNoLabel = new Label(TextsManager.getInstance().getString("no"));
+        this.modifyRoomShowNameNoLabel.setLayoutX(142);
+        this.modifyRoomShowNameNoLabel.setLayoutY(226);
+        this.modifyRoomPage1.getChildren().add(this.modifyRoomShowNameNoLabel);
+
+        this.modifyRoomPage2 = new Pane();
+        this.modifyRoomPage2.setPrefSize(340, 250);
+        this.modifyRoomPage2.setLayoutX(1);
+        this.modifyRoomPage2.setLayoutY(102);
+        this.modifyRoomPage2.setVisible(false);
+        this.content.getChildren().add(modifyRoomPage2);
+        
+        this.modifyRoomDoorbellLabel = new Label(TextsManager.getInstance().getString("nav_modify_doorstatus"), true);
+        this.modifyRoomDoorbellLabel.setLayoutX(39);
+        this.modifyRoomDoorbellLabel.setLayoutY(10);
+        this.modifyRoomPage2.getChildren().add(this.modifyRoomDoorbellLabel);
+
+        this.modifyRoomDoorbellOpenLabel = new Label(TextsManager.getInstance().getString("nav_modify_doorstatus_open"));
+        this.modifyRoomDoorbellOpenLabel.setLayoutX(61);
+        this.modifyRoomDoorbellOpenLabel.setLayoutY(29);
+        this.modifyRoomPage2.getChildren().add(this.modifyRoomDoorbellOpenLabel);
+
+        this.modifyRoomDoorbellRingLabel = new Label(TextsManager.getInstance().getString("nav_modify_doorstatus_locked"));
+        this.modifyRoomDoorbellRingLabel.setLayoutX(61);
+        this.modifyRoomDoorbellRingLabel.setLayoutY(46);
+        this.modifyRoomPage2.getChildren().add(this.modifyRoomDoorbellRingLabel);
+
+        this.modifyRoomDoorbellPasswordLabel = new Label(TextsManager.getInstance().getString("nav_modify_doorstatus_pwprotected"));
+        this.modifyRoomDoorbellPasswordLabel.setLayoutX(61);
+        this.modifyRoomDoorbellPasswordLabel.setLayoutY(63);
+        this.modifyRoomPage2.getChildren().add(this.modifyRoomDoorbellPasswordLabel);
+
+        this.modifyRoomPasswordFields = new Pane();
+        this.modifyRoomPasswordFields.setLayoutX(61);
+        this.modifyRoomPasswordFields.setLayoutY(79);
+        this.modifyRoomPage2.getChildren().add(this.modifyRoomPasswordFields);
+
+        this.modifyRoomDoorbellPassword1Label = new Label(TextsManager.getInstance().getString("nav_modify_doorstatus_givepw"), true);
+        this.modifyRoomPasswordFields.getChildren().add(modifyRoomDoorbellPassword1Label);
+        
+        this.modifyRoomDoorbellPassword2Label = new Label(TextsManager.getInstance().getString("nav_modify_doorstatus_pwagain"), true);
+        this.modifyRoomDoorbellPassword2Label.setLayoutY(35);
+        this.modifyRoomPasswordFields.getChildren().add(modifyRoomDoorbellPassword2Label);
+
+        this.modifyRoomOpenRightsLabel = new Label(TextsManager.getInstance().getString("nav_modify_letothersmove"));
+        this.modifyRoomOpenRightsLabel.setLayoutX(61);
+        this.modifyRoomOpenRightsLabel.setLayoutY(164);
+        this.modifyRoomOpenRightsLabel.setMaxWidth(240);
+        this.modifyRoomOpenRightsLabel.setLineSpacing(-1);
+        this.modifyRoomOpenRightsLabel.setWrapText(true);
+        this.modifyRoomPage2.getChildren().add(this.modifyRoomOpenRightsLabel);
+
+        this.modifyRoomResetRightsButton = new Button(TextsManager.getInstance().getString("nav_removerights"));
+        this.modifyRoomResetRightsButton.setLayoutX(41);
+        this.modifyRoomResetRightsButton.setLayoutY(204);
+        this.modifyRoomPage2.getChildren().add(this.modifyRoomResetRightsButton);
+
+        this.modifyRoomResetRightsLabel = new Label(TextsManager.getInstance().getString("nav_removerights_desc"));
+        this.modifyRoomResetRightsLabel.setLayoutX(131);
+        this.modifyRoomResetRightsLabel.setLayoutY(202);
+        this.modifyRoomResetRightsLabel.setMaxWidth(170);
+        this.modifyRoomResetRightsLabel.setLineSpacing(-1);
+        this.modifyRoomResetRightsLabel.setWrapText(true);
+        this.modifyRoomPage2.getChildren().add(this.modifyRoomResetRightsLabel);
+
+        this.modifyRoomFooter = new Pane();
+        this.modifyRoomFooter.setPrefSize(340, 58);
+        this.modifyRoomFooter.setLayoutX(1);
+        this.modifyRoomFooter.setLayoutY(352);
+        this.modifyRoomFooter.setVisible(false);
+        this.content.getChildren().add(modifyRoomFooter);
+
+        this.modifyRoomPrevious = new Label(TextsManager.getInstance().getString("previous_onearrowed"), true, "#A4A4A4");
+        this.modifyRoomPrevious.setOnWidth(() -> this.modifyRoomPrevious.setLayoutX(138 - this.modifyRoomPrevious.getWidth()));
+        this.modifyRoomPrevious.setUnderline(true);
+        this.modifyRoomPrevious.setOnMouseClicked(e -> this.pendingAction = () -> this.showModifyRoomPage1());
+        this.modifyRoomFooter.getChildren().add(this.modifyRoomPrevious);
+        
+        this.modifyRoomPageLabel = new Label("1/2", true, "#333333");
+        this.modifyRoomPageLabel.setOnWidth(() -> this.modifyRoomPageLabel.setLayoutX(167 - (this.modifyRoomPageLabel.getWidth() / 2)));
+        this.modifyRoomFooter.getChildren().add(this.modifyRoomPageLabel);
+
+        this.modifyRoomNext = new Label(TextsManager.getInstance().getString("next_onearrowed"), true, "#333333");
+        this.modifyRoomNext.setLayoutX(196);
+        this.modifyRoomNext.setUnderline(true);
+        this.modifyRoomNext.setOnMouseClicked(e -> this.pendingAction = () -> this.showModifyRoomPage2());
+        this.modifyRoomNext.setCursor(Cursor.HAND);
+        this.modifyRoomFooter.getChildren().add(modifyRoomNext);
+
+        this.modifyRoomCancelButton = new Button(TextsManager.getInstance().getString("nav_cancel"));
+        this.modifyRoomCancelButton.setLayoutX(49);
+        this.modifyRoomCancelButton.setLayoutY(33);
+        this.modifyRoomCancelButton.setOnMouseClicked(e -> this.pendingAction = () -> this.hideModifyRoom());
+        this.modifyRoomFooter.getChildren().add(this.modifyRoomCancelButton);
+
+        this.modifyRoomDeleteButton = new Button(TextsManager.getInstance().getString("nav_deleteroom"));
+        this.modifyRoomDeleteButton.setLayoutX(117);
+        this.modifyRoomDeleteButton.setLayoutY(33);
+        this.modifyRoomDeleteButton.setVisible(false);
+        this.modifyRoomFooter.getChildren().add(this.modifyRoomDeleteButton);
+        
+        this.modifyRoomOkButton = new ButtonLarge(TextsManager.getInstance().getString("nav_ok"));
+        this.modifyRoomOkButton.setLayoutX(268);
+        this.modifyRoomOkButton.setLayoutY(31);
+        this.modifyRoomFooter.getChildren().add(this.modifyRoomOkButton);
+
+        //nav_updatenote_header
+        //nav_updatenote
+        
         this.info = new Pane();
         this.info.setPrefSize(340, 100);
         this.info.setLayoutX(1);
@@ -526,9 +688,11 @@ public class NavigatorView extends Widget {
     }
 
     private void setPage(NavigatorPage page) {
-        this.title.setVisible(true);
+        if (this.modifyRoom != null) {
+            return;
+        }
+
         this.noResults.setVisible(false);
-        this.navigatorList.setVisible(true);
 
         if (page == NavigatorPage.PUBLIC) {
             this.currentPage = NavigatorPage.PUBLIC;
@@ -549,10 +713,6 @@ public class NavigatorView extends Widget {
             this.infoImg.setImage(ResourceManager.getInstance().getFxImage("sprites/views/navigator/", "info_public.png"));
             this.infoLeftButton.setText(TextsManager.getInstance().getString("nav_addtofavourites"));
             this.infoLeftButton.setTranslateX(0);
-
-            //this.handler.sendNavigate(VariablesManager.getInstance().getInt("navigator.private.default", 3));
-
-            //this.showCategory(this.publicCategoryId);
         }
         else {
             this.searchButton.setVisible(true);
@@ -639,7 +799,6 @@ public class NavigatorView extends Widget {
             this.infoLeftButton.setTranslateX(0);
 
             this.updateBackButtons();
-            //this.showOwnRooms();
         }
         else {
             this.room.setVisible(false);
@@ -664,7 +823,6 @@ public class NavigatorView extends Widget {
             this.infoLeftButton.setTranslateX(-30);
 
             this.updateBackButtons();
-            //this.showFavouriteRooms();
         }
 
         this.sendPageRequest();
@@ -820,25 +978,6 @@ public class NavigatorView extends Widget {
         this.info.setVisible(false);
     }
 
-    private void showCategory(NavigatorNode category) {
-        this.navigatorList.clearContent();
-
-        this.component.setCurrentNode(category);
-        this.updateBackButtons();
-        this.title.setText(category.getName());
-
-        for (var room : category.getChildren().stream().filter(x -> x.isRoom()).collect(Collectors.toList())) {
-            this.addRoom(room, false);
-        }
-        
-        for (var childNavigatorNode : category.getChildren().stream().filter(x -> !x.isRoom()).collect(Collectors.toList())) {
-            this.addCategory(childNavigatorNode);
-        }
-
-        // moar rooms pls
-        this.component.sendNavigate(category.getId());
-    }
-
     private void updateBackButtons() {
         this.content.getChildren().removeIf(NavigatorBackButton.class::isInstance);
 
@@ -930,29 +1069,13 @@ public class NavigatorView extends Widget {
         }
     }
 
-    public void updateFavouriteRoomList(NavigatorNode category) {
-        this.navigatorList.clearContent();
-
-        //var currentNavigatorNode = this.getCategory(categoryId);
-        category.setName(TextsManager.getInstance().getString("nav_fav_hd"));
-
-        this.updateBackButtons();
-        this.title.setText(category.getName());
-
-        // Filter out rooms
-        for (var room : category.getChildren().stream().filter(x -> x.isRoom()).collect(Collectors.toList())) {
-            this.addRoom(room, false);
-        }
-
-        for (var childNavigatorNode : category.getChildren().stream().filter(x -> x.isCategory()).collect(Collectors.toList())) {
-            this.addCategory(childNavigatorNode);
-        }
-    }
-
     public void updateRoomList(NavigatorNode category) {
         this.navigatorList.clearContent();
 
-        //var currentNavigatorNode = this.getCategory(categoryId);
+        if (this.currentPage == NavigatorPage.FAVOURITES) {
+            category.setName(TextsManager.getInstance().getString("nav_fav_hd"));
+        }
+
         this.updateBackButtons();
         this.title.setText(category.getName());
 
@@ -966,31 +1089,24 @@ public class NavigatorView extends Widget {
         }
     }
 
-    public void updateOwnRooms(List<NavigatorNode> ownRooms) {
+    public void updateRoomList(List<NavigatorNode> rooms) {
         this.navigatorList.clearContent();
 
-        if (ownRooms.isEmpty()) {
-            this.noResults.setText(TextsManager.getInstance().getString("nav_private_norooms"));
+        if (rooms.isEmpty()) {
+            if (this.currentPage == NavigatorPage.SEARCH) {
+                this.noResults.setText(TextsManager.getInstance().getString("nav_prvrooms_notfound"));
+            }
+            if (this.currentPage == NavigatorPage.OWN) {
+                this.noResults.setText(TextsManager.getInstance().getString("nav_private_norooms"));
+            }
             this.noResults.setVisible(true);
             return;
         }
 
-        for (var room : ownRooms) {
+        for (var room : rooms) {
             this.addRoom(room, false);
         }
     }
-
-    /*
-    private void showRecommendedRooms() {
-        this.recommendedList.getChildren().clear();
-
-        var recommendedRooms = this.getRecommendedRooms();
-
-        for (var room : recommendedRooms) {
-           // this.addRoom(room, true);
-        }
-    }
-*/
 
     private void goToRoom(NavigatorNode room) {
         if (room.getDoorbell() == Doorbell.PASSWORD) {
@@ -1014,9 +1130,52 @@ public class NavigatorView extends Widget {
         this.navigatorList.setVisible(false);
         this.infoHide();
 
-        // TODO Parsnip
+        this.modifyRoom = room;
+
+        this.modifyRoomBack.setVisible(true);
+        this.showModifyRoomPage1();
+        this.modifyRoomFooter.setVisible(true);
     }
 
+    private void hideModifyRoom() {
+        this.content.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/views/navigator/", "background_own.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        this.room.setVisible(true);
+        this.title.setVisible(true);
+        this.navigatorList.setVisible(true);
+        this.infoShowRoom(this.modifyRoom);
+
+        this.modifyRoom = null;
+
+        this.modifyRoomBack.setVisible(false);
+        this.modifyRoomPage1.setVisible(false);
+        this.modifyRoomPage2.setVisible(false);
+        this.modifyRoomFooter.setVisible(false);
+    }
+
+    private void showModifyRoomPage1() {
+        this.modifyRoomPage1.setVisible(true);
+        this.modifyRoomPage2.setVisible(false);
+        this.modifyRoomPrevious.setTextFill(Color.web("#A4A4A4"));
+        this.modifyRoomPrevious.setCursor(Cursor.DEFAULT);
+        this.modifyRoomPageLabel.setText("1/2");
+        this.modifyRoomPageLabel.setTranslateX(0);
+        this.modifyRoomNext.setTextFill(Color.web("#333333"));
+        this.modifyRoomNext.setCursor(Cursor.HAND);
+        this.modifyRoomDeleteButton.setVisible(false);
+    }
+
+    private void showModifyRoomPage2() {
+        this.modifyRoomPage1.setVisible(false);
+        this.modifyRoomPage2.setVisible(true);
+        this.modifyRoomPrevious.setTextFill(Color.web("#333333"));
+        this.modifyRoomPrevious.setCursor(Cursor.HAND);
+        this.modifyRoomPageLabel.setText("2/2");
+        this.modifyRoomPageLabel.setTranslateX(-1);
+        this.modifyRoomNext.setTextFill(Color.web("#A4A4A4"));
+        this.modifyRoomNext.setCursor(Cursor.DEFAULT);
+        this.modifyRoomDeleteButton.setVisible(true);
+    }
+    
     private void addRoom(NavigatorNode room, Boolean recommended) {
         var navigatorItem = new NavigatorItem(room);
         navigatorItem.setNameButtonOnMouseClicked(e -> this.pendingAction = () -> this.infoShowRoom(navigatorItem.getNode()));
@@ -1031,7 +1190,7 @@ public class NavigatorView extends Widget {
 
     private void addCategory(NavigatorNode category) {
         var navigatorItem = new NavigatorItem(category);
-        navigatorItem.setOnMouseClicked(e -> this.pendingAction = () -> this.showCategory(category));
+        navigatorItem.setOnMouseClicked(e -> this.pendingAction = () -> this.component.sendNavigate(category.getId()));
         
         this.navigatorList.addContent(navigatorItem);
     }

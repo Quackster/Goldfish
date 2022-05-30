@@ -49,7 +49,7 @@ public class NavigatorComponent extends Component {
             var navigatorView = Movie.getInstance().getViewByClass(NavigatorView.class);
 
             if (navigatorView != null) {
-                navigatorView.updateFavouriteRoomList(tNodeInfo);
+                navigatorView.updateRoomList(tNodeInfo);
             }
         });
     }
@@ -60,7 +60,7 @@ public class NavigatorComponent extends Component {
             var navigatorView = Movie.getInstance().getViewByClass(NavigatorView.class);
 
             if (navigatorView != null) {
-                navigatorView.updateOwnRooms(flatList);
+                navigatorView.updateRoomList(flatList);
             }
         });
     }
