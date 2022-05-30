@@ -29,6 +29,7 @@ public class NavigatorHandler extends MessageHandler {
         }
 
         tNodeInfo.setHideFull(tNodeMask == 1);
+
         var tCategoryId = tNodeInfo.getId();
 
         while (request.remainingBytes().length > 0) {

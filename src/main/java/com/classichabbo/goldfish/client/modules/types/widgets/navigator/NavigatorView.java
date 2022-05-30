@@ -11,7 +11,6 @@ import com.classichabbo.goldfish.client.game.resources.AliasManager;
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
 import com.classichabbo.goldfish.client.game.values.types.TextsManager;
 import com.classichabbo.goldfish.client.game.values.types.VariablesManager;
-import com.classichabbo.goldfish.client.modules.Component;
 import com.classichabbo.goldfish.client.modules.controls.BorderPane;
 import com.classichabbo.goldfish.client.modules.controls.Button;
 import com.classichabbo.goldfish.client.modules.controls.ButtonLarge;
@@ -28,9 +27,7 @@ import com.classichabbo.goldfish.client.modules.types.alerts.Alert;
 import com.classichabbo.goldfish.client.modules.types.room.RoomView;
 import com.classichabbo.goldfish.client.modules.types.widgets.Widget;
 
-import com.classichabbo.goldfish.networking.wrappers.messages.MessageHandler;
 import com.classichabbo.goldfish.util.DimensionUtil;
-import com.google.gson.Gson;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -147,6 +144,8 @@ public class NavigatorView extends Widget {
     private NavigatorComponent component;
     private NavigatorHandler handler;
     private AliasManager aliasManager;
+
+    private boolean isHideFull;
 
     private boolean hideFullRooms;
 
@@ -391,6 +390,7 @@ public class NavigatorView extends Widget {
         this.hideFull.setAlignment(Pos.TOP_RIGHT);
         this.hideFull.setUnderline(true);
         this.hideFull.setCursor(Cursor.HAND);
+        this.hideFull.setOnMouseClicked(e -> toggleHideFull());
         this.content.getChildren().add(hideFull);
 
         this.recommendedTitle = new Label(TextsManager.getInstance().getString("nav_recommended_rooms"), true);
@@ -510,6 +510,7 @@ public class NavigatorView extends Widget {
 
         this.passwordPrompt.addContent(passwordPromptImg, passwordPromptGoing, this.passwordPromptName, this.passwordPromptIsProtected, this.passwordPromptField, this.passwordPromptCancelButton, this.passwordPromptOkButton);
     }
+
 
     private void setLocation() {
         // getWidth() and getHeight() no longer zero when wrapping around this shit - when the navigator finished sizing itself
@@ -662,6 +663,8 @@ public class NavigatorView extends Widget {
             //this.showFavouriteRooms();
         }
 
+
+
         this.sendPageRequest();
 
         this.info.setVisible(true);
@@ -673,13 +676,33 @@ public class NavigatorView extends Widget {
         this.infoGoButton.setVisible(false);
     }
 
+    private void toggleHideFull() {
+        if (this.currentPage == NavigatorPage.PRIVATE || this.currentPage == NavigatorPage.PUBLIC) {
+            this.isHideFull = !isHideFull;
+
+            if (this.isHideFull) {
+                this.hideFull.setText(TextsManager.getInstance().getString("nav_showfull"));
+            } else {
+                this.hideFull.setText(TextsManager.getInstance().getString("nav_hidefull"));
+            }
+
+            if (this.currentPage == NavigatorPage.PUBLIC) {
+                this.component.sendNavigate(this.publicCategoryId);
+            }
+
+            if (this.currentPage == NavigatorPage.PRIVATE) {
+                this.component.sendNavigate(this.privateCategoryId);
+            }
+        }
+    }
+
     private void sendPageRequest() {
         switch (this.currentPage) {
             case PUBLIC:
                 this.component.sendNavigate(this.publicCategoryId);
                 break;
             case PRIVATE:
-                this.component.sendNavigate(this.publicCategoryId);
+                this.component.sendNavigate(this.privateCategoryId);
 
                 if (this.privateCategoryId == this.defaultPrivateCategoryId) {
                     this.component.sendGetRecommendedRooms();
@@ -1082,6 +1105,14 @@ public class NavigatorView extends Widget {
 
     public void setHideFullRooms(boolean hideFullRooms) {
         this.hideFullRooms = hideFullRooms;
+    }
+
+    public boolean isHideFull() {
+        return isHideFull;
+    }
+
+    public void setHideFull(boolean hideFull) {
+        isHideFull = hideFull;
     }
 
     private enum NavigatorPage {

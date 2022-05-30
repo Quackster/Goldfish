@@ -36,7 +36,7 @@ public class NavigatorNode {
         this.id = id;
     }
 
-    public boolean getHideFull() {
+    public boolean isHideFull() {
         return hideFull;
     }
 

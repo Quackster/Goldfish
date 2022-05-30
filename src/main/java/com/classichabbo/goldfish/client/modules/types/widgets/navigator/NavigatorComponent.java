@@ -80,8 +80,8 @@ public class NavigatorComponent extends Component {
 
         if (conn == null)
             return;
-
-        conn.send("NAVIGATE", this.isHideFull(), categoryId, 1);
+        
+        conn.send("NAVIGATE", this.navigatorView.isHideFull(), categoryId, 1);
     }
 
     public void sendGetOwnFlats() {
@@ -126,10 +126,6 @@ public class NavigatorComponent extends Component {
         conn.send("GET_RECOMMENDED_ROOMS", false);
     }
 
-    private boolean isHideFull() {
-        return this.navigatorView.isHideFullRooms();
-    }
-
     /**
      * Finds the parent of the current node, if no parameter is specified then it will
      * default to the current node in-use.
@@ -151,6 +147,13 @@ public class NavigatorComponent extends Component {
      */
     public NavigatorNode getCurrentNode() {
         return currentNode;
+    }
+
+    /**
+     * Gets the current node in use.
+     */
+    public NavigatorNode getNode(int categoryId) {
+        return this.nodes.get(categoryId);
     }
 
     /**
