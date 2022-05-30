@@ -405,6 +405,10 @@ public class NavigatorView extends Widget {
         this.recommendedRefresh.setAlignment(Pos.TOP_RIGHT);
         this.recommendedRefresh.setUnderline(true);
         this.recommendedRefresh.setCursor(Cursor.HAND);
+        this.recommendedRefresh.setOnMouseClicked(e -> {
+            this.recommendedList.getChildren().clear();
+            this.component.sendGetRecommendedRooms();
+        });
         this.content.getChildren().add(recommendedRefresh);
 
         this.recommendedList = new VBox(2);
@@ -663,8 +667,6 @@ public class NavigatorView extends Widget {
             //this.showFavouriteRooms();
         }
 
-
-
         this.sendPageRequest();
 
         this.info.setVisible(true);
@@ -678,7 +680,7 @@ public class NavigatorView extends Widget {
 
     private void toggleHideFull() {
         if (this.currentPage == NavigatorPage.PRIVATE || this.currentPage == NavigatorPage.PUBLIC) {
-            this.isHideFull = !isHideFull;
+            this.isHideFull = !this.isHideFull;
 
             if (this.isHideFull) {
                 this.hideFull.setText(TextsManager.getInstance().getString("nav_showfull"));

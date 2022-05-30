@@ -80,7 +80,7 @@ public class NavigatorComponent extends Component {
 
         if (conn == null)
             return;
-        
+
         conn.send("NAVIGATE", this.navigatorView.isHideFull(), categoryId, 1);
     }
 
