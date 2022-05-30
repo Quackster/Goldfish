@@ -65,6 +65,16 @@ public class NavigatorComponent extends Component {
         });
     }
 
+    public void processRecommendedRooms(List<NavigatorNode> recommendedRooms) {
+        invoke(() -> {
+            var navigatorView = Movie.getInstance().getViewByClass(NavigatorView.class);
+
+            if (navigatorView != null) {
+                navigatorView.updateRecommendedRooms(recommendedRooms);
+            }
+        });
+    }
+
     public void sendNavigate(int categoryId) {
         var conn = Connection.get();
 
@@ -104,6 +114,16 @@ public class NavigatorComponent extends Component {
             return;
 
         conn.send("GETFVRF", false);
+    }
+
+
+    public void sendGetRecommendedRooms() {
+        var conn = Connection.get();
+
+        if (conn == null)
+            return;
+
+        conn.send("GET_RECOMMENDED_ROOMS", false);
     }
 
     private boolean isHideFull() {

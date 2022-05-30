@@ -137,6 +137,9 @@ public class NavigatorView extends Widget {
     private int publicCategoryId;
     private int privateCategoryId;
 
+    private final int defaultPublicCategoryId;
+    private final int defaultPrivateCategoryId;
+
     private boolean inRoom;
     private NavigatorPage currentPage;
     private Runnable pendingAction;
@@ -150,19 +153,23 @@ public class NavigatorView extends Widget {
     public NavigatorView() {
         this.component = new NavigatorComponent(this);
         this.handler = new NavigatorHandler(this);
+
         this.aliasManager = new AliasManager();
         this.aliasManager.loadMemberAlias("sprites/views/navigator/thumbnails/memberalias.index");
+
+        this.defaultPublicCategoryId = VariablesManager.getInstance().getInt("navigator.public.default", 3);
+        this.defaultPrivateCategoryId = VariablesManager.getInstance().getInt("navigator.private.default", 4);
     }
 
     @Override
     public void start() {
         super.start();
-        
-        // TODO Avery - I'm not sure where you get these from
-        this.publicCategoryId = VariablesManager.getInstance().getInt("navigator.public.default", 3);
-        this.privateCategoryId = VariablesManager.getInstance().getInt("navigator.private.default", 4);
+
         this.inRoom = false;
         this.hideFullRooms = false;
+
+        this.publicCategoryId = this.defaultPublicCategoryId;
+        this.privateCategoryId = this.defaultPrivateCategoryId;
         
         this.init();
         this.padding = new Insets(9, 11, 10, 10);
@@ -552,6 +559,10 @@ public class NavigatorView extends Widget {
         if (page == NavigatorPage.PRIVATE) {
             this.currentPage = NavigatorPage.PRIVATE;
             this.component.sendNavigate(this.privateCategoryId);
+
+            if (this.privateCategoryId == this.defaultPrivateCategoryId) {
+                this.component.sendGetRecommendedRooms();
+            }
 
             this.content.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/views/navigator/", "background_private.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
             this.title.setLayoutY(163);

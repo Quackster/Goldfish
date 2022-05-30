@@ -98,6 +98,13 @@ public class NavigatorHandler extends MessageHandler {
             navigatorView.getComponent().processFavouriteRooms(tNodeInfo);
     }
 
+    private static void recommended_room_list(Connection connection, Request request) {
+        var navigatorView = Movie.getInstance().getViewByClass(NavigatorView.class);
+
+        if (navigatorView != null)
+            navigatorView.getComponent().processRecommendedRooms(parseFlatCategoryNode(request)); // force send no flats!
+    }
+
     private static NavigatorNode parseNode(Request request) {
         var tNodeId = request.readInt();
 
@@ -166,12 +173,14 @@ public class NavigatorHandler extends MessageHandler {
         listeners.put(55, NavigatorHandler::search_flat_results);
         listeners.put(16, NavigatorHandler::userflatcats);
         listeners.put(61, NavigatorHandler::favouriteroomresults);
+        listeners.put(351, NavigatorHandler::recommended_room_list);
 
         var commands = new HashMap<String, Integer>();
         commands.put("NAVIGATE", 150);
         commands.put("SUSERF", 16);
         commands.put("SRCHF", 17);
         commands.put("GETFVRF", 18);
+        commands.put("GET_RECOMMENDED_ROOMS", 264);
 
         if (tBool) {
             Connection.get().registerListeners(this, listeners);
