@@ -527,7 +527,6 @@ public class NavigatorView extends Widget {
 
         if (page == NavigatorPage.PUBLIC) {
             this.currentPage = NavigatorPage.PUBLIC;
-            this.component.sendNavigate(this.publicCategoryId);
             this.content.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/views/navigator/", "background_public.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
             this.title.setLayoutY(62);
             this.hideFull.setLayoutY(62);
@@ -558,12 +557,6 @@ public class NavigatorView extends Widget {
 
         if (page == NavigatorPage.PRIVATE) {
             this.currentPage = NavigatorPage.PRIVATE;
-            this.component.sendNavigate(this.privateCategoryId);
-
-            if (this.privateCategoryId == this.defaultPrivateCategoryId) {
-                this.component.sendGetRecommendedRooms();
-            }
-
             this.content.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/views/navigator/", "background_private.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
             this.title.setLayoutY(163);
             this.hideFull.setLayoutY(163);
@@ -669,6 +662,8 @@ public class NavigatorView extends Widget {
             //this.showFavouriteRooms();
         }
 
+        this.sendPageRequest();
+
         this.info.setVisible(true);
         this.infoImg.setTranslateX(0);
         this.infoImg.setTranslateY(0);
@@ -676,6 +671,27 @@ public class NavigatorView extends Widget {
         this.infoDescription.setTranslateY(0);
         this.infoLeftButton.setVisible(false);
         this.infoGoButton.setVisible(false);
+    }
+
+    private void sendPageRequest() {
+        switch (this.currentPage) {
+            case PUBLIC:
+                this.component.sendNavigate(this.publicCategoryId);
+                break;
+            case PRIVATE:
+                this.component.sendNavigate(this.publicCategoryId);
+
+                if (this.privateCategoryId == this.defaultPrivateCategoryId) {
+                    this.component.sendGetRecommendedRooms();
+                }
+                break;
+            case OWN:
+                this.component.sendGetOwnFlats();
+                break;
+            case FAVOURITES:
+                this.component.sendGetFavoriteFlats();
+                break;
+        }
     }
 
     private void backTopShow(String text, EventHandler<MouseEvent> event) {
