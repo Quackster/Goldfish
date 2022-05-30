@@ -55,4 +55,10 @@ public class ButtonLarge extends HBox {
     public void setText(String text) {
         this.center.setText(text);
     }
+
+    public void setOnWidth(Runnable runnable) {
+        this.widthProperty().addListener((obs, oldWidth, newWidth) -> {
+            runnable.run();
+        });
+    }
 }

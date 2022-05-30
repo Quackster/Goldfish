@@ -43,6 +43,7 @@ import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.TextAlignment;
 
 public class NavigatorView extends Widget {
     private Pane content;
@@ -118,6 +119,21 @@ public class NavigatorView extends Widget {
     private Button modifyRoomCancelButton;
     private Button modifyRoomDeleteButton;
     private ButtonLarge modifyRoomOkButton;
+
+    private Label modifyRoomNoteHeader;
+    private Label modifyRoomNote;
+    private ButtonLarge modifyRoomNoteOk;
+
+    private BorderPane resetRights;
+    private Label resetRightsName;
+    private Button resetRightsCancel;
+    private ButtonLarge resetRightsOk;
+
+    private BorderPane deleteRoom;
+    private Label deleteRoomName;
+    private Label deleteRoomDescription;
+    private Button deleteRoomCancel;
+    private ButtonLarge deleteRoomOk;
 
     private Pane info;
     private ImageView infoImg;
@@ -353,24 +369,24 @@ public class NavigatorView extends Widget {
         this.room.setLayoutX(1);
         this.room.setLayoutY(81);
         this.room.setVisible(false);
-        this.content.getChildren().add(room);
+        this.content.getChildren().add(this.room);
 
         this.roomTitle = new Label(TextsManager.getInstance().getString("nav_createroom_hd"));
         this.roomTitle.setLayoutX(11);
         this.roomTitle.setLayoutY(8);
-        this.room.getChildren().add(roomTitle);
+        this.room.getChildren().add(this.roomTitle);
 
         this.roomCreateButton = new Button(TextsManager.getInstance().getString("nav_createroom"));
         this.roomCreateButton.setLayoutX(5);
         this.roomCreateButton.setLayoutY(22);
         this.roomCreateButton.setOnMouseClicked(e -> this.pendingAction = () -> this.showCreateRoom());
-        this.room.getChildren().add(roomCreateButton);
+        this.room.getChildren().add(this.roomCreateButton);
 
         this.roomCreateImg = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/views/navigator/", "room-create-img.png"));
         this.roomCreateImg.setLayoutX(306);
         this.roomCreateImg.setLayoutY(5);
         this.roomCreateImg.setOnMouseClicked(e -> this.pendingAction = () -> this.showCreateRoom());
-        this.room.getChildren().add(roomCreateImg);
+        this.room.getChildren().add(this.roomCreateImg);
 
         this.backTop = new Pane();
         this.backTop.setPrefWidth(340);
@@ -378,11 +394,11 @@ public class NavigatorView extends Widget {
         this.backTop.setVisible(false);
         this.backTop.setPickOnBounds(false);
         this.backTop.setCursor(Cursor.HAND);
-        this.content.getChildren().add(backTop);
+        this.content.getChildren().add(this.backTop);
 
         this.backTopLabel = new Label("", true, "#336666");
         this.backTopLabel.setLayoutX(39);
-        this.backTop.getChildren().add(backTopLabel);
+        this.backTop.getChildren().add(this.backTopLabel);
 
         this.title = new Label("", true);
         this.title.setLayoutX(22);
@@ -395,7 +411,7 @@ public class NavigatorView extends Widget {
         this.hideFull.setUnderline(true);
         this.hideFull.setCursor(Cursor.HAND);
         this.hideFull.setOnMouseClicked(e -> toggleHideFull());
-        this.content.getChildren().add(hideFull);
+        this.content.getChildren().add(this.hideFull);
 
         this.recommendedTitle = new Label(TextsManager.getInstance().getString("nav_recommended_rooms"), true);
         this.recommendedTitle.setLayoutX(22);
@@ -413,13 +429,13 @@ public class NavigatorView extends Widget {
             this.recommendedList.getChildren().clear();
             this.component.sendGetRecommendedRooms();
         });
-        this.content.getChildren().add(recommendedRefresh);
+        this.content.getChildren().add(this.recommendedRefresh);
 
         this.recommendedList = new VBox(2);
         this.recommendedList.setLayoutX(5);
         this.recommendedList.setLayoutY(101);
         this.recommendedList.setMinWidth(311);
-        this.content.getChildren().add(recommendedList);
+        this.content.getChildren().add(this.recommendedList);
 
         this.navigatorList = new ScrollPane();
         this.navigatorList.setSpacing(2);
@@ -433,19 +449,19 @@ public class NavigatorView extends Widget {
         this.modifyRoomBack.setCursor(Cursor.HAND);
         this.modifyRoomBack.setVisible(false);
         this.modifyRoomBack.setOnMouseClicked(e -> this.pendingAction = () -> this.hideModifyRoom());
-        this.content.getChildren().add(modifyRoomBack);
+        this.content.getChildren().add(this.modifyRoomBack);
         
         this.modifyRoomBackLabel = new Label(TextsManager.getInstance().getString("nav_roomnfo_hd_own"), true, "#336666");
         this.modifyRoomBackLabel.setLayoutX(39);
         this.modifyRoomBackLabel.setLayoutY(8);
-        this.modifyRoomBack.getChildren().add(modifyRoomBackLabel);
+        this.modifyRoomBack.getChildren().add(this.modifyRoomBackLabel);
 
         this.modifyRoomPage1 = new Pane();
         this.modifyRoomPage1.setPrefSize(340, 250);
         this.modifyRoomPage1.setLayoutX(1);
         this.modifyRoomPage1.setLayoutY(102);
         this.modifyRoomPage1.setVisible(false);
-        this.content.getChildren().add(modifyRoomPage1);
+        this.content.getChildren().add(this.modifyRoomPage1);
 
         this.modifyRoomNameLabel = new Label(TextsManager.getInstance().getString("nav_modify_nameoftheroom"), true);
         this.modifyRoomNameLabel.setLayoutX(39);
@@ -487,7 +503,7 @@ public class NavigatorView extends Widget {
         this.modifyRoomPage2.setLayoutX(1);
         this.modifyRoomPage2.setLayoutY(102);
         this.modifyRoomPage2.setVisible(false);
-        this.content.getChildren().add(modifyRoomPage2);
+        this.content.getChildren().add(this.modifyRoomPage2);
         
         this.modifyRoomDoorbellLabel = new Label(TextsManager.getInstance().getString("nav_modify_doorstatus"), true);
         this.modifyRoomDoorbellLabel.setLayoutX(39);
@@ -515,11 +531,11 @@ public class NavigatorView extends Widget {
         this.modifyRoomPage2.getChildren().add(this.modifyRoomPasswordFields);
 
         this.modifyRoomDoorbellPassword1Label = new Label(TextsManager.getInstance().getString("nav_modify_doorstatus_givepw"), true);
-        this.modifyRoomPasswordFields.getChildren().add(modifyRoomDoorbellPassword1Label);
+        this.modifyRoomPasswordFields.getChildren().add(this.modifyRoomDoorbellPassword1Label);
         
         this.modifyRoomDoorbellPassword2Label = new Label(TextsManager.getInstance().getString("nav_modify_doorstatus_pwagain"), true);
         this.modifyRoomDoorbellPassword2Label.setLayoutY(35);
-        this.modifyRoomPasswordFields.getChildren().add(modifyRoomDoorbellPassword2Label);
+        this.modifyRoomPasswordFields.getChildren().add(this.modifyRoomDoorbellPassword2Label);
 
         this.modifyRoomOpenRightsLabel = new Label(TextsManager.getInstance().getString("nav_modify_letothersmove"));
         this.modifyRoomOpenRightsLabel.setLayoutX(61);
@@ -547,7 +563,7 @@ public class NavigatorView extends Widget {
         this.modifyRoomFooter.setLayoutX(1);
         this.modifyRoomFooter.setLayoutY(352);
         this.modifyRoomFooter.setVisible(false);
-        this.content.getChildren().add(modifyRoomFooter);
+        this.content.getChildren().add(this.modifyRoomFooter);
 
         this.modifyRoomPrevious = new Label(TextsManager.getInstance().getString("previous_onearrowed"), true, "#A4A4A4");
         this.modifyRoomPrevious.setOnWidth(() -> this.modifyRoomPrevious.setLayoutX(138 - this.modifyRoomPrevious.getWidth()));
@@ -556,7 +572,7 @@ public class NavigatorView extends Widget {
         this.modifyRoomFooter.getChildren().add(this.modifyRoomPrevious);
         
         this.modifyRoomPageLabel = new Label("1/2", true, "#333333");
-        this.modifyRoomPageLabel.setOnWidth(() -> this.modifyRoomPageLabel.setLayoutX(167 - (this.modifyRoomPageLabel.getWidth() / 2)));
+        this.modifyRoomPageLabel.setOnWidth(() -> this.modifyRoomPageLabel.setLayoutX(167 - Math.round(this.modifyRoomPageLabel.getWidth() / 2)));
         this.modifyRoomFooter.getChildren().add(this.modifyRoomPageLabel);
 
         this.modifyRoomNext = new Label(TextsManager.getInstance().getString("next_onearrowed"), true, "#333333");
@@ -564,7 +580,7 @@ public class NavigatorView extends Widget {
         this.modifyRoomNext.setUnderline(true);
         this.modifyRoomNext.setOnMouseClicked(e -> this.pendingAction = () -> this.showModifyRoomPage2());
         this.modifyRoomNext.setCursor(Cursor.HAND);
-        this.modifyRoomFooter.getChildren().add(modifyRoomNext);
+        this.modifyRoomFooter.getChildren().add(this.modifyRoomNext);
 
         this.modifyRoomCancelButton = new Button(TextsManager.getInstance().getString("nav_cancel"));
         this.modifyRoomCancelButton.setLayoutX(49);
@@ -581,11 +597,89 @@ public class NavigatorView extends Widget {
         this.modifyRoomOkButton = new ButtonLarge(TextsManager.getInstance().getString("nav_ok"));
         this.modifyRoomOkButton.setLayoutX(268);
         this.modifyRoomOkButton.setLayoutY(31);
+        this.modifyRoomOkButton.setOnMouseClicked(e -> this.pendingAction = () -> this.doModifyRoom());
         this.modifyRoomFooter.getChildren().add(this.modifyRoomOkButton);
 
-        //nav_updatenote_header
-        //nav_updatenote
-        
+        this.modifyRoomNoteHeader = new Label(TextsManager.getInstance().getString("nav_updatenote_header"), true);
+        this.modifyRoomNoteHeader.setLayoutY(148);
+        this.modifyRoomNoteHeader.setOnWidth(() -> this.modifyRoomNoteHeader.setLayoutX(170 - Math.round(this.modifyRoomNoteHeader.getWidth() / 2)));
+        this.modifyRoomNoteHeader.setVisible(false);
+        this.content.getChildren().add(this.modifyRoomNoteHeader);
+
+        this.modifyRoomNote = new Label(TextsManager.getInstance().getString("nav_updatenote"));
+        this.modifyRoomNote.setTextAlignment(TextAlignment.CENTER);
+        this.modifyRoomNote.setMaxWidth(240);
+        this.modifyRoomNote.setWrapText(true);
+        this.modifyRoomNote.setLayoutY(162);
+        this.modifyRoomNote.setOnWidth(() -> this.modifyRoomNote.setLayoutX(173 - Math.round(this.modifyRoomNote.getWidth() / 2)));
+        this.modifyRoomNote.setVisible(false);
+        this.modifyRoomNote.setLineSpacing(-1);
+        this.content.getChildren().add(this.modifyRoomNote);
+
+        this.modifyRoomNoteOk = new ButtonLarge(TextsManager.getInstance().getString("nav_ok"));
+        this.modifyRoomNoteOk.setLayoutY(246);
+        this.modifyRoomNoteOk.setOnWidth(() -> this.modifyRoomNoteOk.setLayoutX(175 - Math.round(this.modifyRoomNoteOk.getWidth() / 2)));
+        this.modifyRoomNoteOk.setOnMouseClicked(e -> this.pendingAction = () -> this.hideModifyRoom());
+        this.modifyRoomNoteOk.setVisible(false);
+        this.content.getChildren().add(this.modifyRoomNoteOk);
+
+        this.resetRights = new BorderPane();
+        this.resetRights.setSize(342, 412);
+
+        this.resetRightsName = new Label("", true);
+        this.resetRightsName.setLayoutY(98);
+        this.resetRightsName.setOnWidth(() -> this.resetRightsName.setLayoutX(171 - Math.round(this.resetRightsName.getWidth() / 2)));
+        this.resetRights.getChildren().add(this.resetRightsName);
+
+        var resetRightsDescription = new Label(TextsManager.getInstance().getString("nav_remrightsconf"), true);
+        resetRightsDescription.setLayoutX(60);
+        resetRightsDescription.setLayoutY(139);
+        resetRightsDescription.setMaxWidth(220);
+        resetRightsDescription.setLineSpacing(-1);
+        resetRightsDescription.setWrapText(true);
+        this.resetRights.getChildren().add(resetRightsDescription);
+
+        this.resetRightsCancel = new Button(TextsManager.getInstance().getString("nav_cancel"));
+        this.resetRightsCancel.setLayoutY(199);
+        this.resetRightsCancel.setOnWidth(() -> this.resetRightsCancel.setLayoutX(164 - this.resetRightsCancel.getWidth()));
+        this.resetRightsCancel.setOnMouseClicked(e -> this.pendingAction = () -> this.setContent(this.content, this.padding, true));
+        this.resetRights.getChildren().add(this.resetRightsCancel);
+
+        this.resetRightsOk = new ButtonLarge(TextsManager.getInstance().getString("nav_removerights"));
+        this.resetRightsOk.setLayoutX(175);
+        this.resetRightsOk.setLayoutY(196);
+        this.resetRights.getChildren().add(this.resetRightsOk);
+
+        this.deleteRoom = new BorderPane();
+        this.deleteRoom.setSize(342, 412);
+
+        this.deleteRoomName = new Label("", true);
+        this.deleteRoomName.setLayoutY(98);
+        this.deleteRoomName.setOnWidth(() -> this.deleteRoomName.setLayoutX(171 - Math.round(this.deleteRoomName.getWidth() / 2)));
+        this.deleteRoom.getChildren().add(this.deleteRoomName);
+
+        this.deleteRoomDescription = new Label("", true);
+        this.deleteRoomDescription.setLayoutX(60);
+        this.deleteRoomDescription.setLayoutY(152);
+        this.deleteRoomDescription.setMaxWidth(220);
+        this.deleteRoomDescription.setLineSpacing(-1);
+        this.deleteRoomDescription.setWrapText(true);
+        this.deleteRoom.getChildren().add(this.deleteRoomDescription);
+
+        this.deleteRoomCancel = new Button(TextsManager.getInstance().getString("nav_cancel"));
+        this.deleteRoomCancel.setLayoutY(199);
+        this.deleteRoomCancel.setOnWidth(() -> this.deleteRoomCancel.setLayoutX(154 - this.deleteRoomCancel.getWidth()));
+        this.deleteRoomCancel.setOnMouseClicked(e -> this.pendingAction = () -> {
+            this.showModifyRoomPage1();
+            this.setContent(this.content, this.padding, true);
+        });
+        this.deleteRoom.getChildren().add(this.deleteRoomCancel);
+
+        this.deleteRoomOk = new ButtonLarge(TextsManager.getInstance().getString("nav_deleteroom"));
+        this.deleteRoomOk.setLayoutX(165);
+        this.deleteRoomOk.setLayoutY(196);
+        this.deleteRoom.getChildren().add(this.deleteRoomOk);
+
         this.info = new Pane();
         this.info.setPrefSize(340, 100);
         this.info.setLayoutX(1);
@@ -636,7 +730,7 @@ public class NavigatorView extends Widget {
         this.info.getChildren().add(infoClose);
 
         this.passwordPrompt = new BorderPane();
-        passwordPrompt.setSize(342, 412);
+        this.passwordPrompt.setSize(342, 412);
 
         var passwordPromptImg = new ImageView(ResourceManager.getInstance().getFxImage("sprites/views/navigator/", "info_doorbell_password.png"));
         passwordPromptImg.setLayoutX(122);
@@ -676,7 +770,6 @@ public class NavigatorView extends Widget {
 
         this.passwordPrompt.addContent(passwordPromptImg, passwordPromptGoing, this.passwordPromptName, this.passwordPromptIsProtected, this.passwordPromptField, this.passwordPromptCancelButton, this.passwordPromptOkButton);
     }
-
 
     private void setLocation() {
         // getWidth() and getHeight() no longer zero when wrapping around this shit - when the navigator finished sizing itself
@@ -1123,6 +1216,16 @@ public class NavigatorView extends Widget {
         this.setContent(this.passwordPrompt, new Insets(9, 11, 11, 10), true);
     }
 
+    private void doModifyRoom() {
+        this.content.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/views/navigator/", "background_modify_room_note.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        this.modifyRoomPage1.setVisible(false);
+        this.modifyRoomPage2.setVisible(false);
+        this.modifyRoomFooter.setVisible(false);
+        this.modifyRoomNoteHeader.setVisible(true);
+        this.modifyRoomNote.setVisible(true);
+        this.modifyRoomNoteOk.setVisible(true);
+    }
+    
     private void showModifyRoom(NavigatorNode room) {
         this.content.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/views/navigator/", "background_modify_room.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
         this.room.setVisible(false);
@@ -1131,10 +1234,28 @@ public class NavigatorView extends Widget {
         this.infoHide();
 
         this.modifyRoom = room;
+        this.modifyRoomResetRightsButton.setOnMouseClicked(e -> this.pendingAction = () -> this.showResetRights(room));
+        this.modifyRoomDeleteButton.setOnMouseClicked(e -> this.pendingAction = () -> this.showDeleteRoom(room));
 
         this.modifyRoomBack.setVisible(true);
         this.showModifyRoomPage1();
         this.modifyRoomFooter.setVisible(true);
+    }
+
+    private void showResetRights(NavigatorNode room) {
+        this.resetRightsName.setText(room.getName());
+        this.resetRightsOk.setOnMouseClicked(e -> this.pendingAction = () -> this.doResetRights(room.getFlatId()));
+        this.setContent(this.resetRights, new Insets(9, 11, 11, 10), true);
+    }
+
+    private void showDeleteRoom(NavigatorNode room) {
+        this.deleteRoomName.setText(room.getName());
+        this.deleteRoomDescription.setText(TextsManager.getInstance().getString("nav_delroom1"));
+        this.deleteRoomOk.setOnMouseClicked(e -> this.pendingAction = () -> {
+            this.deleteRoomDescription.setText(TextsManager.getInstance().getString("nav_delroom2"));
+            this.deleteRoomOk.setOnMouseClicked(e1 -> this.pendingAction = () -> this.doDeleteRoom(room.getFlatId()));
+        });
+        this.setContent(this.deleteRoom, new Insets(9, 11, 11, 10), true);
     }
 
     private void hideModifyRoom() {
@@ -1150,6 +1271,9 @@ public class NavigatorView extends Widget {
         this.modifyRoomPage1.setVisible(false);
         this.modifyRoomPage2.setVisible(false);
         this.modifyRoomFooter.setVisible(false);
+        this.modifyRoomNoteHeader.setVisible(false);
+        this.modifyRoomNote.setVisible(false);
+        this.modifyRoomNoteOk.setVisible(false);
     }
 
     private void showModifyRoomPage1() {
@@ -1211,8 +1335,7 @@ public class NavigatorView extends Widget {
         Movie.getInstance().createObject(new Alert("showCreateRoom"));
     }
 
-    // TODO Avery - all the below methods are your entry points to do whatever with :)
-
+    // TODO
     public void sendPasswordResult(Boolean correct) {
         if (correct) {
             this.setContent(this.content, this.padding, false);
@@ -1252,10 +1375,25 @@ public class NavigatorView extends Widget {
         }
     }
 
+    // TODO
+    private void doResetRights(int roomId) {
+        System.out.println("Reset rights for roomId " + roomId);
+        this.setContent(this.content, this.padding, true);
+    }
+
+    // TODO
+    private void doDeleteRoom(int roomId) {
+        System.out.println("Delete room with roomId " + roomId);
+        this.hideModifyRoom();
+        this.setContent(this.content, this.padding, true);
+    }
+
+    // TODO
     private void addToFavourites(int roomId) { 
         System.out.println("Add " + roomId + " to favourites");
     }
     
+    // TODO
     private void removeFromFavourites(int roomId) { 
         System.out.println("Remove " + roomId + " from favourites");
     }
