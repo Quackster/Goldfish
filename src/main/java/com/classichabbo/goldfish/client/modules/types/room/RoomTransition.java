@@ -39,13 +39,13 @@ public class RoomTransition extends View {
     @Override
     public void registerUpdate() {
         // Queue to receive
-        Movie.getInstance().getGameScheduler().receiveUpdate(this);
+        Movie.getInstance().getGraphicsScheduler().receiveUpdate(this);
     }
 
     @Override
     public void removeUpdate() {
         // Remove from update queue
-        Movie.getInstance().getGameScheduler().removeUpdate(this);
+        Movie.getInstance().getGraphicsScheduler().removeUpdate(this);
     }
 
     @Override

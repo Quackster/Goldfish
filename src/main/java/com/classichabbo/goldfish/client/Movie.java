@@ -1,7 +1,6 @@
 package com.classichabbo.goldfish.client;
 
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
-import com.classichabbo.goldfish.client.game.scheduler.GameUpdate;
 import com.classichabbo.goldfish.client.game.scheduler.types.GraphicsScheduler;
 import com.classichabbo.goldfish.client.game.scheduler.types.InterfaceScheduler;
 import com.classichabbo.goldfish.client.modules.types.GoldfishView;
@@ -26,7 +25,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.SnapshotParameters;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.Background;
@@ -48,7 +46,7 @@ public class Movie extends Application {
     private static Movie instance;
     private Stage primaryStage;
 
-    private GraphicsScheduler gameScheduler;
+    private GraphicsScheduler graphicsScheduler;
     private InterfaceScheduler interfaceScheduler;
 
     private final List<View> views;
@@ -65,9 +63,9 @@ public class Movie extends Application {
     public void init() {
         instance = this;
         this.interfaceScheduler = new InterfaceScheduler();
-        this.gameScheduler = new GraphicsScheduler();
+        this.graphicsScheduler = new GraphicsScheduler();
 
-        startGameScheduler();
+        startGraphicsScheduler();
         startInterfaceScheduler();
     }
 
@@ -152,14 +150,14 @@ public class Movie extends Application {
 
         menuItem2.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
-                if (gameScheduler != null && interfaceScheduler != null &&
-                        gameScheduler.isRunning() && interfaceScheduler.isRunning()) {
-                    stopGameScheduler();
+                if (graphicsScheduler != null && interfaceScheduler != null &&
+                        graphicsScheduler.isRunning() && interfaceScheduler.isRunning()) {
+                    stopGraphicsScheduler();
                     stopInterfaceScheduler();
                     menuItem2.setText("Resume");
 
                 } else {
-                    startGameScheduler();
+                    startGraphicsScheduler();
                     startInterfaceScheduler();
                     menuItem2.setText("Pause");
                 }
@@ -192,7 +190,7 @@ public class Movie extends Application {
 
     @Override
     public void stop() {
-        this.stopGameScheduler();
+        this.stopGraphicsScheduler();
         this.stopInterfaceScheduler();
 
         NettyClientConnection.getInstance().dispose();
@@ -442,16 +440,16 @@ public class Movie extends Application {
         return this.currentTextField;
     }
 
-    public void startGameScheduler() {
-        this.gameScheduler.restartThread();
+    public void startGraphicsScheduler() {
+        this.graphicsScheduler.restartThread();
     }
 
     public void startInterfaceScheduler() {
         this.interfaceScheduler.restartThread();
     }
 
-    public void stopGameScheduler() {
-        this.gameScheduler.setRunning(false);
+    public void stopGraphicsScheduler() {
+        this.graphicsScheduler.setRunning(false);
     }
 
     public void stopInterfaceScheduler() {
@@ -462,8 +460,8 @@ public class Movie extends Application {
         return primaryStage;
     }
 
-    public GraphicsScheduler getGameScheduler() {
-        return gameScheduler;
+    public GraphicsScheduler getGraphicsScheduler() {
+        return graphicsScheduler;
     }
 
     public InterfaceScheduler getInterfaceScheduler() {

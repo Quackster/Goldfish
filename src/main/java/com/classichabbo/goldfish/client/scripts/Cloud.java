@@ -1,15 +1,16 @@
 package com.classichabbo.goldfish.client.scripts;
 
+import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
+import com.classichabbo.goldfish.client.modules.View;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
 import com.classichabbo.goldfish.util.DimensionUtil;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class Cloud extends Pane {
+public class Cloud extends View {
     private int pTurnPoint;
     private String fileName;
     private String direction;
@@ -24,7 +25,7 @@ public class Cloud extends Pane {
     private int initX;
     private int initY;
 
-    public Cloud(int turnPoint, String fileName, String direction, int initX, int initY) {
+    public Cloud(int turnPoint, String fileName, String direction, int initX, int initY, long viewOrder) {
         this.pTurnPoint = turnPoint;
         this.fileName = fileName;
         this.direction = direction;
@@ -39,7 +40,7 @@ public class Cloud extends Pane {
         else
             this.pVertDir = 1;
 
-        this.cloud.setImage(ResourceManager.getInstance().getFxImage("sprites/views/hotel_view/clouds", this.getCloudPath()));
+        this.cloud.setImage(ResourceManager.getInstance().getFxImage("sprites/views/hotel_view/clouds", this.getCloudFile()));
 
         // If the X is at the start, subtract its width so it slowly slides instead of just suddenly appearing
         if (this.initX <= 0)
@@ -48,9 +49,30 @@ public class Cloud extends Pane {
             this.cloud.setX(this.initX);
 
         this.cloud.setY(this.initY);
+        this.setViewOrder(viewOrder);
 
         this.loadClouds();
         this.getChildren().add(this.cloud);
+
+        // Register to update
+        this.registerUpdate();
+    }
+
+    @Override
+    public void stop() {
+        this.removeUpdate();
+    }
+
+    @Override
+    public void registerUpdate() {
+        // Queue to receive
+        Movie.getInstance().getGraphicsScheduler().receiveUpdate(this);
+    }
+
+    @Override
+    public void removeUpdate() {
+        // Remove from update queue
+        Movie.getInstance().getGraphicsScheduler().removeUpdate(this);
     }
 
     private void loadClouds() {
@@ -58,8 +80,8 @@ public class Cloud extends Pane {
         this.rightImage = null;
 
         try {
-            this.rightImage = ResourceManager.getInstance().getAwtImage("sprites/views/hotel_view/clouds", this.getFlippedCloudPath()); // eventually C:\\ImageTest\\pic2.jpg
-            this.leftImage = ResourceManager.getInstance().getAwtImage("sprites/views/hotel_view/clouds", this.getCloudPath()); // eventually C:\\ImageTest\\pic2.jpg
+            this.rightImage = ResourceManager.getInstance().getAwtImage("sprites/views/hotel_view/clouds", this.getReverseCloudFile()); // eventually C:\\ImageTest\\pic2.jpg
+            this.leftImage = ResourceManager.getInstance().getAwtImage("sprites/views/hotel_view/clouds", this.getCloudFile()); // eventually C:\\ImageTest\\pic2.jpg
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -84,6 +106,11 @@ public class Cloud extends Pane {
         // Cloud went off-screen, dispose
         if (DimensionUtil.getLeft(this.cloud) > DimensionUtil.getProgramWidth()) {
             this.isFinished = true;
+        }
+
+        // Cloud went off screen, dispose it!
+        if (this.isFinished) {
+            this.remove();
         }
     }
 
@@ -140,11 +167,11 @@ public class Cloud extends Pane {
         return newImage;
     }
 
-    private String getCloudPath() {
+    private String getCloudFile() {
         return this.fileName + "_" + this.direction + ".png";
     }
 
-    private String getFlippedCloudPath() {
+    private String getReverseCloudFile() {
         String oppositeDirection = this.direction;
 
         if (oppositeDirection.equals("left")) {

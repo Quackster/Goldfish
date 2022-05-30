@@ -34,7 +34,6 @@ public class EntryView extends View {
     private Rectangle stretchLeft;
     private Rectangle stretchRight;
     private ImageView sun;
-    private List<Cloud> clouds;
 
     private Rectangle topReveal;
     private Rectangle bottomReveal;
@@ -53,7 +52,6 @@ public class EntryView extends View {
     private Runnable runAfterOpening;
 
     public EntryView() {
-        this.clouds = new ArrayList<>();
         this.component = new EntryComponent(this);
         this.handler = new EntryHandler(this);
     }
@@ -146,7 +144,7 @@ public class EntryView extends View {
 
         // Kickstart some clouds after turn point :^)
         for (int i = 0; i < ThreadLocalRandom.current().nextInt(2, 5) + 1; i++) {
-            int initX = this.getCloudTurnPoint() + ThreadLocalRandom.current().nextInt(30, (int) (DimensionUtil.getProgramWidth() * 0.5));
+            int initX = this.cloudTurnPoint + ThreadLocalRandom.current().nextInt(30, (int) (DimensionUtil.getProgramWidth() * 0.5));
             ;
             int initY = ThreadLocalRandom.current().nextInt(0, (int) (DimensionUtil.getProgramHeight() * 0.66));
 
@@ -155,7 +153,7 @@ public class EntryView extends View {
 
         // Kickstart some clouds before turn point :^)
         for (int i = 0; i < ThreadLocalRandom.current().nextInt(1, 2) + 1; i++) {
-            int initX = this.getCloudTurnPoint() - ThreadLocalRandom.current().nextInt(35, 60);
+            int initX = this.cloudTurnPoint - ThreadLocalRandom.current().nextInt(35, 60);
             int initY = ThreadLocalRandom.current().nextInt(0, (int) (DimensionUtil.getProgramHeight() * 0.66));
 
             this.addCloud("left", initX, initY);
@@ -176,13 +174,13 @@ public class EntryView extends View {
     @Override
     public void registerUpdate() {
         // Queue to receive
-        Movie.getInstance().getGameScheduler().receiveUpdate(this);
+        Movie.getInstance().getInterfaceScheduler().receiveUpdate(this);
     }
 
     @Override
     public void removeUpdate() {
         // Remove from update queue
-        Movie.getInstance().getGameScheduler().removeUpdate(this);
+        Movie.getInstance().getInterfaceScheduler().removeUpdate(this);
     }
 
     /**
@@ -236,18 +234,7 @@ public class EntryView extends View {
      * Tick method for cloud animations
      */
     private void updateClouds() {
-        for (var cloud : this.clouds) {
-            cloud.update();
-
-            if (cloud.isFinished()) {
-                this.getChildren().remove(cloud);
-            }
-        }
-
-        // Remove old clouds
-        this.clouds.removeIf(Cloud::isFinished);
-
-        if (DateUtil.getCurrentTimeSeconds() > this.timeNextCloud && this.clouds.size() < 24) {
+        if (DateUtil.getCurrentTimeSeconds() > this.timeNextCloud && this.getChildren().stream().filter(x -> x instanceof Cloud).count() < 24) {
             int initX = 0;
             int initY = ThreadLocalRandom.current().nextInt(0, (int) (DimensionUtil.getProgramHeight()*0.66));
 
@@ -260,11 +247,7 @@ public class EntryView extends View {
      * Add cloud handler
      */
     public void addCloud(String direction, int initX, int initY) {
-        var cloud = new Cloud(this.getCloudTurnPoint(), "cloud_" + ThreadLocalRandom.current().nextInt(4), direction, initX, initY);
-        cloud.setViewOrder(this.CLOUD_Z_INDEX);
-
-        this.getClouds().add(cloud);
-        this.getChildren().add(cloud);
+        Movie.getInstance().createObject(new Cloud(this.cloudTurnPoint, "cloud_" + ThreadLocalRandom.current().nextInt(4), direction, initX, initY, CLOUD_Z_INDEX), this);
     }
 
     /**
@@ -397,20 +380,6 @@ public class EntryView extends View {
         this.runAfterClosing.run();
         this.runAfterClosing = null;
 
-    }
-
-    /**
-     * Turn point for when the cloud turns
-     */
-    public int getCloudTurnPoint() {
-        return cloudTurnPoint;
-    }
-
-    /**
-     * List of active clouds
-     */
-    public List<Cloud> getClouds() {
-        return clouds;
     }
 
     /**
