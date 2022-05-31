@@ -67,6 +67,8 @@ public class Movie extends Application {
 
         startGraphicsScheduler();
         startInterfaceScheduler();
+
+        Goldfish.getInstance().load();
     }
 
     @Override

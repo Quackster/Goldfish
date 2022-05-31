@@ -3,7 +3,6 @@ package com.classichabbo.goldfish.client.game.resources;
 import javax.imageio.ImageIO;
 
 import com.classichabbo.goldfish.client.game.scheduler.SchedulerManager;
-import com.google.gson.Gson;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
@@ -112,6 +111,14 @@ public class ResourceManager {
 
     public URL getResource(String url) {
         return getClass().getResource("/" + url);
+    }
+
+    public String getResourceAsString(String directory, String file) {
+        try {
+            return new String(getClass().getResource("/" + directory + "/" + file).openStream().readAllBytes());
+        } catch (IOException e) {
+            return null;
+        }
     }
 
     public Font getVolter() {
