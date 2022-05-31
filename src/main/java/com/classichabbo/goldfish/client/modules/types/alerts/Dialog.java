@@ -169,15 +169,15 @@ public class Dialog extends View {
 
         this.topLeft = new Pane();
         this.topLeft.setPrefSize(16, 16);
-        this.topLeft.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/controls/dialog/", "top_left_notitle.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        this.topLeft.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("assets/controls/dialog/", "top_left_notitle.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
 
         this.topCenter = new Pane();
         this.topCenter.setMinSize(1, 16);
-        this.topCenter.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/controls/dialog/", "top_center_notitle.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        this.topCenter.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("assets/controls/dialog/", "top_center_notitle.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
 
         this.topRight = new Pane();
         this.topRight.setPrefSize(16, 16);
-        this.topRight.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/controls/dialog/", "top_right_notitle.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        this.topRight.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("assets/controls/dialog/", "top_right_notitle.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
 
         this.top.getChildren().addAll(this.topLeft, this.topCenter, this.topRight);
 
@@ -187,7 +187,7 @@ public class Dialog extends View {
 
         this.centerLeft = new Pane();
         this.centerLeft.setPrefWidth(16);
-        this.centerLeft.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/controls/dialog/", "center_left.png"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        this.centerLeft.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("assets/controls/dialog/", "center_left.png"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
 
         this.centerCenter = new Pane();
         this.centerCenter.setMinSize(1, 1);
@@ -195,7 +195,7 @@ public class Dialog extends View {
 
         this.centerRight = new Pane();
         this.centerRight.setPrefWidth(16);
-        this.centerRight.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/controls/dialog/", "center_right.png"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        this.centerRight.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("assets/controls/dialog/", "center_right.png"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
 
         center.getChildren().addAll(this.centerLeft, this.centerCenter, this.centerRight);
 
@@ -205,15 +205,15 @@ public class Dialog extends View {
 
         Pane bottomLeft = new Pane();
         bottomLeft.setPrefSize(16, 16);
-        bottomLeft.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/controls/dialog/", "bottom_left.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        bottomLeft.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("assets/controls/dialog/", "bottom_left.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
 
         this.bottomCenter = new Pane();
         bottomCenter.setMinSize(1, 19);
-        bottomCenter.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/controls/dialog/", "bottom_center.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        bottomCenter.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("assets/controls/dialog/", "bottom_center.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
 
         Pane bottomRight = new Pane();
         bottomRight.setPrefSize(16, 16);
-        bottomRight.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/controls/dialog/", "bottom_right.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        bottomRight.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("assets/controls/dialog/", "bottom_right.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
 
         bottom.getChildren().addAll(bottomLeft, this.bottomCenter, bottomRight);
 
@@ -231,15 +231,15 @@ public class Dialog extends View {
 
         Pane innerTopLeft = new Pane();
         innerTopLeft.setPrefSize(5, 5);
-        innerTopLeft.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/controls/dialog/", "inner/top_left.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        innerTopLeft.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("assets/controls/dialog/", "inner/top_left.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
 
         this.innerTopCenter = new Pane();
         innerTopCenter.setMinSize(1, 5);
-        innerTopCenter.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/controls/dialog/", "inner/top_center.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        innerTopCenter.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("assets/controls/dialog/", "inner/top_center.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
 
         Pane innerTopRight = new Pane();
         innerTopRight.setPrefSize(6, 5);
-        innerTopRight.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/controls/dialog/", "inner/top_right.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        innerTopRight.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("assets/controls/dialog/", "inner/top_right.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
 
         innerTop.getChildren().addAll(innerTopLeft, this.innerTopCenter, innerTopRight);
 
@@ -249,7 +249,7 @@ public class Dialog extends View {
 
         this.innerCenterLeft = new Pane();
         this.innerCenterLeft.setPrefWidth(5);
-        this.innerCenterLeft.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/controls/dialog/", "inner/center_left.png"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        this.innerCenterLeft.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("assets/controls/dialog/", "inner/center_left.png"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
 
         this.innerCenterCenter = new Pane();
         this.innerCenterCenter.setMinSize(1, 1);
@@ -257,7 +257,7 @@ public class Dialog extends View {
 
         this.innerCenterRight = new Pane();
         this.innerCenterRight.setPrefWidth(6);
-        this.innerCenterRight.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/controls/dialog/", "inner/center_right.png"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        this.innerCenterRight.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("assets/controls/dialog/", "inner/center_right.png"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
 
         innerCenter.getChildren().addAll(this.innerCenterLeft, this.innerCenterCenter, this.innerCenterRight);
 
@@ -267,15 +267,15 @@ public class Dialog extends View {
 
         Pane innerBottomLeft = new Pane();
         innerBottomLeft.setPrefSize(5, 6);
-        innerBottomLeft.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/controls/dialog/", "inner/bottom_left.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        innerBottomLeft.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("assets/controls/dialog/", "inner/bottom_left.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
 
         this.innerBottomCenter = new Pane();
         innerBottomCenter.setMinSize(1, 6);
-        innerBottomCenter.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/controls/dialog/", "inner/bottom_center.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        innerBottomCenter.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("assets/controls/dialog/", "inner/bottom_center.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
 
         Pane innerBottomRight = new Pane();
         innerBottomRight.setPrefSize(6, 6);
-        innerBottomRight.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/controls/dialog/", "inner/bottom_right.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        innerBottomRight.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("assets/controls/dialog/", "inner/bottom_right.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
 
         innerBottom.getChildren().addAll(innerBottomLeft, this.innerBottomCenter, innerBottomRight);
 
@@ -312,13 +312,13 @@ public class Dialog extends View {
         this.top.setMinHeight(21);
 
         this.topLeft.setPrefSize(16, 21);
-        this.topLeft.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/controls/dialog/", "top_left.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        this.topLeft.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("assets/controls/dialog/", "top_left.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
 
         this.topCenter.setMinSize(1, 21);
-        this.topCenter.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/controls/dialog/", "top_center.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        this.topCenter.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("assets/controls/dialog/", "top_center.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
 
         this.topRight.setPrefSize(24, 21);
-        this.topRight.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/controls/dialog/", "top_right.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        this.topRight.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("assets/controls/dialog/", "top_right.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
 
         this.title = new Label(title);
         this.title.setBackground(new Background(new BackgroundFill(Color.web("#6794A7"), CornerRadii.EMPTY, Insets.EMPTY)));
@@ -344,7 +344,7 @@ public class Dialog extends View {
         this.closeButton.setCursor(Cursor.HAND);
         this.closeButton.setPrefSize(13, 13);
         this.closeButton.setLayoutY(6);
-        this.closeButton.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/controls/dialog/", "close_button.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        this.closeButton.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("assets/controls/dialog/", "close_button.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
         this.closeButton.setOnMouseClicked(e -> this.closeButtonClicked());
 
         this.getChildren().addAll(this.title, this.dragArea, this.closeButton);

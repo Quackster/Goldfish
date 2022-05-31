@@ -40,7 +40,7 @@ public class Cloud extends View {
         else
             this.pVertDir = 1;
 
-        this.cloud.setImage(ResourceManager.getInstance().getFxImage("sprites/views/hotel_view/clouds", this.getCloudFile()));
+        this.cloud.setImage(ResourceManager.getInstance().getFxImage("assets/views/hotel_view/clouds", this.getCloudFile()));
 
         // If the X is at the start, subtract its width so it slowly slides instead of just suddenly appearing
         if (this.initX <= 0)
@@ -80,8 +80,8 @@ public class Cloud extends View {
         this.rightImage = null;
 
         try {
-            this.rightImage = ResourceManager.getInstance().getAwtImage("sprites/views/hotel_view/clouds", this.getReverseCloudFile()); // eventually C:\\ImageTest\\pic2.jpg
-            this.leftImage = ResourceManager.getInstance().getAwtImage("sprites/views/hotel_view/clouds", this.getCloudFile()); // eventually C:\\ImageTest\\pic2.jpg
+            this.rightImage = ResourceManager.getInstance().getAwtImage("assets/views/hotel_view/clouds", this.getReverseCloudFile()); // eventually C:\\ImageTest\\pic2.jpg
+            this.leftImage = ResourceManager.getInstance().getAwtImage("assets/views/hotel_view/clouds", this.getCloudFile()); // eventually C:\\ImageTest\\pic2.jpg
         } catch (Exception e) {
             e.printStackTrace();
         }

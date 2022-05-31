@@ -16,12 +16,12 @@ public class ButtonLarge extends HBox {
     private Label center;
 
     public ButtonLarge(String text) {
-        var leftBackground = new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/controls/button_large", "left.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT));
-        var centerBackground = new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/controls/button_large", "center.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT));
-        var rightBackground = new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/controls/button_large", "right.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT));
-        var leftPressedBackground = new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/controls/button_large", "left_pressed.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT));
-        var centerPressedBackground = new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/controls/button_large", "center_pressed.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT));
-        var rightPressedBackground = new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/controls/button_large", "right_pressed.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT));
+        var leftBackground = new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("assets/controls/button_large", "left.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT));
+        var centerBackground = new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("assets/controls/button_large", "center.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT));
+        var rightBackground = new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("assets/controls/button_large", "right.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT));
+        var leftPressedBackground = new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("assets/controls/button_large", "left_pressed.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT));
+        var centerPressedBackground = new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("assets/controls/button_large", "center_pressed.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT));
+        var rightPressedBackground = new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("assets/controls/button_large", "right_pressed.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT));
 
         var left = new Pane();
         left.setPrefSize(5, 23);

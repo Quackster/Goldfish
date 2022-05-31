@@ -38,15 +38,15 @@ public class ScrollPane extends HBox {
 
         this.scrollBar = new Pane();
         
-        this.up = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/controls/scrollbar", "up.png"));
+        this.up = new ImageButton(ResourceManager.getInstance().getFxImage("assets/controls/scrollbar", "up.png"));
         this.up.setOnMousePressed(e -> this.upPressed = true);
         this.up.setOnMouseReleased(e -> this.upPressed = false);
         
         this.track = new Pane();
         this.track.setLayoutY(14);
-        this.track.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/controls/scrollbar", "track.png"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        this.track.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("assets/controls/scrollbar", "track.png"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
 
-        this.thumb = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/controls/scrollbar", "thumb.png"));
+        this.thumb = new ImageButton(ResourceManager.getInstance().getFxImage("assets/controls/scrollbar", "thumb.png"));
         this.thumb.setOnMouseDragged(e -> this.draggedY = e.getY());
         this.thumb.setOnMouseReleased(e -> this.thumbPressed = false);
         this.thumb.setOnMousePressed(e -> {
@@ -56,7 +56,7 @@ public class ScrollPane extends HBox {
 
         this.track.getChildren().add(this.thumb);
 
-        this.down = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/controls/scrollbar", "down.png"));
+        this.down = new ImageButton(ResourceManager.getInstance().getFxImage("assets/controls/scrollbar", "down.png"));
         this.down.setOnMousePressed(e -> this.downPressed = true);
         this.down.setOnMouseReleased(e -> this.downPressed = false);
 
@@ -123,35 +123,35 @@ public class ScrollPane extends HBox {
 
         // Disable/enable up button if at top
         if (atTop) {
-            this.up.setImage(ResourceManager.getInstance().getFxImage("sprites/controls/scrollbar/", "up_disabled.png"));
+            this.up.setImage(ResourceManager.getInstance().getFxImage("assets/controls/scrollbar/", "up_disabled.png"));
             this.up.setCursor(Cursor.DEFAULT);
         }
         else {
-            this.up.setImage(ResourceManager.getInstance().getFxImage("sprites/controls/scrollbar/", "up.png"));
+            this.up.setImage(ResourceManager.getInstance().getFxImage("assets/controls/scrollbar/", "up.png"));
             this.up.setCursor(Cursor.HAND);
         }
 
         // Disable/enable down button if at bottom
         if (atBottom) {
-            this.down.setImage(ResourceManager.getInstance().getFxImage("sprites/controls/scrollbar/", "down_disabled.png"));
+            this.down.setImage(ResourceManager.getInstance().getFxImage("assets/controls/scrollbar/", "down_disabled.png"));
             this.down.setCursor(Cursor.DEFAULT);
         }
         else {
-            this.down.setImage(ResourceManager.getInstance().getFxImage("sprites/controls/scrollbar/", "down.png"));
+            this.down.setImage(ResourceManager.getInstance().getFxImage("assets/controls/scrollbar/", "down.png"));
             this.down.setCursor(Cursor.HAND);
         }
 
         // Thumb pressed highlight
         if (this.thumbPressed) {
-            this.thumb.setImage(ResourceManager.getInstance().getFxImage("sprites/controls/scrollbar/", "thumb_pressed.png"));
+            this.thumb.setImage(ResourceManager.getInstance().getFxImage("assets/controls/scrollbar/", "thumb_pressed.png"));
         }
         else {
-            this.thumb.setImage(ResourceManager.getInstance().getFxImage("sprites/controls/scrollbar/", "thumb.png"));
+            this.thumb.setImage(ResourceManager.getInstance().getFxImage("assets/controls/scrollbar/", "thumb.png"));
         }
 
         // Up pressed
         if (this.upPressed && !atTop) {
-            this.up.setImage(ResourceManager.getInstance().getFxImage("sprites/controls/scrollbar/", "up_pressed.png"));
+            this.up.setImage(ResourceManager.getInstance().getFxImage("assets/controls/scrollbar/", "up_pressed.png"));
 
             var newY = this.thumb.getTranslateY() - 10;
             newY = newY < 0 ? 0 : newY;
@@ -159,12 +159,12 @@ public class ScrollPane extends HBox {
             this.thumb.setTranslateY(newY);
         }
         if (!this.upPressed && !atTop) {
-            this.up.setImage(ResourceManager.getInstance().getFxImage("sprites/controls/scrollbar/", "up.png"));
+            this.up.setImage(ResourceManager.getInstance().getFxImage("assets/controls/scrollbar/", "up.png"));
         }
 
         // Down pressed
         if (this.downPressed && !atBottom) {
-            this.down.setImage(ResourceManager.getInstance().getFxImage("sprites/controls/scrollbar/", "down_pressed.png"));
+            this.down.setImage(ResourceManager.getInstance().getFxImage("assets/controls/scrollbar/", "down_pressed.png"));
 
             var newY = this.thumb.getTranslateY() + 10;
             newY = newY > this.track.getHeight() - 15 ? this.track.getHeight() - 15 : newY;
@@ -172,14 +172,14 @@ public class ScrollPane extends HBox {
             this.thumb.setTranslateY(newY);
         }
         if (!this.downPressed && !atBottom) {
-            this.down.setImage(ResourceManager.getInstance().getFxImage("sprites/controls/scrollbar/", "down.png"));
+            this.down.setImage(ResourceManager.getInstance().getFxImage("assets/controls/scrollbar/", "down.png"));
         }
 
         // Disable if not scrollable
         if (this.content.getHeight() <= this.getPrefHeight()) {
-            this.up.setImage(ResourceManager.getInstance().getFxImage("sprites/controls/scrollbar/", "up_disabled.png"));
-            this.thumb.setImage(ResourceManager.getInstance().getFxImage("sprites/controls/scrollbar/", "thumb_disabled.png"));
-            this.down.setImage(ResourceManager.getInstance().getFxImage("sprites/controls/scrollbar/", "down_disabled.png"));
+            this.up.setImage(ResourceManager.getInstance().getFxImage("assets/controls/scrollbar/", "up_disabled.png"));
+            this.thumb.setImage(ResourceManager.getInstance().getFxImage("assets/controls/scrollbar/", "thumb_disabled.png"));
+            this.down.setImage(ResourceManager.getInstance().getFxImage("assets/controls/scrollbar/", "down_disabled.png"));
             this.up.setCursor(Cursor.DEFAULT);
             this.thumb.setCursor(Cursor.DEFAULT);
             this.down.setCursor(Cursor.DEFAULT);

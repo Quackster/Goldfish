@@ -16,7 +16,7 @@ import javafx.scene.layout.Pane;
 public class NavigatorBackButton extends Pane {
     public NavigatorBackButton(String name, int startY, int index, EventHandler<MouseEvent> event) {
         this.setPrefSize(340, 22);
-        this.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/views/navigator", "back_bottom.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        this.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("assets/views/navigator", "back_bottom.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
         this.setLayoutX(1);
         this.setLayoutY(startY + (18 * (index + 1)));
         this.setPickOnBounds(false);

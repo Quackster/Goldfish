@@ -39,10 +39,10 @@ public class ResourceManager {
 
     public void loadFonts() {
         try {
-            this.volter = javafx.scene.text.Font.loadFont(ResourceManager.getInstance().getResource("sprites/volter/volter.woff").openStream(), 9);
-            this.volterBold = javafx.scene.text.Font.loadFont(ResourceManager.getInstance().getResource("sprites/volter/volter_bold.woff").openStream(), 9);
-            this.volterLarge = javafx.scene.text.Font.loadFont(ResourceManager.getInstance().getResource("sprites/volter/volter.woff").openStream(), 18);
-            this.volterBoldLarge = Font.loadFont(ResourceManager.getInstance().getResource("sprites/volter/volter_bold.woff").openStream(), 18);
+            this.volter = javafx.scene.text.Font.loadFont(ResourceManager.getInstance().getResource("assets/volter/volter.woff").openStream(), 9);
+            this.volterBold = javafx.scene.text.Font.loadFont(ResourceManager.getInstance().getResource("assets/volter/volter_bold.woff").openStream(), 9);
+            this.volterLarge = javafx.scene.text.Font.loadFont(ResourceManager.getInstance().getResource("assets/volter/volter.woff").openStream(), 18);
+            this.volterBoldLarge = Font.loadFont(ResourceManager.getInstance().getResource("assets/volter/volter_bold.woff").openStream(), 18);
         } catch (Exception e) {
             e.printStackTrace();
         }

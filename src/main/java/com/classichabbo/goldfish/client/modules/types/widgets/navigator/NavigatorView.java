@@ -174,7 +174,7 @@ public class NavigatorView extends Widget {
         this.handler = new NavigatorHandler(this);
 
         this.aliasManager = new AliasManager();
-        this.aliasManager.loadMemberAlias("sprites/views/navigator/thumbnails/memberalias.index");
+        this.aliasManager.loadMemberAlias("assets/views/navigator/thumbnails/memberalias.index");
 
         this.defaultPublicCategoryId = VariablesManager.getInstance().getInt("navigator.public.default", 3);
         this.defaultPrivateCategoryId = VariablesManager.getInstance().getInt("navigator.private.default", 4);
@@ -267,7 +267,7 @@ public class NavigatorView extends Widget {
     private void init() {
         this.content = new Pane();
         this.content.setPrefSize(342, 414);
-        this.content.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/views/navigator/", "background_public.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        this.content.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("assets/views/navigator/", "background_public.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
 
         var publicButton = new Pane();
         publicButton.setPrefSize(170, 56);
@@ -382,7 +382,7 @@ public class NavigatorView extends Widget {
         this.roomCreateButton.setOnMouseClicked(e -> this.pendingAction = () -> this.showCreateRoom());
         this.room.getChildren().add(this.roomCreateButton);
 
-        this.roomCreateImg = new ImageButton(ResourceManager.getInstance().getFxImage("sprites/views/navigator/", "room-create-img.png"));
+        this.roomCreateImg = new ImageButton(ResourceManager.getInstance().getFxImage("assets/views/navigator/", "room-create-img.png"));
         this.roomCreateImg.setLayoutX(306);
         this.roomCreateImg.setLayoutY(5);
         this.roomCreateImg.setOnMouseClicked(e -> this.pendingAction = () -> this.showCreateRoom());
@@ -684,7 +684,7 @@ public class NavigatorView extends Widget {
         this.info.setPrefSize(340, 100);
         this.info.setLayoutX(1);
         this.info.setLayoutY(312);
-        this.info.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/views/navigator/", "info_background.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        this.info.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("assets/views/navigator/", "info_background.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
         this.content.getChildren().add(this.info);
 
         this.infoImg = new ImageView();
@@ -732,7 +732,7 @@ public class NavigatorView extends Widget {
         this.passwordPrompt = new BorderPane();
         this.passwordPrompt.setSize(342, 412);
 
-        var passwordPromptImg = new ImageView(ResourceManager.getInstance().getFxImage("sprites/views/navigator/", "info_doorbell_password.png"));
+        var passwordPromptImg = new ImageView(ResourceManager.getInstance().getFxImage("assets/views/navigator/", "info_doorbell_password.png"));
         passwordPromptImg.setLayoutX(122);
         passwordPromptImg.setLayoutY(60);
 
@@ -789,7 +789,7 @@ public class NavigatorView extends Widget {
 
         if (page == NavigatorPage.PUBLIC) {
             this.currentPage = NavigatorPage.PUBLIC;
-            this.content.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/views/navigator/", "background_public.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+            this.content.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("assets/views/navigator/", "background_public.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
             this.title.setLayoutY(62);
             this.hideFull.setLayoutY(62);
             this.hideFull.setVisible(true);
@@ -803,7 +803,7 @@ public class NavigatorView extends Widget {
 
             this.infoTitle.setText(TextsManager.getInstance().getString("nav_public_helptext_hd"));
             this.infoDescription.setText(TextsManager.getInstance().getString("nav_public_helptext"));
-            this.infoImg.setImage(ResourceManager.getInstance().getFxImage("sprites/views/navigator/", "info_public.png"));
+            this.infoImg.setImage(ResourceManager.getInstance().getFxImage("assets/views/navigator/", "info_public.png"));
             this.infoLeftButton.setText(TextsManager.getInstance().getString("nav_addtofavourites"));
             this.infoLeftButton.setTranslateX(0);
         }
@@ -815,7 +815,7 @@ public class NavigatorView extends Widget {
 
         if (page == NavigatorPage.PRIVATE) {
             this.currentPage = NavigatorPage.PRIVATE;
-            this.content.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/views/navigator/", "background_private.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+            this.content.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("assets/views/navigator/", "background_private.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
             this.title.setLayoutY(163);
             this.hideFull.setLayoutY(163);
             this.hideFull.setVisible(true);
@@ -830,7 +830,7 @@ public class NavigatorView extends Widget {
 
             this.infoTitle.setText(TextsManager.getInstance().getString("nav_private_helptext_hd_main"));
             this.infoDescription.setText(TextsManager.getInstance().getString("nav_private_helptext"));
-            this.infoImg.setImage(ResourceManager.getInstance().getFxImage("sprites/views/navigator/", "info_private.png"));
+            this.infoImg.setImage(ResourceManager.getInstance().getFxImage("assets/views/navigator/", "info_private.png"));
             this.infoLeftButton.setText(TextsManager.getInstance().getString("nav_addtofavourites"));
             this.infoLeftButton.setTranslateX(0);
 
@@ -846,7 +846,7 @@ public class NavigatorView extends Widget {
 
         if (page == NavigatorPage.SEARCH) {
             this.currentPage = NavigatorPage.SEARCH;
-            this.content.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/views/navigator/", "background_search.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+            this.content.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("assets/views/navigator/", "background_search.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
             this.title.setText(TextsManager.getInstance().getString("nav_src_hd"));
             this.title.setLayoutY(135);
             this.hideFull.setVisible(false);
@@ -860,7 +860,7 @@ public class NavigatorView extends Widget {
 
             this.infoTitle.setText(TextsManager.getInstance().getString("nav_private_helptext_hd"));
             this.infoDescription.setText(TextsManager.getInstance().getString("nav_search_helptext"));
-            this.infoImg.setImage(ResourceManager.getInstance().getFxImage("sprites/views/navigator/", "info_search.png"));
+            this.infoImg.setImage(ResourceManager.getInstance().getFxImage("assets/views/navigator/", "info_search.png"));
             this.infoLeftButton.setText(TextsManager.getInstance().getString("nav_addtofavourites"));
             this.infoLeftButton.setTranslateX(0);
 
@@ -875,7 +875,7 @@ public class NavigatorView extends Widget {
             this.currentPage = NavigatorPage.OWN;
             this.component.sendGetOwnFlats();
 
-            this.content.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/views/navigator/", "background_own.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+            this.content.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("assets/views/navigator/", "background_own.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
             this.title.setText(TextsManager.getInstance().getString("nav_own_hd"));
             this.title.setLayoutY(135);
             this.hideFull.setVisible(false);
@@ -887,7 +887,7 @@ public class NavigatorView extends Widget {
 
             this.infoTitle.setText(TextsManager.getInstance().getString("nav_private_helptext_hd"));
             this.infoDescription.setText(TextsManager.getInstance().getString("nav_ownrooms_helptext"));
-            this.infoImg.setImage(ResourceManager.getInstance().getFxImage("sprites/views/navigator/", "info_own.png"));
+            this.infoImg.setImage(ResourceManager.getInstance().getFxImage("assets/views/navigator/", "info_own.png"));
             this.infoLeftButton.setText(TextsManager.getInstance().getString("nav_modify"));
             this.infoLeftButton.setTranslateX(0);
 
@@ -901,7 +901,7 @@ public class NavigatorView extends Widget {
             this.currentPage = NavigatorPage.FAVOURITES;
             this.component.sendGetFavoriteFlats();
 
-            this.content.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/views/navigator/", "background_favourites.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+            this.content.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("assets/views/navigator/", "background_favourites.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
             this.title.setText(TextsManager.getInstance().getString("nav_fav_hd"));
             this.title.setLayoutY(90);
             this.hideFull.setVisible(false);
@@ -911,7 +911,7 @@ public class NavigatorView extends Widget {
 
             this.infoTitle.setText(TextsManager.getInstance().getString("nav_private_helptext_hd"));
             this.infoDescription.setText(TextsManager.getInstance().getString("nav_favourites_helptext"));
-            this.infoImg.setImage(ResourceManager.getInstance().getFxImage("sprites/views/navigator/", "info_favourites.png"));
+            this.infoImg.setImage(ResourceManager.getInstance().getFxImage("assets/views/navigator/", "info_favourites.png"));
             this.infoLeftButton.setText(TextsManager.getInstance().getString("nav_removefavourites"));
             this.infoLeftButton.setTranslateX(-30);
 
@@ -972,14 +972,14 @@ public class NavigatorView extends Widget {
 
     private void backTopShow(String text, EventHandler<MouseEvent> event) {
         if (this.currentPage == NavigatorPage.PUBLIC) {
-            this.backTop.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/views/navigator/", "back_top_public.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+            this.backTop.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("assets/views/navigator/", "back_top_public.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
             this.backTop.setPrefHeight(22);
             this.backTop.setLayoutY(58);
             this.backTopLabel.setLayoutY(3);
             this.backTop.setVisible(true);
         }
         if (this.currentPage == NavigatorPage.PRIVATE) {
-            this.backTop.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/views/navigator/", "back_top_private.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+            this.backTop.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("assets/views/navigator/", "back_top_private.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
             this.backTop.setPrefHeight(27);
             this.backTop.setLayoutY(76);
             this.backTopLabel.setLayoutY(8);
@@ -995,7 +995,7 @@ public class NavigatorView extends Widget {
             this.infoImg.setTranslateX(16);
             this.infoImg.setTranslateY(15);
 
-            // System.out.println("sprites/views/navigator/", "thumbnails/" + room.infoImg + ".png");
+            // System.out.println("assets/views/navigator/", "thumbnails/" + room.infoImg + ".png");
             this.infoImg.setImage(this.resolveThumbnail(node));
             this.infoTitle.setText(node.getName() + " (" + node.getUsercount() + "/" + node.getMaxUsers() + ")");
             this.infoSubtitle.setText("");
@@ -1003,7 +1003,7 @@ public class NavigatorView extends Widget {
         } else {
             this.infoImg.setTranslateX(0);
             this.infoImg.setTranslateY(0);
-            this.infoImg.setImage(ResourceManager.getInstance().getFxImage("sprites/views/navigator/", "info_doorbell_" + getBackgroundByDoorbell(node.getDoorbell()) + ".png"));
+            this.infoImg.setImage(ResourceManager.getInstance().getFxImage("assets/views/navigator/", "info_doorbell_" + getBackgroundByDoorbell(node.getDoorbell()) + ".png"));
             this.infoTitle.setText(node.getName());
             this.infoSubtitle.setText("(" + node.getUsercount() + "/" + node.getMaxUsers() + ") " + TextsManager.getInstance().getString("room_owner") + " " + node.getOwner());
             this.infoDescription.setTranslateY(10);
@@ -1039,7 +1039,7 @@ public class NavigatorView extends Widget {
         }
 
         try {
-            img = ResourceManager.getInstance().getFxImage("sprites/views/navigator/thumbnails", imageName + ".png");
+            img = ResourceManager.getInstance().getFxImage("assets/views/navigator/thumbnails", imageName + ".png");
         } catch (Exception ex) { }
 
         int maxAttempts = 2; // any increase will be useless, any decrease will break it... lol
@@ -1053,13 +1053,13 @@ public class NavigatorView extends Widget {
                     imageName = this.aliasManager.getAliases().get(imageName);
                 }
 
-                img = ResourceManager.getInstance().getFxImage("sprites/views/navigator/thumbnails", imageName + ".png");
+                img = ResourceManager.getInstance().getFxImage("assets/views/navigator/thumbnails", imageName + ".png");
             } catch (Exception ex) { }
         }
 
         if (img == null) {
             try {
-                img = ResourceManager.getInstance().getFxImage("sprites/views/navigator/thumbnails", "parsnip_placeholder.png");
+                img = ResourceManager.getInstance().getFxImage("assets/views/navigator/thumbnails", "parsnip_placeholder.png");
             } catch (Exception ex) { }
         }
 
@@ -1217,7 +1217,7 @@ public class NavigatorView extends Widget {
     }
 
     private void doModifyRoom() {
-        this.content.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/views/navigator/", "background_modify_room_note.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        this.content.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("assets/views/navigator/", "background_modify_room_note.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
         this.modifyRoomPage1.setVisible(false);
         this.modifyRoomPage2.setVisible(false);
         this.modifyRoomFooter.setVisible(false);
@@ -1227,7 +1227,7 @@ public class NavigatorView extends Widget {
     }
     
     private void showModifyRoom(NavigatorNode room) {
-        this.content.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/views/navigator/", "background_modify_room.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        this.content.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("assets/views/navigator/", "background_modify_room.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
         this.room.setVisible(false);
         this.title.setVisible(false);
         this.navigatorList.setVisible(false);
@@ -1259,7 +1259,7 @@ public class NavigatorView extends Widget {
     }
 
     private void hideModifyRoom() {
-        this.content.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("sprites/views/navigator/", "background_own.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+        this.content.setBackground(new Background(new BackgroundImage(ResourceManager.getInstance().getFxImage("assets/views/navigator/", "background_own.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
         this.room.setVisible(true);
         this.title.setVisible(true);
         this.navigatorList.setVisible(true);
