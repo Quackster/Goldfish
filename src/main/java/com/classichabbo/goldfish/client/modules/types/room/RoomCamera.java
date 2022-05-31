@@ -95,9 +95,6 @@ public class RoomCamera implements ChangeListener<Number> {
             }
 
             var coords = DimensionUtil.getCenterCoords(roomView.getPane().getWidth(), roomView.getPane().getHeight());
-
-            System.out.println("pan camera: " +coords.getX());
-
             this.panCameraTo((int) coords.getX(), (int) coords.getY());
         }
     }
