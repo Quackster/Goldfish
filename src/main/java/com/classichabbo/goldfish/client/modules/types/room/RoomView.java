@@ -2,24 +2,33 @@ package com.classichabbo.goldfish.client.modules.types.room;
 
 import com.classichabbo.goldfish.client.Goldfish;
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
-import com.classichabbo.goldfish.client.game.room.model.RoomBaseModel;
+import com.classichabbo.goldfish.client.game.room.model.RoomModel;
+import com.classichabbo.goldfish.client.game.room.model.Tile;
 import com.classichabbo.goldfish.client.modules.View;
 import com.classichabbo.goldfish.client.modules.controls.OffsetImageView;
 import com.classichabbo.goldfish.client.modules.types.toolbars.RoomToolbar;
 
 import javafx.beans.value.ObservableValue;
+import javafx.geometry.Insets;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import com.classichabbo.goldfish.client.Movie;
 import com.classichabbo.goldfish.util.DimensionUtil;
+import javafx.scene.paint.Color;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class RoomView extends View {
-    private Pane room;
-    private Pane roomModel;
+    private View room;
+    private RoomModel roomModel;
 
     private RoomCamera roomCamera;
 
@@ -32,7 +41,11 @@ public class RoomView extends View {
 
     private double mousePressedX = -1;
     private double mousePressedY = -1;
-    private RoomBaseModel baseModel;
+    private OffsetImageView doorMask;
+    private OffsetImageView wallMask;
+    private OffsetImageView door;
+    private int modelWidth;
+    private int modelHeight;
 
     public Pane getPane() {
         return room;
@@ -42,7 +55,7 @@ public class RoomView extends View {
     @Override
     public void start() {
         this.component = new RoomComponent();
-        this.room = new Pane();
+        this.room = new View();
 
         //this.setBackground(new Background(new BackgroundFill(Color.PINK, CornerRadii.EMPTY, Insets.EMPTY)));
 
@@ -74,8 +87,8 @@ public class RoomView extends View {
         //this.room.setTranslateX(this.roomCamera.getX());
         //this.room.setTranslateY(this.roomCamera.getY());
 
-        this.drawModel();
         this.createRoomCamera();
+        this.drawModel();
 
         this.registerUpdate();
         //this.addChild(new RoomToolbar());
@@ -100,47 +113,14 @@ public class RoomView extends View {
     }
 
     public void drawModel() {
-        try {
-            this.roomModel = new Pane();
-            this.roomModel.setVisible(false);
+        this.roomModel = new RoomModel("xxxxxxxxxxxx xxxx00000000 xxxx00000000 xxxx00000000 xxxx00000000 xxxx00000000 xxxx00000000 xxxx00000000 xxxx00000000 xxxx00000000 xxxx00000000 xxxx00000000 xxxx00000000 xxxx00000000 xxxxxxxxxxxx xxxxxxxxxxxx".split(" "), this.roomCamera);
+        this.roomModel.setVisible(false);
 
-            this.baseModel = Goldfish.getInstance().getGson().fromJson(
-                    new String(ResourceManager.getInstance().getResource("assets/views/room/models/model_g.json").openStream().readAllBytes()),
-                    RoomBaseModel.class
-            );
 
-            var hiliter = Arrays.stream(baseModel.getElements()).filter(x -> Objects.equals(
-                    x.getType(), "hiliter")).findFirst().orElse(null);
+        //this.roomModel.setPickOnBounds(false);
+        this.roomModel.setBackground(new Background(new BackgroundFill(Color.PINK, CornerRadii.EMPTY, Insets.EMPTY)));
 
-            if (hiliter != null) {
-                var highlighter = new ImageView(ResourceManager.getInstance().getFxImage("assets/views/room/parts/", hiliter.getMember() + ".png"));
-                highlighter.setLayoutX(hiliter.getLocH());
-                highlighter.setLayoutY(hiliter.getLocV());
-                highlighter.setVisible(true);
-                this.roomModel.getChildren().add(highlighter);
-            }
-
-            for (var element : baseModel.getElements()) {
-                if (Objects.equals(element.getType(), "hiliter")) {
-                    continue;
-                }
-
-                var obj = new OffsetImageView("assets/views/room/parts/", element.getMember(),
-                element.getWidth(), element.getHeight(), element.getFlipH() == 1);
-                obj.setLayoutX(element.getLocH());
-                obj.setLayoutY(element.getLocV());
-
-                /*if (element.getLocZ() < 0)
-                    obj.setViewOrder(element.getLocZ());*/
-
-                this.roomModel.getChildren().add(obj);
-
-            }
-
-            this.room.getChildren().add(this.roomModel);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Movie.getInstance().createObject(this.roomModel, this.room, false);
     }
 
     @Override
@@ -193,11 +173,14 @@ public class RoomView extends View {
 
     private void roomModelCenter() {
         if (!this.roomModel.isVisible()) {
-            if (this.room.getWidth() > 0 && this.room.getHeight() > 0) {
-                var centerPos = DimensionUtil.getCenterCoords(this.room.getWidth(), this.room.getHeight());
+            var width = this.room.getWidth();
+            var height = this.room.getHeight();
 
-                roomCamera.setX((int) centerPos.getX());
-                roomCamera.setY((int) centerPos.getY());
+            if (width > 0 && height > 0) {
+                var centerPos = DimensionUtil.getCenterCoords(width, height);
+
+                this.roomCamera.setX((int) centerPos.getX());
+                this.roomCamera.setY((int) centerPos.getY());
 
                 this.room.setTranslateX(this.roomCamera.getX());
                 this.room.setTranslateY(this.roomCamera.getY());

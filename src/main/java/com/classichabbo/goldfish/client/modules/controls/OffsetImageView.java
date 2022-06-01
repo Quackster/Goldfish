@@ -30,8 +30,8 @@ public class OffsetImageView extends Pane {
                 setTranslateY(-Integer.parseInt(offsets[1]));
             }
         } catch (Exception e) {
+            System.out.println(img);
             e.printStackTrace();
-            //System.out.println(img);
         }
     }
 

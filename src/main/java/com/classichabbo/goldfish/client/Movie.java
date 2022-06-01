@@ -203,7 +203,12 @@ public class Movie extends Application {
      * Create interface to appear on current scene
      */
     public void createObject(View control) {
-        createObject(control, null);
+        createObject(control, null, true);
+    }
+
+
+    public void createObject(View view, View parent) {
+        this.createObject(view, parent, true);
     }
 
     /**
@@ -211,7 +216,7 @@ public class Movie extends Application {
      *
      * If parent is supplied, then the interface is added to the parent rather than the main screen.
      */
-    public void createObject(View view, View parent) {
+    public void createObject(View view, View parent, boolean visibilityAfterStart) {
         Platform.runLater(() -> {
             view.setVisible(false);
 
@@ -234,12 +239,12 @@ public class Movie extends Application {
             view.start();
             view.update();
 
-            view.setVisible(true);
+            if (visibilityAfterStart)
+                view.setVisible(true);
 
         });
 
         this.views.add(view);
-        // this.printViews();
     }
 
     /**

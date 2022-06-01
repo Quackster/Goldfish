@@ -1,7 +1,6 @@
 package com.classichabbo.goldfish.client;
 
 import com.classichabbo.goldfish.client.game.resources.ResourceManager;
-import com.classichabbo.goldfish.client.game.room.model.RoomModelManager;
 import com.classichabbo.goldfish.networking.wrappers.messages.MessageHandler;
 import com.classichabbo.goldfish.networking.wrappers.messages.MessageRequest;
 import com.classichabbo.goldfish.networking.wrappers.messages.types.MessageCommand;
@@ -25,7 +24,6 @@ public class Goldfish {
 
     public void load() {
         ResourceManager.getInstance();
-        RoomModelManager.getInstance();
     }
 
     /**
