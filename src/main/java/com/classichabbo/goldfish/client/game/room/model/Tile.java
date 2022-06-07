@@ -7,39 +7,25 @@ import com.classichabbo.goldfish.client.modules.types.room.RoomCamera;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-import java.util.Arrays;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Tile extends View {
     private final RoomCamera camera;
 
-    private int x;
-    private int y;
-    private int z;
+    private Position position;
     private ImageView tile;
     private ImageView wall;
 
-    private Image tileImage;
     private Image tileOutline;
-    private Image doorLeft;
-    private Image doorRight;
-    private Image wallLeft;
-    private Image wallRight;
     private boolean hovering;
     private boolean door;
-    private WallType wallType;
+    private List<TileAttributes> wallTypes;
+    private TileState tileState;
 
     public Tile(RoomCamera camera, int x, int y, int z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.tileImage = ResourceManager.getInstance().getFxImage("assets/views/room/parts", "tile.png");
-        this.tileOutline = ResourceManager.getInstance().getFxImage("assets/views/room/parts", "tileoutline.png");
-        this.doorLeft = ResourceManager.getInstance().getFxImage("assets/views/room/parts", "door_left.png");
-        this.doorRight = ResourceManager.getInstance().getFxImage("assets/views/room/parts", "door_right.png");
-        this.wallLeft = ResourceManager.getInstance().getFxImage("assets/views/room/parts", "wall_left.png");
-        this.wallRight = ResourceManager.getInstance().getFxImage("assets/views/room/parts", "wall_right.png");
-        this.wallType = WallType.NONE;
+        this.position = new Position(x, y, z);
+        this.wallTypes = new ArrayList<>();
         this.camera = camera;
         this.hovering = false;
     }
@@ -75,37 +61,24 @@ public class Tile extends View {
 
     void renderFloor() {
         this.tile = new ImageView();
-        this.tile.setImage(this.tileImage);
+
+        if (this.wallTypes.contains(TileAttributes.LOWER_STAIRS)) {
+            this.tile.setImage(ResourceManager.getInstance().getFxImage("assets/views/room/parts", TileAttributes.LOWER_STAIRS.getFileName()));
+        }
+
+        if (this.wallTypes.contains(TileAttributes.UPPER_STAIRS)) {
+            this.tile.setImage(ResourceManager.getInstance().getFxImage("assets/views/room/parts", TileAttributes.UPPER_STAIRS.getFileName()));
+        }
+
+        if (this.wallTypes.contains(TileAttributes.BASIC_TILE)) {
+            this.tile.setImage(ResourceManager.getInstance().getFxImage("assets/views/room/parts", TileAttributes.BASIC_TILE.getFileName()));
+        }
+
         this.tile.setX(this.getWorldX());
         this.tile.setY(this.getWorldY());
         this.getChildren().add(this.tile);
     }
 
-    void renderWall() {
-        int isoX = this.camera.getX() + (this.y * 32) + (this.x * 32) - 32;
-        int isoY = this.camera.getY() + (this.y * 16) + (this.x * 16);
-
-        this.wall = new ImageView();
-
-        if (this.wallType != WallType.NONE && this.wallType == WallType.RIGHT) {
-            if (this.door) {
-                this.wall.setImage(this.doorRight);
-            } else {
-                this.wall.setImage(this.wallRight);
-            }
-        }
-
-        if (this.wallType != WallType.NONE && this.wallType == WallType.LEFT) {
-            if (this.door) {
-                this.wall.setImage(this.doorLeft);
-            } else {
-                this.wall.setImage(this.wallLeft);
-            }
-        }
-
-        this.wall.setX(isoX);
-        this.wall.setY(isoY);
-        this.getChildren().add(this.wall);
 
         /*
 
@@ -137,7 +110,6 @@ public class Tile extends View {
             }
         }
 */
-    }
 
     /*
     void renderWall(Graphics graphics, RoomCamera camera) {
@@ -185,17 +157,8 @@ public class Tile extends View {
      *
      * @return the type
      */
-    public WallType getWallType() {
-        return wallType;
-    }
-
-    /**
-     * Sets the wall type that the tile has.
-     *
-     * @param wallType if the tile has a wall
-     */
-    public void setWallType(WallType wallType) {
-        this.wallType = wallType;
+    public List<TileAttributes> getWallTypes() {
+        return wallTypes;
     }
 
     /**
@@ -215,23 +178,22 @@ public class Tile extends View {
     }
 
     public int getWorldX() {
-        return -(this.y * 32) + (this.x * 32) - 32;
+        return -(this.position.getY() * 32) + (this.position.getX() * 32) - 32;
     }
 
     public int getWorldY() {
-        return (this.y * 16) + (this.x * 16);
+        return ((this.position.getY() * 16) + (this.position.getX() * 16)) - (32 * ((int)this.position.getZ() - 1));
     }
 
-    public int getX() {
-        return x;
+    public TileState getTileState() {
+        return tileState;
     }
 
-    public int getY() {
-        return y;
+    public void setTileState(TileState tileState) {
+        this.tileState = tileState;
     }
 
-    @Override
-    public String toString() {
-        return "X: " + this.x + " Y: " + this.y;
+    public Position getPosition() {
+        return position;
     }
 }

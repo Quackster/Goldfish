@@ -113,12 +113,11 @@ public class RoomView extends View {
     }
 
     public void drawModel() {
-        this.roomModel = new RoomModel("xxxxxxxxxxxx xxxx00000000 xxxx00000000 xxxx00000000 xxxx00000000 xxxx00000000 xxxx00000000 xxxx00000000 xxxx00000000 xxxx00000000 xxxx00000000 xxxx00000000 xxxx00000000 xxxx00000000 xxxxxxxxxxxx xxxxxxxxxxxx".split(" "), this.roomCamera);
+        this.roomModel = new RoomModel("xxxxxxxxxxxxxxxxxxxxxxxxx|xxxxxxxxxxxxx11111111xxxx|xxxxxxxxxxxxx11111111xxxx|xxxxxxxxxxxxx11111111xxxx|xxxxxxxxxxxxx11111111xxxx|xxxxxxxxxxxxx11111111xxxx|xxxxxxxxxxxxx11111111xxxx|xxxxxxxxxxxxx11111111xxxx|xxxxxxxxxxxxx00000000xxxx|xxxxxxxxx0000000000000000|xxxxxxxxx0000000000000000|xxxxxxxxx0000000000000000|xxxxxxxxx0000000000000000|xxxxxxxxx0000000000000000|xxxxxxxxx0000000000000000|x111111100000000000000000|x111111100000000000000000|x111111100000000000000000|x111111100000000000000000|x111111100000000000000000|x111111100000000000000000|x111111100000000000000000|x111111100000000000000000|xxxxxxxxx0000000000000000|xxxxxxxxx0000000000000000|xxxxxxxxx0000000000000000|xxxxxxxxx0000000000000000|xxxxxxxxxxxxxxxxxxxxxxxxx".split("\\|"), this.roomCamera);
         this.roomModel.setVisible(false);
 
-
-        //this.roomModel.setPickOnBounds(false);
-        this.roomModel.setBackground(new Background(new BackgroundFill(Color.PINK, CornerRadii.EMPTY, Insets.EMPTY)));
+        // this.roomModel.setPickOnBounds(false);
+        // this.roomModel.setBackground(new Background(new BackgroundFill(Color.PINK, CornerRadii.EMPTY, Insets.EMPTY)));
 
         Movie.getInstance().createObject(this.roomModel, this.room, false);
     }
@@ -181,9 +180,6 @@ public class RoomView extends View {
 
                 this.roomCamera.setX((int) centerPos.getX());
                 this.roomCamera.setY((int) centerPos.getY());
-
-                this.room.setTranslateX(this.roomCamera.getX());
-                this.room.setTranslateY(this.roomCamera.getY());
 
                 this.roomModel.setVisible(true);
             }

@@ -17,7 +17,6 @@ public class RoomModel extends View {
 
     private List<Tile> tiles;
     private Tile[][] roomTileMap;
-    private TileState[][] tileStatesMap;
     private RoomCamera camera;
     private Tile hoveringTile;
     private int modelWidth;
@@ -37,7 +36,6 @@ public class RoomModel extends View {
         this.mapSizeY = this.lines.length;
         this.mapSizeX = this.lines[0].length();
 
-        this.tileStatesMap = new TileState[this.mapSizeX][this.mapSizeY];
         this.roomTileMap = new Tile[this.mapSizeX][this.mapSizeY];
 
         for (int y = 0; y < this.mapSizeY; y++) {
@@ -46,23 +44,29 @@ public class RoomModel extends View {
             for (int x = 0; x < this.mapSizeX; x++) {
                 String letter = Character.toString(line.charAt(x));
 
+                var tile = new Tile(this.camera, x, y, letter.equalsIgnoreCase("x") ? -1 : Integer.parseInt(letter));
+                tile.getWallTypes().add(TileAttributes.BASIC_TILE);
+                
+                this.roomTileMap[x][y] = tile;
+                this.tiles.add(tile);
+
                 if (letter.equalsIgnoreCase("x")) {
-                    this.tileStatesMap[x][y] = TileState.CLOSED;
+                    tile.setTileState(TileState.CLOSED);
                 } else {
-                    this.tileStatesMap[x][y] = TileState.OPEN;
-
-                    var tile = new Tile(this.camera, x, y, Integer.parseInt(letter));
-                    this.roomTileMap[x][y] = tile;
-                    this.tiles.add(tile);
-
+                    tile.setTileState(TileState.OPEN);
                     Movie.getInstance().createObject(tile, this);
                 }
             }
         }
+
+        this.findStairs();
+
         this.tiles.forEach(x -> x.renderFloor());
+        // this.walls.forEach(x -> x.renderWall());
+
 
         //this.locateDoor();
-        //this.findWallTiles();
+
 
         //System.out.println("Found door with coordinates: " + this.doorX + ", " + this.doorY);
 
@@ -70,6 +74,55 @@ public class RoomModel extends View {
         //this.addChild(new RoomToolbar());
     }
 
+    private void findStairs() {
+        var movePoints = new Position[]{
+                new Position(0, -1),
+                new Position(1, 0),
+                new Position(0, 1),
+                new Position(-1, 0)
+        };
+
+        for (var tile : this.tiles) {
+            if (tile.getTileState() == TileState.CLOSED) {
+                continue;
+            }
+
+            for (var point : movePoints) {
+                var add = tile.getPosition().add(point);
+
+
+                if (add.getX() < 0 || add.getX() >= this.mapSizeX) {
+                    continue;
+                }
+
+                if (add.getY() < 0 || add.getY() >= this.mapSizeY) {
+                    continue;
+                }
+
+                var newTile = this.roomTileMap[add.getX()][add.getY()];
+
+                if (newTile == null) {
+                    continue;
+                }
+
+                if (newTile.getTileState() == TileState.CLOSED) {
+                    continue;
+                }
+
+                if (Math.abs(tile.getPosition().getZ() - newTile.getPosition().getZ()) == 1.0) {
+                    if (newTile.getPosition().getZ() > tile.getPosition().getZ()) {
+                        newTile.getWallTypes().add(TileAttributes.UPPER_STAIRS);
+                        newTile.getWallTypes().remove(TileAttributes.BASIC_TILE);
+                    }
+
+                    if (tile.getPosition().getZ() > newTile.getPosition().getZ()) {
+                        newTile.getWallTypes().add(TileAttributes.LOWER_STAIRS);
+                        newTile.getWallTypes().remove(TileAttributes.BASIC_TILE);
+                    }
+                }
+            }
+        }
+    }
 
     @Override
     public void stop() {
@@ -91,10 +144,7 @@ public class RoomModel extends View {
 
     @Override
     public void update() {
-        this.setTranslateX(0);
-        this.setTranslateY(0);
 
-        // System.out.println(this.getHeight() + " / " + this.getWidth());
     }
 
     public List<Tile> getTiles() {
@@ -126,126 +176,5 @@ public class RoomModel extends View {
      */
     public RoomCamera getCamera() {
         return this.camera;
-    }
-
-    /**
-     * Get tile at coordinates
-     *
-     * @param x coordinate
-     * @param y coordinate
-     * @return the tile on the grid if exists.
-     */
-    public Tile getTile(int x, int y) {
-        try {
-            return this.roomTileMap[x][y];
-        } catch (ArrayIndexOutOfBoundsException ignored) {
-            return null;
-        }
-    }
-
-    /**
-     * Apply the hovering image over the tile.
-     *
-     * @param x coordinate
-     * @param y coordinate
-     */
-    public void setHovering(int x, int y) {
-        try {
-            //If hovering over something, stop.
-            if (this.hoveringTile != null) {
-                this.hoveringTile.setHovering(false);
-            }
-
-            //Check if new hovering tile exist, hover it, and swap the old one with new one.
-            Tile newHoveringTile = this.roomTileMap[x][y];
-            if (newHoveringTile != null) {
-                newHoveringTile.setHovering(true);
-                this.hoveringTile = newHoveringTile;
-            }
-        } catch (ArrayIndexOutOfBoundsException ignored) {
-        }
-    }
-
-    /**
-     * Finds and marks the wall tiles located on this model, it will left to right
-     * and down, find the first open tile, and then mark it as a wall tile, break the loop
-     * and then increment the coordinate to check the next tile.
-     */
-    private void findWallTiles() {
-        List<Tile> tiles = new ArrayList<>();
-
-        for (int x = 0; x < this.mapSizeX; x++) {
-            for (int y = 0; y < this.mapSizeY; y++) {
-                TileState state = this.tileStatesMap[x][y];
-
-                if (state == null) {
-                    return;
-                }
-
-                if (state == TileState.OPEN) {
-                    Tile tile = this.roomTileMap[x][y];
-                    tile.setWallType(WallType.RIGHT);
-                    tiles.add(tile);
-                    break;
-                }
-            }
-        }
-
-        for (int y = 0; y < this.mapSizeY; y++) {
-            for (int x = 0; x < this.mapSizeX; x++) {
-
-                TileState state = this.tileStatesMap[x][y];
-
-                if (state == null) {
-                    return;
-                }
-
-                if (state == TileState.OPEN) {
-                    Tile tile = this.roomTileMap[x][y];
-
-                    if (tiles.contains(tile) && (x != this.doorX && y != this.doorY)) {
-                        tile.setWallType(WallType.LEFT_AND_RIGHT);
-                    } else {
-                        tile.setWallType(WallType.LEFT);
-                    }
-                    break;
-                }
-            }
-        }
-    }
-
-    /**
-     * Locate the door by finding the first open tile
-     * while iterating vertically on the tile states.
-     */
-    private void locateDoor() {
-        try {
-            for (int x = 0; x < this.mapSizeX; x++) {
-                for (int y = 0; y < this.mapSizeY; y++) {
-                    TileState[] states = this.tileStatesMap[x];
-
-                    if (states.length > 0) {
-                        TileState state = this.tileStatesMap[x][y];
-
-                        if (state == TileState.OPEN) {
-                            this.doorX = x;
-                            this.doorY = y;
-                            this.roomTileMap[x][y].setDoor(true);
-                            return;
-                        }
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public int getModelWidth() {
-        return modelWidth;
-    }
-
-    public int getModelHeight() {
-        return modelHeight;
     }
 }
