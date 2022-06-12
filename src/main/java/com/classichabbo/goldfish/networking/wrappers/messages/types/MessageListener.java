@@ -4,7 +4,7 @@ import com.classichabbo.goldfish.client.modules.View;
 import com.classichabbo.goldfish.networking.wrappers.messages.MessageHandler;
 import com.classichabbo.goldfish.networking.wrappers.messages.MessageRequest;
 
-public class MessageListener<T extends View> {
+public class MessageListener {
     private final Class<? extends MessageHandler> handlerClass;
     private final Integer header;
     private final MessageRequest message;
